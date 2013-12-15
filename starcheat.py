@@ -5,6 +5,7 @@ import sys
 
 player_filename = sys.argv[1]
 
+# Credit: https://github.com/McSimp/starbound-research
 # (name, format, offest)
 data_format = (
     # File header
@@ -12,7 +13,7 @@ data_format = (
     ("version", ">i", 4),
     ("global_vlq", "__global_vlq__", "__vlq__"),
     ("uuid", "b16c", (1+16)),
-    # Player customisation
+    # Humanoid entity
     ("name", "__vlq_str__", "__vlq__"),
     ("race", "__vlq_str__", "__vlq__"),
     ("gender", "b", 1),
@@ -25,12 +26,30 @@ data_format = (
     #("beard_color", "__vlq_str__", "__vlq__"),
     #("face_type", "__vlq_str__", "__vlq__"),
     #("face_group", "__vlq_str__", "__vlq__"),
+    # Gone since last patch apparently?
     ("unknown1", "6x", 6),
     ("idle1", "__vlq_str__", "__vlq__"),
     ("idle2", "__vlq_str__", "__vlq__"),
-    ("pers_offset", "4c", 4),
+    ("head_offset", ">2f", (2*4)),
+    ("arm_offset", ">2f", (2*4)),
+    ("fav_color", "4B", 4),
     # Status entity
-    ("status", ">b20f", (1+(20*4))),
+    ("god_mode", "b", 1),
+    ("body_temp_range_low", ">2f", (2*4)),
+    ("ideal_temp", ">f", 4),
+    ("base_max_warmth", ">f", 4),
+    ("warmth_transfer_rate", ">f", 4),
+    ("warmth_transfer_rate_cap", ">f", 4),
+    ("comfort_regen", ">f", 4),
+    ("base_max_health", ">f", 4),
+    ("base_max_energy", ">f", 4),
+    ("energy_regen_rate", ">f", 4),
+    ("base_max_food", ">f", 4),
+    ("food_deplete_rate", ">f", 4),
+    ("base_max_breath", ">f", 4),
+    ("breath_replenish_rate", ">f", 4),
+    ("breath_deplete_rate", ">f", 4),
+    ("wind_chill_factor", ">f", 4),
     ("body_material", "__vlq_str__", "__vlq__"),
     ("damage_config", "__vlq_str__", "__vlq__"),
     # Player status
@@ -40,17 +59,21 @@ data_format = (
     ("food", ">2f", (2*4)),
     ("breath", ">2f", (2*4)),
     ("invulnerable", "b", 1),
-    # What is this? May need a new datatype for string lists
-    #("glow", ">3fc", (3*4+1)),
-    #("unknown_string_1", "__vlq_str__", "__vlq__"),
-    #("unknown_string_2", "__vlq_str__", "__vlq__"),
-    #("unknown_string_3", "__vlq_str__", "__vlq__"),
+    ("glow", ">3f", (3*4)),
+    # TODO: Need a new datatype for string lists
+    ("unknown_list1_count1", "__vlq__", "__vlq__"),
+    ("unknown_string_1", "__vlq_str__", "__vlq__"),
+    ("unknown_string_2", "__vlq_str__", "__vlq__"),
+    ("unknown_string_3", "__vlq_str__", "__vlq__"),
     #("unknown_string_4", "__vlq_str__", "__vlq__"),
     #("unknown_string_5", "__vlq_str__", "__vlq__"),
-    #("unknown_string_6", "__vlq_str__", "__vlq__"),
-    #("unknown_bool", "b", 1),
-    #("description", "__vlq_str__", "__vlq__"),
-    #("play_time", ">d", 8),
+    #("unknown_string_6", "__vlq_str__", "__vlq__")
+    ("unknown_list1_count2", "__vlq__", "__vlq__"),
+    ("description", "__vlq_str__", "__vlq__"),
+    ("play_time", ">d", 8),
+    # Inventory
+    ("inv_size", "__vlq__", "__vlq__"),
+    ("pixels", ">q", 8),
     ("the_rest", "__the_rest__", "__the_rest__")
 )
 
@@ -121,6 +144,10 @@ class Player():
         elif pattern == "__the_rest__":
             var_val = self.player_data[self.offset:]
             self.inc(len(var_val))
+        elif pattern == "__vlq__":
+            raw = vlq2int(self.player_data[self.offset:])
+            var_val = raw[0]
+            self.inc(raw[1])
         else:
             raw = unpack_from(pattern, self.player_data, self.offset)
             var_val = raw
@@ -139,6 +166,8 @@ class Player():
             return int2vlq(data)
         elif pattern == "__the_rest__":
             return data
+        elif pattern == "__vlq__":
+            return int2vlq(data)
         else:
             return pack(pattern, *data)
 
@@ -159,13 +188,14 @@ class Player():
         else:
             return header_data + player_data
 
-player = Player(player_filename)
+if __name__ == '__main__':
+    player = Player(player_filename)
+    #player.data["health"] = (300.0, 300.0) # works for like a second
+    player.data["name"] = "PIX HACK"
+    player.data["pixels"] = (99999999,)
 
-player.data["health"] = (300.0, 300.0) # works for like a second
-player.data["name"] = "TEST"
+    for i in data_format:
+        print(i[0], ":", player.data[i[0]])
 
-for i in data_format:
-    print(i[0], ":", player.data[i[0]])
-
-print(player.export("test.player"))
-#print(player.export())
+    #print(player.export("test.player"))
+    #print(player.export())
