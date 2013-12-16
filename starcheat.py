@@ -4,10 +4,10 @@ import sys
 from struct import *
 
 # extremely helpful: https://github.com/McSimp/starbound-research
-# (name, format, offest)
-data_version = 0 # TODO: implement check
+# (name, format, offset)
+data_version = 424 # TODO: implement check
 data_format = (
-    # File header
+    # TODO: check names make sense
     ("header", "8c", 8),
     ("version", ">i", 4),
     ("global_vlq", "__global_vlq__", 0),
@@ -19,7 +19,7 @@ data_format = (
     ("hair_type", "__vlq_str__", 0),
     ("hair_color", "__vlq_str__", 0),
     ("body_color", "__vlq_str__", 0),
-    # Gone since last patch apparently?
+    # TODO: these might still exist... best make vlq str handle zero len
     #("beard_group", "__vlq_str__", 0),
     #("beard_type", "__vlq_str__", 0),
     #("beard_color", "__vlq_str__", 0),
@@ -56,38 +56,68 @@ data_format = (
     ("breath", ">2f", 2*4),
     ("invulnerable", "b", 1),
     ("glow", ">3f", 3*4),
-    # TODO: Need a new datatype for string lists
-    ("unknown_list1_count1", "__vlq__", 0),
-    ("unknown_string_1", "__vlq_str__", 0),
-    ("unknown_string_2", "__vlq_str__", 0),
-    ("unknown_string_3", "__vlq_str__", 0),
-    #("unknown_string_4", "__vlq_str__", 0),
-    #("unknown_string_5", "__vlq_str__", 0),
-    #("unknown_string_6", "__vlq_str__", 0)
-    ("unknown_list1_count2", "__vlq__", 0),
+    ("unknown_list1", "__str_list__", 0),
+    ("unknown_list2", "__str_list__", 0),
     ("description", "__vlq_str__", 0),
     ("play_time", ">d", 8),
-    # Inventory
     ("inv_size", "__vlq__", 0),
     ("pixels", ">q", 8),
     ("main_bag", "__bag__", 0),
     ("tile_bag", "__bag__", 0),
     ("action_bar", "__bag__", 0),
-    # ???????
     ("equipment", "__bag__", 0),
-    ("wielded", "__bag__", 0),
-    ("wielded_active", "__bag_item__", 0),
-    ("the_rest", "__the_rest__", "__the_rest__")
+    ("wieldable", "__bag__", 0),
+    ("swap_active", "__item_desc__", 0),
+    ("left_hand_bag", "__vlq__", 0),
+    ("left_hand_slot", "__vlq__", 0),
+    ("right_hand_bag", "__vlq__", 0),
+    ("right_hand_slot", "__vlq__", 0),
+    ("blueprint_library", "__blueprint_lib__", 0),
+    ("tech", "__tech__", 0),
+    ("head", "__item_desc__", 0),
+    ("chest", "__item_desc__", 0),
+    ("legs", "__item_desc__", 0),
+    ("back", "__item_desc__", 0),
+    ("head_glamor", "__item_desc__", 0),
+    ("chest_glamor", "__item_desc__", 0),
+    ("legs_glamor", "__item_desc__", 0),
+    ("back_glamor", "__item_desc__", 0),
+    ("primary_tool", "__item_desc__", 0),
+    ("alt_tool", "__item_desc__", 0),
+    ("suppres_tools", "b", 0),
+    ("the_rest", "__the_rest__", 0)
 )
 
-# TODO: update func names to pack/unpack
-def get_vlq_str(bytes):
-    vlq = vlq2int(bytes)
+# TODO: standard opts (packed data, cur offset) -> (unpacked, new offset)
+def unpack_vlq_str(data):
+    vlq = vlq2int(data)
     pat = str(vlq[0]) + "c"
-    string = unpack_from(pat, bytes, vlq[1]), (vlq[1] + vlq[0])
+    string = unpack_from(pat, data, vlq[1]), (vlq[1] + vlq[0])
     return get_str(string[0]), string[1]
 
-def get_variant(data):
+def unpack_tech(data):
+    total_size = vlq2int(data)
+    offset = total_size[1]
+    tech = unpack_from(str(total_size[0])+"c", data, offset)
+    offset = offset + len(tech)
+    return tech, offset
+
+def unpack_str_list(data):
+    list_total = vlq2int(data)
+    offset = list_total[1]
+    str_list = []
+    for i in range(list_total[0]):
+        raw = unpack_vlq_str(data[offset:])
+        str_list.append(raw[0])
+        offset = offset + raw[1]
+    return str_list, offset
+
+def pack_variant(var):
+    pass
+
+# why "variant"?
+# TODO: unpack variant
+def unpack_variant(data):
     offset = 0
     def inc(x): nonlocal offset; offset = offset + x
 
@@ -96,6 +126,18 @@ def get_variant(data):
 
     variant = 0
     # TODO: dict this?
+    # 0 = ??
+    # 1 = ??
+    # 2 = double (be)
+    # 3 = boolean
+    # 4 = vlq
+    # 5 = vlq string
+    #     <vlq len of string><string>
+    # 6 = variant list
+    #     <vlq total variants><variant>...
+    # 7 = variant dict
+    #     empty dicts are allowed (\x07\x00)
+    #     <vlq total dict items><vlq key string len><key string><variant>...
     if variant_type[0] == 2:
         variant = unpack_from(">d", data, offset)
         inc(8)
@@ -107,7 +149,7 @@ def get_variant(data):
         variant = vlq[0]
         inc(vlq[1])
     elif variant_type[0] == 5:
-        vlq_str = get_vlq_str(data[offset:])
+        vlq_str = unpack_vlq_str(data[offset:])
         variant = vlq_str[0]
         inc(vlq_str[1])
     elif variant_type[0] == 6:
@@ -115,7 +157,7 @@ def get_variant(data):
         inc(count[1])
         sub_vars = []
         for i in range(count[0]):
-            sub_var = get_variant(data[offset:])
+            sub_var = unpack_variant(data[offset:])
             sub_vars.append(sub_var[0])
             inc(sub_var[1])
         variant = sub_vars
@@ -125,29 +167,53 @@ def get_variant(data):
         inc(dict_count[1])
         if dict_count[0] != 0:
             for i in range(dict_count[0]):
-                key = get_vlq_str(data[offset:])
+                key = unpack_vlq_str(data[offset:])
                 inc(key[1])
-                value = get_variant(data[offset:])
+                value = unpack_variant(data[offset:])
                 inc(value[1])
                 dict_items.append((key[0], value[0]))
         variant = dict_items
 
     return variant, offset
 
-def get_bag_item(data):
+def unpack_blueprint_library(data):
     offset = 0
     def inc(x): nonlocal offset; offset = offset + x
 
-    name = get_vlq_str(data)
+    total_size = vlq2int(data)
+    inc(total_size[1])
+    blueprint_count = vlq2int(data[offset:])
+    inc(blueprint_count[1])
+
+    blueprints = []
+    for i in range(blueprint_count[0]):
+        blueprint = unpack_item_desc(data[offset:])
+        blueprints.append(blueprint[0])
+        inc(blueprint[3])
+
+    return blueprints, offset
+
+def pack_item_desc(var):
+    pass
+
+def unpack_item_desc(data):
+    offset = 0
+    def inc(x): nonlocal offset; offset = offset + x
+
+    name = unpack_vlq_str(data)
     inc(name[1])
     count = vlq2int(data[offset:])
     inc(count[1])
-    variant = get_variant(data[offset:])
+    variant = unpack_variant(data[offset:])
     inc(variant[1])
 
     return name[0], count[0], variant[0], offset
 
-def get_bag(data):
+# heh
+def pack_bag(var):
+    pass
+
+def unpack_bag(data):
     offset = 0
     def inc(x): nonlocal offset; offset = offset + x
 
@@ -155,7 +221,7 @@ def get_bag(data):
     inc(size[1])
     items = []
     for i in range(size[0]):
-        item = get_bag_item(data[offset:])
+        item = unpack_item_desc(data[offset:])
         items.append((item[0], item[1], item[2]))
         inc(item[3])
     return items, offset
@@ -216,7 +282,7 @@ class Player():
 
         # TODO: switch to a dict or something of types if there are many more...
         if pattern == "__vlq_str__":
-            raw = get_vlq_str(self.player_data[self.offset:])
+            raw = unpack_vlq_str(self.player_data[self.offset:])
             var_val = raw[0]
             self.inc(raw[1])
         elif pattern == "__global_vlq__":
@@ -231,14 +297,26 @@ class Player():
             var_val = raw[0]
             self.inc(raw[1])
         elif pattern == "__bag__":
-            raw = get_bag(self.player_data[self.offset:])
+            raw = unpack_bag(self.player_data[self.offset:])
             var_val = raw[0]
             self.inc(raw[1])
-        elif pattern == "__bag_item__":
-            raw = get_bag_item(self.player_data[self.offset:])
+        elif pattern == "__item_desc__":
+            raw = unpack_item_desc(self.player_data[self.offset:])
             # TODO: don't like this, need to make standard'
             var_val = (raw[0], raw[1], raw[2])
             self.inc(raw[3])
+        elif pattern == "__blueprint_lib__":
+            raw = unpack_blueprint_library(self.player_data[self.offset:])
+            var_val = raw[0]
+            self.inc(raw[1])
+        elif pattern == "__tech__":
+            raw = unpack_tech(self.player_data[self.offset:])
+            var_val = raw[0]
+            self.inc(raw[1])
+        elif pattern == "__str_list__":
+            raw = unpack_str_list(self.player_data[self.offset:])
+            var_val = raw[0]
+            self.inc(raw[1])
         else:
             raw = unpack_from(pattern, self.player_data, self.offset)
             var_val = raw
