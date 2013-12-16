@@ -1,19 +1,17 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
-from struct import *
 import sys
+from struct import *
 
-player_filename = sys.argv[1]
-
-# Credit: https://github.com/McSimp/starbound-research
+# extremely helpful: https://github.com/McSimp/starbound-research
 # (name, format, offest)
+data_version = 0 # TODO: implement check
 data_format = (
     # File header
     ("header", "8c", 8),
     ("version", ">i", 4),
     ("global_vlq", "__global_vlq__", "__vlq__"),
     ("uuid", "b16c", (1+16)),
-    # Humanoid entity
     ("name", "__vlq_str__", "__vlq__"),
     ("race", "__vlq_str__", "__vlq__"),
     ("gender", "b", 1),
@@ -21,19 +19,18 @@ data_format = (
     ("hair_type", "__vlq_str__", "__vlq__"),
     ("hair_color", "__vlq_str__", "__vlq__"),
     ("body_color", "__vlq_str__", "__vlq__"),
+    # Gone since last patch apparently?
     #("beard_group", "__vlq_str__", "__vlq__"),
     #("beard_type", "__vlq_str__", "__vlq__"),
     #("beard_color", "__vlq_str__", "__vlq__"),
     #("face_type", "__vlq_str__", "__vlq__"),
     #("face_group", "__vlq_str__", "__vlq__"),
-    # Gone since last patch apparently?
     ("unknown1", "6x", 6),
     ("idle1", "__vlq_str__", "__vlq__"),
     ("idle2", "__vlq_str__", "__vlq__"),
     ("head_offset", ">2f", (2*4)),
     ("arm_offset", ">2f", (2*4)),
     ("fav_color", "4B", 4),
-    # Status entity
     ("god_mode", "b", 1),
     ("body_temp_range_low", ">2f", (2*4)),
     ("ideal_temp", ">f", 4),
@@ -52,7 +49,6 @@ data_format = (
     ("wind_chill_factor", ">f", 4),
     ("body_material", "__vlq_str__", "__vlq__"),
     ("damage_config", "__vlq_str__", "__vlq__"),
-    # Player status
     ("health", ">2f", (2*4)),
     ("energy", ">2f", (2*4)),
     ("warmth", ">2f", (2*4)),
@@ -86,14 +82,13 @@ def get_vlq_str(bytes):
 def get_str(bytes):
     return "".join(map(chr,map(ord,bytes)))
 
-# TODO: Learn how these work... theory makes sense but this bit manipulation is magic
-# TODO: Licenses?
-# https://github.com/metachris/binary-serializer/blob/master/python/bincalc.py
+# TODO: learn how these work... theory makes sense but this bit manipulation is magic
+# TODO: licenses?
+# Source: https://github.com/metachris/binary-serializer/blob/master/python/bincalc.py
 def int2vlq(n):
     value = int(n)
     if value == 0:
         return bytearray([0x00])
-
     result = bytearray()
     round = 0
     while value > 0:
@@ -105,7 +100,7 @@ def int2vlq(n):
         round += 1
     return result
 
-# http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
+# Source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
 def vlq2int(data):
     value = 0
     offset = 0
@@ -119,20 +114,24 @@ def vlq2int(data):
 
 class Player():
     def __init__(self, player_filename):
-        player_file = open(player_filename, mode="r+b")
+        player_file = open(player_filename, mode="rb")
         self.player_data = player_file.read()
         self.offset = 0
         self.data = {}
+
         for var in data_format:
             self.unpack_var(var)
+
         player_file.close()
 
     def inc(self, x): self.offset = self.offset + x
 
     def unpack_var(self, var):
+        # TODO: not too keen on the nonlocal variable use
         name = var[0]
         pattern = var[1]
         length = var[2]
+
         if pattern == "__vlq_str__":
             raw = get_vlq_str(self.player_data[self.offset:])
             var_val = raw[0]
@@ -152,6 +151,7 @@ class Player():
             raw = unpack_from(pattern, self.player_data, self.offset)
             var_val = raw
             self.inc(length)
+
         self.data[name] = var_val
 
     def pack_var(self, var):
@@ -159,11 +159,12 @@ class Player():
         pattern = var[1]
         length = var[2]
         data = self.data[name]
+
         if pattern == "__vlq_str__":
             vlq = int2vlq(len(data))
             return vlq + data.encode("utf-8")
         elif pattern == "__global_vlq__":
-            return int2vlq(data)
+            pass
         elif pattern == "__the_rest__":
             return data
         elif pattern == "__vlq__":
@@ -174,22 +175,28 @@ class Player():
     def export(self, filename=None):
         header_data = b""
         player_data = b""
+
         for i in data_format[3:]:
             player_data = player_data + self.pack_var(i)
+
         header = self.pack_var(data_format[0])
         version = self.pack_var(data_format[1])
         global_vlq = int2vlq(len(player_data))
         header_data = header + version + global_vlq
+        file_data = header_data + player_data
+
         if filename:
             file = open(filename, "wb")
-            file.write(header_data + player_data)
+            file.write(file_data)
             file.close()
             return filename
         else:
-            return header_data + player_data
+            return file_data
 
 if __name__ == '__main__':
+    player_filename = sys.argv[1]
     player = Player(player_filename)
+
     #player.data["health"] = (300.0, 300.0) # works for like a second
     player.data["name"] = "PIX HACK"
     player.data["pixels"] = (99999999,)
