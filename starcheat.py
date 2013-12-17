@@ -3,31 +3,31 @@
 import sys
 from struct import *
 
+data_version = 424 # TODO: implement check
 # extremely helpful: https://github.com/McSimp/starbound-research
 # (name, format, offset)
-data_version = 424 # TODO: implement check
 data_format = (
     # TODO: check names make sense
     ("header", "8c", 8),
     ("version", ">i", 4),
-    ("global_vlq", "__global_vlq__", 0),
+    ("global_vlq", "__global_vlq__", None),
     ("uuid", "b16c", 1+16),
-    ("name", "__vlq_str__", 0),
-    ("race", "__vlq_str__", 0),
+    ("name", "__vlq_str__", None),
+    ("race", "__vlq_str__", None),
     ("gender", "b", 1),
-    ("hair_group", "__vlq_str__", 0),
-    ("hair_type", "__vlq_str__", 0),
-    ("hair_color", "__vlq_str__", 0),
-    ("body_color", "__vlq_str__", 0),
+    ("hair_group", "__vlq_str__", None),
+    ("hair_type", "__vlq_str__", None),
+    ("hair_directive", "__vlq_str__", None),
+    ("body_directive", "__vlq_str__", None),
     # TODO: these might still exist... best make vlq str handle zero len
-    #("beard_group", "__vlq_str__", 0),
-    #("beard_type", "__vlq_str__", 0),
-    #("beard_color", "__vlq_str__", 0),
-    #("face_type", "__vlq_str__", 0),
-    #("face_group", "__vlq_str__", 0),
+    #("beard_group", "__vlq_str__", None),
+    #("beard_type", "__vlq_str__", None),
+    #("beard_color", "__vlq_str__", None),
+    #("face_type", "__vlq_str__", None),
+    #("face_group", "__vlq_str__", None),
     ("unknown1", "6x", 6),
-    ("idle1", "__vlq_str__", 0),
-    ("idle2", "__vlq_str__", 0),
+    ("idle1", "__vlq_str__", None),
+    ("idle2", "__vlq_str__", None),
     ("head_offset", ">2f", 2*4),
     ("arm_offset", ">2f", 2*4),
     ("fav_color", "4B", 4),
@@ -47,8 +47,8 @@ data_format = (
     ("breath_replenish_rate", ">f", 4),
     ("breath_deplete_rate", ">f", 4),
     ("wind_chill_factor", ">f", 4),
-    ("body_material", "__vlq_str__", 0),
-    ("damage_config", "__vlq_str__", 0),
+    ("body_material", "__vlq_str__", None),
+    ("damage_config", "__vlq_str__", None),
     ("health", ">2f", 2*4),
     ("energy", ">2f", 2*4),
     ("warmth", ">2f", 2*4),
@@ -56,183 +56,61 @@ data_format = (
     ("breath", ">2f", 2*4),
     ("invulnerable", "b", 1),
     ("glow", ">3f", 3*4),
-    ("unknown_list1", "__str_list__", 0),
-    ("unknown_list2", "__str_list__", 0),
-    ("description", "__vlq_str__", 0),
+    ("unknown_list1", "__str_list__", None),
+    ("unknown_list2", "__str_list__", None),
+    ("description", "__vlq_str__", None),
     ("play_time", ">d", 8),
-    ("inv_size", "__vlq__", 0),
+    ("inv_size", "__vlq__", None),
     ("pixels", ">q", 8),
-    ("main_bag", "__bag__", 0),
-    ("tile_bag", "__bag__", 0),
-    ("action_bar", "__bag__", 0),
-    ("equipment", "__bag__", 0),
-    ("wieldable", "__bag__", 0),
-    ("swap_active", "__item_desc__", 0),
-    ("left_hand_bag", "__vlq__", 0),
-    ("left_hand_slot", "__vlq__", 0),
-    ("right_hand_bag", "__vlq__", 0),
-    ("right_hand_slot", "__vlq__", 0),
-    ("blueprint_library", "__blueprint_lib__", 0),
-    ("tech", "__tech__", 0),
-    ("head", "__item_desc__", 0),
-    ("chest", "__item_desc__", 0),
-    ("legs", "__item_desc__", 0),
-    ("back", "__item_desc__", 0),
-    ("head_glamor", "__item_desc__", 0),
-    ("chest_glamor", "__item_desc__", 0),
-    ("legs_glamor", "__item_desc__", 0),
-    ("back_glamor", "__item_desc__", 0),
-    ("primary_tool", "__item_desc__", 0),
-    ("alt_tool", "__item_desc__", 0),
-    ("suppres_tools", "b", 0),
-    ("the_rest", "__the_rest__", 0)
+    ("main_bag", "__bag__", None),
+    ("tile_bag", "__bag__", None),
+    ("action_bar", "__bag__", None),
+    ("equipment", "__bag__", None),
+    ("wieldable", "__bag__", None),
+    ("swap_active", "__item_desc__", None),
+    ("left_hand_bag", "__vlq__", None),
+    ("left_hand_slot", "__vlq__", None),
+    ("right_hand_bag", "__vlq__", None),
+    ("right_hand_slot", "__vlq__", None),
+    ("blueprint_lib", "__blueprint_lib__", None),
+    ("tech", "__tech__", None),
+    ("head", "__item_desc__", None),
+    ("chest", "__item_desc__", None),
+    ("legs", "__item_desc__", None),
+    ("back", "__item_desc__", None),
+    ("head_glamor", "__item_desc__", None),
+    ("chest_glamor", "__item_desc__", None),
+    ("legs_glamor", "__item_desc__", None),
+    ("back_glamor", "__item_desc__", None),
+    ("primary_tool", "__item_desc__", None),
+    ("alt_tool", "__item_desc__", None),
+    ("suppress_tools", "b", 1),
+    ("the_rest", "__the_rest__", None)
 )
 
-# TODO: standard opts (packed data, cur offset) -> (unpacked, new offset)
-def unpack_vlq_str(data):
-    vlq = vlq2int(data)
-    pat = str(vlq[0]) + "c"
-    string = unpack_from(pat, data, vlq[1]), (vlq[1] + vlq[0])
-    return get_str(string[0]), string[1]
-
-def unpack_tech(data):
-    total_size = vlq2int(data)
-    offset = total_size[1]
-    tech = unpack_from(str(total_size[0])+"c", data, offset)
-    offset = offset + len(tech)
-    return tech, offset
-
-def unpack_str_list(data):
-    list_total = vlq2int(data)
-    offset = list_total[1]
-    str_list = []
-    for i in range(list_total[0]):
-        raw = unpack_vlq_str(data[offset:])
-        str_list.append(raw[0])
-        offset = offset + raw[1]
-    return str_list, offset
-
-def pack_variant(var):
-    pass
-
-# why "variant"?
-# TODO: unpack variant
-def unpack_variant(data):
-    offset = 0
-    def inc(x): nonlocal offset; offset = offset + x
-
-    variant_type = vlq2int(data)
-    inc(variant_type[1])
-
-    variant = 0
-    # TODO: dict this?
-    # 0 = ??
-    # 1 = ??
-    # 2 = double (be)
-    # 3 = boolean
-    # 4 = vlq
-    # 5 = vlq string
-    #     <vlq len of string><string>
-    # 6 = variant list
-    #     <vlq total variants><variant>...
-    # 7 = variant dict
-    #     empty dicts are allowed (\x07\x00)
-    #     <vlq total dict items><vlq key string len><key string><variant>...
-    if variant_type[0] == 2:
-        variant = unpack_from(">d", data, offset)
-        inc(8)
-    elif variant_type[0] == 3:
-        variant = unpack_from("b", data, offset)
-        inc(1)
-    elif variant_type[0] == 4:
-        vlq = vlq2int(data[offset:])
-        variant = vlq[0]
-        inc(vlq[1])
-    elif variant_type[0] == 5:
-        vlq_str = unpack_vlq_str(data[offset:])
-        variant = vlq_str[0]
-        inc(vlq_str[1])
-    elif variant_type[0] == 6:
-        count = vlq2int(data[offset:])
-        inc(count[1])
-        sub_vars = []
-        for i in range(count[0]):
-            sub_var = unpack_variant(data[offset:])
-            sub_vars.append(sub_var[0])
-            inc(sub_var[1])
-        variant = sub_vars
-    elif variant_type[0] == 7:
-        dict_count = vlq2int(data[offset:])
-        dict_items = []
-        inc(dict_count[1])
-        if dict_count[0] != 0:
-            for i in range(dict_count[0]):
-                key = unpack_vlq_str(data[offset:])
-                inc(key[1])
-                value = unpack_variant(data[offset:])
-                inc(value[1])
-                dict_items.append((key[0], value[0]))
-        variant = dict_items
-
-    return variant, offset
-
-def unpack_blueprint_library(data):
-    offset = 0
-    def inc(x): nonlocal offset; offset = offset + x
-
-    total_size = vlq2int(data)
-    inc(total_size[1])
-    blueprint_count = vlq2int(data[offset:])
-    inc(blueprint_count[1])
-
-    blueprints = []
-    for i in range(blueprint_count[0]):
-        blueprint = unpack_item_desc(data[offset:])
-        blueprints.append(blueprint[0])
-        inc(blueprint[3])
-
-    return blueprints, offset
-
-def pack_item_desc(var):
-    pass
-
-def unpack_item_desc(data):
-    offset = 0
-    def inc(x): nonlocal offset; offset = offset + x
-
-    name = unpack_vlq_str(data)
-    inc(name[1])
-    count = vlq2int(data[offset:])
-    inc(count[1])
-    variant = unpack_variant(data[offset:])
-    inc(variant[1])
-
-    return name[0], count[0], variant[0], offset
-
-# heh
-def pack_bag(var):
-    pass
-
-def unpack_bag(data):
-    offset = 0
-    def inc(x): nonlocal offset; offset = offset + x
-
-    size = vlq2int(data)
-    inc(size[1])
-    items = []
-    for i in range(size[0]):
-        item = unpack_item_desc(data[offset:])
-        items.append((item[0], item[1], item[2]))
-        inc(item[3])
-    return items, offset
-
-def get_str(bytes):
+# convert byte list to string
+def unpack_str(bytes):
     return "".join(map(chr,map(ord,bytes)))
+
+def pack_str(var):
+    return str(var).encode("utf-8")
 
 # TODO: learn how these work... theory makes sense but this bit manipulation is magic
 # TODO: licenses?
+# Source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
+def unpack_vlq(data):
+    offset = 0
+    value = 0
+    while True:
+        tmp = data[offset]
+        value = (value<<7) | (tmp&0x7f)
+        offset += 1
+        if tmp & 0x80 == 0:
+            break
+    return value, offset
+
 # Source: https://github.com/metachris/binary-serializer/blob/master/python/bincalc.py
-def int2vlq(n):
+def pack_vlq(n):
     value = int(n)
     if value == 0:
         return bytearray([0x00])
@@ -247,17 +125,199 @@ def int2vlq(n):
         round += 1
     return result
 
-# Source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
-def vlq2int(data):
-    value = 0
-    offset = 0
-    while True:
-        tmp = data[offset]
-        value = (value<<7) | (tmp&0x7f)
-        offset += 1
-        if tmp & 0x80 == 0:
-            break
-    return value, offset
+def unpack_vlq_str(data):
+    vlq = unpack_vlq(data)
+    pat = str(vlq[0]) + "c"
+    string = unpack_from(pat, data, vlq[1]), (vlq[1] + vlq[0])
+    return unpack_str(string[0]), string[1]
+
+def pack_vlq_str(var):
+    vlq = pack_vlq(len(var))
+    string = pack_str(var)
+    return vlq + string
+
+def unpack_str_list(data):
+    list_total = unpack_vlq(data)
+    offset = list_total[1]
+    str_list = []
+    for i in range(list_total[0]):
+        vlq_str = unpack_vlq_str(data[offset:])
+        str_list.append(vlq_str[0])
+        offset += vlq_str[1]
+    return str_list, offset
+
+def pack_str_list(var):
+    list_total = len(var)
+    str_list = b""
+    for string in var:
+        str_list += pack_vlq_str(string)
+    return pack_vlq(list_total) + str_list
+
+def unpack_variant2(data):
+    # TODO: can these be plain pack()?
+    return unpack_from(">d", data, 0), 8
+
+def pack_variant2(var):
+    return pack(">d", *var)
+
+def unpack_variant3(data):
+    return unpack_from("b", data, 0), 1
+
+def pack_variant3(var):
+    return pack("b", *var)
+
+def unpack_variant6(data):
+    total = unpack_vlq(data)
+    offset = total[1]
+    variants = []
+    for i in range(total[0]):
+        variant = unpack_variant(data[offset:])
+        variants.append(variant[0])
+        offset += variant[1]
+    return variants, offset
+
+def pack_variant6(var):
+    total = len(var)
+    variant_list = b""
+    for variant in var:
+        variant_list += pack_variant(variant)
+    return pack_vlq(total) + variant_list
+
+def unpack_variant7(data):
+    total = unpack_vlq(data)
+    offset = total[1]
+    dict_items = []
+    if total[0] != 0:
+        for i in range(total[0]):
+            key = unpack_vlq_str(data[offset:])
+            offset += key[1]
+            value = unpack_variant(data[offset:])
+            offset += value[1]
+            dict_items.append((key[0], value[0]))
+    return dict_items, offset
+
+def pack_variant7(var):
+    total = len(var)
+    dict_items = b""
+    for k, v in var:
+        key = pack_vlq_str(k)
+        value = pack_variant(v)
+        dict_items += key + value
+    return pack_vlq(total) + dict_items
+
+# (unpack func, pack func)
+variant_types = (
+    # unknown
+    (None, None),
+    # unknown
+    (None, None),
+    # big endian double
+    (unpack_variant2, pack_variant2),
+    # boolean
+    (unpack_variant3, pack_variant3),
+    # vlq
+    (unpack_vlq, pack_vlq),
+    # vlq string
+    (unpack_vlq_str, pack_vlq_str),
+    # list of variants
+    (unpack_variant6, pack_variant6),
+    # dict of variants
+    (unpack_variant7, pack_variant7)
+)
+
+def unpack_variant(data):
+    variant_type = unpack_vlq(data)
+    offset = variant_type[1]
+    unpacked = variant_types[variant_type[0]][0](data[offset:])
+    offset += unpacked[1]
+    return (variant_type[0], unpacked[0]), offset
+
+def pack_variant(var):
+    variant_type = var[0]
+    packed_variant = variant_types[variant_type][1](var[1])
+    return pack_vlq(variant_type) + packed_variant
+
+def unpack_item_desc(data):
+    name = unpack_vlq_str(data)
+    offset = name[1]
+    count = unpack_vlq(data[offset:])
+    offset += count[1]
+    variant = unpack_variant(data[offset:])
+    offset += variant[1]
+    return (name[0], count[0]-1, variant[0]), offset
+
+def pack_item_desc(var):
+    name = pack_vlq_str(var[0])
+    count = pack_vlq(var[1]+1)
+    variant = pack_variant(var[2])
+    return name + count + variant
+
+def unpack_blueprint_library(data):
+    total_size = unpack_vlq(data)
+    offset = total_size[1]
+    blueprint_count = unpack_vlq(data[offset:])
+    offset += blueprint_count[1]
+    blueprints = []
+    for i in range(blueprint_count[0]):
+        blueprint = unpack_item_desc(data[offset:])
+        blueprints.append(blueprint[0])
+        offset += blueprint[1]
+    return blueprints, offset
+
+def pack_blueprint_library(var):
+    blueprint_count = pack_vlq(len(var))
+    blueprints = b""
+    for blueprint in var:
+        blueprints += pack_item_desc(blueprint)
+    blueprint_list = blueprint_count + blueprints
+    return pack_vlq(len(blueprint_list)) + blueprint_list
+
+def unpack_tech(data):
+    total_size = unpack_vlq(data)
+    offset = total_size[1]
+    tech = unpack_from(str(total_size[0])+"c", data, offset)
+    offset += len(tech)
+    return tech, offset
+
+def pack_tech(var):
+    return pack_vlq(len(var)) + b"".join(var)
+
+# heh
+def unpack_bag(data):
+    item_count = unpack_vlq(data)
+    offset = item_count[1]
+    items = []
+    for i in range(item_count[0]):
+        item = unpack_item_desc(data[offset:])
+        items.append(item[0])
+        offset += item[1]
+    return items, offset
+
+def pack_bag(var):
+    bag = b""
+    for item in var:
+        bag += pack_item_desc(item)
+    return pack_vlq(len(var)) + bag
+
+def unpack_the_rest(data):
+    return data, len(data)
+
+def pack_the_rest(var):
+    return var
+
+# name: (unpack func, pack func)
+save_file_types = {
+    "__vlq__": (unpack_vlq, pack_vlq),
+    "__vlq_str__": (unpack_vlq_str, pack_vlq_str),
+    # this isn't used normally'
+    "__global_vlq__": (unpack_vlq, pack_vlq),
+    "__the_rest__": (unpack_the_rest, pack_the_rest),
+    "__bag__": (unpack_bag, pack_bag),
+    "__item_desc__": (unpack_item_desc, pack_item_desc),
+    "__blueprint_lib__": (unpack_blueprint_library, pack_blueprint_library),
+    "__tech__": (unpack_tech, pack_tech),
+    "__str_list__": (unpack_str_list, pack_str_list)
+}
 
 # TODO: split this into separate class for reading the file?
 class Player():
@@ -280,46 +340,12 @@ class Player():
         pattern = var[1]
         length = var[2]
 
-        # TODO: switch to a dict or something of types if there are many more...
-        if pattern == "__vlq_str__":
-            raw = unpack_vlq_str(self.player_data[self.offset:])
-            var_val = raw[0]
-            self.inc(raw[1])
-        elif pattern == "__global_vlq__":
-            raw = vlq2int(self.player_data[self.offset:])
-            var_val = raw[0]
-            self.inc(2)
-        elif pattern == "__the_rest__":
-            var_val = self.player_data[self.offset:]
-            self.inc(len(var_val))
-        elif pattern == "__vlq__":
-            raw = vlq2int(self.player_data[self.offset:])
-            var_val = raw[0]
-            self.inc(raw[1])
-        elif pattern == "__bag__":
-            raw = unpack_bag(self.player_data[self.offset:])
-            var_val = raw[0]
-            self.inc(raw[1])
-        elif pattern == "__item_desc__":
-            raw = unpack_item_desc(self.player_data[self.offset:])
-            # TODO: don't like this, need to make standard'
-            var_val = (raw[0], raw[1], raw[2])
-            self.inc(raw[3])
-        elif pattern == "__blueprint_lib__":
-            raw = unpack_blueprint_library(self.player_data[self.offset:])
-            var_val = raw[0]
-            self.inc(raw[1])
-        elif pattern == "__tech__":
-            raw = unpack_tech(self.player_data[self.offset:])
-            var_val = raw[0]
-            self.inc(raw[1])
-        elif pattern == "__str_list__":
-            raw = unpack_str_list(self.player_data[self.offset:])
-            var_val = raw[0]
-            self.inc(raw[1])
+        if pattern in save_file_types:
+            var = save_file_types[pattern][0](self.player_data[self.offset:])
+            var_val = var[0]
+            self.inc(var[1])
         else:
-            raw = unpack_from(pattern, self.player_data, self.offset)
-            var_val = raw
+            var_val = unpack_from(pattern, self.player_data, self.offset)
             self.inc(length)
 
         self.data[name] = var_val
@@ -330,15 +356,11 @@ class Player():
         length = var[2]
         data = self.data[name]
 
-        if pattern == "__vlq_str__":
-            vlq = int2vlq(len(data))
-            return vlq + data.encode("utf-8")
-        elif pattern == "__global_vlq__":
-            pass
-        elif pattern == "__the_rest__":
-            return data
-        elif pattern == "__vlq__":
-            return int2vlq(data)
+        print(name)
+        print(data)
+
+        if pattern in save_file_types:
+            return save_file_types[pattern][1](data)
         else:
             return pack(pattern, *data)
 
@@ -346,12 +368,12 @@ class Player():
         header_data = b""
         player_data = b""
 
-        for i in data_format[3:]:
-            player_data = player_data + self.pack_var(i)
+        for var in data_format[3:]:
+            player_data += self.pack_var(var)
 
         header = self.pack_var(data_format[0])
         version = self.pack_var(data_format[1])
-        global_vlq = int2vlq(len(player_data))
+        global_vlq = pack_vlq(len(player_data))
         header_data = header + version + global_vlq
         file_data = header_data + player_data
 
@@ -374,5 +396,5 @@ if __name__ == '__main__':
     for i in data_format:
         print(i[0], ":", player.data[i[0]])
 
-    #print(player.export("test.player"))
+    print(player.export("test.player"))
     #print(player.export())
