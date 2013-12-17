@@ -4,7 +4,7 @@
 
 from struct import *
 
-data_version = 424 # TODO: implement check
+data_version = 424
 # extremely helpful: https://github.com/McSimp/starbound-research
 # (name, format, offset)
 data_format = (
@@ -126,6 +126,7 @@ def pack_vlq(n):
         round += 1
     return result
 
+# <vlq len of str><str>
 def unpack_vlq_str(data):
     vlq = unpack_vlq(data)
     pat = str(vlq[0]) + "c"
@@ -137,6 +138,7 @@ def pack_vlq_str(var):
     string = pack_str(var)
     return vlq + string
 
+# <vlq total items><vlq str len><str>...
 def unpack_str_list(data):
     list_total = unpack_vlq(data)
     offset = list_total[1]
@@ -154,6 +156,7 @@ def pack_str_list(var):
         str_list += pack_vlq_str(string)
     return pack_vlq(list_total) + str_list
 
+# big endian double
 def unpack_variant2(data):
     # TODO: can these be plain pack()?
     return unpack_from(">d", data, 0), 8
@@ -161,12 +164,15 @@ def unpack_variant2(data):
 def pack_variant2(var):
     return pack(">d", *var)
 
+# boolean
 def unpack_variant3(data):
     return unpack_from("b", data, 0), 1
 
 def pack_variant3(var):
     return pack("b", *var)
 
+# variant list
+# <vlq total><variant>...
 def unpack_variant6(data):
     total = unpack_vlq(data)
     offset = total[1]
@@ -184,6 +190,8 @@ def pack_variant6(var):
         variant_list += pack_variant(variant)
     return pack_vlq(total) + variant_list
 
+# variant dict
+# <vlq total><vlq key str len><str key><variant>...
 def unpack_variant7(data):
     total = unpack_vlq(data)
     offset = total[1]
@@ -206,6 +214,8 @@ def pack_variant7(var):
         dict_items += key + value
     return pack_vlq(total) + dict_items
 
+# seems to be the format for var metadata
+# can be recursive
 def unpack_variant(data):
     variant_type = unpack_vlq(data)
     offset = variant_type[1]
@@ -218,6 +228,8 @@ def pack_variant(var):
     packed_variant = variant_types[variant_type][1](var[1])
     return pack_vlq(variant_type) + packed_variant
 
+# <vlq str len><str item name><vlq no. items><variant>
+# not sure why the count is always +1
 def unpack_item_desc(data):
     name = unpack_vlq_str(data)
     offset = name[1]
@@ -233,6 +245,7 @@ def pack_item_desc(var):
     variant = pack_variant(var[2])
     return name + count + variant
 
+# <vlq stream len><vlq no. blueprints><item desc>...
 def unpack_blueprint_library(data):
     total_size = unpack_vlq(data)
     offset = total_size[1]
@@ -253,6 +266,7 @@ def pack_blueprint_library(var):
     blueprint_list = blueprint_count + blueprints
     return pack_vlq(len(blueprint_list)) + blueprint_list
 
+# dunno about this yet, just get it raw
 def unpack_tech(data):
     total_size = unpack_vlq(data)
     offset = total_size[1]
@@ -263,12 +277,12 @@ def unpack_tech(data):
 def pack_tech(var):
     return pack_vlq(len(var)) + b"".join(var)
 
-# heh
+# <vlq no. slots><item desc>...
 def unpack_bag(data):
-    item_count = unpack_vlq(data)
+    slot_count = unpack_vlq(data)
     offset = item_count[1]
     items = []
-    for i in range(item_count[0]):
+    for i in range(slot_count[0]):
         item = unpack_item_desc(data[offset:])
         items.append(item[0])
         offset += item[1]
@@ -280,12 +294,14 @@ def pack_bag(var):
         bag += pack_item_desc(item)
     return pack_vlq(len(var)) + bag
 
+# just grabs any remaining bytes
 def unpack_the_rest(data):
     return data, len(data)
 
 def pack_the_rest(var):
     return var
 
+# unpack any starbound save type
 def unpack_var(var, data):
     name = var[0]
     pattern = var[1]
@@ -307,6 +323,7 @@ def pack_var(var, data):
     else:
         return pack(pattern, *data)
 
+# all the special save file types
 # name: (unpack func, pack func)
 save_file_types = {
     "__vlq__": (unpack_vlq, pack_vlq),
@@ -321,6 +338,7 @@ save_file_types = {
     "__str_list__": (unpack_str_list, pack_str_list)
 }
 
+# variant types
 # (unpack func, pack func)
 variant_types = (
     # unknown
@@ -349,6 +367,14 @@ class PlayerSave():
     def import_save(self, filename=None):
         save_file = open(filename, mode="rb")
         save_data = save_file.read()
+
+        # do a version check first
+        version = unpack_from(data_format[1][1],
+                              save_data,
+                              data_format[0][2])
+        if version[0] != data_version:
+            raise Exception("Wrong save format version")
+
         offset = 0
         for var in data_format:
             unpacked = unpack_var(var, save_data[offset:])
