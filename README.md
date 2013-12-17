@@ -1,8 +1,13 @@
 starcheat
 =========
 
-utility to modify Starbound player save files
+Starbound cheat tool for editing player save files
 
-requires python 3
+requirement:
+- python 3
+- qt5
+- pyqt5
 
-usage: ./starcheat.py \<path to .player file\>
+usage
+- CLI: ./starcheat.py \<path to .player file\>
+- GUI: ./gui.py

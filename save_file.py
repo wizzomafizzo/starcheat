@@ -280,7 +280,7 @@ def pack_tech(var):
 # <vlq no. slots><item desc>...
 def unpack_bag(data):
     slot_count = unpack_vlq(data)
-    offset = item_count[1]
+    offset = slot_count[1]
     items = []
     for i in range(slot_count[0]):
         item = unpack_item_desc(data[offset:])
@@ -363,6 +363,7 @@ class PlayerSave():
     def __init__(self, filename):
         self.data = {}
         self.import_save(filename)
+        self.filename = filename
 
     def import_save(self, filename=None):
         save_file = open(filename, mode="rb")
