@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>360</width>
-    <height>370</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -19,61 +19,173 @@
   <property name="minimumSize">
    <size>
     <width>360</width>
-    <height>370</height>
+    <height>600</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>360</width>
-    <height>370</height>
+    <height>600</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTableWidget" name="tableWidget">
+   <widget class="QTabWidget" name="inv_tabs">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
+      <y>290</y>
       <width>341</width>
-      <height>151</height>
+      <height>251</height>
      </rect>
     </property>
-    <property name="alternatingRowColors">
-     <bool>true</bool>
+    <property name="currentIndex">
+     <number>0</number>
     </property>
-    <property name="columnCount">
-     <number>3</number>
-    </property>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>50</number>
-    </attribute>
-    <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>10</number>
-    </attribute>
-    <attribute name="horizontalHeaderStretchLastSection">
-     <bool>true</bool>
-    </attribute>
-    <attribute name="verticalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <column/>
-    <column/>
-    <column/>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Hotbar</string>
+     </attribute>
+     <widget class="QTableWidget" name="action_bar">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>337</width>
+        <height>221</height>
+       </rect>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>50</number>
+      </attribute>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>50</number>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>Count</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Type</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Main Bag</string>
+     </attribute>
+     <widget class="QTableWidget" name="tableWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>337</width>
+        <height>221</height>
+       </rect>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="cornerButtonEnabled">
+       <bool>false</bool>
+      </property>
+      <property name="columnCount">
+       <number>2</number>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>50</number>
+      </attribute>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>10</number>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>Count</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Type</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>Tile Bag</string>
+     </attribute>
+     <widget class="QTableWidget" name="tile_bag">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>337</width>
+        <height>221</height>
+       </rect>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>50</number>
+      </attribute>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>50</number>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>Count</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Type</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
    </widget>
-   <widget class="QLabel" name="label_7">
+   <widget class="QLabel" name="desc_label">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>140</y>
-      <width>57</width>
-      <height>14</height>
+      <x>10</x>
+      <y>130</y>
+      <width>71</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Main Bag</string>
+     <string>Description</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="desc">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>130</y>
+      <width>261</width>
+      <height>24</height>
+     </rect>
     </property>
    </widget>
    <widget class="QWidget" name="">
@@ -150,8 +262,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>191</width>
-      <height>61</height>
+      <width>156</width>
+      <height>56</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
@@ -162,8 +274,8 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="name"/>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="race"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="race_label">
@@ -172,8 +284,8 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QComboBox" name="race"/>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="name"/>
      </item>
     </layout>
    </widget>

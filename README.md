@@ -13,5 +13,4 @@ requirements:
 haven't tested yet but in theory this runs on linux, windows and mac
 
 usage:
-- CLI: ./starcheat.py \<path to .player file\>
-- GUI: python ./gui.py
+- $ python ./starbound.py

@@ -2,6 +2,7 @@
 
 # module for importing/exporting save file data
 
+import sys
 from struct import *
 
 data_version = 424
@@ -61,18 +62,7 @@ data_format = (
     ("unknown_list2", "__str_list__", None),
     ("description", "__vlq_str__", None),
     ("play_time", ">d", 8),
-    ("inv_size", "__vlq__", None),
-    ("pixels", ">q", 8),
-    ("main_bag", "__bag__", None),
-    ("tile_bag", "__bag__", None),
-    ("action_bar", "__bag__", None),
-    ("equipment", "__bag__", None),
-    ("wieldable", "__bag__", None),
-    ("swap_active", "__item_desc__", None),
-    ("left_hand_bag", "__vlq__", None),
-    ("left_hand_slot", "__vlq__", None),
-    ("right_hand_bag", "__vlq__", None),
-    ("right_hand_slot", "__vlq__", None),
+    ("inv", "__inv__", None),
     ("blueprint_lib", "__blueprint_lib__", None),
     ("tech", "__tech__", None),
     ("head", "__item_desc__", None),
@@ -294,6 +284,37 @@ def pack_bag(var):
         bag += pack_item_desc(item)
     return pack_vlq(len(var)) + bag
 
+inv_type = (
+    ("inv_size", "__vlq__", None),
+    ("pixels", ">q", 8),
+    ("main_bag", "__bag__", None),
+    ("tile_bag", "__bag__", None),
+    ("action_bar", "__bag__", None),
+    ("equipment", "__bag__", None),
+    ("wieldable", "__bag__", None),
+    ("swap_active", "__item_desc__", None),
+    ("left_hand_bag", "__vlq__", None),
+    ("left_hand_slot", "__vlq__", None),
+    ("right_hand_bag", "__vlq__", None),
+    ("right_hand_slot", "__vlq__", None)
+)
+
+def unpack_inv(data):
+    offset = 0
+    inv_vars = {}
+    for var in inv_type:
+        unpacked = unpack_var(var, data[offset:])
+        inv_vars[var[0]] = unpacked[0]
+        offset += unpacked[1]
+    return inv_vars, offset
+
+def pack_inv(data):
+    inv_data = b""
+    for var in inv_type[1:]:
+        inv_data += pack_var(var, data[var[0]])
+    inv_size = pack_vlq(len(inv_data))
+    return inv_size + inv_data
+
 # just grabs any remaining bytes
 def unpack_the_rest(data):
     return data, len(data)
@@ -328,8 +349,8 @@ def pack_var(var, data):
 save_file_types = {
     "__vlq__": (unpack_vlq, pack_vlq),
     "__vlq_str__": (unpack_vlq_str, pack_vlq_str),
-    # this isn't used normally'
-    "__global_vlq__": (unpack_vlq, pack_vlq),
+    "__global_vlq__": (unpack_vlq, pack_vlq), # this isn't used normally
+    "__inv__": (unpack_inv, pack_inv),
     "__the_rest__": (unpack_the_rest, pack_the_rest),
     "__bag__": (unpack_bag, pack_bag),
     "__item_desc__": (unpack_item_desc, pack_item_desc),
@@ -401,3 +422,8 @@ class PlayerSave():
             return filename
         else:
             return file_data
+
+if __name__ == '__main__':
+    player = PlayerSave(sys.argv[1])
+    for i in data_format:
+        print(i[0], ":", player.data[i[0]])
