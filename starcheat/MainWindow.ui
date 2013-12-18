@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>747</width>
-    <height>604</height>
+    <width>751</width>
+    <height>575</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,262 +17,596 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>starcheat</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QSpinBox" name="health">
+   <widget class="QGroupBox" name="stats_group">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>10</x>
       <y>150</y>
-      <width>88</width>
-      <height>24</height>
+      <width>281</width>
+      <height>381</height>
      </rect>
     </property>
-    <property name="maximum">
-     <number>9999999</number>
+    <property name="title">
+     <string>Stats</string>
     </property>
-    <property name="singleStep">
-     <number>100</number>
-    </property>
-    <property name="value">
-     <number>100</number>
-    </property>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>261</width>
+       <height>360</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="stats_group_2">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <item row="1" column="0">
+       <widget class="QLabel" name="health_label">
+        <property name="text">
+         <string>Health</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSlider" name="health">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="max_health_label">
+        <property name="text">
+         <string>Max</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="max_health">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000000</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="invulnerable">
+        <property name="text">
+         <string>Invulnerable</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QCheckBox" name="godmode">
+        <property name="text">
+         <string>God Mode</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="energy_label">
+        <property name="text">
+         <string>Energy</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QSlider" name="energy">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="max_energy_label">
+        <property name="text">
+         <string>Max</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QSpinBox" name="max_energy">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000000</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="energy_regen_label">
+        <property name="text">
+         <string>Regen</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QSpinBox" name="energy_regen">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000000</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="hunger_label">
+        <property name="text">
+         <string>Hunger</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QSlider" name="hunger">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1">
+       <widget class="Line" name="line_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0">
+       <widget class="QLabel" name="warmth_label">
+        <property name="text">
+         <string>Warmth</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="1">
+       <widget class="QSlider" name="warmth">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="1">
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="0">
+       <widget class="QLabel" name="breath_label">
+        <property name="text">
+         <string>Breath</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="1">
+       <widget class="QSlider" name="breath">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </widget>
-   <widget class="QSpinBox" name="energy">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>181</y>
-      <width>88</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>9999999</number>
-    </property>
-    <property name="singleStep">
-     <number>100</number>
-    </property>
-    <property name="value">
-     <number>100</number>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="pixels">
+   <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
       <x>300</x>
-      <y>30</y>
-      <width>88</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>9999999</number>
-    </property>
-    <property name="singleStep">
-     <number>100</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="health_label">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>150</y>
-      <width>41</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Health</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="energy_label">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>181</y>
-      <width>44</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Energy</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="pixels_label">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>30</y>
-      <width>35</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Pixels</string>
-    </property>
-   </widget>
-   <widget class="QTabWidget" name="inv_tabs">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>330</y>
-      <width>341</width>
-      <height>211</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>Main Bag</string>
-     </attribute>
-     <widget class="QTableWidget" name="tableWidget">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>337</width>
-        <height>221</height>
-       </rect>
-      </property>
-      <property name="alternatingRowColors">
-       <bool>true</bool>
-      </property>
-      <property name="cornerButtonEnabled">
-       <bool>false</bool>
-      </property>
-      <property name="columnCount">
-       <number>2</number>
-      </property>
-      <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>50</number>
-      </attribute>
-      <attribute name="horizontalHeaderMinimumSectionSize">
-       <number>10</number>
-      </attribute>
-      <attribute name="horizontalHeaderStretchLastSection">
-       <bool>true</bool>
-      </attribute>
-      <attribute name="verticalHeaderVisible">
-       <bool>false</bool>
-      </attribute>
-      <column>
-       <property name="text">
-        <string>Count</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Type</string>
-       </property>
-      </column>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tab_3">
-     <attribute name="title">
-      <string>Tile Bag</string>
-     </attribute>
-     <widget class="QTableWidget" name="tile_bag">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>337</width>
-        <height>221</height>
-       </rect>
-      </property>
-      <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>50</number>
-      </attribute>
-      <attribute name="horizontalHeaderMinimumSectionSize">
-       <number>50</number>
-      </attribute>
-      <attribute name="horizontalHeaderStretchLastSection">
-       <bool>true</bool>
-      </attribute>
-      <attribute name="verticalHeaderVisible">
-       <bool>false</bool>
-      </attribute>
-      <column>
-       <property name="text">
-        <string>Count</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Type</string>
-       </property>
-      </column>
-     </widget>
-    </widget>
-   </widget>
-   <widget class="QCheckBox" name="checkBox">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
       <y>10</y>
-      <width>88</width>
-      <height>19</height>
+      <width>441</width>
+      <height>521</height>
      </rect>
     </property>
-    <property name="text">
-     <string>CheckBox</string>
+    <property name="title">
+     <string>Inventory</string>
     </property>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>421</width>
+       <height>171</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="pixels_label">
+        <property name="text">
+         <string>Pixels</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="pixels">
+        <property name="maximum">
+         <number>9999999</number>
+        </property>
+        <property name="singleStep">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="head_label">
+        <property name="text">
+         <string>Head</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="head"/>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="head_glamor"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="chest_label">
+        <property name="text">
+         <string>Chest</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="chest"/>
+      </item>
+      <item row="3" column="3">
+       <widget class="QLineEdit" name="chest_glamor"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="backpack_label">
+        <property name="text">
+         <string>Backpack</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="backpack"/>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="legs_label">
+        <property name="text">
+         <string>Legs</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QLineEdit" name="legs"/>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="backpack_glamor"/>
+      </item>
+      <item row="5" column="3">
+       <widget class="QLineEdit" name="legs_glamor"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="left_hand_label">
+        <property name="text">
+         <string>Left Hand</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="right_hand_label">
+        <property name="text">
+         <string>Right Hand</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="left_hand"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="right_hand"/>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QTabWidget" name="inv_tabs">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>200</y>
+       <width>421</width>
+       <height>311</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab_5">
+      <attribute name="title">
+       <string>Action Bar</string>
+      </attribute>
+      <widget class="QTableWidget" name="action_bar">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>417</width>
+         <height>281</height>
+        </rect>
+       </property>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>50</number>
+       </attribute>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>50</number>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Count</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Type</string>
+        </property>
+       </column>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Main Bag</string>
+      </attribute>
+      <widget class="QTableWidget" name="main_bag">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>417</width>
+         <height>281</height>
+        </rect>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+       <property name="cornerButtonEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="columnCount">
+        <number>2</number>
+       </property>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>50</number>
+       </attribute>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>10</number>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Count</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Type</string>
+        </property>
+       </column>
+      </widget>
+      <zorder>main_bag</zorder>
+      <zorder>action_bar</zorder>
+     </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>Tile Bag</string>
+      </attribute>
+      <widget class="QTableWidget" name="tile_bag">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>417</width>
+         <height>281</height>
+        </rect>
+       </property>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>50</number>
+       </attribute>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>50</number>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Count</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Type</string>
+        </property>
+       </column>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Equipment</string>
+      </attribute>
+      <widget class="QTableWidget" name="equip_bag">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>417</width>
+         <height>281</height>
+        </rect>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+       <property name="cornerButtonEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="columnCount">
+        <number>2</number>
+       </property>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>50</number>
+       </attribute>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>10</number>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Count</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Type</string>
+        </property>
+       </column>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>Wielded</string>
+      </attribute>
+      <widget class="QTableWidget" name="wield_bag">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>417</width>
+         <height>281</height>
+        </rect>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+       <property name="cornerButtonEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="columnCount">
+        <number>2</number>
+       </property>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>50</number>
+       </attribute>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>10</number>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Count</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Type</string>
+        </property>
+       </column>
+      </widget>
+     </widget>
+    </widget>
    </widget>
-   <widget class="QCheckBox" name="checkBox_2">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>60</y>
-      <width>88</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>CheckBox</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="formLayoutWidget">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>191</width>
-      <height>91</height>
+      <width>281</width>
+      <height>131</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
-     <item row="2" column="0">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="name"/>
+     </item>
+     <item row="1" column="0">
       <widget class="QLabel" name="race_label">
        <property name="text">
         <string>Race</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QComboBox" name="race"/>
-     </item>
-     <item row="3" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="gender_label">
        <property name="text">
         <string>Gender</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="name_label">
-       <property name="text">
-        <string>Name</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="name"/>
-     </item>
-     <item row="3" column="1">
+     <item row="2" column="1">
       <widget class="QWidget" name="widget" native="true">
        <property name="minimumSize">
         <size>
@@ -308,332 +642,36 @@
        </widget>
       </widget>
      </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="desc_label">
+       <property name="text">
+        <string>Description</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QTextEdit" name="description"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="name_label">
+       <property name="text">
+        <string>Name</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="race"/>
+     </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>590</x>
-      <y>100</y>
-      <width>57</width>
-      <height>14</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="doubleSpinBox">
-    <property name="geometry">
-     <rect>
-      <x>660</x>
-      <y>90</y>
-      <width>68</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_3">
-    <property name="geometry">
-     <rect>
-      <x>510</x>
-      <y>40</y>
-      <width>88</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>CheckBox</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_4">
-    <property name="geometry">
-     <rect>
-      <x>510</x>
-      <y>90</y>
-      <width>88</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>CheckBox</string>
-    </property>
-   </widget>
-   <widget class="QSlider" name="horizontalSlider">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>190</y>
-      <width>160</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QSlider" name="horizontalSlider_2">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>220</y>
-      <width>160</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QSlider" name="horizontalSlider_3">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>240</y>
-      <width>160</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QSlider" name="horizontalSlider_4">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>270</y>
-      <width>160</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QSlider" name="horizontalSlider_5">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>160</y>
-      <width>160</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_5">
-    <property name="geometry">
-     <rect>
-      <x>470</x>
-      <y>110</y>
-      <width>88</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>CheckBox</string>
-    </property>
-   </widget>
-   <widget class="QTableWidget" name="action_bar">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>360</y>
-      <width>201</width>
-      <height>181</height>
-     </rect>
-    </property>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>50</number>
-    </attribute>
-    <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>50</number>
-    </attribute>
-    <attribute name="horizontalHeaderStretchLastSection">
-     <bool>true</bool>
-    </attribute>
-    <attribute name="verticalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <column>
-     <property name="text">
-      <string>Count</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>Type</string>
-     </property>
-    </column>
-   </widget>
-   <widget class="QComboBox" name="comboBox">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>320</y>
-      <width>71</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboBox_2">
-    <property name="geometry">
-     <rect>
-      <x>150</x>
-      <y>320</y>
-      <width>71</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>170</y>
-      <width>113</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>230</y>
-      <width>113</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>200</y>
-      <width>113</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_4">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>260</y>
-      <width>111</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_5">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>110</y>
-      <width>113</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_6">
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>140</y>
-      <width>113</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_7">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>170</y>
-      <width>113</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_8">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>200</y>
-      <width>113</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="desc_label">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>110</y>
-      <width>71</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Description</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="desc">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>110</y>
-      <width>111</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <zorder>health</zorder>
-   <zorder>energy</zorder>
-   <zorder>pixels</zorder>
-   <zorder>health_label</zorder>
-   <zorder>energy_label</zorder>
-   <zorder>pixels_label</zorder>
-   <zorder>inv_tabs</zorder>
-   <zorder>checkBox</zorder>
-   <zorder>checkBox_2</zorder>
-   <zorder>formLayoutWidget</zorder>
-   <zorder>female</zorder>
-   <zorder>formLayoutWidget_2</zorder>
-   <zorder>label</zorder>
-   <zorder>doubleSpinBox</zorder>
-   <zorder>checkBox_3</zorder>
-   <zorder>checkBox_4</zorder>
-   <zorder>horizontalSlider</zorder>
-   <zorder>horizontalSlider_2</zorder>
-   <zorder>horizontalSlider_3</zorder>
-   <zorder>horizontalSlider_4</zorder>
-   <zorder>horizontalSlider_5</zorder>
-   <zorder>checkBox_5</zorder>
-   <zorder>action_bar</zorder>
-   <zorder>comboBox</zorder>
-   <zorder>comboBox_2</zorder>
-   <zorder>lineEdit</zorder>
-   <zorder>lineEdit_2</zorder>
-   <zorder>lineEdit_3</zorder>
-   <zorder>lineEdit_4</zorder>
-   <zorder>lineEdit_5</zorder>
-   <zorder>lineEdit_6</zorder>
-   <zorder>lineEdit_7</zorder>
-   <zorder>lineEdit_8</zorder>
-   <zorder>tableWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>747</width>
-     <height>24</height>
+     <width>751</width>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -644,6 +682,7 @@
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
+    <addaction name="actionMake_Backups"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -653,7 +692,15 @@
     </property>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionManage_Blueprints"/>
+    <addaction name="actionManage_Techs"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -698,6 +745,27 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionManage_Blueprints">
+   <property name="text">
+    <string>Manage Blueprints</string>
+   </property>
+  </action>
+  <action name="actionManage_Techs">
+   <property name="text">
+    <string>Manage Techs</string>
+   </property>
+  </action>
+  <action name="actionMake_Backups">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Make Backups</string>
    </property>
   </action>
  </widget>
