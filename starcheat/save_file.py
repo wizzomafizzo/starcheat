@@ -9,7 +9,6 @@ data_version = 424
 # extremely helpful: https://github.com/McSimp/starbound-research
 # (name, format, offset)
 data_format = (
-    # TODO: check names make sense
     ("header", "8c", 8),
     ("version", ">i", 4),
     ("global_vlq", "__global_vlq__", None),
@@ -21,13 +20,12 @@ data_format = (
     ("hair_type", "__vlq_str__", None),
     ("hair_directive", "__vlq_str__", None),
     ("body_directive", "__vlq_str__", None),
-    # TODO: these might still exist... best make vlq str handle zero len
-    #("beard_group", "__vlq_str__", None),
-    #("beard_type", "__vlq_str__", None),
-    #("beard_color", "__vlq_str__", None),
-    #("face_type", "__vlq_str__", None),
-    #("face_group", "__vlq_str__", None),
-    ("unknown1", "6x", 6),
+    ("beard_group", "__vlq_str__", None),
+    ("beard_type", "__vlq_str__", None),
+    ("beard_directive", "__vlq_str__", None),
+    ("face_type", "__vlq_str__", None),
+    ("face_group", "__vlq_str__", None),
+    ("face_directive", "__vlq_str__", None),
     ("idle1", "__vlq_str__", None),
     ("idle2", "__vlq_str__", None),
     ("head_offset", ">2f", 2*4),
@@ -56,15 +54,15 @@ data_format = (
     ("warmth", ">2f", 2*4),
     ("food", ">2f", 2*4),
     ("breath", ">2f", 2*4),
-    ("invulnerable", "b", 1),
+    ("invulnerable", "b", 1), # not working
     ("glow", ">3f", 3*4),
-    ("unknown_list1", "__str_list__", None),
-    ("unknown_list2", "__str_list__", None),
+    ("active_effects", "__str_list__", None),
+    ("active_effects", "__str_list__", None),
     ("description", "__vlq_str__", None),
     ("play_time", ">d", 8),
     ("inv", "__inv__", None),
     ("blueprint_lib", "__blueprint_lib__", None),
-    ("tech", "__tech__", None),
+    ("tech", "__tech__", None), # TODO
     ("head", "__item_desc__", None),
     ("chest", "__item_desc__", None),
     ("legs", "__item_desc__", None),
@@ -75,7 +73,7 @@ data_format = (
     ("back_glamor", "__item_desc__", None),
     ("primary_tool", "__item_desc__", None),
     ("alt_tool", "__item_desc__", None),
-    ("suppress_tools", "b", 1),
+    ("suppress_items", "b", 1),
     ("the_rest", "__the_rest__", None)
 )
 
@@ -118,12 +116,16 @@ def pack_vlq(n):
 
 # <vlq len of str><str>
 def unpack_vlq_str(data):
+    if data[0] == "\x00":
+        return "", 0
     vlq = unpack_vlq(data)
     pat = str(vlq[0]) + "c"
     string = unpack_from(pat, data, vlq[1]), (vlq[1] + vlq[0])
     return unpack_str(string[0]), string[1]
 
 def pack_vlq_str(var):
+    if var[0] == "":
+        return "\x00"
     vlq = pack_vlq(len(var))
     string = pack_str(var)
     return vlq + string
