@@ -1,12 +1,24 @@
-#!/usr/bin/python3
+"""
+Import/export Starbound .player save files
 
-# module for importing/exporting save file data
+This module allows you to import a Starbound .player save file as a dictionary,
+edit it how you like and then export it again.
+
+It can also be run from the command line to dump the contents, like this:
+$ python ./save_file.py <.player file>
+"""
 
 import sys
 from struct import *
 
+# compatible save version
 data_version = 424
-# extremely helpful: https://github.com/McSimp/starbound-research
+# this is the complete data format definition for a .player file. formats
+# surrounded by double underscores are special types with unpack/repack
+# functions defined later in the file. everything else is standard formats for
+# the python struct module. the offsets define how many bytes an attribute is
+# with None types meaning they're variable length
+# and this is extremely helpful: https://github.com/McSimp/starbound-research
 # (name, format, offset)
 data_format = (
     ("header", "8c", 8),
@@ -31,7 +43,7 @@ data_format = (
     ("head_offset", ">2f", 2*4),
     ("arm_offset", ">2f", 2*4),
     ("fav_color", "4B", 4),
-    ("god_mode", "b", 1),
+    ("god_mode", "b", 1), # not working?
     ("body_temp_range_low", ">2f", 2*4),
     ("ideal_temp", ">f", 4),
     ("base_max_warmth", ">f", 4),
@@ -54,15 +66,15 @@ data_format = (
     ("warmth", ">2f", 2*4),
     ("food", ">2f", 2*4),
     ("breath", ">2f", 2*4),
-    ("invulnerable", "b", 1), # not working
+    ("invulnerable", "b", 1), # not working?
     ("glow", ">3f", 3*4),
     ("active_effects", "__str_list__", None),
-    ("active_effects", "__str_list__", None),
+    ("active_effects_sources", "__str_list__", None),
     ("description", "__vlq_str__", None),
     ("play_time", ">d", 8),
     ("inv", "__inv__", None),
     ("blueprint_lib", "__blueprint_lib__", None),
-    ("tech", "__tech__", None), # TODO
+    ("tech", "__tech__", None), # TODO: just pulled in as raw bytes atm
     ("head", "__item_desc__", None),
     ("chest", "__item_desc__", None),
     ("legs", "__item_desc__", None),
@@ -77,17 +89,22 @@ data_format = (
     ("the_rest", "__the_rest__", None)
 )
 
-# convert byte list to string
+# TODO: add the rest
+race_types = ("human", "floran", "glitch", "avian")
+
 def unpack_str(bytes):
+    """Convert a list of bytes to a string."""
     return "".join(map(chr,map(ord,bytes)))
 
 def pack_str(var):
+    """Convert a string to a list of bytes."""
     return str(var).encode("utf-8")
 
 # TODO: learn how these work... theory makes sense but this bit manipulation is magic
 # TODO: licenses?
 # Source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
 def unpack_vlq(data):
+    """Return the first VLQ number and byte offset from a list of bytes."""
     offset = 0
     value = 0
     while True:
@@ -100,6 +117,7 @@ def unpack_vlq(data):
 
 # Source: https://github.com/metachris/binary-serializer/blob/master/python/bincalc.py
 def pack_vlq(n):
+    """Convert an integer to a VLQ and return a list of bytes."""
     value = int(n)
     if value == 0:
         return bytearray([0x00])
@@ -206,8 +224,6 @@ def pack_variant7(var):
         dict_items += key + value
     return pack_vlq(total) + dict_items
 
-# seems to be the format for var metadata
-# can be recursive
 def unpack_variant(data):
     variant_type = unpack_vlq(data)
     offset = variant_type[1]
@@ -221,7 +237,7 @@ def pack_variant(var):
     return pack_vlq(variant_type) + packed_variant
 
 # <vlq str len><str item name><vlq no. items><variant>
-# not sure why the count is always +1
+# not sure why the count is always +1?
 def unpack_item_desc(data):
     name = unpack_vlq_str(data)
     offset = name[1]
@@ -286,6 +302,7 @@ def pack_bag(var):
         bag += pack_item_desc(item)
     return pack_vlq(len(var)) + bag
 
+# data format for inventory type
 inv_type = (
     ("inv_size", "__vlq__", None),
     ("pixels", ">q", 8),
