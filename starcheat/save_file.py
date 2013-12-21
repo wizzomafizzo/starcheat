@@ -89,8 +89,10 @@ data_format = (
     ("the_rest", "__the_rest__", None)
 )
 
-# TODO: add the rest
-race_types = ("human", "floran", "glitch", "avian")
+# TODO: update documentation
+# TODO: add getter/setters for common values
+
+race_types = ("apex", "avian", "floran", "glitch", "human", "hylotl")
 
 def unpack_str(bytes):
     """Convert a list of bytes to a string."""
@@ -101,8 +103,7 @@ def pack_str(var):
     return str(var).encode("utf-8")
 
 # TODO: learn how these work... theory makes sense but this bit manipulation is magic
-# TODO: licenses?
-# Source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
+# source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
 def unpack_vlq(data):
     """Return the first VLQ number and byte offset from a list of bytes."""
     offset = 0
@@ -115,7 +116,7 @@ def unpack_vlq(data):
             break
     return value, offset
 
-# Source: https://github.com/metachris/binary-serializer/blob/master/python/bincalc.py
+# source: https://github.com/metachris/binary-serializer/blob/master/python/bincalc.py
 def pack_vlq(n):
     """Convert an integer to a VLQ and return a list of bytes."""
     value = int(n)
@@ -142,7 +143,7 @@ def unpack_vlq_str(data):
     return unpack_str(string[0]), string[1]
 
 def pack_vlq_str(var):
-    if var[0] == "":
+    if var == "":
         return "\x00"
     vlq = pack_vlq(len(var))
     string = pack_str(var)
@@ -442,7 +443,10 @@ class PlayerSave():
         else:
             return file_data
 
+    def dump(self):
+        for i in data_format:
+            print(i[0], ":", self.data[i[0]])
+
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])
-    for i in data_format:
-        print(i[0], ":", player.data[i[0]])
+    self.dump()
