@@ -18,4 +18,4 @@ setup:
 - $ ./build_ui.sh
 
 usage:
-- $ ./starbound.py
+- $ ./starbound

@@ -51,7 +51,7 @@
      <number>10</number>
     </property>
    </widget>
-   <widget class="QSlider" name="hunger">
+   <widget class="QSlider" name="food">
     <property name="geometry">
      <rect>
       <x>90</x>
@@ -355,7 +355,7 @@ border-radius: 4px;
      <string>Breath</string>
     </property>
    </widget>
-   <widget class="QLabel" name="hunger_label">
+   <widget class="QLabel" name="food_label">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -892,7 +892,7 @@ border-radius: 4px;
      </property>
     </column>
    </widget>
-   <widget class="QTableWidget" name="wielded">
+   <widget class="QTableWidget" name="wieldable">
     <property name="geometry">
      <rect>
       <x>318</x>
@@ -1448,7 +1448,7 @@ border-radius: 4px;
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="uuid">
+   <widget class="QLabel" name="uuid_label">
     <property name="enabled">
      <bool>false</bool>
     </property>
@@ -1456,12 +1456,20 @@ border-radius: 4px;
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>151</width>
-      <height>16</height>
+      <width>221</width>
+      <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>7</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>UUID</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
     </property>
    </widget>
    <widget class="QLabel" name="ver_label">
@@ -1470,20 +1478,25 @@ border-radius: 4px;
     </property>
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>230</x>
       <y>10</y>
-      <width>61</width>
-      <height>16</height>
+      <width>51</width>
+      <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>7</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Save Ver</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>11</x>

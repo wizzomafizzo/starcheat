@@ -8,7 +8,7 @@ It can also be run from the command line to dump the contents, like this:
 $ python ./save_file.py <.player file>
 """
 
-import sys
+import sys, binascii
 from struct import *
 
 # compatible save version
@@ -144,7 +144,7 @@ def unpack_vlq_str(data):
 
 def pack_vlq_str(var):
     if var == "":
-        return "\x00"
+        return b"\x00"
     vlq = pack_vlq(len(var))
     string = pack_str(var)
     return vlq + string
@@ -342,6 +342,9 @@ def unpack_the_rest(data):
 def pack_the_rest(var):
     return var
 
+def empty_slot():
+    return ("", 0, (7, []))
+
 # unpack any starbound save type
 def unpack_var(var, data):
     name = var[0]
@@ -447,6 +450,170 @@ class PlayerSave():
         for i in data_format:
             print(i[0], ":", self.data[i[0]])
 
+    def get_uuid(self):
+        raw_uuid = self.data["uuid"][1:]
+        uuid = b""
+        for i in raw_uuid:
+            uuid += binascii.hexlify(i)
+        return uuid.decode("utf-8")
+
+    def get_save_ver(self):
+        return str(self.data["version"][0])
+
+    def get_food(self):
+        return self.data["food"]
+
+    def get_max_food(self):
+        return self.data["base_max_food"][0]
+
+    def get_health(self):
+        return self.data["health"]
+
+    def get_max_health(self):
+        return self.data["base_max_health"][0]
+
+    def get_max_warmth(self):
+        return self.data["base_max_warmth"][0]
+
+    def get_warmth(self):
+        return self.data["warmth"]
+
+    def get_energy(self):
+        return self.data["energy"]
+
+    def get_max_energy(self):
+        return self.data["base_max_energy"][0]
+
+    def get_energy_regen(self):
+        return self.data["energy_regen_rate"][0]
+
+    def get_gender(self):
+        if self.data["gender"][0] == 0:
+            return "male"
+        else:
+            return "female"
+
+    def get_breath(self):
+        return self.data["breath"]
+
+    def get_max_breath(self):
+        return self.data["base_max_breath"][0]
+
+    def get_head(self):
+        return self.data["head"], self.data["head_glamor"]
+
+    def get_chest(self):
+        return self.data["chest"], self.data["chest_glamor"]
+
+    def get_legs(self):
+        return self.data["legs"], self.data["legs_glamor"]
+
+    def get_back(self):
+        return self.data["back"], self.data["back_glamor"]
+
+    def get_main_bag(self):
+        return self.data["inv"]["main_bag"]
+
+    def get_tile_bag(self):
+        return self.data["inv"]["tile_bag"]
+
+    def get_action_bar(self):
+        return self.data["inv"]["action_bar"]
+
+    def get_wieldable(self):
+        return self.data["inv"]["wieldable"]
+
+    def set_main_bag(self, bag):
+        self.data["inv"]["main_bag"] = bag
+
+    def set_tile_bag(self, bag):
+        self.data["inv"]["tile_bag"] = bag
+
+    def set_action_bar(self, bag):
+        self.data["inv"]["action_bar"] = bag
+
+    def set_wieldable(self, bag):
+        self.data["inv"]["wieldable"] = bag
+
+    def set_head(self, main, glamor):
+        self.data["head"] = main
+        self.data["head_glamor"] = glamor
+
+    def set_chest(self, main, glamor):
+        self.data["chest"] = main
+        self.data["chest_glamor"] = glamor
+
+    def set_legs(self, main, glamor):
+        self.data["legs"] = main
+        self.data["legs_glamor"] = glamor
+
+    def set_back(self, main, glamor):
+        self.data["back"] = main
+        self.data["back_glamor"] = glamor
+
+    def get_race(self):
+        return (self.data["race"][0].upper() + self.data["race"][1:])
+
+    def get_pixels(self):
+        return self.data["inv"]["pixels"][0]
+
+    def get_name(self):
+        return self.data["name"]
+
+    def get_description(self):
+        return self.data["description"]
+
+    def set_name(self, name):
+        self.data["name"] = name
+
+    def set_race(self, race):
+        self.data["race"] = race.lower()
+
+    def set_pixels(self, pixels):
+        self.data["inv"]["pixels"] = (int(pixels),)
+
+    def set_description(self, description):
+        self.data["description"] = description
+
+    def set_gender(self, gender):
+        bit = 0
+        if gender == "female":
+            bit = 1
+        self.data["gender"] = (bit,)
+
+    def set_health(self, current, maximum):
+        self.data["health"] = (current, maximum)
+
+    def set_max_health(self, maximum):
+        self.data["base_max_health"] = (maximum,)
+
+    def set_energy(self, current, maximum):
+        self.data["energy"] = (current, maximum)
+
+    def set_max_energy(self, maximum):
+        self.data["base_max_energy"] = (maximum,)
+
+    def set_food(self, current, maximum):
+        self.data["food"] = (current, maximum)
+
+    def set_max_food(self, maximum):
+        self.data["base_max_food"] = (maximum,)
+
+    def set_warmth(self, maximum):
+        self.data["warmth"] = (self.data["warmth"][0], maximum)
+
+    def set_max_warmth(self, maximum):
+        self.data["base_max_warmth"] = (maximum,)
+
+    def set_breath(self, current, maximum):
+        self.data["breath"] = (current, maximum)
+
+    def set_max_breath(self, maximum):
+        self.data["base_max_breath"] = (maximum,)
+
+    def set_energy_regen(self, rate):
+        self.data["energy_regen_rate"] = (rate,)
+
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])
-    self.dump()
+    player.dump()
