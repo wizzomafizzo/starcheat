@@ -2,8 +2,7 @@
 
 import os, json, re, sqlite3
 
-assets_folder = "/opt/starbound/assets"
-assets_db = "./assets.db"
+from config import config
 
 # Regular expression for comments
 comment_re = re.compile(
@@ -35,26 +34,31 @@ def parse_json(filename):
         # Return json file
         return json.loads(content)
 
+def init_db():
+    tables = ("create table items (name text, path text, category text, icon text)",)
+    db = sqlite3.connect(config["assets_db"])
+    c = db.cursor()
+    for q in tables:
+        c.execute(q)
+    db.commit()
+    db.close()
+
 class Items():
     def __init__(self):
-        self.items_folder = assets_folder + "/items"
+        self.items_folder = config["assets_folder"] + "/items"
         self.ignore_items = ".*\.(png|config|frames|generatedsword|generatedgun|generatedshield|coinitem)"
 
         new = False
         try:
-            open(assets_db)
+            open(config["assets_db"])
         except FileNotFoundError:
             new = True
+            init_db()
 
-        self.db = sqlite3.connect(assets_db)
+        self.db = sqlite3.connect(config["assets_db"])
+
         if new:
-            self.create_db()
-
-    def create_db(self):
-        q = "create table items (name text, path text, category text, icon text)"
-        c = self.db.cursor()
-        c.execute(q)
-        self.db.commit()
+            self.add_all_items()
 
     def file_index(self):
         index = []
@@ -62,12 +66,13 @@ class Items():
             for f in files:
                 if re.match(self.ignore_items, f) == None:
                     index.append((f, root))
+        print("Found " + str(len(index)) + " files")
         return index
 
     def add_all_items(self):
         index = self.file_index()
         items = []
-        c = self.db.cursor()
+        print("Indexing item assets", end="")
         for f in index:
             filename = f[1] + "/" + f[0]
             try:
@@ -92,9 +97,12 @@ class Items():
                 icon = ""
 
             items.append((name, path, category, icon))
+            print(".", end="")
+        c = self.db.cursor()
         q = "insert into items values (?, ?, ?, ?)"
         c.executemany(q, items)
         self.db.commit()
+        print("Done!")
 
     def get_all_items(self):
         c = self.db.cursor()
@@ -107,8 +115,3 @@ class Items():
         meta = c.fetchone()
         item = parse_json(meta[1])
         return item
-
-if __name__ == "__main__":
-    items = Items()
-    items.add_all_items()
-    print(items.get_all_items())

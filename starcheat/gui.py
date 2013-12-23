@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem
 
 import save_file, assets
 import qt_mainwindow, qt_itemedit, qt_itembrowser
+from config import config
 
 # TODO: add support for item icons
 # TODO: reimplement drag events
@@ -21,7 +22,6 @@ class ItemWidget(QTableWidgetItem):
         if self.type_name != "":
             self.setToolTip(self.type_name + " (" + str(self.item_count) + ")")
 
-# TODO: fix tabindex
 class MainWindow():
     def __init__(self):
         self.app = QApplication(sys.argv)
@@ -29,20 +29,20 @@ class MainWindow():
         self.ui = qt_mainwindow.Ui_MainWindow()
         self.ui.setupUi(self.window)
 
-        # launch open file dialog
-        # TODO: handle file errors
-        self.open_file()
-
         # populate race combo box
         for race in save_file.race_types:
-            self.ui.race.addItem(race[0].upper() + race[1:])
+            self.ui.race.addItem(race)
 
         # connect action menu
         self.ui.actionSave.triggered.connect(self.save)
         self.ui.actionReload.triggered.connect(self.reload)
         self.ui.actionOpen.triggered.connect(self.open_file)
         self.ui.actionQuit.triggered.connect(self.app.closeAllWindows)
-        self.ui.actionItem_Browser.triggered.connect(self.new_item_browser)
+
+        # launch open file dialog
+        # we want this after the races are populated but before the slider setup
+        # TODO: handle file errors
+        self.open_file()
 
         # set up sliders to update values together
         stats = "health", "energy", "food", "warmth", "breath"
@@ -56,19 +56,20 @@ class MainWindow():
         for b in bags:
             item_edit = getattr(self, "new_" + b + "_item_edit")
             getattr(self.ui, b).cellDoubleClicked.connect(item_edit)
-            # TODO: fix up the .ui file and remove all this
+            # TODO: once drag is redone, fix up the .ui file and remove all this
             getattr(self.ui, b).setAcceptDrops(False)
             getattr(self.ui, b).setDragDropOverwriteMode(True)
             getattr(self.ui, b).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
             getattr(self.ui, b).setDefaultDropAction(QtCore.Qt.MoveAction)
             getattr(self.ui, b).setDragEnabled(True)
+            getattr(self.ui, b).setTabKeyNavigation(False)
 
         self.window.show()
         sys.exit(self.app.exec_())
 
     def empty_slot(self):
         """Return an empty bag slot widget."""
-        return ItemWidget(("", 0, (7, [])))
+        return ItemWidget(save_file.empty_slot())
 
     def new_item_browser(self):
         dialog = QDialog(self.item_dialog)
@@ -99,10 +100,11 @@ class MainWindow():
                 row += 1
 
         item_browser.items.itemSelectionChanged.connect(update_item)
-        dialog.accepted.connect(self.set_item_edit_name)
+        dialog.accepted.connect(self.write_item_browser)
 
-    def set_item_edit_name(self):
+    def write_item_browser(self):
         self.item_edit.item_type.setText(self.item_browse_select)
+        self.item_edit.count.setValue(1)
 
     def new_item_edit(self, bag):
         """Display an item edit dialog for the selected cell in a given bag."""
@@ -118,6 +120,7 @@ class MainWindow():
         # set up signals
         self.item_dialog.accepted.connect(self.write_item_edit)
         self.item_edit.load_button.clicked.connect(self.new_item_browser)
+        self.item_edit.trash_button.clicked.connect(self.trash_item_edit)
 
         # set type text box
         self.item_edit.item_type.setText(item.type_name)
@@ -153,6 +156,13 @@ class MainWindow():
         row = bag.currentRow()
         column = bag.currentColumn()
         bag.setItem(row, column, new_item)
+
+    def trash_item_edit(self):
+        bag = getattr(self.ui, self.item_bag)
+        row = bag.currentRow()
+        column = bag.currentColumn()
+        bag.setItem(row, column, self.empty_slot())
+        self.item_dialog.close()
 
     # these are used for connecting the item edit dialog to bag tables
     def new_main_bag_item_edit(self):
@@ -317,7 +327,6 @@ class MainWindow():
         # energy regen rate
         self.ui.energy_regen.setValue(self.player.get_energy_regen())
         # warmth
-        # TODO: check this actually works, bit of a weird one
         cur_warmth = self.player.get_warmth()
         max_warmth = self.player.get_max_warmth()
         self.ui.warmth.setMinimum(cur_warmth[0])
@@ -329,7 +338,7 @@ class MainWindow():
         # equipment
         equip_bags = "head", "chest", "legs", "back"
         for bag in equip_bags:
-            items = [ItemWidget(x) for x in self.player.get_head()]
+            items = [ItemWidget(x) for x in getattr(self.player, "get_" + bag)()]
             getattr(self.ui, bag).setItem(0, 0, items[0])
             getattr(self.ui, bag).setItem(0, 1, items[1])
 
@@ -357,35 +366,15 @@ class MainWindow():
         self.update()
         self.ui.statusbar.showMessage("Reloaded " + self.player.filename, 3000)
 
-    # TODO: move path to config
     def open_file(self):
         """Display open file dialog and load selected save."""
         filename = QFileDialog.getOpenFileName(self.window,
                                                'Open save file...',
-                                               '/opt/starbound/linux64/player',
+                                               config["starbound_folder"] + '/player',
                                                '*.player')
         self.player = save_file.PlayerSave(filename[0])
         self.update()
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
-
-    # TODO: update when assets module is fleshed out
-    # TODO: move path to config
-    def open_asset(self):
-        """Pick item asset file and load into item edit dialog."""
-        filename = QFileDialog.getOpenFileName(self.item_dialog,
-                                               "Pick an asset...",
-                                               "/opt/starbound/assets/items")
-        item = assets.parse_json(filename[0])
-        try:
-            name = item["name"]
-        except KeyError:
-            try:
-                name = item["itemName"]
-            except KeyError:
-                name = item["objectName"]
-
-        self.item_edit.item_type.setText(name)
-        self.item_edit.count.setValue(1)
 
 if __name__ == '__main__':
     window = MainWindow()

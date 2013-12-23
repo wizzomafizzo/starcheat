@@ -11,8 +11,8 @@ $ python ./save_file.py <.player file>
 import sys, binascii
 from struct import *
 
-# compatible save version
-data_version = 424
+# compatible save version(s)
+data_version = range(424, 428)
 # this is the complete data format definition for a .player file. formats
 # surrounded by double underscores are special types with unpack/repack
 # functions defined later in the file. everything else is standard formats for
@@ -89,10 +89,7 @@ data_format = (
     ("the_rest", "__the_rest__", None)
 )
 
-# TODO: update documentation
-# TODO: add getter/setters for common values
-
-race_types = ("apex", "avian", "floran", "glitch", "human", "hylotl")
+race_types = ("Apex", "Avian", "Floran", "Glitch", "Human", "Hylotl")
 
 def unpack_str(bytes):
     """Convert a list of bytes to a string."""
@@ -417,7 +414,7 @@ class PlayerSave():
         version = unpack_from(data_format[1][1],
                               save_data,
                               data_format[0][2])
-        if version[0] != data_version:
+        if (version[0] in data_version) == False:
             raise Exception("Wrong save format version")
 
         offset = 0

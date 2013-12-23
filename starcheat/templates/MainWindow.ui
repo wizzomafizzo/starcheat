@@ -265,7 +265,7 @@ border-radius: 4px;
    <widget class="QSpinBox" name="max_energy">
     <property name="geometry">
      <rect>
-      <x>189</x>
+      <x>190</x>
       <y>240</y>
       <width>81</width>
       <height>23</height>
@@ -1621,7 +1621,6 @@ border-radius: 4px;
     <addaction name="actionManage_Techs"/>
     <addaction name="actionCustomise_Look"/>
     <addaction name="actionAdvanced_Edit"/>
-    <addaction name="actionItem_Browser"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
@@ -1737,6 +1736,35 @@ border-radius: 4px;
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>name</tabstop>
+  <tabstop>race</tabstop>
+  <tabstop>male</tabstop>
+  <tabstop>female</tabstop>
+  <tabstop>description</tabstop>
+  <tabstop>health</tabstop>
+  <tabstop>max_health</tabstop>
+  <tabstop>energy</tabstop>
+  <tabstop>max_energy</tabstop>
+  <tabstop>energy_regen</tabstop>
+  <tabstop>food</tabstop>
+  <tabstop>max_food</tabstop>
+  <tabstop>warmth</tabstop>
+  <tabstop>max_warmth</tabstop>
+  <tabstop>breath</tabstop>
+  <tabstop>max_breath</tabstop>
+  <tabstop>pixels</tabstop>
+  <tabstop>wieldable</tabstop>
+  <tabstop>back</tabstop>
+  <tabstop>player_pic</tabstop>
+  <tabstop>head</tabstop>
+  <tabstop>chest</tabstop>
+  <tabstop>legs</tabstop>
+  <tabstop>action_bar</tabstop>
+  <tabstop>inv_tabs</tabstop>
+  <tabstop>main_bag</tabstop>
+  <tabstop>tile_bag</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
