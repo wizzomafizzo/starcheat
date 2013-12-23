@@ -8,8 +8,7 @@ from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow
 from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem
 
 import save_file, assets
-from qt_mainwindow import Ui_MainWindow
-from qt_itemedit import Ui_Dialog
+import qt_mainwindow, qt_itemedit, qt_itembrowser
 
 # TODO: add support for item icons
 # TODO: reimplement drag events
@@ -27,17 +26,12 @@ class MainWindow():
     def __init__(self):
         self.app = QApplication(sys.argv)
         self.window = QMainWindow()
-        self.ui = Ui_MainWindow()
+        self.ui = qt_mainwindow.Ui_MainWindow()
         self.ui.setupUi(self.window)
 
         # launch open file dialog
         # TODO: handle file errors
         self.open_file()
-
-        # track current open/selected item
-        self.item_bag = ""
-        self.item_edit = ""
-        self.item_dialog = ""
 
         # populate race combo box
         for race in save_file.race_types:
@@ -48,6 +42,7 @@ class MainWindow():
         self.ui.actionReload.triggered.connect(self.reload)
         self.ui.actionOpen.triggered.connect(self.open_file)
         self.ui.actionQuit.triggered.connect(self.app.closeAllWindows)
+        self.ui.actionItem_Browser.triggered.connect(self.new_item_browser)
 
         # set up sliders to update values together
         stats = "health", "energy", "food", "warmth", "breath"
@@ -75,10 +70,44 @@ class MainWindow():
         """Return an empty bag slot widget."""
         return ItemWidget(("", 0, (7, [])))
 
+    def new_item_browser(self):
+        dialog = QDialog(self.item_dialog)
+        item_browser = qt_itembrowser.Ui_Dialog()
+        item_browser.setupUi(dialog)
+        dialog.show()
+        self.item_browse_select = ""
+
+        items = assets.Items()
+        all_items = items.get_all_items()
+
+        item_browser.items.clear()
+        for i in all_items:
+            item_browser.items.addItem(i[0])
+
+        def update_item():
+            selected = item_browser.items.selectedItems()[0].text()
+            item = items.get_item(selected)
+            self.item_browse_select = selected
+            row = 0
+            item_browser.info.setRowCount(len(item))
+            for key in item:
+                item_browser.info.setItem(row, 0, QTableWidgetItem(key))
+                try:
+                    item_browser.info.setItem(row, 1, QTableWidgetItem(item[key]))
+                except TypeError:
+                    pass
+                row += 1
+
+        item_browser.items.itemSelectionChanged.connect(update_item)
+        dialog.accepted.connect(self.set_item_edit_name)
+
+    def set_item_edit_name(self):
+        self.item_edit.item_type.setText(self.item_browse_select)
+
     def new_item_edit(self, bag):
         """Display an item edit dialog for the selected cell in a given bag."""
-        self.item_dialog = QDialog()
-        self.item_edit = Ui_Dialog()
+        self.item_dialog = QDialog(self.window)
+        self.item_edit = qt_itemedit.Ui_Dialog()
         self.item_edit.setupUi(self.item_dialog)
 
         item = bag.currentItem()
@@ -88,7 +117,7 @@ class MainWindow():
 
         # set up signals
         self.item_dialog.accepted.connect(self.write_item_edit)
-        self.item_edit.load_button.clicked.connect(self.open_asset)
+        self.item_edit.load_button.clicked.connect(self.new_item_browser)
 
         # set type text box
         self.item_edit.item_type.setText(item.type_name)
@@ -320,7 +349,7 @@ class MainWindow():
             column += 1
             if (column % 10) == 0:
                 row += 1
-                column += 1
+                column = 0
 
     def reload(self):
         """Reload the currently open save file and update GUI values."""

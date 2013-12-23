@@ -1621,6 +1621,7 @@ border-radius: 4px;
     <addaction name="actionManage_Techs"/>
     <addaction name="actionCustomise_Look"/>
     <addaction name="actionAdvanced_Edit"/>
+    <addaction name="actionItem_Browser"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
@@ -1719,7 +1720,7 @@ border-radius: 4px;
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Customise Look</string>
+    <string>Customise Player</string>
    </property>
   </action>
   <action name="actionAdvanced_Edit">
@@ -1728,6 +1729,11 @@ border-radius: 4px;
    </property>
    <property name="text">
     <string>Advanced Edit</string>
+   </property>
+  </action>
+  <action name="actionItem_Browser">
+   <property name="text">
+    <string>Item Browser</string>
    </property>
   </action>
  </widget>
