@@ -132,7 +132,7 @@ class Items():
         c = self.db.cursor()
         c.execute("select icon from items where name = ?", (name,))
         try:
-            icon_file = c.fetchone()[0].partition(":")
+            icon_file = c.fetchone()[0].rpartition(":")
         except TypeError:
             return None
         try:
