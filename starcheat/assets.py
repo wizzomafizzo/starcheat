@@ -115,6 +115,7 @@ class Items():
         c.execute("select * from items order by name collate nocase")
         return c.fetchall()
 
+    # TODO: don't like this, need a different return
     def get_item(self, name):
         c = self.db.cursor()
         c.execute("select * from items where name = ?", (name,))

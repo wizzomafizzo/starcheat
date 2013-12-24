@@ -432,7 +432,7 @@ border-radius: 4px;
    <widget class="QLabel" name="backpack_label">
     <property name="geometry">
      <rect>
-      <x>358</x>
+      <x>370</x>
       <y>80</y>
       <width>66</width>
       <height>21</height>
@@ -448,7 +448,7 @@ border-radius: 4px;
    <widget class="QLabel" name="legs_label">
     <property name="geometry">
      <rect>
-      <x>533</x>
+      <x>545</x>
       <y>160</y>
       <width>66</width>
       <height>21</height>
@@ -465,7 +465,7 @@ border-radius: 4px;
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>10</y>
+      <y>150</y>
       <width>31</width>
       <height>20</height>
      </rect>
@@ -480,7 +480,7 @@ border-radius: 4px;
    <widget class="QLabel" name="chest_label">
     <property name="geometry">
      <rect>
-      <x>533</x>
+      <x>545</x>
       <y>100</y>
       <width>66</width>
       <height>21</height>
@@ -496,7 +496,7 @@ border-radius: 4px;
    <widget class="QLabel" name="head_label">
     <property name="geometry">
      <rect>
-      <x>533</x>
+      <x>545</x>
       <y>40</y>
       <width>66</width>
       <height>21</height>
@@ -923,7 +923,7 @@ border-radius: 4px;
     <property name="geometry">
      <rect>
       <x>318</x>
-      <y>30</y>
+      <y>170</y>
       <width>66</width>
       <height>34</height>
      </rect>
@@ -1013,7 +1013,7 @@ border-radius: 4px;
    <widget class="QTableWidget" name="legs">
     <property name="geometry">
      <rect>
-      <x>533</x>
+      <x>545</x>
       <y>180</y>
       <width>66</width>
       <height>34</height>
@@ -1091,7 +1091,7 @@ border-radius: 4px;
    <widget class="QTableWidget" name="chest">
     <property name="geometry">
      <rect>
-      <x>533</x>
+      <x>545</x>
       <y>120</y>
       <width>66</width>
       <height>34</height>
@@ -1169,7 +1169,7 @@ border-radius: 4px;
    <widget class="QTableWidget" name="back">
     <property name="geometry">
      <rect>
-      <x>358</x>
+      <x>370</x>
       <y>100</y>
       <width>66</width>
       <height>34</height>
@@ -1247,7 +1247,7 @@ border-radius: 4px;
    <widget class="QTableWidget" name="head">
     <property name="geometry">
      <rect>
-      <x>533</x>
+      <x>545</x>
       <y>60</y>
       <width>66</width>
       <height>34</height>
@@ -1379,7 +1379,7 @@ border-radius: 4px;
    <widget class="QGraphicsView" name="player_pic">
     <property name="geometry">
      <rect>
-      <x>428</x>
+      <x>440</x>
       <y>60</y>
       <width>101</width>
       <height>151</height>
@@ -1390,7 +1390,7 @@ border-radius: 4px;
     <property name="geometry">
      <rect>
       <x>350</x>
-      <y>10</y>
+      <y>150</y>
       <width>31</width>
       <height>20</height>
      </rect>
@@ -1656,6 +1656,35 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>10</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Techs</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>40</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Blueprints</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -1674,8 +1703,7 @@ border-radius: 4px;
     <addaction name="actionReload"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
-    <addaction name="actionSave_As"/>
-    <addaction name="actionMake_Backups"/>
+    <addaction name="actionExport"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -1689,10 +1717,8 @@ border-radius: 4px;
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionManage_Blueprints"/>
-    <addaction name="actionManage_Techs"/>
-    <addaction name="actionCustomise_Look"/>
     <addaction name="actionAdvanced_Edit"/>
+    <addaction name="actionOptions"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
@@ -1721,12 +1747,12 @@ border-radius: 4px;
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionSave_As">
+  <action name="actionExport">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Save As...</string>
+    <string>Export...</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -1805,6 +1831,14 @@ border-radius: 4px;
   <action name="actionItem_Browser">
    <property name="text">
     <string>Item Browser</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Options</string>
    </property>
   </action>
  </widget>

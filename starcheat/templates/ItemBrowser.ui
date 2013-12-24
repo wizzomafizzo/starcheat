@@ -199,11 +199,14 @@
      <height>64</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: white</string>
+   </property>
    <property name="frameShape">
-    <enum>QFrame::NoFrame</enum>
+    <enum>QFrame::Box</enum>
    </property>
    <property name="text">
-    <string>Icon</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
