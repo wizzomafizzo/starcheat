@@ -14,11 +14,17 @@ from config import config
 # TODO: add support for item icons
 # TODO: reimplement drag events
 class ItemWidget(QTableWidgetItem):
-    def __init__(self, item):
+    def __init__(self, item, icon=None):
         self.item_count = item[1]
         self.type_name = item[0]
         self.variant = item[2]
         QTableWidgetItem.__init__(self, self.type_name)
+        self.setTextAlignment(QtCore.Qt.AlignCenter)
+        if icon != None:
+            try:
+                self.setIcon(QtGui.QIcon(icon))
+            except TypeError:
+                pass
         if self.type_name != "":
             self.setToolTip(self.type_name + " (" + str(self.item_count) + ")")
 
@@ -73,6 +79,20 @@ class MainWindow():
         """Return an empty bag slot widget."""
         return ItemWidget(save_file.empty_slot())
 
+    def inv_icon(self, name):
+        icon_file = self.items.get_item_icon(name)
+        if icon_file == None:
+            return None
+        if icon_file[1] == "chest":
+            offset = 16
+        elif icon_file[1] == "pants":
+            offset = 32
+        else:
+            offset = 0
+        reader = QtGui.QImageReader(icon_file[0])
+        reader.setClipRect(QtCore.QRect(offset, 0, 16, 16))
+        return QtGui.QPixmap.fromImageReader(reader).scaled(32, 32)
+
     # TODO: move to separate class
     def new_item_browser(self):
         dialog = QDialog(self.item_dialog)
@@ -95,22 +115,27 @@ class MainWindow():
             except IndexError:
                 return
             item = self.items.get_item(selected)
+            try:
+                icon = QtGui.QPixmap(item[2] + "/" + item[0]["image"]).scaledToHeight(64)
+            except KeyError:
+                icon = self.inv_icon(selected)
+            item_browser.item_icon.setPixmap(icon)
             self.item_browse_select = selected
             # TODO: update qt objectnames, already not making sense
             try:
-                item_browser.item_name.setText(item["shortdescription"])
+                item_browser.item_name.setText(item[0]["shortdescription"])
             except KeyError:
                 item_browser.item_name.setText("Missing short description")
             try:
-                item_browser.short_desc.setText(item["description"])
+                item_browser.short_desc.setText(item[0]["description"])
             except KeyError:
                 item_browser.short_desc.setText("Missing description")
             row = 0
-            item_browser.info.setRowCount(len(item))
-            for key in item:
+            item_browser.info.setRowCount(len(item[0]))
+            for key in item[0]:
                 item_browser.info.setItem(row, 0, QTableWidgetItem(key))
                 try:
-                    item_browser.info.setItem(row, 1, QTableWidgetItem(str(item[key])))
+                    item_browser.info.setItem(row, 1, QTableWidgetItem(str(item[0][key])))
                 except TypeError:
                     pass
                 row += 1
@@ -158,6 +183,9 @@ class MainWindow():
         self.item_edit.item_type.setText(item.type_name)
         # set item count spinbox
         self.item_edit.count.setValue(int(item.item_count))
+
+        if item.type_name != "":
+            self.item_edit.icon.setPixmap(self.inv_icon(item.type_name))
 
         # set up variant table
         self.item_edit.variant.setRowCount(len(item.variant[1]))
@@ -370,7 +398,7 @@ class MainWindow():
         # equipment
         equip_bags = "head", "chest", "legs", "back"
         for bag in equip_bags:
-            items = [ItemWidget(x) for x in getattr(self.player, "get_" + bag)()]
+            items = [ItemWidget(x, self.inv_icon(x[0])) for x in getattr(self.player, "get_" + bag)()]
             getattr(self.ui, bag).setItem(0, 0, items[0])
             getattr(self.ui, bag).setItem(0, 1, items[1])
 
@@ -386,7 +414,8 @@ class MainWindow():
         row = column = 0
         bag = getattr(self.player, "get_" + bag_name)()
         for slot in range(len(bag)):
-            getattr(self.ui, bag_name).setItem(row, column, ItemWidget(bag[slot]))
+            widget = ItemWidget(bag[slot], self.inv_icon(bag[slot][0]))
+            getattr(self.ui, bag_name).setItem(row, column, widget)
             column += 1
             if (column % 10) == 0:
                 row += 1

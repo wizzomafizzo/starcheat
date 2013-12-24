@@ -119,16 +119,6 @@
     </property>
    </column>
   </widget>
-  <widget class="QGraphicsView" name="icon">
-   <property name="geometry">
-    <rect>
-     <x>427</x>
-     <y>10</y>
-     <width>64</width>
-     <height>64</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QLabel" name="item_name">
    <property name="geometry">
     <rect>
@@ -198,6 +188,25 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="item_icon">
+   <property name="geometry">
+    <rect>
+     <x>427</x>
+     <y>10</y>
+     <width>64</width>
+     <height>64</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::NoFrame</enum>
+   </property>
+   <property name="text">
+    <string>Icon</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>

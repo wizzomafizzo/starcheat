@@ -35,7 +35,7 @@ def parse_json(filename):
         return json.loads(content)
 
 def init_db():
-    tables = ("create table items (name text, path text, category text, icon text)",)
+    tables = ("create table items (name text, file text, category text, icon text, folder text)",)
     db = sqlite3.connect(config["assets_db"])
     c = db.cursor()
     for q in tables:
@@ -46,6 +46,7 @@ def init_db():
 class Items():
     def __init__(self):
         self.items_folder = config["assets_folder"] + "/items"
+        self.objects_folder = config["assets_folder"] + "/objects"
         self.ignore_items = ".*\.(png|config|frames|generatedsword|generatedgun|generatedshield|coinitem)"
 
         new = False
@@ -66,6 +67,10 @@ class Items():
             for f in files:
                 if re.match(self.ignore_items, f) == None:
                     index.append((f, root))
+        for root, dirs, files in os.walk(self.objects_folder):
+            for f in files:
+                if re.match(".*\.object$", f) != None:
+                    index.append((f, root))
         print("Found " + str(len(index)) + " files")
         return index
 
@@ -74,9 +79,9 @@ class Items():
         items = []
         print("Indexing item assets", end="")
         for f in index:
-            filename = f[1] + "/" + f[0]
+            full_path = f[1] + "/" + f[0]
             try:
-                info = parse_json(filename)
+                info = parse_json(full_path)
             except ValueError:
                 continue
 
@@ -88,7 +93,8 @@ class Items():
                 except KeyError:
                     name = info["objectName"]
 
-            path = filename
+            filename = f[0]
+            path = f[1]
             category = f[0].partition(".")[2]
 
             try:
@@ -96,10 +102,10 @@ class Items():
             except KeyError:
                 icon = ""
 
-            items.append((name, path, category, icon))
+            items.append((name, filename, category, icon, path))
             print(".", end="")
         c = self.db.cursor()
-        q = "insert into items values (?, ?, ?, ?)"
+        q = "insert into items values (?, ?, ?, ?, ?)"
         c.executemany(q, items)
         self.db.commit()
         print("Done!")
@@ -113,13 +119,26 @@ class Items():
         c = self.db.cursor()
         c.execute("select * from items where name = ?", (name,))
         meta = c.fetchone()
-        item = parse_json(meta[1])
-        return item
+        item = parse_json(meta[4] + "/" + meta[1])
+        return item, meta[1], meta[4]
 
     def get_categories(self):
         c = self.db.cursor()
-        c.execute("select distinct category from items")
+        c.execute("select distinct category from items order by category")
         return c.fetchall()
+
+    def get_item_icon(self, name):
+        c = self.db.cursor()
+        c.execute("select icon from items where name = ?", (name,))
+        try:
+            icon_file = c.fetchone()[0].partition(":")
+        except TypeError:
+            return None
+        try:
+            icon = icon_file[0], icon_file[2]
+        except IndexError:
+            icon = icon_file[0], ""
+        return icon
 
     def filter_items(self, category, name):
         if category == "<all>":
