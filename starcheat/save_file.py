@@ -12,7 +12,7 @@ import sys, binascii
 from struct import *
 
 # compatible save version(s)
-data_version = range(424, 428)
+data_version = range(424, 429)
 # this is the complete data format definition for a .player file. formats
 # surrounded by double underscores are special types with unpack/repack
 # functions defined later in the file. everything else is standard formats for

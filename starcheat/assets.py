@@ -106,7 +106,7 @@ class Items():
 
     def get_all_items(self):
         c = self.db.cursor()
-        c.execute("select * from items")
+        c.execute("select * from items order by name collate nocase")
         return c.fetchall()
 
     def get_item(self, name):
