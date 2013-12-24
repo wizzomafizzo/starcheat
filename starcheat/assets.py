@@ -115,3 +115,18 @@ class Items():
         meta = c.fetchone()
         item = parse_json(meta[1])
         return item
+
+    def get_categories(self):
+        c = self.db.cursor()
+        c.execute("select distinct category from items")
+        return c.fetchall()
+
+    def filter_items(self, category, name):
+        if category == "<all>":
+            category = "%"
+        name = "%" + name + "%"
+        c = self.db.cursor()
+        c.execute("select * from items where category like ? and name like ? order by name collate nocase",
+                  (category, name))
+        result = c.fetchall()
+        return result

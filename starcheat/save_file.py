@@ -532,6 +532,8 @@ class PlayerSave():
     def set_wieldable(self, bag):
         self.data["inv"]["wieldable"] = bag
 
+    # TODO: none of these are working if replacing an existing item, they need
+    # to also set themselves in the equipment bag
     def set_head(self, main, glamor):
         self.data["head"] = main
         self.data["head_glamor"] = glamor

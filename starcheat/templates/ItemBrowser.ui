@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Item Browser</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -29,23 +29,28 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QComboBox" name="filter">
+  <widget class="QComboBox" name="category">
    <property name="geometry">
     <rect>
-     <x>81</x>
+     <x>80</x>
      <y>10</y>
      <width>121</width>
      <height>22</height>
     </rect>
    </property>
+   <item>
+    <property name="text">
+     <string>&lt;all&gt;</string>
+    </property>
+   </item>
   </widget>
   <widget class="QListWidget" name="items">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>40</y>
+     <y>70</y>
      <width>191</width>
-     <height>271</height>
+     <height>241</height>
     </rect>
    </property>
    <property name="editTriggers">
@@ -57,7 +62,7 @@
     </property>
    </item>
   </widget>
-  <widget class="QLabel" name="filter_label">
+  <widget class="QLabel" name="category_label">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -74,9 +79,9 @@
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>40</y>
+     <y>90</y>
      <width>281</width>
-     <height>271</height>
+     <height>221</height>
     </rect>
    </property>
    <property name="editTriggers">
@@ -85,8 +90,14 @@
    <property name="selectionMode">
     <enum>QAbstractItemView::NoSelection</enum>
    </property>
+   <property name="selectionBehavior">
+    <enum>QAbstractItemView::SelectRows</enum>
+   </property>
    <property name="verticalScrollMode">
     <enum>QAbstractItemView::ScrollPerPixel</enum>
+   </property>
+   <property name="cornerButtonEnabled">
+    <bool>false</bool>
    </property>
    <attribute name="horizontalHeaderVisible">
     <bool>true</bool>
@@ -107,6 +118,87 @@
      <string>Value</string>
     </property>
    </column>
+  </widget>
+  <widget class="QGraphicsView" name="icon">
+   <property name="geometry">
+    <rect>
+     <x>427</x>
+     <y>10</y>
+     <width>64</width>
+     <height>64</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="item_name">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>10</y>
+     <width>211</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <underline>true</underline>
+    </font>
+   </property>
+   <property name="text">
+    <string>item_name</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="short_desc">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>30</y>
+     <width>211</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>short_description</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="filter_label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>41</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Filter</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="filter">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>40</y>
+     <width>151</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="inputMask">
+    <string/>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
   </widget>
  </widget>
  <resources/>

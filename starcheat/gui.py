@@ -2,7 +2,7 @@
 GUI module for starcheat
 """
 
-import sys
+import sys, re
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow
 from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem
@@ -28,6 +28,8 @@ class MainWindow():
         self.window = QMainWindow()
         self.ui = qt_mainwindow.Ui_MainWindow()
         self.ui.setupUi(self.window)
+
+        self.items = assets.Items()
 
         # populate race combo box
         for race in save_file.race_types:
@@ -71,41 +73,71 @@ class MainWindow():
         """Return an empty bag slot widget."""
         return ItemWidget(save_file.empty_slot())
 
+    # TODO: move to separate class
     def new_item_browser(self):
         dialog = QDialog(self.item_dialog)
         item_browser = qt_itembrowser.Ui_Dialog()
         item_browser.setupUi(dialog)
-        dialog.show()
         self.item_browse_select = ""
 
-        items = assets.Items()
-        all_items = items.get_all_items()
+        for cat in self.items.get_categories():
+            item_browser.category.addItem(cat[0])
+
+        all_items = self.items.get_all_items()
 
         item_browser.items.clear()
         for i in all_items:
             item_browser.items.addItem(i[0])
 
-        def update_item():
-            selected = item_browser.items.selectedItems()[0].text()
-            item = items.get_item(selected)
+        def update_item_view():
+            try:
+                selected = item_browser.items.selectedItems()[0].text()
+            except IndexError:
+                return
+            item = self.items.get_item(selected)
             self.item_browse_select = selected
+            # TODO: update qt objectnames, already not making sense
+            try:
+                item_browser.item_name.setText(item["shortdescription"])
+            except KeyError:
+                item_browser.item_name.setText("Missing short description")
+            try:
+                item_browser.short_desc.setText(item["description"])
+            except KeyError:
+                item_browser.short_desc.setText("Missing description")
             row = 0
             item_browser.info.setRowCount(len(item))
             for key in item:
                 item_browser.info.setItem(row, 0, QTableWidgetItem(key))
                 try:
-                    item_browser.info.setItem(row, 1, QTableWidgetItem(item[key]))
+                    item_browser.info.setItem(row, 1, QTableWidgetItem(str(item[key])))
                 except TypeError:
                     pass
                 row += 1
 
-        item_browser.items.itemSelectionChanged.connect(update_item)
+        def update_item_list():
+            category = item_browser.category.currentText()
+            name = item_browser.filter.text()
+            result = self.items.filter_items(category, name)
+            item_browser.items.clear()
+            for i in result:
+                item_browser.items.addItem(i[0])
+            item_browser.items.setCurrentRow(0)
+
+        item_browser.items.itemSelectionChanged.connect(update_item_view)
+        item_browser.filter.textChanged.connect(update_item_list)
+        item_browser.category.currentTextChanged.connect(update_item_list)
         dialog.accepted.connect(self.write_item_browser)
+
+        item_browser.items.setCurrentRow(0)
+
+        dialog.show()
 
     def write_item_browser(self):
         self.item_edit.item_type.setText(self.item_browse_select)
         self.item_edit.count.setValue(1)
 
+    # TODO: move to separate class
     def new_item_edit(self, bag):
         """Display an item edit dialog for the selected cell in a given bag."""
         self.item_dialog = QDialog(self.window)
