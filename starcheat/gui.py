@@ -264,8 +264,10 @@ class BlueprintLib():
         self.known_blueprints.sort()
 
         self.blueprint_lib.known_blueprints.clear()
-        for blueprint in self.known_blueprints:
-            self.blueprint_lib.known_blueprints.addItem(blueprint)
+        for i in range(len(self.known_blueprints)):
+            self.blueprint_lib.known_blueprints.addItem(self.known_blueprints[i])
+            if self.known_blueprints[i] == selected:
+                self.blueprint_lib.known_blueprints.setCurrentRow(i)
 
     def remove_blueprint(self):
         """Remove currently selected blueprint in known list."""
