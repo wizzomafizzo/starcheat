@@ -5,6 +5,8 @@ import os, json, re, sqlite3
 from config import config
 
 # Regular expression for comments
+from platform import system
+
 comment_re = re.compile(
     '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
     re.DOTALL | re.MULTILINE
@@ -132,13 +134,15 @@ class Items():
         c = self.db.cursor()
         c.execute("select icon from items where name = ?", (name,))
         try:
-            icon_file = c.fetchone()[0].partition(":")
+            icon_file = c.fetchone()[0]
+            if system() != 'Windows':
+                icon = icon_file.split(':')
+            else:
+                icon = icon_file.rsplit(':', icon_file.count(':') - 1)
+            if len(icon) < 2:
+                icon = icon[0], ""
         except TypeError:
             return None
-        try:
-            icon = icon_file[0], icon_file[2]
-        except IndexError:
-            icon = icon_file[0], ""
         return icon
 
     def filter_items(self, category, name):
