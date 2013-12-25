@@ -13,6 +13,7 @@ import qt_mainwindow, qt_itemedit, qt_itembrowser
 from config import config
 
 def inv_icon(item_name):
+    """Return an ItemWidget from item name with icon."""
     icon_file = assets.Items().get_item_icon(item_name)
 
     if icon_file == None:
@@ -35,6 +36,7 @@ def empty_slot():
 
 # TODO: reimplement drag events, maybe custom table widget
 class ItemWidget(QTableWidgetItem):
+    """Custom table wiget item with icon support and extra item variables."""
     def __init__(self, item):
         self.name = item[0]
         self.item_count = item[1]
@@ -50,6 +52,7 @@ class ItemWidget(QTableWidgetItem):
 
 class ItemBrowser():
     def __init__(self, parent):
+        """Dialog for viewing/searching indexed items and returning selection."""
         self.dialog = QDialog(parent)
         self.item_browser = qt_itembrowser.Ui_Dialog()
         self.item_browser.setupUi(self.dialog)
@@ -74,6 +77,7 @@ class ItemBrowser():
         self.item_browser.filter.setFocus()
 
     def update_item_view(self):
+        """Update item details view with data from currently selected item."""
         try:
             selected = self.item_browser.items.selectedItems()[0].text()
         except IndexError:
@@ -111,6 +115,7 @@ class ItemBrowser():
             row += 1
 
     def update_item_list(self):
+        """Populate item list based on current filter details."""
         category = self.item_browser.category.currentText()
         name = self.item_browser.filter.text()
         result = self.items.filter_items(category, name)
@@ -157,6 +162,7 @@ class ItemEdit():
         self.item_edit.item_type.setFocus()
 
     def update_item(self):
+        """Update main item view with current item data."""
         name = self.item_edit.item_type.text()
         try:
             item = assets.Items().get_item(name)
@@ -199,12 +205,16 @@ class ItemEdit():
 
 class MainWindow():
     def __init__(self):
+        """Display the main starcheat window."""
         self.app = QApplication(sys.argv)
         self.window = QMainWindow()
         self.ui = qt_mainwindow.Ui_MainWindow()
         self.ui.setupUi(self.window)
 
+        self.filename = None
         self.items = assets.Items()
+        # atm we only support one of each dialog at a time, don't think this
+        # will be a problem tho
         self.item_browser = None
         self.item_edit = None
 
@@ -220,8 +230,10 @@ class MainWindow():
 
         # launch open file dialog
         # we want this after the races are populated but before the slider setup
-        # TODO: handle file errors
-        self.open_file()
+        try:
+            self.open_file()
+        except FileNotFoundError:
+            return
 
         # set up sliders to update values together
         stats = "health", "energy", "food", "warmth", "breath"
@@ -339,9 +351,6 @@ class MainWindow():
         bags = "wieldable", "main_bag", "tile_bag", "action_bar"
         for b in bags:
             getattr(self.player, "set_" + b)(self.get_bag(b))
-
-        # might need to update equipment? not sure
-        # TODO: YEP
 
         # save and show status
         self.player.dump()
@@ -468,6 +477,7 @@ class MainWindow():
                                                '*.player')
         self.player = save_file.PlayerSave(filename[0])
         self.update()
+        self.window.setWindowTitle("starcheat - " + self.player.filename)
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
 
 if __name__ == '__main__':

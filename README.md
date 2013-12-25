@@ -12,13 +12,12 @@ requirements:
 - [qt5](http://qt-project.org/downloads)
 - [pyqt5](http://www.riverbankcomputing.com/software/pyqt/download5)
 
-NOTE: atm this will only run on linux and only from the build directory
-
 before setup, update starcheat/starcheat.ini with your own Starbound binary and asset folders
 
 setup:
-- $ ./build.sh
-- $ cd build/
+- [WINDOWS] > ./build.bat
+- [LINUX] > ./build.sh
+- > cd build/
 
 usage:
-- $ ./starcheat
+- > ./starcheat

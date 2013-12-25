@@ -3,10 +3,9 @@
 import os, json, re, sqlite3
 
 from config import config
-
-# Regular expression for comments
 from platform import system
 
+# Regular expression for comments
 comment_re = re.compile(
     '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
     re.DOTALL | re.MULTILINE

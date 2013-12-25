@@ -532,23 +532,29 @@ class PlayerSave():
     def set_wieldable(self, bag):
         self.data["inv"]["wieldable"] = bag
 
-    # TODO: none of these are working if replacing an existing item, they need
-    # to also set themselves in the equipment bag
     def set_head(self, main, glamor):
         self.data["head"] = main
+        self.data["inv"]["equipment"][0] = main
         self.data["head_glamor"] = glamor
+        self.data["inv"]["equipment"][4] = glamor
 
     def set_chest(self, main, glamor):
         self.data["chest"] = main
+        self.data["inv"]["equipment"][1] = main
         self.data["chest_glamor"] = glamor
+        self.data["inv"]["equipment"][5] = glamor
 
     def set_legs(self, main, glamor):
         self.data["legs"] = main
+        self.data["inv"]["equipment"][2] = main
         self.data["legs_glamor"] = glamor
+        self.data["inv"]["equipment"][6] = glamor
 
     def set_back(self, main, glamor):
         self.data["back"] = main
+        self.data["inv"]["equipment"][3] = main
         self.data["back_glamor"] = glamor
+        self.data["inv"]["equipment"][7] = glamor
 
     def get_race(self):
         return (self.data["race"][0].upper() + self.data["race"][1:])
