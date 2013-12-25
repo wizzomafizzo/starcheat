@@ -1,9 +1,9 @@
 # module for loading/indexing Starbound assets
 
 import os, json, re, sqlite3
+from platform import system
 
 from config import config
-from platform import system
 
 # Regular expression for comments
 comment_re = re.compile(
@@ -35,32 +35,99 @@ def parse_json(filename):
         # Return json file
         return json.loads(content)
 
-def init_db():
-    tables = ("create table items (name text, file text, category text, icon text, folder text)",)
-    db = sqlite3.connect(config["assets_db"])
-    c = db.cursor()
-    for q in tables:
-        c.execute(q)
-    db.commit()
-    db.close()
+class AssetsDb():
+    def __init__(self):
+        try:
+            open(config["assets_db"])
+        except FileNotFoundError:
+            self.init_db()
+
+        self.db = sqlite3.connect(config["assets_db"])
+
+    def init_db(self):
+        # TODO: move position of folder column in items table to match blueprints
+        tables = ("create table items (name text, file text, category text, icon text, folder text)",
+                  "create table blueprints (name text, filename text, folder text, category text)")
+        db = sqlite3.connect(config["assets_db"])
+        c = db.cursor()
+        for q in tables:
+            c.execute(q)
+        db.commit()
+        db.close()
+        Items().add_all_items()
+        Blueprints().add_all_blueprints()
+
+class Blueprints():
+    def __init__(self):
+        self.blueprints_folder = config["assets_folder"] + "/recipes"
+        self.db = AssetsDb().db
+
+    def file_index(self):
+        index = []
+        for root, dirs, files in os.walk(self.blueprints_folder):
+            for f in files:
+                if re.match(".*\.recipe", f) != None:
+                    index.append((f, root))
+        print("Found " + str(len(index)) + " blueprint files")
+        return index
+
+    def add_all_blueprints(self):
+        index = self.file_index()
+        blueprints = []
+        print("Indexing", end="")
+        for f in index:
+            full_path = f[1] + "/" + f[0]
+
+            try:
+                info = parse_json(full_path)
+            except ValueError:
+                continue
+
+            name = f[0].partition(".")[0]
+            filename = f[0]
+            folder = f[1]
+
+            try:
+                category = info["groups"][1]
+            except (KeyError, IndexError):
+                category = "other"
+
+            blueprints.append((name, filename, folder, category))
+            print(".", end="")
+        c = self.db.cursor()
+        q = "insert into blueprints values (?, ?, ?, ?)"
+        c.executemany(q, blueprints)
+        self.db.commit()
+        print("Done!")
+
+    def get_all_blueprints(self):
+        c = self.db.cursor()
+        c.execute("select * from blueprints order by name collate nocase")
+        return c.fetchall()
+
+    def get_categories(self):
+        c = self.db.cursor()
+        c.execute("select distinct category from blueprints order by category")
+        return c.fetchall()
+
+    def filter_blueprints(self, category, name):
+        if category == "<all>":
+            category = "%"
+        name = "%" + name + "%"
+        c = self.db.cursor()
+        q = "select * from blueprints where category like ? and name like ? order by name collate nocase"
+        c.execute(q, (category, name))
+        result = c.fetchall()
+        return result
 
 class Items():
     def __init__(self):
         self.items_folder = config["assets_folder"] + "/items"
         self.objects_folder = config["assets_folder"] + "/objects"
-        self.ignore_items = ".*\.(png|config|frames|generatedsword|generatedgun|generatedshield|coinitem)"
-
-        new = False
-        try:
-            open(config["assets_db"])
-        except FileNotFoundError:
-            new = True
-            init_db()
-
-        self.db = sqlite3.connect(config["assets_db"])
-
-        if new:
-            self.add_all_items()
+        #self.ignore_items = ".*\.(png|config|frames|generatedsword|generatedgun|generatedshield|coinitem)"
+        # no support for generate items yet but safe enough to import them
+        self.ignore_items = ".*\.(png|config|frames|coinitem)"
+        self.db = AssetsDb().db
 
     def file_index(self):
         index = []
@@ -72,13 +139,13 @@ class Items():
             for f in files:
                 if re.match(".*\.object$", f) != None:
                     index.append((f, root))
-        print("Found " + str(len(index)) + " files")
+        print("Found " + str(len(index)) + " item files")
         return index
 
     def add_all_items(self):
         index = self.file_index()
         items = []
-        print("Indexing item assets", end="")
+        print("Indexing", end="")
         for f in index:
             full_path = f[1] + "/" + f[0]
             try:

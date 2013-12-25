@@ -432,7 +432,7 @@ border-radius: 4px;
    <widget class="QLabel" name="backpack_label">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>370</x>
       <y>80</y>
       <width>66</width>
       <height>21</height>
@@ -448,7 +448,7 @@ border-radius: 4px;
    <widget class="QLabel" name="legs_label">
     <property name="geometry">
      <rect>
-      <x>535</x>
+      <x>545</x>
       <y>160</y>
       <width>66</width>
       <height>21</height>
@@ -464,8 +464,8 @@ border-radius: 4px;
    <widget class="QLabel" name="left_hand_label">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>150</y>
+      <x>341</x>
+      <y>160</y>
       <width>31</width>
       <height>20</height>
      </rect>
@@ -480,7 +480,7 @@ border-radius: 4px;
    <widget class="QLabel" name="chest_label">
     <property name="geometry">
      <rect>
-      <x>535</x>
+      <x>545</x>
       <y>100</y>
       <width>66</width>
       <height>21</height>
@@ -496,7 +496,7 @@ border-radius: 4px;
    <widget class="QLabel" name="head_label">
     <property name="geometry">
      <rect>
-      <x>535</x>
+      <x>545</x>
       <y>40</y>
       <width>66</width>
       <height>21</height>
@@ -512,7 +512,7 @@ border-radius: 4px;
    <widget class="QTabWidget" name="inv_tabs">
     <property name="geometry">
      <rect>
-      <x>318</x>
+      <x>317</x>
       <y>280</y>
       <width>326</width>
       <height>159</height>
@@ -804,8 +804,8 @@ border-radius: 4px;
    <widget class="QTableWidget" name="action_bar">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>230</y>
+      <x>319</x>
+      <y>240</y>
       <width>322</width>
       <height>34</height>
      </rect>
@@ -922,8 +922,8 @@ border-radius: 4px;
    <widget class="QTableWidget" name="wieldable">
     <property name="geometry">
      <rect>
-      <x>328</x>
-      <y>170</y>
+      <x>340</x>
+      <y>180</y>
       <width>66</width>
       <height>34</height>
      </rect>
@@ -1000,8 +1000,8 @@ border-radius: 4px;
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>328</x>
-      <y>210</y>
+      <x>320</x>
+      <y>220</y>
       <width>64</width>
       <height>21</height>
      </rect>
@@ -1013,7 +1013,7 @@ border-radius: 4px;
    <widget class="QTableWidget" name="legs">
     <property name="geometry">
      <rect>
-      <x>535</x>
+      <x>545</x>
       <y>180</y>
       <width>66</width>
       <height>34</height>
@@ -1091,7 +1091,7 @@ border-radius: 4px;
    <widget class="QTableWidget" name="chest">
     <property name="geometry">
      <rect>
-      <x>535</x>
+      <x>545</x>
       <y>120</y>
       <width>66</width>
       <height>34</height>
@@ -1169,7 +1169,7 @@ border-radius: 4px;
    <widget class="QTableWidget" name="back">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>370</x>
       <y>100</y>
       <width>66</width>
       <height>34</height>
@@ -1247,7 +1247,7 @@ border-radius: 4px;
    <widget class="QTableWidget" name="head">
     <property name="geometry">
      <rect>
-      <x>535</x>
+      <x>545</x>
       <y>60</y>
       <width>66</width>
       <height>34</height>
@@ -1341,7 +1341,7 @@ border-radius: 4px;
    <widget class="QLabel" name="pixels_label">
     <property name="geometry">
      <rect>
-      <x>488</x>
+      <x>320</x>
       <y>10</y>
       <width>41</width>
       <height>21</height>
@@ -1354,14 +1354,14 @@ border-radius: 4px;
      <string>Pixels</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QSpinBox" name="pixels">
     <property name="geometry">
      <rect>
-      <x>538</x>
-      <y>10</y>
+      <x>320</x>
+      <y>30</y>
       <width>101</width>
       <height>23</height>
      </rect>
@@ -1379,7 +1379,7 @@ border-radius: 4px;
    <widget class="QGraphicsView" name="player_pic">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>440</x>
       <y>60</y>
       <width>101</width>
       <height>151</height>
@@ -1389,8 +1389,8 @@ border-radius: 4px;
    <widget class="QLabel" name="left_hand_label_2">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>150</y>
+      <x>372</x>
+      <y>160</y>
       <width>31</width>
       <height>20</height>
      </rect>
@@ -1656,13 +1656,13 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="techs_button">
     <property name="enabled">
      <bool>false</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>560</x>
       <y>10</y>
       <width>81</width>
       <height>22</height>
@@ -1672,11 +1672,11 @@ border-radius: 4px;
      <string>Techs</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="blueprints_button">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>40</y>
+      <x>470</x>
+      <y>10</y>
       <width>81</width>
       <height>22</height>
      </rect>

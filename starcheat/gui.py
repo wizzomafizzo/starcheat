@@ -9,11 +9,11 @@ from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem
 from PyQt5.QtGui import QPixmap, QIcon, QImageReader
 
 import save_file, assets
-import qt_mainwindow, qt_itemedit, qt_itembrowser
+import qt_mainwindow, qt_itemedit, qt_itembrowser, qt_blueprints
 from config import config
 
 def inv_icon(item_name):
-    """Return an ItemWidget from item name with icon."""
+    """Return an ItemWidget with icon from item name."""
     icon_file = assets.Items().get_item_icon(item_name)
 
     if icon_file == None:
@@ -34,6 +34,11 @@ def empty_slot():
     """Return an empty bag slot widget."""
     return ItemWidget(save_file.empty_slot())
 
+# TODO: a decision needs to be made here whether to continue with the custom
+#       widget item or an entirely new custom table view. if the features below
+#       are easy enough to add then we'll just stick with the current method
+# TODO: swap items instead of overwriting
+# TODO: show count alongside icon
 # TODO: reimplement drag events, maybe custom table widget
 class ItemWidget(QTableWidgetItem):
     """Custom table wiget item with icon support and extra item variables."""
@@ -155,7 +160,7 @@ class ItemEdit():
         self.item_edit.variant.setRowCount(len(self.item.variant[1]))
         for i in range(len(self.item.variant[1])):
             key = QTableWidgetItem(self.item.variant[1][i][0])
-            value = QTableWidgetItem(str(self.item.variant[1][i][1]))
+            value = QTableWidgetItem(str(self.item.variant[1][i][1][1]))
             self.item_edit.variant.setItem(i, 0, key)
             self.item_edit.variant.setItem(i, 1, value)
 
@@ -203,6 +208,82 @@ class ItemEdit():
         # TODO: stuff like setting value max to maxstack
         self.item_edit.count.setValue(1)
 
+class BlueprintLib():
+    def __init__(self, parent, known_blueprints):
+        """Blueprint library management dialog."""
+        self.dialog = QDialog(parent)
+        self.blueprint_lib = qt_blueprints.Ui_Dialog()
+        self.blueprint_lib.setupUi(self.dialog)
+
+        self.blueprints = assets.Blueprints()
+        self.known_blueprints = known_blueprints
+
+        # populate known list
+        self.blueprint_lib.known_blueprints.clear()
+        for blueprint in self.known_blueprints:
+            self.blueprint_lib.known_blueprints.addItem(blueprint)
+
+        # populate initial available list
+        self.blueprint_lib.available_blueprints.clear()
+        for blueprint in self.blueprints.get_all_blueprints():
+            self.blueprint_lib.available_blueprints.addItem(blueprint[0])
+
+        # populate category combobox
+        for cat in self.blueprints.get_categories():
+            self.blueprint_lib.category.addItem(cat[0])
+
+        self.blueprint_lib.add_button.clicked.connect(self.add_blueprint)
+        self.blueprint_lib.remove_button.clicked.connect(self.remove_blueprint)
+
+        self.blueprint_lib.filter.textChanged.connect(self.update_available_list)
+        self.blueprint_lib.category.currentTextChanged.connect(self.update_available_list)
+
+        self.blueprint_lib.filter.setFocus()
+
+    def update_available_list(self):
+        """Populate available blueprints list based on current filter details."""
+        category = self.blueprint_lib.category.currentText()
+        name = self.blueprint_lib.filter.text()
+        result = self.blueprints.filter_blueprints(category, name)
+        self.blueprint_lib.available_blueprints.clear()
+        for blueprint in result:
+            self.blueprint_lib.available_blueprints.addItem(blueprint[0])
+        self.blueprint_lib.available_blueprints.setCurrentRow(0)
+
+    def add_blueprint(self):
+        """Add currently select blueprint in available list to known list."""
+        try:
+            selected = self.blueprint_lib.available_blueprints.currentItem().text()
+        except AttributeError:
+            return
+
+        if selected in self.known_blueprints:
+            return
+
+        self.known_blueprints.append(selected)
+        self.known_blueprints.sort()
+
+        self.blueprint_lib.known_blueprints.clear()
+        for blueprint in self.known_blueprints:
+            self.blueprint_lib.known_blueprints.addItem(blueprint)
+
+    def remove_blueprint(self):
+        """Remove currently selected blueprint in known list."""
+        try:
+            selected = self.blueprint_lib.known_blueprints.currentItem().text()
+        except AttributeError:
+            return
+
+        self.known_blueprints.remove(selected)
+        self.known_blueprints.sort()
+
+        self.blueprint_lib.known_blueprints.clear()
+        for blueprint in self.known_blueprints:
+            self.blueprint_lib.known_blueprints.addItem(blueprint)
+
+    def get_known_list(self):
+        return self.known_blueprints
+
 class MainWindow():
     def __init__(self):
         """Display the main starcheat window."""
@@ -213,10 +294,13 @@ class MainWindow():
 
         self.filename = None
         self.items = assets.Items()
+
         # atm we only support one of each dialog at a time, don't think this
         # will be a problem tho
+        # TODO: some really weird behaviour here w/ blueprint
         self.item_browser = None
         self.item_edit = None
+        self.blueprint_lib = None
 
         # populate race combo box
         for race in save_file.race_types:
@@ -255,6 +339,7 @@ class MainWindow():
             getattr(self.ui, b).setDragEnabled(True)
             getattr(self.ui, b).setTabKeyNavigation(False)
 
+        self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.name.setFocus()
 
         self.window.show()
@@ -398,6 +483,17 @@ class MainWindow():
 
     def new_wieldable_item_edit(self):
         self.new_item_edit(self.ui.wieldable)
+
+    def new_blueprint_edit(self):
+        # TODO: why does this only work with and instance var but the other
+        # ones don't...???
+        self.blueprint_lib = BlueprintLib(self.window, self.player.get_blueprints())
+
+        def update_blueprints():
+            self.player.set_blueprints(self.blueprint_lib.get_known_list())
+
+        self.blueprint_lib.dialog.accepted.connect(update_blueprints)
+        self.blueprint_lib.dialog.show()
 
     def update_energy(self):
         self.ui.energy.setMaximum(self.ui.max_energy.value())

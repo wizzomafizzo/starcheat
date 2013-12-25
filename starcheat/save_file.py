@@ -568,6 +568,16 @@ class PlayerSave():
     def get_description(self):
         return self.data["description"]
 
+    # blueprints are stored identically to inventory slots but as far as i've
+    # seen there is never any variant data stored. let's just convert to a
+    # regular list
+    def get_blueprints(self):
+        blueprints = [x[0] for x in self.data["blueprint_lib"]]
+        return blueprints
+
+    def set_blueprints(self, blueprints):
+        self.data["blueprint_lib"] = [(x, 1, (7, [])) for x in blueprints]
+
     def set_name(self, name):
         self.data["name"] = name
 
