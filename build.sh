@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-files=(assets.py  config.py  gui.py  save_file.py  starcheat  starcheat.ini)
+files=(assets.py config.py gui.py save_file.py starcheat.py starcheat.ini)
 templates=(ItemEdit.ui Blueprints.ui MainWindow.ui ItemBrowser.ui)
 
 [[ -d build/ ]] && rm -rf build/

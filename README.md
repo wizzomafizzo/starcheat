@@ -13,12 +13,16 @@ requirements:
 - [qt5](http://qt-project.org/downloads)
 - [pyqt5](http://www.riverbankcomputing.com/software/pyqt/download5)
 
-before setup, update starcheat/starcheat.ini with your own Starbound binary and asset folders
+before setup:
+- install all software listed in the requirements section
+- update starcheat/starcheat.ini with your own Starbound binary and asset folders
 
-setup:
-- [WINDOWS] > ./build.bat
-- [LINUX] > ./build.sh
-- > cd build/
+windows:
+- run the build.bat from the top starcheat folder
+- go to newly create build/ folder
+- double click starcheat.py
 
-usage:
-- > ./starcheat
+linux:
+- $ ./build.sh
+- $ cd build/
+- $ ./starcheat.py
