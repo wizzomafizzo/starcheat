@@ -4,9 +4,7 @@ starcheat
 Starbound character editor, you can get free pixels with this (amazing)
 
 ![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/screen1.png)
-![oh wow](https://raw.github.com/wizzomafizzo/starcheat/master/screen2.png)
-![bazimpa](https://raw.github.com/wizzomafizzo/starcheat/master/screen3.png)
-![seattle](https://raw.github.com/wizzomafizzo/starcheat/master/screen4.png)
+![bazimpa](https://raw.github.com/wizzomafizzo/starcheat/master/screen2.png)
 
 requirements:
 - [python 3](http://www.python.org/getit/)
