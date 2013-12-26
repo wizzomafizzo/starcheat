@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>654</width>
+    <width>804</width>
     <height>490</height>
    </rect>
   </property>
@@ -18,13 +18,13 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>654</width>
+    <width>804</width>
     <height>490</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>654</width>
+    <width>804</width>
     <height>490</height>
    </size>
   </property>
@@ -360,12 +360,12 @@ border-radius: 4px;
      <rect>
       <x>10</x>
       <y>300</y>
-      <width>46</width>
+      <width>51</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Food</string>
+     <string>Hunger</string>
     </property>
    </widget>
    <widget class="QSlider" name="warmth">
@@ -432,9 +432,9 @@ border-radius: 4px;
    <widget class="QLabel" name="backpack_label">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>80</y>
-      <width>66</width>
+      <x>458</x>
+      <y>50</y>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>
@@ -448,9 +448,9 @@ border-radius: 4px;
    <widget class="QLabel" name="legs_label">
     <property name="geometry">
      <rect>
-      <x>545</x>
-      <y>160</y>
-      <width>66</width>
+      <x>673</x>
+      <y>140</y>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>
@@ -464,8 +464,8 @@ border-radius: 4px;
    <widget class="QLabel" name="left_hand_label">
     <property name="geometry">
      <rect>
-      <x>341</x>
-      <y>160</y>
+      <x>464</x>
+      <y>140</y>
       <width>31</width>
       <height>20</height>
      </rect>
@@ -480,9 +480,9 @@ border-radius: 4px;
    <widget class="QLabel" name="chest_label">
     <property name="geometry">
      <rect>
-      <x>545</x>
-      <y>100</y>
-      <width>66</width>
+      <x>673</x>
+      <y>80</y>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>
@@ -496,9 +496,9 @@ border-radius: 4px;
    <widget class="QLabel" name="head_label">
     <property name="geometry">
      <rect>
-      <x>545</x>
-      <y>40</y>
-      <width>66</width>
+      <x>673</x>
+      <y>20</y>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>
@@ -513,9 +513,9 @@ border-radius: 4px;
     <property name="geometry">
      <rect>
       <x>317</x>
-      <y>280</y>
-      <width>326</width>
-      <height>159</height>
+      <y>310</y>
+      <width>476</width>
+      <height>131</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -530,8 +530,8 @@ border-radius: 4px;
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>322</width>
-        <height>130</height>
+        <width>472</width>
+        <height>102</height>
        </rect>
       </property>
       <property name="font">
@@ -576,19 +576,19 @@ border-radius: 4px;
        <bool>false</bool>
       </attribute>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>32</number>
+       <number>47</number>
       </attribute>
       <attribute name="horizontalHeaderMinimumSectionSize">
-       <number>32</number>
+       <number>47</number>
       </attribute>
       <attribute name="verticalHeaderVisible">
        <bool>false</bool>
       </attribute>
       <attribute name="verticalHeaderDefaultSectionSize">
-       <number>32</number>
+       <number>25</number>
       </attribute>
       <attribute name="verticalHeaderMinimumSectionSize">
-       <number>32</number>
+       <number>25</number>
       </attribute>
       <row>
        <property name="text">
@@ -671,8 +671,8 @@ border-radius: 4px;
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>322</width>
-        <height>130</height>
+        <width>472</width>
+        <height>103</height>
        </rect>
       </property>
       <property name="font">
@@ -714,19 +714,19 @@ border-radius: 4px;
        <bool>false</bool>
       </attribute>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>32</number>
+       <number>47</number>
       </attribute>
       <attribute name="horizontalHeaderMinimumSectionSize">
-       <number>32</number>
+       <number>47</number>
       </attribute>
       <attribute name="verticalHeaderVisible">
        <bool>false</bool>
       </attribute>
       <attribute name="verticalHeaderDefaultSectionSize">
-       <number>32</number>
+       <number>25</number>
       </attribute>
       <attribute name="verticalHeaderMinimumSectionSize">
-       <number>32</number>
+       <number>25</number>
       </attribute>
       <row>
        <property name="text">
@@ -805,9 +805,9 @@ border-radius: 4px;
     <property name="geometry">
      <rect>
       <x>319</x>
-      <y>240</y>
-      <width>322</width>
-      <height>34</height>
+      <y>270</y>
+      <width>472</width>
+      <height>27</height>
      </rect>
     </property>
     <property name="font">
@@ -849,19 +849,19 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="verticalHeaderVisible">
      <bool>false</bool>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <attribute name="verticalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <row>
      <property name="text">
@@ -922,10 +922,10 @@ border-radius: 4px;
    <widget class="QTableWidget" name="wieldable">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>180</y>
-      <width>66</width>
-      <height>34</height>
+      <x>455</x>
+      <y>160</y>
+      <width>96</width>
+      <height>27</height>
      </rect>
     </property>
     <property name="font">
@@ -964,10 +964,10 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="horizontalHeaderStretchLastSection">
      <bool>true</bool>
@@ -976,10 +976,10 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <attribute name="verticalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <row>
      <property name="text">
@@ -1001,7 +1001,7 @@ border-radius: 4px;
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>220</y>
+      <y>250</y>
       <width>64</width>
       <height>21</height>
      </rect>
@@ -1013,10 +1013,10 @@ border-radius: 4px;
    <widget class="QTableWidget" name="legs">
     <property name="geometry">
      <rect>
-      <x>545</x>
-      <y>180</y>
-      <width>66</width>
-      <height>34</height>
+      <x>671</x>
+      <y>160</y>
+      <width>96</width>
+      <height>27</height>
      </rect>
     </property>
     <property name="font">
@@ -1055,10 +1055,10 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="horizontalHeaderStretchLastSection">
      <bool>true</bool>
@@ -1067,10 +1067,10 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <attribute name="verticalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <row>
      <property name="text">
@@ -1091,10 +1091,10 @@ border-radius: 4px;
    <widget class="QTableWidget" name="chest">
     <property name="geometry">
      <rect>
-      <x>545</x>
-      <y>120</y>
-      <width>66</width>
-      <height>34</height>
+      <x>671</x>
+      <y>100</y>
+      <width>96</width>
+      <height>27</height>
      </rect>
     </property>
     <property name="font">
@@ -1133,10 +1133,10 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="horizontalHeaderStretchLastSection">
      <bool>true</bool>
@@ -1145,10 +1145,10 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <attribute name="verticalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <row>
      <property name="text">
@@ -1169,10 +1169,10 @@ border-radius: 4px;
    <widget class="QTableWidget" name="back">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>100</y>
-      <width>66</width>
-      <height>34</height>
+      <x>456</x>
+      <y>70</y>
+      <width>96</width>
+      <height>27</height>
      </rect>
     </property>
     <property name="font">
@@ -1211,10 +1211,10 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="horizontalHeaderStretchLastSection">
      <bool>true</bool>
@@ -1223,10 +1223,10 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <attribute name="verticalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <row>
      <property name="text">
@@ -1247,10 +1247,10 @@ border-radius: 4px;
    <widget class="QTableWidget" name="head">
     <property name="geometry">
      <rect>
-      <x>545</x>
-      <y>60</y>
-      <width>66</width>
-      <height>34</height>
+      <x>671</x>
+      <y>40</y>
+      <width>96</width>
+      <height>27</height>
      </rect>
     </property>
     <property name="font">
@@ -1289,10 +1289,10 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>47</number>
     </attribute>
     <attribute name="horizontalHeaderStretchLastSection">
      <bool>true</bool>
@@ -1301,10 +1301,10 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <attribute name="verticalHeaderMinimumSectionSize">
-     <number>32</number>
+     <number>25</number>
     </attribute>
     <row>
      <property name="text">
@@ -1379,18 +1379,18 @@ border-radius: 4px;
    <widget class="QGraphicsView" name="player_pic">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>60</y>
+      <x>561</x>
+      <y>40</y>
       <width>101</width>
-      <height>151</height>
+      <height>146</height>
      </rect>
     </property>
    </widget>
    <widget class="QLabel" name="left_hand_label_2">
     <property name="geometry">
      <rect>
-      <x>372</x>
-      <y>160</y>
+      <x>510</x>
+      <y>140</y>
       <width>31</width>
       <height>20</height>
      </rect>
@@ -1656,33 +1656,17 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="techs_button">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>560</x>
-      <y>10</y>
-      <width>81</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Techs</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="blueprints_button">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>10</y>
-      <width>81</width>
+      <x>320</x>
+      <y>60</y>
+      <width>101</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
-     <string>Blueprints</string>
+     <string>Recipes</string>
     </property>
    </widget>
   </widget>
@@ -1691,7 +1675,7 @@ border-radius: 4px;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>654</width>
+     <width>804</width>
      <height>19</height>
     </rect>
    </property>

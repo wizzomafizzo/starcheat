@@ -13,8 +13,12 @@ import qt_mainwindow, qt_itemedit, qt_itembrowser, qt_blueprints
 from config import config
 
 def inv_icon(item_name):
-    """Return an ItemWidget with icon from item name."""
     icon_file = assets.Items().get_item_icon(item_name)
+
+    try:
+        open(icon_file[0])
+    except:
+        return None
 
     if icon_file == None:
         return None
@@ -47,13 +51,21 @@ class ItemWidget(QTableWidgetItem):
         self.item_count = item[1]
         self.variant = item[2]
         QTableWidgetItem.__init__(self, self.name)
-        self.setTextAlignment(QtCore.Qt.AlignCenter)
-        try:
-            self.setIcon(QtGui.QIcon(inv_icon(self.name)))
-        except TypeError:
-            pass
+        self.setTextAlignment(QtCore.Qt.AlignVCenter)
+
         if self.name != "":
             self.setToolTip(self.name + " (" + str(self.item_count) + ")")
+        else:
+            return
+
+        icon = inv_icon(self.name)
+        try:
+            self.setIcon(QtGui.QIcon(icon))
+        except TypeError:
+            pass
+
+        if type(icon) is QPixmap:
+            self.setText(str(self.item_count))
 
 def pretty_variant(variant):
     variant_type = variant[0]
@@ -88,6 +100,7 @@ class ItemVariant(QTableWidgetItem):
 
         item_text = self.variant_name + ": " + pretty_variant(variant[1])
         QTableWidgetItem.__init__(self, item_text)
+        self.setToolTip(item_text)
 
         if self.variant_type == 2:
             print(2)
@@ -213,6 +226,11 @@ class ItemEdit():
 
         self.item_edit.item_type.setFocus()
 
+        self.item_dialog.show()
+
+        if self.item.name == "":
+            self.new_item_browser()
+
     def update_item(self):
         """Update main item view with current item data."""
         name = self.item_edit.item_type.text()
@@ -254,8 +272,6 @@ class ItemEdit():
         self.item_edit.item_type.setText(self.item_browser.get_selection())
         # TODO: stuff like setting value max to maxstack
         self.item_edit.count.setValue(1)
-
-
 
 class BlueprintLib():
     def __init__(self, parent, known_blueprints):
@@ -390,7 +406,7 @@ class MainWindow():
             getattr(self.ui, b).cellDoubleClicked.connect(item_edit)
             # TODO: once drag is redone, fix up the .ui file and remove all this
             getattr(self.ui, b).setAcceptDrops(False)
-            getattr(self.ui, b).setDragDropOverwriteMode(True)
+            getattr(self.ui, b).setDragDropOverwriteMode(False)
             getattr(self.ui, b).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
             getattr(self.ui, b).setDefaultDropAction(QtCore.Qt.MoveAction)
             getattr(self.ui, b).setDragEnabled(True)
@@ -514,7 +530,6 @@ class MainWindow():
 
         item_edit.item_dialog.accepted.connect(update_slot)
         item_edit.item_edit.trash_button.clicked.connect(trash_slot)
-        item_edit.item_dialog.show()
 
     # these are used for connecting the item edit dialog to bag tables
     def new_main_bag_item_edit(self):

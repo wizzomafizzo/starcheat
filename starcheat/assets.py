@@ -124,6 +124,7 @@ class Items():
     def __init__(self):
         self.items_folder = config["assets_folder"] + "/items"
         self.objects_folder = config["assets_folder"] + "/objects"
+        self.tech_folder = config["assets_folder"] + "/tech"
         #self.ignore_items = ".*\.(png|config|frames|generatedsword|generatedgun|generatedshield|coinitem)"
         # no support for generate items yet but safe enough to import them
         self.ignore_items = ".*\.(png|config|frames|coinitem)"
@@ -138,6 +139,10 @@ class Items():
         for root, dirs, files in os.walk(self.objects_folder):
             for f in files:
                 if re.match(".*\.object$", f) != None:
+                    index.append((f, root))
+        for root, dirs, files in os.walk(self.tech_folder):
+            for f in files:
+                if re.match(".*\.techitem$", f) != None:
                     index.append((f, root))
         print("Found " + str(len(index)) + " item files")
         return index
@@ -166,9 +171,16 @@ class Items():
             category = f[0].partition(".")[2]
 
             try:
-                icon = f[1] + "/" + info["inventoryIcon"]
+                asset_icon = info["inventoryIcon"]
+                if re.match(".*\.techitem$", f[0]):
+                    icon = config["assets_folder"] + asset_icon
+                    # index dynamic tech chip items too
+                    chip_name = name + "-chip"
+                    items.append((chip_name, filename, category, icon, path))
+                else:
+                    icon = f[1] + "/" + info["inventoryIcon"]
             except KeyError:
-                icon = ""
+                icon = config["assets_folder"] + "/interface/inventory/x.png"
 
             items.append((name, filename, category, icon, path))
             print(".", end="")

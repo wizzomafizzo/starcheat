@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Manage Blueprints</string>
+   <string>Manage Recipes</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -145,7 +145,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Known Blueprints</string>
+    <string>Known Recipes</string>
    </property>
   </widget>
  </widget>
