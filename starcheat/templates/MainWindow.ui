@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>804</width>
+    <width>718</width>
     <height>490</height>
    </rect>
   </property>
@@ -18,13 +18,13 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>804</width>
+    <width>718</width>
     <height>490</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>804</width>
+    <width>718</width>
     <height>490</height>
    </size>
   </property>
@@ -432,9 +432,9 @@ border-radius: 4px;
    <widget class="QLabel" name="backpack_label">
     <property name="geometry">
      <rect>
-      <x>458</x>
-      <y>50</y>
-      <width>91</width>
+      <x>426</x>
+      <y>40</y>
+      <width>78</width>
       <height>21</height>
      </rect>
     </property>
@@ -448,9 +448,9 @@ border-radius: 4px;
    <widget class="QLabel" name="legs_label">
     <property name="geometry">
      <rect>
-      <x>673</x>
-      <y>140</y>
-      <width>91</width>
+      <x>623</x>
+      <y>130</y>
+      <width>78</width>
       <height>21</height>
      </rect>
     </property>
@@ -461,28 +461,12 @@ border-radius: 4px;
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="left_hand_label">
-    <property name="geometry">
-     <rect>
-      <x>464</x>
-      <y>140</y>
-      <width>31</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>L</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="chest_label">
     <property name="geometry">
      <rect>
-      <x>673</x>
-      <y>80</y>
-      <width>91</width>
+      <x>623</x>
+      <y>70</y>
+      <width>78</width>
       <height>21</height>
      </rect>
     </property>
@@ -496,9 +480,9 @@ border-radius: 4px;
    <widget class="QLabel" name="head_label">
     <property name="geometry">
      <rect>
-      <x>673</x>
-      <y>20</y>
-      <width>91</width>
+      <x>623</x>
+      <y>10</y>
+      <width>78</width>
       <height>21</height>
      </rect>
     </property>
@@ -512,10 +496,10 @@ border-radius: 4px;
    <widget class="QTabWidget" name="inv_tabs">
     <property name="geometry">
      <rect>
-      <x>317</x>
-      <y>310</y>
-      <width>476</width>
-      <height>131</height>
+      <x>319</x>
+      <y>260</y>
+      <width>386</width>
+      <height>183</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -530,14 +514,17 @@ border-radius: 4px;
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>472</width>
-        <height>102</height>
+        <width>382</width>
+        <height>154</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>7</pointsize>
+        <pointsize>36</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
       </property>
       <property name="verticalScrollBarPolicy">
        <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -551,6 +538,9 @@ border-radius: 4px;
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
+      <property name="tabKeyNavigation">
+       <bool>false</bool>
+      </property>
       <property name="dragEnabled">
        <bool>true</bool>
       </property>
@@ -563,8 +553,14 @@ border-radius: 4px;
       <property name="defaultDropAction">
        <enum>Qt::MoveAction</enum>
       </property>
-      <property name="alternatingRowColors">
-       <bool>false</bool>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
       </property>
       <property name="cornerButtonEnabled">
        <bool>false</bool>
@@ -576,19 +572,19 @@ border-radius: 4px;
        <bool>false</bool>
       </attribute>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>47</number>
+       <number>38</number>
       </attribute>
       <attribute name="horizontalHeaderMinimumSectionSize">
-       <number>47</number>
+       <number>38</number>
       </attribute>
       <attribute name="verticalHeaderVisible">
        <bool>false</bool>
       </attribute>
       <attribute name="verticalHeaderDefaultSectionSize">
-       <number>25</number>
+       <number>38</number>
       </attribute>
       <attribute name="verticalHeaderMinimumSectionSize">
-       <number>25</number>
+       <number>38</number>
       </attribute>
       <row>
        <property name="text">
@@ -671,14 +667,17 @@ border-radius: 4px;
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>472</width>
-        <height>103</height>
+        <width>382</width>
+        <height>154</height>
        </rect>
       </property>
       <property name="font">
        <font>
         <pointsize>7</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
       </property>
       <property name="verticalScrollBarPolicy">
        <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -692,17 +691,29 @@ border-radius: 4px;
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
+      <property name="tabKeyNavigation">
+       <bool>false</bool>
+      </property>
       <property name="dragEnabled">
        <bool>true</bool>
       </property>
+      <property name="dragDropOverwriteMode">
+       <bool>false</bool>
+      </property>
       <property name="dragDropMode">
-       <enum>QAbstractItemView::DragDrop</enum>
+       <enum>QAbstractItemView::InternalMove</enum>
       </property>
       <property name="defaultDropAction">
        <enum>Qt::MoveAction</enum>
       </property>
-      <property name="alternatingRowColors">
-       <bool>false</bool>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
       </property>
       <property name="cornerButtonEnabled">
        <bool>false</bool>
@@ -714,19 +725,19 @@ border-radius: 4px;
        <bool>false</bool>
       </attribute>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>47</number>
+       <number>38</number>
       </attribute>
       <attribute name="horizontalHeaderMinimumSectionSize">
-       <number>47</number>
+       <number>38</number>
       </attribute>
       <attribute name="verticalHeaderVisible">
        <bool>false</bool>
       </attribute>
       <attribute name="verticalHeaderDefaultSectionSize">
-       <number>25</number>
+       <number>38</number>
       </attribute>
       <attribute name="verticalHeaderMinimumSectionSize">
-       <number>25</number>
+       <number>38</number>
       </attribute>
       <row>
        <property name="text">
@@ -804,16 +815,19 @@ border-radius: 4px;
    <widget class="QTableWidget" name="action_bar">
     <property name="geometry">
      <rect>
-      <x>319</x>
-      <y>270</y>
-      <width>472</width>
-      <height>27</height>
+      <x>320</x>
+      <y>210</y>
+      <width>382</width>
+      <height>40</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <pointsize>7</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
     </property>
     <property name="verticalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -827,6 +841,9 @@ border-radius: 4px;
     <property name="editTriggers">
      <set>QAbstractItemView::NoEditTriggers</set>
     </property>
+    <property name="tabKeyNavigation">
+     <bool>false</bool>
+    </property>
     <property name="dragEnabled">
      <bool>true</bool>
     </property>
@@ -839,8 +856,14 @@ border-radius: 4px;
     <property name="defaultDropAction">
      <enum>Qt::MoveAction</enum>
     </property>
-    <property name="alternatingRowColors">
-     <bool>false</bool>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
     </property>
     <property name="cornerButtonEnabled">
      <bool>false</bool>
@@ -849,19 +872,19 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>47</number>
+     <number>38</number>
     </attribute>
     <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>47</number>
+     <number>38</number>
     </attribute>
     <attribute name="verticalHeaderVisible">
      <bool>false</bool>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>25</number>
+     <number>38</number>
     </attribute>
     <attribute name="verticalHeaderMinimumSectionSize">
-     <number>25</number>
+     <number>38</number>
     </attribute>
     <row>
      <property name="text">
@@ -919,89 +942,11 @@ border-radius: 4px;
      </property>
     </column>
    </widget>
-   <widget class="QTableWidget" name="wieldable">
-    <property name="geometry">
-     <rect>
-      <x>455</x>
-      <y>160</y>
-      <width>96</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>7</pointsize>
-     </font>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="autoScroll">
-     <bool>false</bool>
-    </property>
-    <property name="editTriggers">
-     <set>QAbstractItemView::NoEditTriggers</set>
-    </property>
-    <property name="dragEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="dragDropMode">
-     <enum>QAbstractItemView::DragDrop</enum>
-    </property>
-    <property name="defaultDropAction">
-     <enum>Qt::MoveAction</enum>
-    </property>
-    <property name="alternatingRowColors">
-     <bool>false</bool>
-    </property>
-    <property name="cornerButtonEnabled">
-     <bool>false</bool>
-    </property>
-    <attribute name="horizontalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>47</number>
-    </attribute>
-    <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>47</number>
-    </attribute>
-    <attribute name="horizontalHeaderStretchLastSection">
-     <bool>true</bool>
-    </attribute>
-    <attribute name="verticalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="verticalHeaderDefaultSectionSize">
-     <number>25</number>
-    </attribute>
-    <attribute name="verticalHeaderMinimumSectionSize">
-     <number>25</number>
-    </attribute>
-    <row>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </row>
-    <column>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>2</string>
-     </property>
-    </column>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>250</y>
+      <x>324</x>
+      <y>190</y>
       <width>64</width>
       <height>21</height>
      </rect>
@@ -1010,175 +955,22 @@ border-radius: 4px;
      <string>Action Bar</string>
     </property>
    </widget>
-   <widget class="QTableWidget" name="legs">
-    <property name="geometry">
-     <rect>
-      <x>671</x>
-      <y>160</y>
-      <width>96</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>7</pointsize>
-     </font>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="autoScroll">
-     <bool>false</bool>
-    </property>
-    <property name="editTriggers">
-     <set>QAbstractItemView::NoEditTriggers</set>
-    </property>
-    <property name="dragEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="dragDropMode">
-     <enum>QAbstractItemView::DragDrop</enum>
-    </property>
-    <property name="defaultDropAction">
-     <enum>Qt::MoveAction</enum>
-    </property>
-    <property name="alternatingRowColors">
-     <bool>false</bool>
-    </property>
-    <property name="cornerButtonEnabled">
-     <bool>false</bool>
-    </property>
-    <attribute name="horizontalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>47</number>
-    </attribute>
-    <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>47</number>
-    </attribute>
-    <attribute name="horizontalHeaderStretchLastSection">
-     <bool>true</bool>
-    </attribute>
-    <attribute name="verticalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="verticalHeaderDefaultSectionSize">
-     <number>25</number>
-    </attribute>
-    <attribute name="verticalHeaderMinimumSectionSize">
-     <number>25</number>
-    </attribute>
-    <row>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </row>
-    <column>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>2</string>
-     </property>
-    </column>
-   </widget>
-   <widget class="QTableWidget" name="chest">
-    <property name="geometry">
-     <rect>
-      <x>671</x>
-      <y>100</y>
-      <width>96</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>7</pointsize>
-     </font>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="autoScroll">
-     <bool>false</bool>
-    </property>
-    <property name="editTriggers">
-     <set>QAbstractItemView::NoEditTriggers</set>
-    </property>
-    <property name="dragEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="dragDropMode">
-     <enum>QAbstractItemView::DragDrop</enum>
-    </property>
-    <property name="defaultDropAction">
-     <enum>Qt::MoveAction</enum>
-    </property>
-    <property name="alternatingRowColors">
-     <bool>false</bool>
-    </property>
-    <property name="cornerButtonEnabled">
-     <bool>false</bool>
-    </property>
-    <attribute name="horizontalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>47</number>
-    </attribute>
-    <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>47</number>
-    </attribute>
-    <attribute name="horizontalHeaderStretchLastSection">
-     <bool>true</bool>
-    </attribute>
-    <attribute name="verticalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="verticalHeaderDefaultSectionSize">
-     <number>25</number>
-    </attribute>
-    <attribute name="verticalHeaderMinimumSectionSize">
-     <number>25</number>
-    </attribute>
-    <row>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </row>
-    <column>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>2</string>
-     </property>
-    </column>
-   </widget>
    <widget class="QTableWidget" name="back">
     <property name="geometry">
      <rect>
-      <x>456</x>
-      <y>70</y>
-      <width>96</width>
-      <height>27</height>
+      <x>426</x>
+      <y>60</y>
+      <width>78</width>
+      <height>40</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <pointsize>7</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
     </property>
     <property name="verticalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -1192,17 +984,29 @@ border-radius: 4px;
     <property name="editTriggers">
      <set>QAbstractItemView::NoEditTriggers</set>
     </property>
+    <property name="tabKeyNavigation">
+     <bool>false</bool>
+    </property>
     <property name="dragEnabled">
      <bool>true</bool>
     </property>
+    <property name="dragDropOverwriteMode">
+     <bool>false</bool>
+    </property>
     <property name="dragDropMode">
-     <enum>QAbstractItemView::DragDrop</enum>
+     <enum>QAbstractItemView::InternalMove</enum>
     </property>
     <property name="defaultDropAction">
      <enum>Qt::MoveAction</enum>
     </property>
-    <property name="alternatingRowColors">
-     <bool>false</bool>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
     </property>
     <property name="cornerButtonEnabled">
      <bool>false</bool>
@@ -1211,100 +1015,19 @@ border-radius: 4px;
      <bool>false</bool>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>47</number>
+     <number>38</number>
     </attribute>
     <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>47</number>
-    </attribute>
-    <attribute name="horizontalHeaderStretchLastSection">
-     <bool>true</bool>
+     <number>38</number>
     </attribute>
     <attribute name="verticalHeaderVisible">
      <bool>false</bool>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>25</number>
+     <number>38</number>
     </attribute>
     <attribute name="verticalHeaderMinimumSectionSize">
-     <number>25</number>
-    </attribute>
-    <row>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </row>
-    <column>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>2</string>
-     </property>
-    </column>
-   </widget>
-   <widget class="QTableWidget" name="head">
-    <property name="geometry">
-     <rect>
-      <x>671</x>
-      <y>40</y>
-      <width>96</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>7</pointsize>
-     </font>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="autoScroll">
-     <bool>false</bool>
-    </property>
-    <property name="editTriggers">
-     <set>QAbstractItemView::NoEditTriggers</set>
-    </property>
-    <property name="dragEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="dragDropMode">
-     <enum>QAbstractItemView::DragDrop</enum>
-    </property>
-    <property name="defaultDropAction">
-     <enum>Qt::MoveAction</enum>
-    </property>
-    <property name="alternatingRowColors">
-     <bool>false</bool>
-    </property>
-    <property name="cornerButtonEnabled">
-     <bool>false</bool>
-    </property>
-    <attribute name="horizontalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>47</number>
-    </attribute>
-    <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>47</number>
-    </attribute>
-    <attribute name="horizontalHeaderStretchLastSection">
-     <bool>true</bool>
-    </attribute>
-    <attribute name="verticalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="verticalHeaderDefaultSectionSize">
-     <number>25</number>
-    </attribute>
-    <attribute name="verticalHeaderMinimumSectionSize">
-     <number>25</number>
+     <number>38</number>
     </attribute>
     <row>
      <property name="text">
@@ -1341,7 +1064,7 @@ border-radius: 4px;
    <widget class="QLabel" name="pixels_label">
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>324</x>
       <y>10</y>
       <width>41</width>
       <height>21</height>
@@ -1362,7 +1085,7 @@ border-radius: 4px;
      <rect>
       <x>320</x>
       <y>30</y>
-      <width>101</width>
+      <width>91</width>
       <height>23</height>
      </rect>
     </property>
@@ -1379,24 +1102,24 @@ border-radius: 4px;
    <widget class="QGraphicsView" name="player_pic">
     <property name="geometry">
      <rect>
-      <x>561</x>
-      <y>40</y>
+      <x>513</x>
+      <y>30</y>
       <width>101</width>
-      <height>146</height>
+      <height>161</height>
      </rect>
     </property>
    </widget>
    <widget class="QLabel" name="left_hand_label_2">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>140</y>
-      <width>31</width>
+      <x>426</x>
+      <y>130</y>
+      <width>78</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>R</string>
+     <string>Wielded</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1541,7 +1264,7 @@ border-radius: 4px;
      <string>UUID</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="ver_label">
@@ -1565,7 +1288,7 @@ border-radius: 4px;
      <string>Save Ver</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
@@ -1661,12 +1384,404 @@ border-radius: 4px;
      <rect>
       <x>320</x>
       <y>60</y>
-      <width>101</width>
+      <width>91</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
      <string>Recipes</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="wieldable">
+    <property name="geometry">
+     <rect>
+      <x>426</x>
+      <y>150</y>
+      <width>78</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>7</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="autoScroll">
+     <bool>false</bool>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="tabKeyNavigation">
+     <bool>false</bool>
+    </property>
+    <property name="dragEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="dragDropOverwriteMode">
+     <bool>false</bool>
+    </property>
+    <property name="dragDropMode">
+     <enum>QAbstractItemView::InternalMove</enum>
+    </property>
+    <property name="defaultDropAction">
+     <enum>Qt::MoveAction</enum>
+    </property>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+    <property name="cornerButtonEnabled">
+     <bool>false</bool>
+    </property>
+    <attribute name="horizontalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="horizontalHeaderMinimumSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderDefaultSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="verticalHeaderMinimumSectionSize">
+     <number>38</number>
+    </attribute>
+    <row>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>2</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QTableWidget" name="head">
+    <property name="geometry">
+     <rect>
+      <x>623</x>
+      <y>30</y>
+      <width>78</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>7</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="autoScroll">
+     <bool>false</bool>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="tabKeyNavigation">
+     <bool>false</bool>
+    </property>
+    <property name="dragEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="dragDropOverwriteMode">
+     <bool>false</bool>
+    </property>
+    <property name="dragDropMode">
+     <enum>QAbstractItemView::InternalMove</enum>
+    </property>
+    <property name="defaultDropAction">
+     <enum>Qt::MoveAction</enum>
+    </property>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+    <property name="cornerButtonEnabled">
+     <bool>false</bool>
+    </property>
+    <attribute name="horizontalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="horizontalHeaderMinimumSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderDefaultSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="verticalHeaderMinimumSectionSize">
+     <number>38</number>
+    </attribute>
+    <row>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>2</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QTableWidget" name="chest">
+    <property name="geometry">
+     <rect>
+      <x>623</x>
+      <y>90</y>
+      <width>78</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>7</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="autoScroll">
+     <bool>false</bool>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="tabKeyNavigation">
+     <bool>false</bool>
+    </property>
+    <property name="dragEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="dragDropOverwriteMode">
+     <bool>false</bool>
+    </property>
+    <property name="dragDropMode">
+     <enum>QAbstractItemView::InternalMove</enum>
+    </property>
+    <property name="defaultDropAction">
+     <enum>Qt::MoveAction</enum>
+    </property>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+    <property name="cornerButtonEnabled">
+     <bool>false</bool>
+    </property>
+    <attribute name="horizontalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="horizontalHeaderMinimumSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderDefaultSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="verticalHeaderMinimumSectionSize">
+     <number>38</number>
+    </attribute>
+    <row>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>2</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QTableWidget" name="legs">
+    <property name="geometry">
+     <rect>
+      <x>623</x>
+      <y>150</y>
+      <width>78</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>7</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="autoScroll">
+     <bool>false</bool>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="tabKeyNavigation">
+     <bool>false</bool>
+    </property>
+    <property name="dragEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="dragDropOverwriteMode">
+     <bool>false</bool>
+    </property>
+    <property name="dragDropMode">
+     <enum>QAbstractItemView::InternalMove</enum>
+    </property>
+    <property name="defaultDropAction">
+     <enum>Qt::MoveAction</enum>
+    </property>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+    <property name="cornerButtonEnabled">
+     <bool>false</bool>
+    </property>
+    <attribute name="horizontalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="horizontalHeaderMinimumSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderDefaultSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="verticalHeaderMinimumSectionSize">
+     <number>38</number>
+    </attribute>
+    <row>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>2</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QPushButton" name="techs">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>90</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Techs</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pets">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>120</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pets</string>
     </property>
    </widget>
   </widget>
@@ -1675,7 +1790,7 @@ border-radius: 4px;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>804</width>
+     <width>718</width>
      <height>19</height>
     </rect>
    </property>
@@ -1844,12 +1959,8 @@ border-radius: 4px;
   <tabstop>breath</tabstop>
   <tabstop>max_breath</tabstop>
   <tabstop>pixels</tabstop>
-  <tabstop>wieldable</tabstop>
   <tabstop>back</tabstop>
   <tabstop>player_pic</tabstop>
-  <tabstop>head</tabstop>
-  <tabstop>chest</tabstop>
-  <tabstop>legs</tabstop>
   <tabstop>action_bar</tabstop>
   <tabstop>inv_tabs</tabstop>
   <tabstop>main_bag</tabstop>

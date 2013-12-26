@@ -51,7 +51,7 @@ class ItemWidget(QTableWidgetItem):
         self.item_count = item[1]
         self.variant = item[2]
         QTableWidgetItem.__init__(self, self.name)
-        self.setTextAlignment(QtCore.Qt.AlignVCenter)
+        self.setTextAlignment(QtCore.Qt.AlignCenter)
 
         if self.name != "":
             self.setToolTip(self.name + " (" + str(self.item_count) + ")")
@@ -65,7 +65,8 @@ class ItemWidget(QTableWidgetItem):
             pass
 
         if type(icon) is QPixmap:
-            self.setText(str(self.item_count))
+            #self.setText(str(self.item_count))
+            self.setText("")
 
 def pretty_variant(variant):
     variant_type = variant[0]
@@ -387,7 +388,7 @@ class MainWindow():
             return
         except save_file.WrongSaveVer:
             dialog = QMessageBox()
-            msg = "Save file is not compatible with this starcheat version."
+            msg = "Save file is not compatible with this version of starcheat."
             dialog.setText(msg)
             dialog.exec()
             return
@@ -406,11 +407,6 @@ class MainWindow():
             getattr(self.ui, b).cellDoubleClicked.connect(item_edit)
             # TODO: once drag is redone, fix up the .ui file and remove all this
             getattr(self.ui, b).setAcceptDrops(False)
-            getattr(self.ui, b).setDragDropOverwriteMode(False)
-            getattr(self.ui, b).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
-            getattr(self.ui, b).setDefaultDropAction(QtCore.Qt.MoveAction)
-            getattr(self.ui, b).setDragEnabled(True)
-            getattr(self.ui, b).setTabKeyNavigation(False)
 
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.name.setFocus()
@@ -641,6 +637,7 @@ class MainWindow():
         """Display open file dialog and load selected save."""
         filename = QFileDialog.getOpenFileName(self.window,
                                                'Open save file...',
+                                               # TODO: this isn't right cross platform
                                                config["starbound_folder"] + '/player',
                                                '*.player')
 

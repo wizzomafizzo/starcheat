@@ -172,7 +172,7 @@ class Items():
 
             try:
                 asset_icon = info["inventoryIcon"]
-                if re.match(".*\.techitem$", f[0]):
+                if re.match(".*\.techitem$", f[0]) != None:
                     icon = config["assets_folder"] + asset_icon
                     # index dynamic tech chip items too
                     chip_name = name + "-chip"
@@ -180,10 +180,15 @@ class Items():
                 else:
                     icon = f[1] + "/" + info["inventoryIcon"]
             except KeyError:
-                icon = config["assets_folder"] + "/interface/inventory/x.png"
+                if re.search("generated(sword|shield)", category) != None:
+                    cat = category.replace("generated", "")
+                    icon = config["assets_folder"] + "/interface/inventory/" + cat + ".png"
+                else:
+                    icon = config["assets_folder"] + "/interface/inventory/x.png"
 
             items.append((name, filename, category, icon, path))
             print(".", end="")
+
         c = self.db.cursor()
         q = "insert into items values (?, ?, ?, ?, ?)"
         c.executemany(q, items)
