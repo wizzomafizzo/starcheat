@@ -4,7 +4,7 @@ GUI module for starcheat
 
 import sys, re
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow
+from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidget
 from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon, QImageReader
 
@@ -54,6 +54,53 @@ class ItemWidget(QTableWidgetItem):
             pass
         if self.name != "":
             self.setToolTip(self.name + " (" + str(self.item_count) + ")")
+
+def pretty_variant(variant):
+    variant_type = variant[0]
+    variant_value = variant[1]
+    if variant_type == 2:
+        return str(variant_value[0])
+    elif variant_type == 3:
+        if variant_value[0] == 1:
+            return "True"
+        else:
+            return "False"
+    elif variant_type == 4:
+        return str(variant_value)
+    elif variant_type == 5:
+        return str(variant_value)
+    elif variant_type == 6:
+        items = []
+        for i in variant_value:
+            items.append(pretty_variant(i))
+        return ", ".join(items)
+    elif variant_type == 7:
+        return str(variant_value)
+    else:
+        return "__UNKNOWN_TYPE__"
+
+class ItemVariant(QTableWidgetItem):
+    def __init__(self, variant):
+        print(variant)
+        self.variant_name = variant[0]
+        self.variant_type = variant[1][0]
+        self.variant_value = variant[1][1]
+
+        item_text = self.variant_name + ": " + pretty_variant(variant[1])
+        QTableWidgetItem.__init__(self, item_text)
+
+        if self.variant_type == 2:
+            print(2)
+        elif self.variant_type == 3:
+            print(3)
+        elif self.variant_type == 4:
+            print(4)
+        elif self.variant_type == 5:
+            print(5)
+        elif self.variant_type == 6:
+            print(6)
+        elif self.variant_type == 7:
+            print(7)
 
 class ItemBrowser():
     def __init__(self, parent):
@@ -112,9 +159,11 @@ class ItemBrowser():
         row = 0
         self.item_browser.info.setRowCount(len(item[0]))
         for key in item[0]:
-            self.item_browser.info.setItem(row, 0, QTableWidgetItem(key))
             try:
-                self.item_browser.info.setItem(row, 1, QTableWidgetItem(str(item[0][key])))
+                text = str(key) + ": " + str(item[0][key])
+                table_item = QTableWidgetItem(text)
+                table_item.setToolTip(text)
+                self.item_browser.info.setItem(row, 0, table_item)
             except TypeError:
                 pass
             row += 1
@@ -159,10 +208,8 @@ class ItemEdit():
         # set up variant table
         self.item_edit.variant.setRowCount(len(self.item.variant[1]))
         for i in range(len(self.item.variant[1])):
-            key = QTableWidgetItem(self.item.variant[1][i][0])
-            value = QTableWidgetItem(str(self.item.variant[1][i][1][1]))
-            self.item_edit.variant.setItem(i, 0, key)
-            self.item_edit.variant.setItem(i, 1, value)
+            variant = ItemVariant(self.item.variant[1][i])
+            self.item_edit.variant.setItem(i, 0, variant)
 
         self.item_edit.item_type.setFocus()
 
@@ -207,6 +254,8 @@ class ItemEdit():
         self.item_edit.item_type.setText(self.item_browser.get_selection())
         # TODO: stuff like setting value max to maxstack
         self.item_edit.count.setValue(1)
+
+
 
 class BlueprintLib():
     def __init__(self, parent, known_blueprints):
