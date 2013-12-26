@@ -11,7 +11,7 @@ $ python ./save_file.py <.player file>
 import sys, binascii
 from struct import *
 
-# compatible save version(s)
+# compatible save versions
 data_version = range(424, 429)
 # this is the complete data format definition for a .player file. formats
 # surrounded by double underscores are special types with unpack/repack
@@ -400,6 +400,9 @@ variant_types = (
     (unpack_variant7, pack_variant7)
 )
 
+class WrongSaveVer(Exception):
+    pass
+
 class PlayerSave():
     def __init__(self, filename):
         self.data = {}
@@ -415,7 +418,7 @@ class PlayerSave():
                               save_data,
                               data_format[0][2])
         if (version[0] in data_version) == False:
-            raise Exception("Wrong save format version")
+            raise WrongSaveVer("Wrong save format version detected")
 
         offset = 0
         for var in data_format:

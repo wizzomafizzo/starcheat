@@ -5,7 +5,7 @@ GUI module for starcheat
 import sys, re
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow
-from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon, QImageReader
 
 import save_file, assets
@@ -320,6 +320,12 @@ class MainWindow():
             self.open_file()
         except FileNotFoundError:
             return
+        except save_file.WrongSaveVer:
+            dialog = QMessageBox()
+            msg = "Save file is not compatible with this starcheat version."
+            dialog.setText(msg)
+            dialog.exec()
+            return
 
         # set up sliders to update values together
         stats = "health", "energy", "food", "warmth", "breath"
@@ -573,7 +579,9 @@ class MainWindow():
                                                'Open save file...',
                                                config["starbound_folder"] + '/player',
                                                '*.player')
+
         self.player = save_file.PlayerSave(filename[0])
+
         self.update()
         self.window.setWindowTitle("starcheat - " + self.player.filename)
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
