@@ -502,6 +502,15 @@ border-radius: 4px;
       <height>183</height>
      </rect>
     </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="tabShape">
+     <enum>QTabWidget::Rounded</enum>
+    </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
@@ -522,6 +531,9 @@ border-radius: 4px;
        <font>
         <pointsize>36</pointsize>
        </font>
+      </property>
+      <property name="acceptDrops">
+       <bool>true</bool>
       </property>
       <property name="styleSheet">
        <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
@@ -548,7 +560,7 @@ border-radius: 4px;
        <bool>false</bool>
       </property>
       <property name="dragDropMode">
-       <enum>QAbstractItemView::InternalMove</enum>
+       <enum>QAbstractItemView::DragDrop</enum>
       </property>
       <property name="defaultDropAction">
        <enum>Qt::MoveAction</enum>
@@ -676,6 +688,9 @@ border-radius: 4px;
         <pointsize>7</pointsize>
        </font>
       </property>
+      <property name="acceptDrops">
+       <bool>true</bool>
+      </property>
       <property name="styleSheet">
        <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
       </property>
@@ -701,7 +716,7 @@ border-radius: 4px;
        <bool>false</bool>
       </property>
       <property name="dragDropMode">
-       <enum>QAbstractItemView::InternalMove</enum>
+       <enum>QAbstractItemView::DragDrop</enum>
       </property>
       <property name="defaultDropAction">
        <enum>Qt::MoveAction</enum>
@@ -826,6 +841,9 @@ border-radius: 4px;
       <pointsize>7</pointsize>
      </font>
     </property>
+    <property name="acceptDrops">
+     <bool>true</bool>
+    </property>
     <property name="styleSheet">
      <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
     </property>
@@ -851,7 +869,7 @@ border-radius: 4px;
      <bool>false</bool>
     </property>
     <property name="dragDropMode">
-     <enum>QAbstractItemView::InternalMove</enum>
+     <enum>QAbstractItemView::DragDrop</enum>
     </property>
     <property name="defaultDropAction">
      <enum>Qt::MoveAction</enum>
@@ -969,6 +987,9 @@ border-radius: 4px;
       <pointsize>7</pointsize>
      </font>
     </property>
+    <property name="acceptDrops">
+     <bool>true</bool>
+    </property>
     <property name="styleSheet">
      <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
     </property>
@@ -994,7 +1015,7 @@ border-radius: 4px;
      <bool>false</bool>
     </property>
     <property name="dragDropMode">
-     <enum>QAbstractItemView::InternalMove</enum>
+     <enum>QAbstractItemView::DragDrop</enum>
     </property>
     <property name="defaultDropAction">
      <enum>Qt::MoveAction</enum>
@@ -1236,7 +1257,7 @@ border-radius: 4px;
       <x>290</x>
       <y>10</y>
       <width>21</width>
-      <height>431</height>
+      <height>436</height>
      </rect>
     </property>
     <property name="orientation">
@@ -1291,94 +1312,6 @@ border-radius: 4px;
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>11</x>
-      <y>30</y>
-      <width>271</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <layout class="QFormLayout" name="formLayout">
-     <property name="fieldGrowthPolicy">
-      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-     </property>
-     <item row="0" column="0">
-      <widget class="QLabel" name="name_label">
-       <property name="text">
-        <string>Name</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="name"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="race_label">
-       <property name="text">
-        <string>Race</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QComboBox" name="race"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="gender_label">
-       <property name="text">
-        <string>Gender</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QWidget" name="widget" native="true">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>20</height>
-        </size>
-       </property>
-       <widget class="QRadioButton" name="male">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>57</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Male</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="female">
-        <property name="geometry">
-         <rect>
-          <x>60</x>
-          <y>0</y>
-          <width>72</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Female</string>
-        </property>
-       </widget>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="desc_label">
-       <property name="text">
-        <string>Description</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QPlainTextEdit" name="description"/>
-     </item>
-    </layout>
-   </widget>
    <widget class="QPushButton" name="blueprints_button">
     <property name="geometry">
      <rect>
@@ -1406,6 +1339,9 @@ border-radius: 4px;
       <pointsize>7</pointsize>
      </font>
     </property>
+    <property name="acceptDrops">
+     <bool>true</bool>
+    </property>
     <property name="styleSheet">
      <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
     </property>
@@ -1431,7 +1367,7 @@ border-radius: 4px;
      <bool>false</bool>
     </property>
     <property name="dragDropMode">
-     <enum>QAbstractItemView::InternalMove</enum>
+     <enum>QAbstractItemView::DragDrop</enum>
     </property>
     <property name="defaultDropAction">
      <enum>Qt::MoveAction</enum>
@@ -1496,6 +1432,9 @@ border-radius: 4px;
       <pointsize>7</pointsize>
      </font>
     </property>
+    <property name="acceptDrops">
+     <bool>true</bool>
+    </property>
     <property name="styleSheet">
      <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
     </property>
@@ -1521,7 +1460,7 @@ border-radius: 4px;
      <bool>false</bool>
     </property>
     <property name="dragDropMode">
-     <enum>QAbstractItemView::InternalMove</enum>
+     <enum>QAbstractItemView::DragDrop</enum>
     </property>
     <property name="defaultDropAction">
      <enum>Qt::MoveAction</enum>
@@ -1586,6 +1525,9 @@ border-radius: 4px;
       <pointsize>7</pointsize>
      </font>
     </property>
+    <property name="acceptDrops">
+     <bool>true</bool>
+    </property>
     <property name="styleSheet">
      <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
     </property>
@@ -1611,7 +1553,7 @@ border-radius: 4px;
      <bool>false</bool>
     </property>
     <property name="dragDropMode">
-     <enum>QAbstractItemView::InternalMove</enum>
+     <enum>QAbstractItemView::DragDrop</enum>
     </property>
     <property name="defaultDropAction">
      <enum>Qt::MoveAction</enum>
@@ -1676,6 +1618,9 @@ border-radius: 4px;
       <pointsize>7</pointsize>
      </font>
     </property>
+    <property name="acceptDrops">
+     <bool>true</bool>
+    </property>
     <property name="styleSheet">
      <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
     </property>
@@ -1701,7 +1646,7 @@ border-radius: 4px;
      <bool>false</bool>
     </property>
     <property name="dragDropMode">
-     <enum>QAbstractItemView::InternalMove</enum>
+     <enum>QAbstractItemView::DragDrop</enum>
     </property>
     <property name="defaultDropAction">
      <enum>Qt::MoveAction</enum>
@@ -1782,6 +1727,146 @@ border-radius: 4px;
     </property>
     <property name="text">
      <string>Pets</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>160</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Appearance</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="name_label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>31</y>
+      <width>36</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Name</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="name">
+    <property name="geometry">
+     <rect>
+      <x>89</x>
+      <y>31</y>
+      <width>191</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="race_label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>59</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Race</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="race">
+    <property name="geometry">
+     <rect>
+      <x>89</x>
+      <y>59</y>
+      <width>191</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="gender_label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>88</y>
+      <width>46</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Gender</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>89</x>
+      <y>87</y>
+      <width>192</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>20</height>
+     </size>
+    </property>
+    <widget class="QRadioButton" name="male">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>57</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Male</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="female">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>0</y>
+       <width>72</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Female</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="desc_label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>113</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Description</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="description">
+    <property name="geometry">
+     <rect>
+      <x>89</x>
+      <y>113</y>
+      <width>192</width>
+      <height>47</height>
+     </rect>
     </property>
    </widget>
   </widget>

@@ -405,8 +405,6 @@ class MainWindow():
         for b in bags:
             item_edit = getattr(self, "new_" + b + "_item_edit")
             getattr(self.ui, b).cellDoubleClicked.connect(item_edit)
-            # TODO: once drag is redone, fix up the .ui file and remove all this
-            getattr(self.ui, b).setAcceptDrops(False)
 
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.name.setFocus()
