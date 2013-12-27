@@ -16,7 +16,7 @@ here is how to install it
 - update starcheat/starcheat.ini with your own Starbound folders
 
 ### windows
-- install python 3 and pyqt5 (NOTE: if you're not doing any development, you don't need qt5)
+- install python 3 and pyqt5 (you don't need qt5)
 - > cd \<starcheat top folder\>
 - > ./build.bat
 - browse to newly created build/ folder
@@ -31,7 +31,7 @@ standalone build makes an executable and includes all python and qt dependencies
 - browse to newly created dist/ folder
 - double click starcheat.exe
 
-NOTE FOR END USERS: if Windows complains about a system error (re: missing msvcr100.dll), you probably need to install the [vs c++ 2010 runtime package](http://www.microsoft.com/en-au/download/details.aspx?id=14632)
+END USERS: if Windows complains about a system error (re: missing msvcr100.dll), you probably need to install the [vs c++ 2010 runtime package](http://www.microsoft.com/en-au/download/details.aspx?id=14632)
 
 ### linux
 - install python 3, qt5 and pyqt5 from your distro repos
