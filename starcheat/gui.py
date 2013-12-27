@@ -382,15 +382,7 @@ class MainWindow():
 
         # launch open file dialog
         # we want this after the races are populated but before the slider setup
-        try:
-            self.open_file()
-        except FileNotFoundError:
-            return
-        except save_file.WrongSaveVer:
-            dialog = QMessageBox()
-            msg = "Save file is not compatible with this version of starcheat."
-            dialog.setText(msg)
-            dialog.exec()
+        if self.open_file() == False:
             return
 
         # set up sliders to update values together
@@ -635,15 +627,32 @@ class MainWindow():
         """Display open file dialog and load selected save."""
         filename = QFileDialog.getOpenFileName(self.window,
                                                'Open save file...',
-                                               # TODO: this isn't right cross platform
-                                               config["starbound_folder"] + '/player',
+                                               config["player_folder"],
                                                '*.player')
 
-        self.player = save_file.PlayerSave(filename[0])
+        try:
+            self.player = save_file.PlayerSave(filename[0])
+        except FileNotFoundError:
+            if filename[0] == "":
+                # they probably clicked cancel
+                return False
+            else:
+                dialog = QMessageBox()
+                msg = "Could not read file: " + filename[0]
+                dialog.setText(msg)
+                dialog.exec()
+                return False
+        except save_file.WrongSaveVer:
+            dialog = QMessageBox()
+            msg = "Save file is not compatible with this version of starcheat."
+            dialog.setText(msg)
+            dialog.exec()
+            return False
 
         self.update()
         self.window.setWindowTitle("starcheat - " + self.player.filename)
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
+        return True
 
 if __name__ == '__main__':
     window = MainWindow()
