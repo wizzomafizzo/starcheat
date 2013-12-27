@@ -188,7 +188,7 @@ class Items():
                     icon = os.path.join(f[1], info["inventoryIcon"])
             except KeyError:
                 # TODO: still working these out. check out crafted weaps too
-                if re.search("generated(sword|shield)", category) != None:
+                if re.search("(sword|shield)", category) != None:
                     cat = category.replace("generated", "")
                     icon = os.path.join(config["assets_folder"], "interface", "inventory", cat + ".png")
                 else:
@@ -235,6 +235,21 @@ class Items():
         except TypeError:
             return None
         return icon
+
+    # TODO: this is not written yet
+    def get_item_image(self, item):
+        """Return a vaild item image from item options."""
+        # TODO: support for frame selectors
+        if "image" in item:
+            if re.search(":", item["image"]):
+                image = item["image"].partition(":")[0]
+        try:
+            icon_file = item["image"]
+        except KeyError:
+            pass
+
+    def missing_icon(self):
+        return os.path.join(config["assets_folder"], "interface", "inventory", "x.png")
 
     def filter_items(self, category, name):
         if category == "<all>":

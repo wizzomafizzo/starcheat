@@ -156,13 +156,22 @@ class ItemBrowser():
         item = self.items.get_item(selected)
 
         # fallback on inventory icon if no proper one
+        # TODO: replace with get_item_image function
         try:
             icon_file = os.path.join(item[1], item[0]["image"])
-            icon = QPixmap(icon_file).scaledToHeight(64)
+            try:
+                open(icon_file)
+                icon = QPixmap(icon_file).scaledToHeight(64)
+            except FileNotFoundError:
+                icon = inv_icon(selected)
         except KeyError:
             icon = inv_icon(selected)
 
-        self.item_browser.item_icon.setPixmap(icon)
+        try:
+            self.item_browser.item_icon.setPixmap(icon)
+        except TypeError:
+            self.item_browser.item_icon.setPixmap(QPixmap(self.items.missing_icon()))
+
         self.item_browse_select = selected
 
         # TODO: update qt objectnames, already not making sense
