@@ -82,14 +82,17 @@ def pretty_variant(variant):
     elif variant_type == 4:
         return str(variant_value)
     elif variant_type == 5:
-        return str(variant_value)
+        return '"' + str(variant_value) + '"'
     elif variant_type == 6:
         items = []
         for i in variant_value:
             items.append(pretty_variant(i))
         return ", ".join(items)
     elif variant_type == 7:
-        return str(variant_value)
+        items = []
+        for i in variant_value:
+            items.append(i[0] + ": {" + pretty_variant(i[1]) + "}")
+        return ", ".join(items)
     else:
         return "__UNKNOWN_TYPE__"
 
@@ -436,21 +439,21 @@ class MainWindow():
         # stats
         stats = "health", "energy", "food", "breath"
         for stat in stats:
+            max_stat = getattr(self.player, "get_max_" + stat)()
+            getattr(self.ui, "max_" + stat).setValue(max_stat)
             cur_stat = getattr(self.player, "get_" + stat)()
             getattr(self.ui, stat).setMaximum(cur_stat[1])
             getattr(self.ui, stat).setValue(cur_stat[0])
-            max_stat = getattr(self.player, "get_max_" + stat)()
-            getattr(self.ui, "max_" + stat).setValue(max_stat)
             getattr(self, "update_" + stat)()
         # energy regen rate
         self.ui.energy_regen.setValue(self.player.get_energy_regen())
         # warmth
-        cur_warmth = self.player.get_warmth()
         max_warmth = self.player.get_max_warmth()
+        self.ui.max_warmth.setValue(max_warmth)
+        cur_warmth = self.player.get_warmth()
         self.ui.warmth.setMinimum(cur_warmth[0])
         self.ui.warmth.setMaximum(max_warmth)
         self.ui.warmth.setValue(cur_warmth[1])
-        self.ui.max_warmth.setValue(max_warmth)
         self.update_warmth()
 
         # equipment
