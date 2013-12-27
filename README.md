@@ -3,7 +3,6 @@
 Starbound player save editor, you can get free pixels with this (omg)
 
 ![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/screen1.png)
-![bazimpa](https://raw.github.com/wizzomafizzo/starcheat/master/screen2.png)
 
 ## install
 here is how to install it
@@ -21,6 +20,17 @@ here is how to install it
 - run the build.bat from the starcheat to folder
 - go to newly created build/ folder
 - double click starcheat.py
+
+#### standalone build
+standalone build makes an executable and includes all python and qt dependencies
+
+- install [cx_freeze](http://cx-freeze.sourceforge.net/)
+- PS> cd \<starcheat top folder\>
+- PS> ./build.ps1 -Standalone
+- go to newly created dist/ folder
+- double click starcheat.exe
+
+NOTE FOR END USERS: if Windows complains about a system error (re: missing msvcr100.dll), you probably need to install the [vs c++ 2010 runtime package](http://www.microsoft.com/en-au/download/details.aspx?id=14632)
 
 ### linux
 - install python 3, qt5 and pyqt5 from your distro repos
