@@ -183,7 +183,7 @@ class Items():
                     # TODO: do we keep the non-chip items in or not? i don't
                     #       think you're meant to have them outside tech slots
                     chip_name = name + "-chip"
-                    items.append((chip_name, filename, category, icon, path))
+                    items.append((chip_name, filename, path, icon, category))
                 else:
                     icon = os.path.join(f[1], info["inventoryIcon"])
             except KeyError:
@@ -208,7 +208,6 @@ class Items():
         c.execute("select * from items order by name collate nocase")
         return c.fetchall()
 
-    # TODO: don't like this, need a different return
     def get_item(self, name):
         c = self.db.cursor()
         c.execute("select folder, filename from items where name = ?", (name,))

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>718</width>
+    <width>715</width>
     <height>490</height>
    </rect>
   </property>
@@ -18,13 +18,13 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>718</width>
+    <width>715</width>
     <height>490</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>718</width>
+    <width>715</width>
     <height>490</height>
    </size>
   </property>
@@ -496,7 +496,7 @@ border-radius: 4px;
    <widget class="QTabWidget" name="inv_tabs">
     <property name="geometry">
      <rect>
-      <x>319</x>
+      <x>318</x>
       <y>260</y>
       <width>386</width>
       <height>183</height>
@@ -536,7 +536,7 @@ border-radius: 4px;
        <bool>true</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+       <string notr="true">selection-background-color: white;</string>
       </property>
       <property name="verticalScrollBarPolicy">
        <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -692,7 +692,7 @@ border-radius: 4px;
        <bool>true</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+       <string notr="true">selection-background-color: white;</string>
       </property>
       <property name="verticalScrollBarPolicy">
        <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -845,7 +845,7 @@ border-radius: 4px;
      <bool>true</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+     <string notr="true">selection-background-color: white;</string>
     </property>
     <property name="verticalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -991,7 +991,7 @@ border-radius: 4px;
      <bool>true</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+     <string notr="true">selection-background-color: white;</string>
     </property>
     <property name="verticalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -1111,13 +1111,13 @@ border-radius: 4px;
      </rect>
     </property>
     <property name="maximum">
-     <number>9999999</number>
+     <number>99999999</number>
     </property>
     <property name="singleStep">
      <number>100</number>
     </property>
     <property name="value">
-     <number>9999999</number>
+     <number>99999999</number>
     </property>
    </widget>
    <widget class="QGraphicsView" name="player_pic">
@@ -1343,7 +1343,7 @@ border-radius: 4px;
      <bool>true</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+     <string notr="true">selection-background-color: white;</string>
     </property>
     <property name="verticalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -1436,7 +1436,7 @@ border-radius: 4px;
      <bool>true</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+     <string notr="true">selection-background-color: white;</string>
     </property>
     <property name="verticalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -1529,7 +1529,7 @@ border-radius: 4px;
      <bool>true</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+     <string notr="true">selection-background-color: white;</string>
     </property>
     <property name="verticalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -1622,7 +1622,7 @@ border-radius: 4px;
      <bool>true</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">selection-background-color: rgb(197, 197, 197);</string>
+     <string notr="true">selection-background-color: white;</string>
     </property>
     <property name="verticalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -1875,7 +1875,7 @@ border-radius: 4px;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>718</width>
+     <width>715</width>
      <height>19</height>
     </rect>
    </property>
@@ -1914,7 +1914,7 @@ border-radius: 4px;
     <string>Open...</string>
    </property>
    <property name="statusTip">
-    <string>Open a player save file</string>
+    <string>Open a new player save file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -1925,7 +1925,7 @@ border-radius: 4px;
     <string>Save</string>
    </property>
    <property name="statusTip">
-    <string>Save player changes</string>
+    <string>Save all changes to open player save file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -1952,7 +1952,7 @@ border-radius: 4px;
     <string>Quit</string>
    </property>
    <property name="statusTip">
-    <string>Quit program</string>
+    <string>Quit starcheat</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -1991,6 +1991,9 @@ border-radius: 4px;
   <action name="actionReload">
    <property name="text">
     <string>Reload</string>
+   </property>
+   <property name="statusTip">
+    <string>Reload the currently open player save file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
