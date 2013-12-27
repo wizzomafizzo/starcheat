@@ -103,7 +103,7 @@
     <bool>false</bool>
    </property>
    <attribute name="horizontalHeaderVisible">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
    <attribute name="horizontalHeaderStretchLastSection">
     <bool>true</bool>
@@ -113,7 +113,7 @@
    </attribute>
    <column>
     <property name="text">
-     <string>Variant</string>
+     <string>Default Options</string>
     </property>
    </column>
   </widget>
@@ -150,7 +150,7 @@
     </font>
    </property>
    <property name="text">
-    <string>short_description</string>
+    <string>description</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>

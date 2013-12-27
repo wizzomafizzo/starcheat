@@ -2,7 +2,7 @@
 GUI module for starcheat
 """
 
-import sys, re
+import sys, re, os
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidget
 from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
@@ -13,6 +13,7 @@ import qt_mainwindow, qt_itemedit, qt_itembrowser, qt_blueprints
 from config import config
 
 def inv_icon(item_name):
+    """Return a QPixmap object of the inventory icon of a given item (if possible)."""
     icon_file = assets.Items().get_item_icon(item_name)
 
     try:
@@ -42,8 +43,8 @@ def empty_slot():
 #       widget item or an entirely new custom table view. if the features below
 #       are easy enough to add then we'll just stick with the current method
 # TODO: swap items instead of overwriting
-# TODO: show count alongside icon
-# TODO: reimplement drag events, maybe custom table widget
+#       apparently this is done by reimplementing the drag functions
+# TODO: some sort of icon painter so we can show a frame, rarity and count overlay
 class ItemWidget(QTableWidgetItem):
     """Custom table wiget item with icon support and extra item variables."""
     def __init__(self, item):
@@ -151,8 +152,10 @@ class ItemBrowser():
 
         item = self.items.get_item(selected)
 
+        # fallback on inventory icon if no proper one
         try:
-            icon = QPixmap(item[2] + "/" + item[0]["image"]).scaledToHeight(64)
+            icon_file = os.path.join(item[1], item[0]["image"])
+            icon = QPixmap(icon_file).scaledToHeight(64)
         except KeyError:
             icon = inv_icon(selected)
 
@@ -170,6 +173,7 @@ class ItemBrowser():
         except KeyError:
             self.item_browser.short_desc.setText("Missing description")
 
+        # populate default variant table
         row = 0
         self.item_browser.info.setRowCount(len(item[0]))
         for key in item[0]:
@@ -187,6 +191,9 @@ class ItemBrowser():
         category = self.item_browser.category.currentText()
         name = self.item_browser.filter.text()
         result = self.items.filter_items(category, name)
+
+        # TODO: i'd like this to set focus on the list when category is changed
+        #       but not when the edit box is changed (split this function)
         self.item_browser.items.clear()
         for item in result:
             self.item_browser.items.addItem(item[0])
@@ -229,12 +236,14 @@ class ItemEdit():
 
         self.item_dialog.show()
 
+        # if the inventory slot is empty show the browser as well
         if self.item.name == "":
             self.new_item_browser()
 
     def update_item(self):
         """Update main item view with current item data."""
         name = self.item_edit.item_type.text()
+
         try:
             item = assets.Items().get_item(name)
         except TypeError:
@@ -256,9 +265,11 @@ class ItemEdit():
         try:
             self.item_edit.icon.setPixmap(inv_icon(name))
         except TypeError:
+            # TODO: change this to the x.png?
             self.item_edit.icon.setPixmap(QPixmap())
 
     def get_item(self):
+        """Return an ItemWidget of the currently open item."""
         type_name = self.item_edit.item_type.text()
         count = self.item_edit.count.value()
         variant = self.item.variant
@@ -321,14 +332,16 @@ class BlueprintLib():
         try:
             selected = self.blueprint_lib.available_blueprints.currentItem().text()
         except AttributeError:
+            # nothing selected
             return
 
+        # don't add more than one of each blueprint
         if selected in self.known_blueprints:
             return
 
+        # insert the new item and regenerate the list
         self.known_blueprints.append(selected)
         self.known_blueprints.sort()
-
         self.blueprint_lib.known_blueprints.clear()
         for i in range(len(self.known_blueprints)):
             self.blueprint_lib.known_blueprints.addItem(self.known_blueprints[i])
@@ -342,9 +355,9 @@ class BlueprintLib():
         except AttributeError:
             return
 
+        # remove item and regen list
         self.known_blueprints.remove(selected)
         self.known_blueprints.sort()
-
         self.blueprint_lib.known_blueprints.clear()
         for blueprint in self.known_blueprints:
             self.blueprint_lib.known_blueprints.addItem(blueprint)
@@ -366,7 +379,7 @@ class MainWindow():
         # atm we only support one of each dialog at a time, don't think this
         # will be a problem tho
         # TODO: some really weird behaviour here w/ blueprint
-        self.item_browser = None
+        #self.item_browser = None
         self.item_edit = None
         self.blueprint_lib = None
 
@@ -502,6 +515,7 @@ class MainWindow():
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)
 
     def new_item_edit(self, bag):
+        """Display a new item edit dialog using the select cell in a given bag."""
         row = bag.currentRow()
         column = bag.currentColumn()
         item_edit = ItemEdit(self.window, bag.currentItem())
@@ -520,25 +534,18 @@ class MainWindow():
     # these are used for connecting the item edit dialog to bag tables
     def new_main_bag_item_edit(self):
         self.new_item_edit(self.ui.main_bag)
-
     def new_tile_bag_item_edit(self):
         self.new_item_edit(self.ui.tile_bag)
-
     def new_action_bar_item_edit(self):
         self.new_item_edit(self.ui.action_bar)
-
     def new_head_item_edit(self):
         self.new_item_edit(self.ui.head)
-
     def new_chest_item_edit(self):
         self.new_item_edit(self.ui.chest)
-
     def new_legs_item_edit(self):
         self.new_item_edit(self.ui.legs)
-
     def new_back_item_edit(self):
         self.new_item_edit(self.ui.back)
-
     def new_wieldable_item_edit(self):
         self.new_item_edit(self.ui.wieldable)
 
@@ -553,65 +560,80 @@ class MainWindow():
         self.blueprint_lib.dialog.accepted.connect(update_blueprints)
         self.blueprint_lib.dialog.show()
 
+    # these update all values in a stat group at once
     def update_energy(self):
         self.ui.energy.setMaximum(self.ui.max_energy.value())
         self.ui.energy_val.setText(str(self.ui.energy.value()) + " /")
-
     def update_health(self):
         self.ui.health.setMaximum(self.ui.max_health.value())
         self.ui.health_val.setText(str(self.ui.health.value()) + " /")
-
     def update_food(self):
         self.ui.food.setMaximum(self.ui.max_food.value())
         self.ui.food_val.setText(str(self.ui.food.value()) + " /")
-
     def update_warmth(self):
         self.ui.warmth.setMaximum(self.ui.max_warmth.value())
         self.ui.warmth_val.setText(str(self.ui.warmth.value()) + " /")
-
     def update_breath(self):
         self.ui.breath.setMaximum(self.ui.max_breath.value())
         self.ui.breath_val.setText(str(self.ui.breath.value()) + " /")
 
-    # get items from given equipment slot
     def get_equip(self, name):
+        """Return the raw values of both slots in a given equipment bag."""
         equip = getattr(self.ui, name)
         main_cell = equip.item(0, 0)
         glamor_cell = equip.item(0, 1)
+
+        # when you drag itemwidgets around the cell will become empty so just
+        # pretend it had an empty slot value
         if main_cell == None or type(main_cell) is QTableWidgetItem:
             main = save_file.empty_slot()
         else:
             main = (main_cell.name, main_cell.item_count, main_cell.variant)
+
         if glamor_cell == None or type(glamor_cell) is QTableWidgetItem:
             glamor = save_file.empty_slot()
         else:
             glamor = (glamor_cell.name, glamor_cell.item_count, glamor_cell.variant)
+
         return main, glamor
 
     def get_bag(self, name):
+        """Return the entire contents of a given non-equipment bag as raw values."""
         row = column = 0
         bag = getattr(self.player, "get_" + name)()
+
         for i in range(len(bag)):
             item = getattr(self.ui, name).item(row, column)
             if type(item) is QTableWidgetItem or item == None:
                 item = empty_slot()
+
             count = item.item_count
             item_type = item.name
+
             # TODO: variant update support
+            # FIXME: this causes a bug where replacing an item with the item
+            #        browser will retain the old item's variant data
+            #        this kills the item
             variant = bag[i][2]
             bag[i] = (item_type, int(count), variant)
+
+            # so far all non-equip bags are 10 cols long
             column += 1
             if (column % 10) == 0:
                 row += 1
                 column = 0
+
         return bag
 
     def update_bag(self, bag_name):
+        """Set the entire contents of any given bag with ItemWidgets based off player data."""
         row = column = 0
         bag = getattr(self.player, "get_" + bag_name)()
+
         for slot in range(len(bag)):
             widget = ItemWidget(bag[slot])
             getattr(self.ui, bag_name).setItem(row, column, widget)
+
             column += 1
             if (column % 10) == 0:
                 row += 1
@@ -628,6 +650,7 @@ class MainWindow():
         filename = QFileDialog.getOpenFileName(self.window,
                                                'Open save file...',
                                                config["player_folder"],
+                                               # FIXME: doesn't seem to filter on windows
                                                '*.player')
 
         try:
@@ -650,7 +673,7 @@ class MainWindow():
             return False
 
         self.update()
-        self.window.setWindowTitle("starcheat - " + self.player.filename)
+        self.window.setWindowTitle("starcheat - " + os.path.basename(self.player.filename))
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
         return True
 

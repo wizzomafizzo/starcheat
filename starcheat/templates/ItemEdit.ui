@@ -155,38 +155,6 @@
     <enum>Qt::NoArrow</enum>
    </property>
   </widget>
-  <widget class="QPushButton" name="add_button">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>120</y>
-     <width>31</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>+</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="del_button">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>320</x>
-     <y>120</y>
-     <width>31</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>-</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="icon">
    <property name="geometry">
     <rect>
@@ -232,8 +200,8 @@
     <rect>
      <x>80</x>
      <y>80</y>
-     <width>261</width>
-     <height>51</height>
+     <width>271</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="font">
