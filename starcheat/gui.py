@@ -16,23 +16,11 @@ def inv_icon(item_name):
     """Return a QPixmap object of the inventory icon of a given item (if possible)."""
     icon_file = assets.Items().get_item_icon(item_name)
 
-    try:
-        open(icon_file[0])
-    except:
-        return None
-
     if icon_file == None:
-        return None
-    if icon_file[1] == "chest":
-        offset = 16
-    elif icon_file[1] == "pants":
-        offset = 32
-    else:
-        offset = 0
+        return QPixmap()
 
     reader = QImageReader(icon_file[0])
-    reader.setClipRect(QtCore.QRect(offset, 0, 16, 16))
-
+    reader.setClipRect(QtCore.QRect(icon_file[1], 0, 16, 16))
     return QPixmap.fromImageReader(reader).scaled(32, 32)
 
 def empty_slot():

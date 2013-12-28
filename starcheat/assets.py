@@ -231,10 +231,21 @@ class Items():
             else:
                 icon = icon_file.rsplit(':', icon_file.count(':') - 1)
             if len(icon) < 2:
-                icon = icon[0], ""
+                icon = icon[0], 0
         except TypeError:
             return None
-        return icon
+
+        try:
+            open(icon[0])
+        except FileNotFoundError:
+            return None
+
+        if icon[1] == "chest":
+            return icon[0], 16
+        elif icon[1] == "pants":
+            return icon[0], 32
+
+        return icon[0], 0
 
     # TODO: this is not written yet
     def get_item_image(self, item):
