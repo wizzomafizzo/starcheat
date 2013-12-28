@@ -14,14 +14,16 @@ ini_file = os.path.join(config_folder, "starcheat.ini")
 
 # Default values
 # TODO: we can do some auto-detection here
-assets_folder = "/opt/starbound/assets"
-player_folder = "/opt/starbound/linux64/player"
+assets_folder = ""
+player_folder = ""
 
 backup_folder = os.path.join(config_folder, "backups")
 make_backups = "no"
 update_timestamps = "no"
 assets_db = os.path.join(config_folder, "assets.db")
 
+# TODO: now that people can change options while running there needs to be
+#       a function to read direct from the config
 class Config():
     def __init__(self):
         self.config_file = configparser.ConfigParser()
@@ -53,4 +55,4 @@ class Config():
 
     def write(self, config):
         self.config_file["starcheat"] = config
-        self.config_file.write
+        self.config_file.write(open(ini_file, "w"))

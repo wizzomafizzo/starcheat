@@ -1,7 +1,7 @@
 @echo off
 setlocal enableDelayedExpansion
 SET files=assets.py config.py gui.py save_file.py starcheat.py
-SET templates=ItemEdit.ui Blueprints.ui MainWindow.ui ItemBrowser.ui
+SET templates=ItemEdit.ui Blueprints.ui MainWindow.ui ItemBrowser.ui Options.ui
 
 IF exist build rd /s /q build
 mkdir build

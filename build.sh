@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 files=(assets.py config.py gui.py save_file.py starcheat.py)
-templates=(ItemEdit.ui Blueprints.ui MainWindow.ui ItemBrowser.ui)
+templates=(ItemEdit.ui Blueprints.ui MainWindow.ui ItemBrowser.ui Options.ui)
 
 [[ -d build/ ]] && rm -rf build/
 mkdir build/

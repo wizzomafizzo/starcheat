@@ -1907,8 +1907,8 @@ border-radius: 4px;
     <addaction name="actionAdvanced_Edit"/>
     <addaction name="separator"/>
     <addaction name="actionOptions"/>
-    <addaction name="actionBackup_On_Save"/>
-    <addaction name="actionUpdate_Timestamps"/>
+    <addaction name="actionBackups"/>
+    <addaction name="actionTimestamps"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
@@ -2018,7 +2018,7 @@ border-radius: 4px;
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Advanced Edit...</string>
+    <string>Advanced Edit</string>
    </property>
   </action>
   <action name="actionItem_Browser">
@@ -2028,13 +2028,13 @@ border-radius: 4px;
   </action>
   <action name="actionOptions">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
-    <string>Options...</string>
+    <string>Options</string>
    </property>
   </action>
-  <action name="actionUpdate_Timestamps">
+  <action name="actionTimestamps">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -2045,7 +2045,7 @@ border-radius: 4px;
     <string>Update Timestamps</string>
    </property>
   </action>
-  <action name="actionBackup_On_Save">
+  <action name="actionBackups">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -2053,7 +2053,7 @@ border-radius: 4px;
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Backup On Save</string>
+    <string>Make Backups</string>
    </property>
   </action>
  </widget>

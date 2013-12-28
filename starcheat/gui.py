@@ -9,9 +9,11 @@ from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon, QImageReader
 
 import save_file, assets, config
-import qt_mainwindow, qt_itemedit, qt_itembrowser, qt_blueprints
+import qt_mainwindow, qt_itemedit, qt_itembrowser, qt_blueprints, qt_options
 
 conf = config.Config().read()
+
+# TODO: it might be almost time to split this into a file per dialog
 
 def inv_icon(item_name):
     """Return a QPixmap object of the inventory icon of a given item (if possible)."""
@@ -363,6 +365,56 @@ class BlueprintLib():
     def get_known_list(self):
         return self.known_blueprints
 
+class OptionsDialog():
+    def __init__(self, parent):
+        # TODO: all the other dialogs should match this naming style
+        self.dialog = QDialog(parent)
+        self.ui = qt_options.Ui_Dialog()
+        self.ui.setupUi(self.dialog)
+
+        # read the current config and prefill everything
+        self.config = config.Config().read()
+        self.ui.assets_folder.setText(self.config["assets_folder"])
+        self.ui.player_folder.setText(self.config["player_folder"])
+        # TODO: do backups
+        self.ui.backup_folder.setText(self.config["backup_folder"])
+
+        self.ui.assets_folder_button.clicked.connect(self.open_assets)
+        self.ui.player_folder_button.clicked.connect(self.open_player)
+        self.ui.backup_folder_button.clicked.connect(self.open_backup)
+        self.ui.rebuild_button.clicked.connect(self.rebuild_db)
+
+    def write(self):
+        self.config["assets_folder"] = self.ui.assets_folder.text()
+        self.config["player_folder"] = self.ui.player_folder.text()
+        self.config["backup_folder"] = self.ui.backup_folder.text()
+        config.Config().write(self.config)
+
+    def open_assets(self):
+        filename = QFileDialog.getExistingDirectory(self.dialog,
+                                               "Choose assets folder...",
+                                               self.config["assets_folder"])
+        if filename != "": self.ui.assets_folder.setText(filename)
+
+    def open_player(self):
+        filename = QFileDialog.getExistingDirectory(self.dialog,
+                                               "Choose player save folder...",
+                                               self.config["player_folder"])
+        if filename != "": self.ui.player_folder.setText(filename)
+
+    def open_backup(self):
+        filename = QFileDialog.getExistingDirectory(self.dialog,
+                                               "Choose backup location...",
+                                               self.config["backup_folder"])
+        if filename != "": self.ui.backup_folder.setText(filename)
+
+    def rebuild_db(self):
+        self.write()
+        if os.path.isfile(self.config["assets_db"]):
+            os.remove(self.config["assets_db"])
+        db = assets.AssetsDb()
+        # TODO: i want some feedback here
+
 class MainWindow():
     def __init__(self):
         """Display the main starcheat window."""
@@ -370,6 +422,13 @@ class MainWindow():
         self.window = QMainWindow()
         self.ui = qt_mainwindow.Ui_MainWindow()
         self.ui.setupUi(self.window)
+
+        # launch first setup
+        self.setup_dialog = None
+        try:
+            open(conf["assets_db"])
+        except FileNotFoundError:
+            self.new_setup_dialog()
 
         self.filename = None
         self.items = assets.Items()
@@ -380,6 +439,7 @@ class MainWindow():
         #self.item_browser = None
         self.item_edit = None
         self.blueprint_lib = None
+        self.options_dialog = None
 
         # populate race combo box
         for race in save_file.race_types:
@@ -390,6 +450,7 @@ class MainWindow():
         self.ui.actionReload.triggered.connect(self.reload)
         self.ui.actionOpen.triggered.connect(self.open_file)
         self.ui.actionQuit.triggered.connect(self.app.closeAllWindows)
+        self.ui.actionOptions.triggered.connect(self.new_options_dialog)
 
         # launch open file dialog
         # we want this after the races are populated but before the slider setup
@@ -558,6 +619,28 @@ class MainWindow():
         self.blueprint_lib.dialog.accepted.connect(update_blueprints)
         self.blueprint_lib.dialog.show()
 
+    def new_options_dialog(self):
+        self.options_dialog = OptionsDialog(self.window)
+
+        def write_options():
+            self.options_dialog.write()
+            self.ui.statusbar.showMessage("Options have been updated", 3000)
+
+        self.options_dialog.dialog.accepted.connect(write_options)
+        self.options_dialog.dialog.show()
+
+    def new_setup_dialog(self):
+        self.setup_dialog = OptionsDialog(self.window)
+
+        def write_options():
+            self.setup_dialog.write()
+            self.setup_dialog.rebuild_db()
+
+        self.setup_dialog.dialog.accepted.connect(write_options)
+        # TODO: make sure this is ok to do
+        self.setup_dialog.dialog.rejected.connect(sys.exit)
+        self.setup_dialog.dialog.exec()
+
     # these update all values in a stat group at once
     def update_energy(self):
         self.ui.energy.setMaximum(self.ui.max_energy.value())
@@ -647,7 +730,7 @@ class MainWindow():
         """Display open file dialog and load selected save."""
         filename = QFileDialog.getOpenFileName(self.window,
                                                'Open save file...',
-                                               conf["player_folder"],
+                                               config.Config().read()["player_folder"],
                                                # FIXME: doesn't seem to filter on windows
                                                '*.player')
 

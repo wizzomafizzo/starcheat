@@ -1,0 +1,1 @@
+.\starcheat.exe > .\starcheat_debug.txt 2>&1

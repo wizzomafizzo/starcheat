@@ -42,18 +42,19 @@ def parse_json(filename):
 class AssetsDb():
     def __init__(self):
         """Master assets database."""
+        self.assets_db = config.Config().read()["assets_db"]
         try:
-            open(conf["assets_db"])
+            open(self.assets_db)
         except FileNotFoundError:
             self.init_db()
 
-        self.db = sqlite3.connect(conf["assets_db"])
+        self.db = sqlite3.connect(self.assets_db)
 
     def init_db(self):
         """Create and populate a brand new assets database."""
         tables = ("create table items (name text, filename text, folder text, icon text, category text)",
                   "create table blueprints (name text, filename text, folder text, category text)")
-        db = sqlite3.connect(conf["assets_db"])
+        db = sqlite3.connect(self.assets_db)
         c = db.cursor()
 
         for q in tables:
@@ -67,7 +68,7 @@ class AssetsDb():
 class Blueprints():
     def __init__(self):
         """Everything dealing with indexing and parsing blueprint asset files."""
-        self.blueprints_folder = os.path.join(conf["assets_folder"], "recipes")
+        self.blueprints_folder = os.path.join(config.Config().read()["assets_folder"], "recipes")
         self.db = AssetsDb().db
 
     def file_index(self):
@@ -136,9 +137,10 @@ class Blueprints():
 class Items():
     def __init__(self):
         """Everything dealing with indexing and parsing item asset files."""
-        self.items_folder = os.path.join(conf["assets_folder"], "items")
-        self.objects_folder = os.path.join(conf["assets_folder"], "objects")
-        self.tech_folder = os.path.join(conf["assets_folder"], "tech")
+        self.assets_folder = config.Config().read()["assets_folder"]
+        self.items_folder = os.path.join(self.assets_folder, "items")
+        self.objects_folder = os.path.join(self.assets_folder, "objects")
+        self.tech_folder = os.path.join(self.assets_folder, "tech")
         self.ignore_items = ".*\.(png|config|frames|coinitem)"
         self.db = AssetsDb().db
 
@@ -196,7 +198,7 @@ class Items():
             try:
                 asset_icon = info["inventoryIcon"]
                 if re.match(".*\.techitem$", f[0]) != None:
-                    icon = conf["assets_folder"] + asset_icon
+                    icon = self.assets_folder + asset_icon
                     # index dynamic tech chip items too
                     # TODO: do we keep the non-chip items in or not? i don't
                     #       think you're meant to have them outside tech slots
@@ -207,7 +209,7 @@ class Items():
             except KeyError:
                 if re.search("(sword|shield)", category) != None:
                     cat = category.replace("generated", "")
-                    icon = os.path.join(conf["assets_folder"], "interface", "inventory", cat + ".png")
+                    icon = os.path.join(self.assets_folder, "interface", "inventory", cat + ".png")
                 else:
                     icon = self.missing_icon()
 
@@ -294,7 +296,7 @@ class Items():
 
     def missing_icon(self):
         """Return the path to the default inventory placeholder icon."""
-        return os.path.join(conf["assets_folder"], "interface", "inventory", "x.png")
+        return os.path.join(self.assets_folder, "interface", "inventory", "x.png")
 
     def filter_items(self, category, name):
         """Search for indexed items based on name and category."""
