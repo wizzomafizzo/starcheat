@@ -86,6 +86,7 @@ def pretty_variant(variant):
 
 class ItemVariant(QTableWidgetItem):
     def __init__(self, variant):
+        # TODO: remove prints when this is fleshed out
         print(variant)
         self.variant_name = variant[0]
         self.variant_type = variant[1][0]
