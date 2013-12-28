@@ -2,21 +2,21 @@
 
 Starbound player save editor, you can get free pixels with this (omg)
 
-![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/screen1.png)
+![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/screen.png)
 
 ## install
 here is how to install it
 
 ### requirements
 - [python 3](http://www.python.org/getit/)
-- [qt5](http://qt-project.org/downloads)
+- [qt5](http://qt-project.org/downloads) (if you're using Windows you probably don't need this)
 - [pyqt5](http://www.riverbankcomputing.com/software/pyqt/download5)
 
 ### before setup
 - update starcheat/starcheat.ini with your own Starbound folders
 
 ### windows
-- install python 3 and pyqt5 (you don't need qt5)
+- install python 3 and pyqt5
 - > cd \<starcheat top folder\>
 - > ./build.bat
 - browse to newly created build/ folder
