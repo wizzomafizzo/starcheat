@@ -1260,6 +1260,9 @@ border-radius: 4px;
       <height>436</height>
      </rect>
     </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
     <property name="orientation">
      <enum>Qt::Vertical</enum>
     </property>
@@ -1902,7 +1905,10 @@ border-radius: 4px;
      <string>Tools</string>
     </property>
     <addaction name="actionAdvanced_Edit"/>
+    <addaction name="separator"/>
     <addaction name="actionOptions"/>
+    <addaction name="actionBackup_On_Save"/>
+    <addaction name="actionUpdate_Timestamps"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
@@ -2012,7 +2018,7 @@ border-radius: 4px;
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Advanced Edit</string>
+    <string>Advanced Edit...</string>
    </property>
   </action>
   <action name="actionItem_Browser">
@@ -2025,7 +2031,29 @@ border-radius: 4px;
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Options</string>
+    <string>Options...</string>
+   </property>
+  </action>
+  <action name="actionUpdate_Timestamps">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Update Timestamps</string>
+   </property>
+  </action>
+  <action name="actionBackup_On_Save">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Backup On Save</string>
    </property>
   </action>
  </widget>

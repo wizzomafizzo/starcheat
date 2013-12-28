@@ -8,9 +8,10 @@ from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidget
 from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon, QImageReader
 
-import save_file, assets
+import save_file, assets, config
 import qt_mainwindow, qt_itemedit, qt_itembrowser, qt_blueprints
-from config import config
+
+conf = config.Config().read()
 
 def inv_icon(item_name):
     """Return a QPixmap object of the inventory icon of a given item (if possible)."""
@@ -143,19 +144,15 @@ class ItemBrowser():
             return
 
         item = self.items.get_item(selected)
-
-        # fallback on inventory icon if no proper one
-        # TODO: replace with get_item_image function
-        try:
-            icon_file = os.path.join(item[1], item[0]["image"])
-            try:
-                open(icon_file)
-                icon = QPixmap(icon_file).scaledToHeight(64)
-            except FileNotFoundError:
-                icon = inv_icon(selected)
-        except KeyError:
+        # don't like so many queries but should be ok for the browser
+        icon_file = self.items.get_item_image(selected)
+        # fallback on inventory icon
+        if icon_file == None:
             icon = inv_icon(selected)
+        else:
+            icon = QPixmap(icon_file).scaledToHeight(64)
 
+        # last ditch, just use x.png
         try:
             self.item_browser.item_icon.setPixmap(icon)
         except TypeError:
@@ -650,7 +647,7 @@ class MainWindow():
         """Display open file dialog and load selected save."""
         filename = QFileDialog.getOpenFileName(self.window,
                                                'Open save file...',
-                                               config["player_folder"],
+                                               conf["player_folder"],
                                                # FIXME: doesn't seem to filter on windows
                                                '*.player')
 

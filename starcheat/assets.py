@@ -5,7 +5,8 @@ Module for reading and indexing Starbound assets
 import os, json, re, sqlite3
 from platform import system
 
-from config import config
+import config
+conf = config.Config().read()
 
 # Regular expression for comments
 comment_re = re.compile(
@@ -15,14 +16,15 @@ comment_re = re.compile(
 
 # source: http://www.lifl.fr/~riquetd/parse-a-json-file-with-comments.html
 def parse_json(filename):
-    """ Parse a JSON file
-        First remove comments and then use the json module package
-        Comments look like :
-            // ...
-        or
-            /*
-            ...
-            */
+    """
+    Parse a JSON file
+    First remove comments and then use the json module package
+    Comments look like :
+    // ...
+    or
+    /*
+    ...
+    */
     """
     with open(filename) as f:
         content = ''.join(f.readlines())
@@ -39,17 +41,19 @@ def parse_json(filename):
 
 class AssetsDb():
     def __init__(self):
+        """Master assets database."""
         try:
-            open(config["assets_db"])
+            open(conf["assets_db"])
         except FileNotFoundError:
             self.init_db()
 
-        self.db = sqlite3.connect(config["assets_db"])
+        self.db = sqlite3.connect(conf["assets_db"])
 
     def init_db(self):
+        """Create and populate a brand new assets database."""
         tables = ("create table items (name text, filename text, folder text, icon text, category text)",
                   "create table blueprints (name text, filename text, folder text, category text)")
-        db = sqlite3.connect(config["assets_db"])
+        db = sqlite3.connect(conf["assets_db"])
         c = db.cursor()
 
         for q in tables:
@@ -62,10 +66,12 @@ class AssetsDb():
 
 class Blueprints():
     def __init__(self):
-        self.blueprints_folder = os.path.join(config["assets_folder"], "recipes")
+        """Everything dealing with indexing and parsing blueprint asset files."""
+        self.blueprints_folder = os.path.join(conf["assets_folder"], "recipes")
         self.db = AssetsDb().db
 
     def file_index(self):
+        """Return a list of all valid blueprints files."""
         index = []
         for root, dirs, files in os.walk(self.blueprints_folder):
             for f in files:
@@ -75,6 +81,7 @@ class Blueprints():
         return index
 
     def add_all_blueprints(self):
+        """Parse and insert every indexable blueprint asset."""
         index = self.file_index()
         blueprints = []
         print("Indexing", end="")
@@ -104,16 +111,19 @@ class Blueprints():
         print("Done!")
 
     def get_all_blueprints(self):
+        """Return a list of every indexed blueprints."""
         c = self.db.cursor()
         c.execute("select * from blueprints order by name collate nocase")
         return c.fetchall()
 
     def get_categories(self):
+        """Return a list of all unique blueprint categories."""
         c = self.db.cursor()
         c.execute("select distinct category from blueprints order by category")
         return c.fetchall()
 
     def filter_blueprints(self, category, name):
+        """Filter blueprints based on category and name."""
         if category == "<all>":
             category = "%"
         name = "%" + name + "%"
@@ -125,13 +135,15 @@ class Blueprints():
 
 class Items():
     def __init__(self):
-        self.items_folder = os.path.join(config["assets_folder"], "items")
-        self.objects_folder = os.path.join(config["assets_folder"], "objects")
-        self.tech_folder = os.path.join(config["assets_folder"], "tech")
+        """Everything dealing with indexing and parsing item asset files."""
+        self.items_folder = os.path.join(conf["assets_folder"], "items")
+        self.objects_folder = os.path.join(conf["assets_folder"], "objects")
+        self.tech_folder = os.path.join(conf["assets_folder"], "tech")
         self.ignore_items = ".*\.(png|config|frames|coinitem)"
         self.db = AssetsDb().db
 
     def file_index(self):
+        """Return a list of every indexable Starbound item asset."""
         index = []
         # regular items
         for root, dirs, files in os.walk(self.items_folder):
@@ -153,16 +165,20 @@ class Items():
         return index
 
     def add_all_items(self):
+        """Insert metadata for every possible item into the database."""
         index = self.file_index()
         items = []
+
         print("Indexing", end="")
         for f in index:
+            # load the asset's json file
             full_path = os.path.join(f[1], f[0])
             try:
                 info = parse_json(full_path)
             except ValueError:
                 continue
 
+            # figure out the item's name. it can be a few things
             try:
                 name = info["itemName"]
             except KeyError:
@@ -173,12 +189,14 @@ class Items():
 
             filename = f[0]
             path = f[1]
+            # just use the file extension as category
             category = f[0].partition(".")[2]
 
+            # get full path to an inventory icon
             try:
                 asset_icon = info["inventoryIcon"]
                 if re.match(".*\.techitem$", f[0]) != None:
-                    icon = config["assets_folder"] + asset_icon
+                    icon = conf["assets_folder"] + asset_icon
                     # index dynamic tech chip items too
                     # TODO: do we keep the non-chip items in or not? i don't
                     #       think you're meant to have them outside tech slots
@@ -187,12 +205,11 @@ class Items():
                 else:
                     icon = os.path.join(f[1], info["inventoryIcon"])
             except KeyError:
-                # TODO: still working these out. check out crafted weaps too
                 if re.search("(sword|shield)", category) != None:
                     cat = category.replace("generated", "")
-                    icon = os.path.join(config["assets_folder"], "interface", "inventory", cat + ".png")
+                    icon = os.path.join(conf["assets_folder"], "interface", "inventory", cat + ".png")
                 else:
-                    icon = os.path.join(config["assets_folder"], "interface", "inventory", "x.png")
+                    icon = self.missing_icon()
 
             items.append((name, filename, path, icon, category))
             print(".", end="")
@@ -204,11 +221,16 @@ class Items():
         print("Done!")
 
     def get_all_items(self):
+        """Return a list of every indexed item."""
         c = self.db.cursor()
         c.execute("select * from items order by name collate nocase")
         return c.fetchall()
 
     def get_item(self, name):
+        """
+        Find the first hit in the DB for a given item name, return the
+        parsed asset file and location.
+        """
         c = self.db.cursor()
         c.execute("select folder, filename from items where name = ?", (name,))
         meta = c.fetchone()
@@ -216,11 +238,13 @@ class Items():
         return item, meta[0], meta[1]
 
     def get_categories(self):
+        """Return a list of all unique indexed item categories."""
         c = self.db.cursor()
         c.execute("select distinct category from items order by category")
         return c.fetchall()
 
     def get_item_icon(self, name):
+        """Return the path and spritesheet offset of a given item name."""
         c = self.db.cursor()
         c.execute("select icon from items where name = ?", (name,))
         try:
@@ -247,22 +271,33 @@ class Items():
 
         return icon[0], 0
 
-    # TODO: this is not written yet
-    def get_item_image(self, item):
-        """Return a vaild item image from item options."""
+    def get_item_image(self, name):
+        """Return a vaild item image path for given item name."""
+        item = self.get_item(name)
+
         # TODO: support for frame selectors
-        if "image" in item:
-            if re.search(":", item["image"]):
-                image = item["image"].partition(":")[0]
-        try:
-            icon_file = item["image"]
-        except KeyError:
-            pass
+        # TODO: support for generated item images
+        if "image" in item[0]:
+            if re.search(":", item[0]["image"]):
+                image = item[0]["image"].partition(":")[0]
+            else:
+                image = item[0]["image"]
+
+            try:
+                path = os.path.join(item[1], image)
+                open(path)
+                return path
+            except FileNotFoundError:
+                return None
+        else:
+            return None
 
     def missing_icon(self):
-        return os.path.join(config["assets_folder"], "interface", "inventory", "x.png")
+        """Return the path to the default inventory placeholder icon."""
+        return os.path.join(conf["assets_folder"], "interface", "inventory", "x.png")
 
     def filter_items(self, category, name):
+        """Search for indexed items based on name and category."""
         if category == "<all>":
             category = "%"
         name = "%" + name + "%"

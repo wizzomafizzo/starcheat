@@ -89,6 +89,7 @@ data_format = (
     ("the_rest", "__the_rest__", None)
 )
 
+# TODO: move to assets module
 race_types = ("Apex", "Avian", "Floran", "Glitch", "Human", "Hylotl")
 
 def unpack_str(bytes):
@@ -351,7 +352,7 @@ def unpack_var(var, data):
     if pattern in save_file_types:
         return save_file_types[pattern][0](data)
     else:
-        # TODO: same here, can we make it pack()?
+        # TODO: same here, can we make it unpack()?
         return unpack_from(pattern, data, 0), length
 
 def pack_var(var, data):
@@ -535,6 +536,8 @@ class PlayerSave():
     def set_wieldable(self, bag):
         self.data["inv"]["wieldable"] = bag
 
+    # equipment gets set in two places, there is an individual slot and then
+    # a bag for each equpment group. unusual behaviour if you don't set both
     def set_head(self, main, glamor):
         self.data["head"] = main
         self.data["inv"]["equipment"][0] = main
