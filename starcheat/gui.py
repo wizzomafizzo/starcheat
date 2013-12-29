@@ -70,6 +70,12 @@ class OptionsDialog():
         assets.AssetsDb()
         # TODO: i want some feedback here
 
+# TODO: not sure the check for no players found is working? if user forgets
+#       to set a player_folder on setup they will be forced to edit the ini
+# TODO: put error messages in quick dialogs?
+# TODO: support stuff like sorting by date (add column to table widget)
+# TODO: double clicking item opens the player
+# TODO: disable the ok button until a valid item is selected
 class CharacterSelectDialog():
     def __init__(self, parent):
         self.dialog = QDialog(parent)
@@ -84,28 +90,29 @@ class CharacterSelectDialog():
         self.populate()
 
     def accept(self):
-        ply = self.ui.listWidget.selectedItems()[0].text()
-        if ply != "":
-            self.selected = self.players[ply]
+        player = self.ui.listWidget.selectedItems()[0].text()
+        if player != "":
+            self.selected = self.players[player]
             self.dialog.close()
 
     def get_players(self):
+        player_folder = config.Config().read()["player_folder"]
         players_found = {}
-        for root, dirs, files in os.walk(config.Config().read()["player_folder"]):
+        for root, dirs, files in os.walk(player_folder):
             for f in files:
-                #is there need for regular expressions at this point?
+                # is there need for regular expressions at this point?
                 if f.endswith(".player"):
                     try:
-                        ply = save_file.PlayerSave(os.path.join(root, f))
-                        players_found[ply.get_name()] = ply
+                        player = save_file.PlayerSave(os.path.join(root, f))
+                        players_found[player.get_name()] = player
                     except save_file.WrongSaveVer:
-                        #ignores players that cannot be loaded
-                        print("{} could not be loaded due to being incompatible with this version of starcheat.".format(ply.get_name()))
-                        #pop the player if it's incompatible
-                        #I didn't expect the dictionary to still hold the player if execution hits the exception block
-                        #I still don't expect it, hence the try. Just in case this is odd behavior.
+                        # ignores players that cannot be loaded
+                        print("%s could not be loaded due to being incompatible with this version of starcheat." % (player.get_name(),))
+                        # pop the player if it's incompatible
+                        # I didn't expect the dictionary to still hold the player if execution hits the exception block
+                        # I still don't expect it, hence the try. Just in case this is odd behavior.
                         try:
-                            players_found.pop(ply.get_name())
+                            players_found.pop(player.get_name())
                         except KeyError:
                             pass
 
@@ -329,8 +336,12 @@ class MainWindow():
 
         def update_blueprints():
             self.player.set_blueprints(self.blueprint_lib.get_known_list())
+            self.blueprint_lib.dialog.close()
 
-        self.blueprint_lib.dialog.accepted.connect(update_blueprints)
+        # TODO: find out why this wasn't working since the grid update. what
+        #       makes a buttonBox "automatic" when it's created originally in designer?
+        self.blueprint_lib.ui.buttonBox.accepted.connect(update_blueprints)
+        self.blueprint_lib.ui.buttonBox.rejected.connect(self.blueprint_lib.dialog.close)
         self.blueprint_lib.dialog.show()
 
     def new_options_dialog(self):
