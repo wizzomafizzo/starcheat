@@ -74,7 +74,6 @@ class OptionsDialog():
 #       to set a player_folder on setup they will be forced to edit the ini
 # TODO: put error messages in quick dialogs?
 # TODO: support stuff like sorting by date (add column to table widget)
-# TODO: double clicking item opens the player
 # TODO: disable the ok button until a valid item is selected
 class CharacterSelectDialog():
     def __init__(self, parent):
@@ -82,23 +81,25 @@ class CharacterSelectDialog():
         self.ui = qt_openplayer.Ui_OpenPlayer()
         self.ui.setupUi(self.dialog)
 
-        self.dialog.accepted.connect(self.accept)
+        self.player_folder = config.Config().read()["player_folder"]
+
         self.dialog.rejected.connect(sys.exit)
+        self.dialog.accepted.connect(self.accept)
+        # bizarre, if i set this to self.accpet it just doesn't work...
+        self.ui.player_list.itemDoubleClicked.connect(self.dialog.accept)
 
         self.get_players()
-
         self.populate()
 
     def accept(self):
-        player = self.ui.listWidget.selectedItems()[0].text()
+        player = self.ui.player_list.currentItem().text()
         if player != "":
             self.selected = self.players[player]
             self.dialog.close()
 
     def get_players(self):
-        player_folder = config.Config().read()["player_folder"]
         players_found = {}
-        for root, dirs, files in os.walk(player_folder):
+        for root, dirs, files in os.walk(self.player_folder):
             for f in files:
                 # is there need for regular expressions at this point?
                 if f.endswith(".player"):
@@ -120,19 +121,19 @@ class CharacterSelectDialog():
 
     def populate(self):
         for player in self.players.keys():
-            self.ui.listWidget.addItem(player)
+            self.ui.player_list.addItem(player)
 
     def show(self):
-        #quit if there are no players
+        # quit if there are no players
         if len(self.players) == 0:
+            # TODO: what if we popped up an options dialog?
             dialog = QMessageBox()
-            msg = "No save files found that are compatible with this version of starcheat."
+            msg = "No compatible save files found in: %s" % (self.player_folder)
             dialog.setText(msg)
             dialog.exec()
             sys.exit();
         else:
             self.dialog.exec()
-
 
 class MainWindow():
     def __init__(self):
@@ -143,6 +144,7 @@ class MainWindow():
         self.ui.setupUi(self.window)
 
         # launch first setup
+        # TODO: might need to rethink the logic to use the ini existence
         self.setup_dialog = None
         try:
             open(conf["assets_db"])
@@ -173,8 +175,8 @@ class MainWindow():
 
         # launch open file dialog
         # we want this after the races are populated but before the slider setup
-        if self.open_file() == False:
-            return
+        # TODO: for now let's rely on exceptions, later display dialogs in a try
+        self.open_file()
 
         # set up sliders to update values together
         stats = "health", "energy", "food", "warmth", "breath"
@@ -450,13 +452,12 @@ class MainWindow():
         """Display open file dialog and load selected save."""
 
         character_select = CharacterSelectDialog(self.window)
-        character_select.dialog.exec()
+        character_select.show()
 
         self.player = character_select.selected
         self.update()
         self.window.setWindowTitle("starcheat - " + os.path.basename(self.player.filename))
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
-        return True
 
 if __name__ == '__main__':
     window = MainWindow()
