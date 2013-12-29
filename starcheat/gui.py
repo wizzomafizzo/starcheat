@@ -2,436 +2,19 @@
 GUI module for starcheat
 """
 
-import sys, re, os
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidget
-from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox, QInputDialog
-from PyQt5.QtGui import QPixmap, QIcon, QImageReader
+import sys, os
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow
+from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
 
 import save_file, assets, config
-import qt_mainwindow, qt_itemedit, qt_itembrowser, qt_blueprints, qt_options, qt_openplayer
+import qt_mainwindow, qt_options, qt_openplayer
+# TODO: it doesn't feel right doing this, might be better with a proper module dir
+from gui_common import *
+from gui_itemedit import *
+from gui_blueprints import *
 
 conf = config.Config().read()
-
-# TODO: it might be almost time to split this into a file per dialog
-
-def inv_icon(item_name):
-    """Return a QPixmap object of the inventory icon of a given item (if possible)."""
-    icon_file = assets.Items().get_item_icon(item_name)
-
-    if icon_file == None:
-        return QPixmap()
-
-    reader = QImageReader(icon_file[0])
-    reader.setClipRect(QtCore.QRect(icon_file[1], 0, 16, 16))
-    return QPixmap.fromImageReader(reader).scaled(32, 32)
-
-def empty_slot():
-    """Return an empty bag slot widget."""
-    return ItemWidget(save_file.empty_slot())
-
-# TODO: a decision needs to be made here whether to continue with the custom
-#       widget item or an entirely new custom table view. if the features below
-#       are easy enough to add then we'll just stick with the current method
-# TODO: swap items instead of overwriting
-#       apparently this is done by reimplementing the drag functions
-# TODO: some sort of icon painter so we can show a frame, rarity and count overlay
-class ItemWidget(QTableWidgetItem):
-    """Custom table wiget item with icon support and extra item variables."""
-    def __init__(self, item):
-        self.name = item[0]
-        self.item_count = item[1]
-        self.variant = item[2]
-        QTableWidgetItem.__init__(self, self.name)
-        self.setTextAlignment(QtCore.Qt.AlignCenter)
-
-        # TODO: remove this
-        print(self.variant)
-
-        if self.name != "":
-            self.setToolTip(self.name + " (" + str(self.item_count) + ")")
-        else:
-            return
-
-        icon = inv_icon(self.name)
-        try:
-            self.setIcon(QtGui.QIcon(icon))
-        except TypeError:
-            pass
-
-        if type(icon) is QPixmap:
-            #self.setText(str(self.item_count))
-            self.setText("")
-
-def pretty_variant(variant):
-    variant_type = variant[0]
-    variant_value = variant[1]
-    if variant_type == 2:
-        return str(variant_value[0])
-    elif variant_type == 3:
-        if variant_value[0] == 1:
-            return "True"
-        else:
-            return "False"
-    elif variant_type == 4:
-        return str(variant_value)
-    elif variant_type == 5:
-        return '"' + str(variant_value) + '"'
-    elif variant_type == 6:
-        items = []
-        for i in variant_value:
-            items.append(pretty_variant(i))
-        return ", ".join(items)
-    elif variant_type == 7:
-        items = []
-        for i in variant_value:
-            items.append(i[0] + ": " + pretty_variant(i[1]))
-        return "{ " + ", ".join(items) + " }"
-    else:
-        return "__UNKNOWN_TYPE__"
-
-class ItemVariant(QTableWidgetItem):
-    def __init__(self, variant):
-        self.variant_name = variant[0]
-        self.variant_type = variant[1][0]
-        self.variant_value = variant[1][1]
-
-        item_text = self.variant_name + ": " + pretty_variant(variant[1])
-        QTableWidgetItem.__init__(self, item_text)
-        self.setToolTip(item_text)
-        # TODO: remove this
-        print(variant)
-
-    def get_variant(self):
-        """Return the full variant in the proper format."""
-        return (self.variant_name, (self.variant_type, self.variant_value))
-
-class ItemBrowser():
-    def __init__(self, parent):
-        """Dialog for viewing/searching indexed items and returning selection."""
-        self.dialog = QDialog(parent)
-        self.item_browser = qt_itembrowser.Ui_Dialog()
-        self.item_browser.setupUi(self.dialog)
-
-        self.item_browse_select = None
-        self.items = assets.Items()
-
-        # populate category combobox
-        for cat in self.items.get_categories():
-            self.item_browser.category.addItem(cat[0])
-
-        # populate initial items list
-        self.item_browser.items.clear()
-        for item in self.items.get_all_items():
-            self.item_browser.items.addItem(item[0])
-
-        self.item_browser.items.itemSelectionChanged.connect(self.update_item_view)
-        self.item_browser.filter.textChanged.connect(self.update_item_list)
-        self.item_browser.category.currentTextChanged.connect(self.update_item_list)
-
-        self.item_browser.items.setCurrentRow(0)
-        self.item_browser.filter.setFocus()
-
-    def update_item_view(self):
-        """Update item details view with data from currently selected item."""
-        try:
-            selected = self.item_browser.items.selectedItems()[0].text()
-        except IndexError:
-            return
-
-        item = self.items.get_item(selected)
-        # don't like so many queries but should be ok for the browser
-        icon_file = self.items.get_item_image(selected)
-        # fallback on inventory icon
-        if icon_file == None:
-            icon = inv_icon(selected)
-        else:
-            icon = QPixmap(icon_file).scaledToHeight(64)
-
-        # last ditch, just use x.png
-        try:
-            self.item_browser.item_icon.setPixmap(icon)
-        except TypeError:
-            self.item_browser.item_icon.setPixmap(QPixmap(self.items.missing_icon()))
-
-        self.item_browse_select = selected
-
-        # TODO: update qt objectnames, already not making sense
-        try:
-            self.item_browser.item_name.setText(item[0]["shortdescription"])
-        except KeyError:
-            self.item_browser.item_name.setText("Missing short description")
-
-        try:
-            self.item_browser.short_desc.setText(item[0]["description"])
-        except KeyError:
-            self.item_browser.short_desc.setText("Missing description")
-
-        # populate default variant table
-        row = 0
-        self.item_browser.info.setRowCount(len(item[0]))
-        for key in sorted(item[0].keys()):
-            try:
-                text = str(key) + ": " + str(item[0][key])
-                table_item = QTableWidgetItem(text)
-                table_item.setToolTip(text)
-                self.item_browser.info.setItem(row, 0, table_item)
-            except TypeError:
-                pass
-            row += 1
-
-    def update_item_list(self):
-        """Populate item list based on current filter details."""
-        category = self.item_browser.category.currentText()
-        name = self.item_browser.filter.text()
-        result = self.items.filter_items(category, name)
-
-        # TODO: i'd like this to set focus on the list when category is changed
-        #       but not when the edit box is changed (split this function)
-        self.item_browser.items.clear()
-        for item in result:
-            self.item_browser.items.addItem(item[0])
-        self.item_browser.items.setCurrentRow(0)
-
-    def get_selection(self):
-        return self.item_browse_select
-
-class ItemEdit():
-    def __init__(self, parent, item=None):
-        """Takes an item widget and displays an edit dialog for it."""
-        self.item_dialog = QDialog(parent)
-        self.item_edit = qt_itemedit.Ui_Dialog()
-        self.item_edit.setupUi(self.item_dialog)
-
-        self.item_browser = None
-
-        # cells don't retain ItemSlot widget when they've been dragged away
-        if type(item) is QTableWidgetItem or item == None:
-            self.item = empty_slot()
-        else:
-            self.item = item
-
-        # set up signals
-        self.item_edit.load_button.clicked.connect(self.new_item_browser)
-        self.item_edit.item_type.textChanged.connect(self.update_item)
-        self.item_edit.variant.cellDoubleClicked.connect(self.edit_variant)
-
-        # set name text box
-        self.item_edit.item_type.setText(self.item.name)
-        # set item count spinbox
-        self.item_edit.count.setValue(int(self.item.item_count))
-
-        # set up variant table
-        self.item_edit.variant.setRowCount(len(self.item.variant[1]))
-        for i in range(len(self.item.variant[1])):
-            variant = ItemVariant(self.item.variant[1][i])
-            self.item_edit.variant.setItem(i, 0, variant)
-
-        self.item_edit.item_type.setFocus()
-
-        self.item_dialog.show()
-
-        # if the inventory slot is empty show the browser as well
-        if self.item.name == "":
-            self.new_item_browser()
-
-    def update_item(self):
-        """Update main item view with current item browser data."""
-        name = self.item_edit.item_type.text()
-
-        try:
-            item = assets.Items().get_item(name)
-        except TypeError:
-            self.item_edit.short_desc.setText("")
-            self.item_edit.desc.setText("")
-            self.item_edit.icon.setPixmap(QPixmap())
-            return
-
-        try:
-            self.item_edit.short_desc.setText(item[0]["shortdescription"])
-        except KeyError:
-            self.item_edit.short_desc.setText("Missing short description")
-
-        try:
-            self.item_edit.desc.setText(item[0]["description"])
-        except KeyError:
-            self.item_edit.desc.setText("Missing description")
-
-        try:
-            self.item_edit.icon.setPixmap(inv_icon(name))
-        except TypeError:
-            # TODO: change this to the x.png?
-            self.item_edit.icon.setPixmap(QPixmap())
-
-        # TODO: we don't support importing variants from assets yet
-        self.item_edit.variant.clear()
-
-    def get_item(self):
-        """Return an ItemWidget of the currently open item."""
-        type_name = self.item_edit.item_type.text()
-        count = self.item_edit.count.value()
-
-        variant_rows = self.item_edit.variant.rowCount()
-        variant = []
-        for i in range(variant_rows):
-            cell = self.item_edit.variant.item(i, 0)
-            variant.append(cell.get_variant())
-            print(i, variant)
-
-        print((type_name, count, (7, variant)))
-        return ItemWidget((type_name, count, (7, variant)))
-
-    def new_item_browser(self):
-        self.item_browser = ItemBrowser(self.item_dialog)
-        self.item_browser.dialog.accepted.connect(self.set_item_browser_selection)
-        self.item_browser.dialog.show()
-
-    def set_item_browser_selection(self):
-        self.item_edit.item_type.setText(self.item_browser.get_selection())
-        # TODO: stuff like setting value max to maxstack
-        self.item_edit.count.setValue(1)
-
-    def edit_variant(self):
-        selected = self.item_edit.variant.currentItem()
-        current_row = self.item_edit.variant.currentRow()
-        new_variant = None
-
-        if selected.variant_type == 2:
-            # double
-            dialog = QInputDialog.getDouble(self.item_dialog,
-                                            "Edit Value",
-                                            selected.variant_name,
-                                            selected.variant_value[0])
-            if dialog[1]:
-                # didn't realise i was writing lisp
-                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, (dialog[0],))))
-        elif selected.variant_type == 3:
-            # bool
-            if selected.variant_value[0] == 1:
-                text = "True"
-            else:
-                text = "False"
-
-            dialog = QInputDialog.getText(self.item_dialog,
-                                          "Edit Value (True/False)",
-                                          selected.variant_name,
-                                          QtWidgets.QLineEdit.Normal,
-                                          text)
-            if dialog[1]:
-                if dialog[0] == "True":
-                    val = (1,)
-                else:
-                    val = (0,)
-
-                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, val)))
-        elif selected.variant_type == 4:
-            # int (vlq)
-            dialog = QInputDialog.getInt(self.item_dialog,
-                                         "Edit Value",
-                                         selected.variant_name,
-                                         selected.variant_value)
-            if dialog[1]:
-                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, dialog[0])))
-        elif selected.variant_type == 5:
-            # string
-            dialog = QInputDialog.getText(self.item_dialog,
-                                          "Edit Value",
-                                          selected.variant_name,
-                                          QtWidgets.QLineEdit.Normal,
-                                          selected.variant_value)
-            if dialog[1]:
-                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, dialog[0])))
-        elif selected.variant_type == 6:
-            # TODO: both of these will require a fair bit of work
-            #       i'd like a recurive variant table
-            # variant list
-            pass
-        elif selected.variant_type == 7:
-            # variant dicts
-            pass
-
-        if new_variant != None:
-            self.item_edit.variant.setItem(current_row, 0, new_variant)
-
-class BlueprintLib():
-    def __init__(self, parent, known_blueprints):
-        """Blueprint library management dialog."""
-        self.dialog = QDialog(parent)
-        self.blueprint_lib = qt_blueprints.Ui_Dialog()
-        self.blueprint_lib.setupUi(self.dialog)
-
-        self.blueprints = assets.Blueprints()
-        self.known_blueprints = known_blueprints
-
-        # populate known list
-        self.blueprint_lib.known_blueprints.clear()
-        for blueprint in self.known_blueprints:
-            self.blueprint_lib.known_blueprints.addItem(blueprint)
-
-        # populate initial available list
-        self.blueprint_lib.available_blueprints.clear()
-        for blueprint in self.blueprints.get_all_blueprints():
-            self.blueprint_lib.available_blueprints.addItem(blueprint[0])
-
-        # populate category combobox
-        for cat in self.blueprints.get_categories():
-            self.blueprint_lib.category.addItem(cat[0])
-
-        self.blueprint_lib.add_button.clicked.connect(self.add_blueprint)
-        self.blueprint_lib.remove_button.clicked.connect(self.remove_blueprint)
-
-        self.blueprint_lib.filter.textChanged.connect(self.update_available_list)
-        self.blueprint_lib.category.currentTextChanged.connect(self.update_available_list)
-
-        self.blueprint_lib.filter.setFocus()
-
-    def update_available_list(self):
-        """Populate available blueprints list based on current filter details."""
-        category = self.blueprint_lib.category.currentText()
-        name = self.blueprint_lib.filter.text()
-        result = self.blueprints.filter_blueprints(category, name)
-        self.blueprint_lib.available_blueprints.clear()
-        for blueprint in result:
-            self.blueprint_lib.available_blueprints.addItem(blueprint[0])
-        self.blueprint_lib.available_blueprints.setCurrentRow(0)
-
-    def add_blueprint(self):
-        """Add currently select blueprint in available list to known list."""
-        try:
-            selected = self.blueprint_lib.available_blueprints.currentItem().text()
-        except AttributeError:
-            # nothing selected
-            return
-
-        # don't add more than one of each blueprint
-        if selected in self.known_blueprints:
-            return
-
-        # insert the new item and regenerate the list
-        self.known_blueprints.append(selected)
-        self.known_blueprints.sort()
-        self.blueprint_lib.known_blueprints.clear()
-        for i in range(len(self.known_blueprints)):
-            self.blueprint_lib.known_blueprints.addItem(self.known_blueprints[i])
-            if self.known_blueprints[i] == selected:
-                self.blueprint_lib.known_blueprints.setCurrentRow(i)
-
-    def remove_blueprint(self):
-        """Remove currently selected blueprint in known list."""
-        try:
-            selected = self.blueprint_lib.known_blueprints.currentItem().text()
-        except AttributeError:
-            return
-
-        # remove item and regen list
-        self.known_blueprints.remove(selected)
-        self.known_blueprints.sort()
-        self.blueprint_lib.known_blueprints.clear()
-        for blueprint in self.known_blueprints:
-            self.blueprint_lib.known_blueprints.addItem(blueprint)
-
-    def get_known_list(self):
-        return self.known_blueprints
 
 class OptionsDialog():
     def __init__(self, parent):
@@ -484,7 +67,7 @@ class OptionsDialog():
         self.write()
         if os.path.isfile(self.config["assets_db"]):
             os.remove(self.config["assets_db"])
-        db = assets.AssetsDb()
+        assets.AssetsDb()
         # TODO: i want some feedback here
 
 class CharacterSelectDialog():
@@ -499,7 +82,6 @@ class CharacterSelectDialog():
         self.get_players()
 
         self.populate()
-
 
     def accept(self):
         ply = self.ui.listWidget.selectedItems()[0].text()
@@ -717,10 +299,10 @@ class MainWindow():
 
         def trash_slot():
             bag.setItem(row, column, empty_slot())
-            item_edit.item_dialog.close()
+            item_edit.dialog.close()
 
-        item_edit.item_dialog.accepted.connect(update_slot)
-        item_edit.item_edit.trash_button.clicked.connect(trash_slot)
+        item_edit.dialog.accepted.connect(update_slot)
+        item_edit.ui.trash_button.clicked.connect(trash_slot)
 
     # these are used for connecting the item edit dialog to bag tables
     def new_main_bag_item_edit(self):
@@ -857,34 +439,9 @@ class MainWindow():
         """Display open file dialog and load selected save."""
 
         character_select = CharacterSelectDialog(self.window)
-        character_select.show()
+        character_select.dialog.exec()
+
         self.player = character_select.selected
-
-        #filename = QFileDialog.getOpenFileName(self.window,
-        #                                       'Open save file...',
-        #                                       config.Config().read()["player_folder"],
-        #                                       # FIXME: doesn't seem to filter on windows
-        #                                       '*.player')
-        #
-        #try:
-        #    self.player = save_file.PlayerSave(filename[0])
-        #except FileNotFoundError:
-        #    if filename[0] == "":
-        #        # they probably clicked cancel
-        #        return False
-        #    else:
-        #        dialog = QMessageBox()
-        #        msg = "Could not read file: " + filename[0]
-        #        dialog.setText(msg)
-        #        dialog.exec()
-        #        return False
-        #except save_file.WrongSaveVer:
-        #    dialog = QMessageBox()
-        #    msg = "Save file is not compatible with this version of starcheat."
-        #    dialog.setText(msg)
-        #    dialog.exec()
-        #    return False
-
         self.update()
         self.window.setWindowTitle("starcheat - " + os.path.basename(self.player.filename))
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)

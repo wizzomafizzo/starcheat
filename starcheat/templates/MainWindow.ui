@@ -428,6 +428,9 @@ border-radius: 4px;
     <property name="text">
      <string>Regen Rate</string>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
    </widget>
    <widget class="QLabel" name="backpack_label">
     <property name="geometry">

@@ -13,13 +13,13 @@ here is how to install it
 
 ### requirements
 - [python 3](http://www.python.org/getit/)
-- [qt5](http://qt-project.org/downloads) (if you're using Windows you probably don't need this)
+- [qt 5](http://qt-project.org/downloads) (if you're using Windows you probably don't need this)
 - [pyqt5](http://www.riverbankcomputing.com/software/pyqt/download5)
 
 ### windows
 - install python 3 and pyqt5
-- > cd \<starcheat top folder\>
-- > ./build.bat
+- PS> cd \<starcheat top folder\>
+- PS> ./build.ps1
 - browse to newly created build/ folder
 - double click starcheat.py
 
@@ -35,7 +35,7 @@ standalone build makes an executable and includes all python and qt dependencies
 END USERS: if Windows complains about a system error (re: missing msvcr100.dll) you probably need to install the [vs c++ 2010 runtime package](http://www.microsoft.com/en-au/download/details.aspx?id=14632)
 
 ### linux
-- install python 3, qt5 and pyqt5 from your distro repos
+- install python3, qt5 and pyqt5 from your distro repos
 - $ cd \<starcheat top folder\>
 - $ ./build.sh
 - $ cd build/
