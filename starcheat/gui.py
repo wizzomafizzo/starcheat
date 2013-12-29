@@ -11,129 +11,11 @@ import save_file, assets, config
 import qt_mainwindow, qt_options, qt_openplayer
 # TODO: it doesn't feel right doing this, might be better with a proper module dir
 from gui_common import *
+from gui_utils import *
 from gui_itemedit import *
 from gui_blueprints import *
 
 conf = config.Config().read()
-
-class OptionsDialog():
-    def __init__(self, parent):
-        # TODO: all the other dialogs should match this naming style
-        self.dialog = QDialog(parent)
-        self.ui = qt_options.Ui_Dialog()
-        self.ui.setupUi(self.dialog)
-
-        # read the current config and prefill everything
-        self.config = config.Config().read()
-        self.ui.assets_folder.setText(self.config["assets_folder"])
-        self.ui.player_folder.setText(self.config["player_folder"])
-        # TODO: do backups
-        self.ui.backup_folder.setText(self.config["backup_folder"])
-
-        self.ui.assets_folder_button.clicked.connect(self.open_assets)
-        self.ui.player_folder_button.clicked.connect(self.open_player)
-        self.ui.backup_folder_button.clicked.connect(self.open_backup)
-        self.ui.rebuild_button.clicked.connect(self.rebuild_db)
-
-    def write(self):
-        self.config["assets_folder"] = self.ui.assets_folder.text()
-        self.config["player_folder"] = self.ui.player_folder.text()
-        self.config["backup_folder"] = self.ui.backup_folder.text()
-        config.Config().write(self.config)
-
-    # TODO: windows doesn't like when these default to empty str
-    def open_assets(self):
-        filename = QFileDialog.getExistingDirectory(self.dialog,
-                                               "Choose assets folder...",
-                                               self.config["assets_folder"])
-        if filename != "": self.ui.assets_folder.setText(filename)
-
-    def open_player(self):
-        filename = QFileDialog.getExistingDirectory(self.dialog,
-                                               "Choose player save folder...",
-                                               self.config["player_folder"])
-        if filename != "": self.ui.player_folder.setText(filename)
-
-    def open_backup(self):
-        filename = QFileDialog.getExistingDirectory(self.dialog,
-                                               "Choose backup location...",
-                                               self.config["backup_folder"])
-        if filename != "": self.ui.backup_folder.setText(filename)
-
-    # TODO: this doesn't work in windows at all because of file locks
-    #       need to make a function to drop and recreate the databases
-    #       instead of just trashing the file
-    def rebuild_db(self):
-        self.write()
-        if os.path.isfile(self.config["assets_db"]):
-            os.remove(self.config["assets_db"])
-        assets.AssetsDb()
-        # TODO: i want some feedback here
-
-# TODO: not sure the check for no players found is working? if user forgets
-#       to set a player_folder on setup they will be forced to edit the ini
-# TODO: put error messages in quick dialogs?
-# TODO: support stuff like sorting by date (add column to table widget)
-# TODO: disable the ok button until a valid item is selected
-class CharacterSelectDialog():
-    def __init__(self, parent):
-        self.dialog = QDialog(parent)
-        self.ui = qt_openplayer.Ui_OpenPlayer()
-        self.ui.setupUi(self.dialog)
-
-        self.player_folder = config.Config().read()["player_folder"]
-
-        self.dialog.rejected.connect(sys.exit)
-        self.dialog.accepted.connect(self.accept)
-        # bizarre, if i set this to self.accpet it just doesn't work...
-        self.ui.player_list.itemDoubleClicked.connect(self.dialog.accept)
-
-        self.get_players()
-        self.populate()
-
-    def accept(self):
-        player = self.ui.player_list.currentItem().text()
-        if player != "":
-            self.selected = self.players[player]
-            self.dialog.close()
-
-    def get_players(self):
-        players_found = {}
-        for root, dirs, files in os.walk(self.player_folder):
-            for f in files:
-                # is there need for regular expressions at this point?
-                if f.endswith(".player"):
-                    try:
-                        player = save_file.PlayerSave(os.path.join(root, f))
-                        players_found[player.get_name()] = player
-                    except save_file.WrongSaveVer:
-                        # ignores players that cannot be loaded
-                        print("%s could not be loaded due to being incompatible with this version of starcheat." % (player.get_name(),))
-                        # pop the player if it's incompatible
-                        # I didn't expect the dictionary to still hold the player if execution hits the exception block
-                        # I still don't expect it, hence the try. Just in case this is odd behavior.
-                        try:
-                            players_found.pop(player.get_name())
-                        except KeyError:
-                            pass
-
-        self.players = players_found
-
-    def populate(self):
-        for player in self.players.keys():
-            self.ui.player_list.addItem(player)
-
-    def show(self):
-        # quit if there are no players
-        if len(self.players) == 0:
-            # TODO: what if we popped up an options dialog?
-            dialog = QMessageBox()
-            msg = "No compatible save files found in: %s" % (self.player_folder)
-            dialog.setText(msg)
-            dialog.exec()
-            sys.exit();
-        else:
-            self.dialog.exec()
 
 class MainWindow():
     def __init__(self):
@@ -313,24 +195,6 @@ class MainWindow():
         item_edit.dialog.accepted.connect(update_slot)
         item_edit.ui.trash_button.clicked.connect(trash_slot)
 
-    # these are used for connecting the item edit dialog to bag tables
-    def new_main_bag_item_edit(self):
-        self.new_item_edit(self.ui.main_bag)
-    def new_tile_bag_item_edit(self):
-        self.new_item_edit(self.ui.tile_bag)
-    def new_action_bar_item_edit(self):
-        self.new_item_edit(self.ui.action_bar)
-    def new_head_item_edit(self):
-        self.new_item_edit(self.ui.head)
-    def new_chest_item_edit(self):
-        self.new_item_edit(self.ui.chest)
-    def new_legs_item_edit(self):
-        self.new_item_edit(self.ui.legs)
-    def new_back_item_edit(self):
-        self.new_item_edit(self.ui.back)
-    def new_wieldable_item_edit(self):
-        self.new_item_edit(self.ui.wieldable)
-
     def new_blueprint_edit(self):
         # TODO: why does this only work with and instance var but the other
         # ones don't...???
@@ -368,42 +232,22 @@ class MainWindow():
         self.setup_dialog.dialog.rejected.connect(sys.exit)
         self.setup_dialog.dialog.exec()
 
-    # these update all values in a stat group at once
-    def update_energy(self):
-        self.ui.energy.setMaximum(self.ui.max_energy.value())
-        self.ui.energy_val.setText(str(self.ui.energy.value()) + " /")
-    def update_health(self):
-        self.ui.health.setMaximum(self.ui.max_health.value())
-        self.ui.health_val.setText(str(self.ui.health.value()) + " /")
-    def update_food(self):
-        self.ui.food.setMaximum(self.ui.max_food.value())
-        self.ui.food_val.setText(str(self.ui.food.value()) + " /")
-    def update_warmth(self):
-        self.ui.warmth.setMaximum(self.ui.max_warmth.value())
-        self.ui.warmth_val.setText(str(self.ui.warmth.value()) + " /")
-    def update_breath(self):
-        self.ui.breath.setMaximum(self.ui.max_breath.value())
-        self.ui.breath_val.setText(str(self.ui.breath.value()) + " /")
+    def reload(self):
+        """Reload the currently open save file and update GUI values."""
+        self.player = save_file.PlayerSave(self.player.filename)
+        self.update()
+        self.ui.statusbar.showMessage("Reloaded " + self.player.filename, 3000)
 
-    def get_equip(self, name):
-        """Return the raw values of both slots in a given equipment bag."""
-        equip = getattr(self.ui, name)
-        main_cell = equip.item(0, 0)
-        glamor_cell = equip.item(0, 1)
+    def open_file(self):
+        """Display open file dialog and load selected save."""
 
-        # when you drag itemwidgets around the cell will become empty so just
-        # pretend it had an empty slot value
-        if main_cell == None or type(main_cell) is QTableWidgetItem:
-            main = save_file.empty_slot()
-        else:
-            main = (main_cell.name, main_cell.item_count, main_cell.variant)
+        character_select = CharacterSelectDialog(self.window)
+        character_select.show()
 
-        if glamor_cell == None or type(glamor_cell) is QTableWidgetItem:
-            glamor = save_file.empty_slot()
-        else:
-            glamor = (glamor_cell.name, glamor_cell.item_count, glamor_cell.variant)
-
-        return main, glamor
+        self.player = character_select.selected
+        self.update()
+        self.window.setWindowTitle("starcheat - " + os.path.basename(self.player.filename))
+        self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
 
     def get_bag(self, name):
         """Return the entire contents of a given non-equipment bag as raw values."""
@@ -428,6 +272,26 @@ class MainWindow():
 
         return bag
 
+    def get_equip(self, name):
+        """Return the raw values of both slots in a given equipment bag."""
+        equip = getattr(self.ui, name)
+        main_cell = equip.item(0, 0)
+        glamor_cell = equip.item(0, 1)
+
+        # when you drag itemwidgets around the cell will become empty so just
+        # pretend it had an empty slot value
+        if main_cell == None or type(main_cell) is QTableWidgetItem:
+            main = save_file.empty_slot()
+        else:
+            main = (main_cell.name, main_cell.item_count, main_cell.variant)
+
+        if glamor_cell == None or type(glamor_cell) is QTableWidgetItem:
+            glamor = save_file.empty_slot()
+        else:
+            glamor = (glamor_cell.name, glamor_cell.item_count, glamor_cell.variant)
+
+        return main, glamor
+
     def update_bag(self, bag_name):
         """Set the entire contents of any given bag with ItemWidgets based off player data."""
         row = column = 0
@@ -442,22 +306,37 @@ class MainWindow():
                 row += 1
                 column = 0
 
-    def reload(self):
-        """Reload the currently open save file and update GUI values."""
-        self.player = save_file.PlayerSave(self.player.filename)
-        self.update()
-        self.ui.statusbar.showMessage("Reloaded " + self.player.filename, 3000)
+    # these are used for connecting the item edit dialog to bag tables
+    def new_main_bag_item_edit(self):
+        self.new_item_edit(self.ui.main_bag)
+    def new_tile_bag_item_edit(self):
+        self.new_item_edit(self.ui.tile_bag)
+    def new_action_bar_item_edit(self):
+        self.new_item_edit(self.ui.action_bar)
+    def new_head_item_edit(self):
+        self.new_item_edit(self.ui.head)
+    def new_chest_item_edit(self):
+        self.new_item_edit(self.ui.chest)
+    def new_legs_item_edit(self):
+        self.new_item_edit(self.ui.legs)
+    def new_back_item_edit(self):
+        self.new_item_edit(self.ui.back)
+    def new_wieldable_item_edit(self):
+        self.new_item_edit(self.ui.wieldable)
 
-    def open_file(self):
-        """Display open file dialog and load selected save."""
-
-        character_select = CharacterSelectDialog(self.window)
-        character_select.show()
-
-        self.player = character_select.selected
-        self.update()
-        self.window.setWindowTitle("starcheat - " + os.path.basename(self.player.filename))
-        self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
-
-if __name__ == '__main__':
-    window = MainWindow()
+    # these update all values in a stat group at once
+    def update_energy(self):
+        self.ui.energy.setMaximum(self.ui.max_energy.value())
+        self.ui.energy_val.setText(str(self.ui.energy.value()) + " /")
+    def update_health(self):
+        self.ui.health.setMaximum(self.ui.max_health.value())
+        self.ui.health_val.setText(str(self.ui.health.value()) + " /")
+    def update_food(self):
+        self.ui.food.setMaximum(self.ui.max_food.value())
+        self.ui.food_val.setText(str(self.ui.food.value()) + " /")
+    def update_warmth(self):
+        self.ui.warmth.setMaximum(self.ui.max_warmth.value())
+        self.ui.warmth_val.setText(str(self.ui.warmth.value()) + " /")
+    def update_breath(self):
+        self.ui.breath.setMaximum(self.ui.max_breath.value())
+        self.ui.breath_val.setText(str(self.ui.breath.value()) + " /")
