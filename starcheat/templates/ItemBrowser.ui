@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>501</width>
+    <width>591</width>
     <height>352</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>240</x>
      <y>320</y>
      <width>341</width>
      <height>21</height>
@@ -34,7 +34,7 @@
     <rect>
      <x>80</x>
      <y>10</y>
-     <width>121</width>
+     <width>141</width>
      <height>22</height>
     </rect>
    </property>
@@ -49,7 +49,7 @@
     <rect>
      <x>10</x>
      <y>70</y>
-     <width>191</width>
+     <width>211</width>
      <height>241</height>
     </rect>
    </property>
@@ -78,10 +78,10 @@
   <widget class="QTableWidget" name="info">
    <property name="geometry">
     <rect>
-     <x>210</x>
-     <y>90</y>
-     <width>281</width>
-     <height>221</height>
+     <x>230</x>
+     <y>80</y>
+     <width>351</width>
+     <height>231</height>
     </rect>
    </property>
    <property name="editTriggers">
@@ -96,8 +96,11 @@
    <property name="selectionBehavior">
     <enum>QAbstractItemView::SelectRows</enum>
    </property>
+   <property name="verticalScrollMode">
+    <enum>QAbstractItemView::ScrollPerPixel</enum>
+   </property>
    <property name="wordWrap">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="cornerButtonEnabled">
     <bool>false</bool>
@@ -111,6 +114,9 @@
    <attribute name="verticalHeaderVisible">
     <bool>false</bool>
    </attribute>
+   <attribute name="verticalHeaderDefaultSectionSize">
+    <number>40</number>
+   </attribute>
    <column>
     <property name="text">
      <string>Default Options</string>
@@ -120,9 +126,9 @@
   <widget class="QLabel" name="item_name">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>230</x>
      <y>10</y>
-     <width>211</width>
+     <width>281</width>
      <height>16</height>
     </rect>
    </property>
@@ -138,9 +144,9 @@
   <widget class="QLabel" name="short_desc">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>230</x>
      <y>30</y>
-     <width>211</width>
+     <width>281</width>
      <height>51</height>
     </rect>
    </property>
@@ -175,9 +181,9 @@
   <widget class="QLineEdit" name="filter">
    <property name="geometry">
     <rect>
-     <x>50</x>
+     <x>80</x>
      <y>40</y>
-     <width>151</width>
+     <width>141</width>
      <height>22</height>
     </rect>
    </property>
@@ -191,7 +197,7 @@
   <widget class="QLabel" name="item_icon">
    <property name="geometry">
     <rect>
-     <x>427</x>
+     <x>517</x>
      <y>10</y>
      <width>64</width>
      <height>64</height>

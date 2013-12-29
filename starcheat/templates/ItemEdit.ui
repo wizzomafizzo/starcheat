@@ -91,9 +91,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>140</y>
+     <y>130</y>
      <width>341</width>
-     <height>151</height>
+     <height>161</height>
     </rect>
    </property>
    <property name="editTriggers">
@@ -102,8 +102,11 @@
    <property name="alternatingRowColors">
     <bool>true</bool>
    </property>
+   <property name="verticalScrollMode">
+    <enum>QAbstractItemView::ScrollPerPixel</enum>
+   </property>
    <property name="wordWrap">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="cornerButtonEnabled">
     <bool>false</bool>
@@ -116,6 +119,9 @@
    </attribute>
    <attribute name="verticalHeaderVisible">
     <bool>false</bool>
+   </attribute>
+   <attribute name="verticalHeaderDefaultSectionSize">
+    <number>40</number>
    </attribute>
    <column>
     <property name="text">

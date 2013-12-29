@@ -5,7 +5,7 @@ GUI module for starcheat
 import sys, re, os
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidget
-from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox, QInputDialog
 from PyQt5.QtGui import QPixmap, QIcon, QImageReader
 
 import save_file, assets, config
@@ -45,6 +45,9 @@ class ItemWidget(QTableWidgetItem):
         QTableWidgetItem.__init__(self, self.name)
         self.setTextAlignment(QtCore.Qt.AlignCenter)
 
+        # TODO: remove this
+        print(self.variant)
+
         if self.name != "":
             self.setToolTip(self.name + " (" + str(self.item_count) + ")")
         else:
@@ -82,15 +85,13 @@ def pretty_variant(variant):
     elif variant_type == 7:
         items = []
         for i in variant_value:
-            items.append(i[0] + ": {" + pretty_variant(i[1]) + "}")
-        return ", ".join(items)
+            items.append(i[0] + ": " + pretty_variant(i[1]))
+        return "{ " + ", ".join(items) + " }"
     else:
         return "__UNKNOWN_TYPE__"
 
 class ItemVariant(QTableWidgetItem):
     def __init__(self, variant):
-        # TODO: remove prints when this is fleshed out
-        print(variant)
         self.variant_name = variant[0]
         self.variant_type = variant[1][0]
         self.variant_value = variant[1][1]
@@ -98,19 +99,12 @@ class ItemVariant(QTableWidgetItem):
         item_text = self.variant_name + ": " + pretty_variant(variant[1])
         QTableWidgetItem.__init__(self, item_text)
         self.setToolTip(item_text)
+        # TODO: remove this
+        print(variant)
 
-        if self.variant_type == 2:
-            print(2)
-        elif self.variant_type == 3:
-            print(3)
-        elif self.variant_type == 4:
-            print(4)
-        elif self.variant_type == 5:
-            print(5)
-        elif self.variant_type == 6:
-            print(6)
-        elif self.variant_type == 7:
-            print(7)
+    def get_variant(self):
+        """Return the full variant in the proper format."""
+        return (self.variant_name, (self.variant_type, self.variant_value))
 
 class ItemBrowser():
     def __init__(self, parent):
@@ -176,7 +170,7 @@ class ItemBrowser():
         # populate default variant table
         row = 0
         self.item_browser.info.setRowCount(len(item[0]))
-        for key in item[0]:
+        for key in sorted(item[0].keys()):
             try:
                 text = str(key) + ": " + str(item[0][key])
                 table_item = QTableWidgetItem(text)
@@ -220,6 +214,7 @@ class ItemEdit():
         # set up signals
         self.item_edit.load_button.clicked.connect(self.new_item_browser)
         self.item_edit.item_type.textChanged.connect(self.update_item)
+        self.item_edit.variant.cellDoubleClicked.connect(self.edit_variant)
 
         # set name text box
         self.item_edit.item_type.setText(self.item.name)
@@ -241,7 +236,7 @@ class ItemEdit():
             self.new_item_browser()
 
     def update_item(self):
-        """Update main item view with current item data."""
+        """Update main item view with current item browser data."""
         name = self.item_edit.item_type.text()
 
         try:
@@ -268,12 +263,23 @@ class ItemEdit():
             # TODO: change this to the x.png?
             self.item_edit.icon.setPixmap(QPixmap())
 
+        # TODO: we don't support importing variants from assets yet
+        self.item_edit.variant.clear()
+
     def get_item(self):
         """Return an ItemWidget of the currently open item."""
         type_name = self.item_edit.item_type.text()
         count = self.item_edit.count.value()
-        variant = self.item.variant
-        return ItemWidget((type_name, count, variant))
+
+        variant_rows = self.item_edit.variant.rowCount()
+        variant = []
+        for i in range(variant_rows):
+            cell = self.item_edit.variant.item(i, 0)
+            variant.append(cell.get_variant())
+            print(i, variant)
+
+        print((type_name, count, (7, variant)))
+        return ItemWidget((type_name, count, (7, variant)))
 
     def new_item_browser(self):
         self.item_browser = ItemBrowser(self.item_dialog)
@@ -284,6 +290,68 @@ class ItemEdit():
         self.item_edit.item_type.setText(self.item_browser.get_selection())
         # TODO: stuff like setting value max to maxstack
         self.item_edit.count.setValue(1)
+
+    def edit_variant(self):
+        selected = self.item_edit.variant.currentItem()
+        current_row = self.item_edit.variant.currentRow()
+        new_variant = None
+
+        if selected.variant_type == 2:
+            # double
+            dialog = QInputDialog.getDouble(self.item_dialog,
+                                            "Edit Value",
+                                            selected.variant_name,
+                                            selected.variant_value[0])
+            if dialog[1]:
+                # didn't realise i was writing lisp
+                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, (dialog[0],))))
+        elif selected.variant_type == 3:
+            # bool
+            if selected.variant_value[0] == 1:
+                text = "True"
+            else:
+                text = "False"
+
+            dialog = QInputDialog.getText(self.item_dialog,
+                                          "Edit Value (True/False)",
+                                          selected.variant_name,
+                                          QtWidgets.QLineEdit.Normal,
+                                          text)
+            if dialog[1]:
+                if dialog[0] == "True":
+                    val = (1,)
+                else:
+                    val = (0,)
+
+                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, val)))
+        elif selected.variant_type == 4:
+            # int (vlq)
+            dialog = QInputDialog.getInt(self.item_dialog,
+                                         "Edit Value",
+                                         selected.variant_name,
+                                         selected.variant_value)
+            if dialog[1]:
+                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, dialog[0])))
+        elif selected.variant_type == 5:
+            # string
+            dialog = QInputDialog.getText(self.item_dialog,
+                                          "Edit Value",
+                                          selected.variant_name,
+                                          QtWidgets.QLineEdit.Normal,
+                                          selected.variant_value)
+            if dialog[1]:
+                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, dialog[0])))
+        elif selected.variant_type == 6:
+            # TODO: both of these will require a fair bit of work
+            #       i'd like a recurive variant table
+            # variant list
+            pass
+        elif selected.variant_type == 7:
+            # variant dicts
+            pass
+
+        if new_variant != None:
+            self.item_edit.variant.setItem(current_row, 0, new_variant)
 
 class BlueprintLib():
     def __init__(self, parent, known_blueprints):
@@ -390,6 +458,7 @@ class OptionsDialog():
         self.config["backup_folder"] = self.ui.backup_folder.text()
         config.Config().write(self.config)
 
+    # TODO: windows doesn't like when these default to empty str
     def open_assets(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
                                                "Choose assets folder...",
@@ -408,6 +477,9 @@ class OptionsDialog():
                                                self.config["backup_folder"])
         if filename != "": self.ui.backup_folder.setText(filename)
 
+    # TODO: this doesn't work in windows at all because of file locks
+    #       need to make a function to drop and recreate the databases
+    #       instead of just trashing the file
     def rebuild_db(self):
         self.write()
         if os.path.isfile(self.config["assets_db"]):
@@ -469,6 +541,8 @@ class MainWindow():
         for b in bags:
             item_edit = getattr(self, "new_" + b + "_item_edit")
             getattr(self.ui, b).cellDoubleClicked.connect(item_edit)
+            # TODO: still issues with drag drop between tables
+            getattr(self.ui, b).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
 
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.name.setFocus()
@@ -690,12 +764,7 @@ class MainWindow():
 
             count = item.item_count
             item_type = item.name
-
-            # TODO: variant update support
-            # FIXME: this causes a bug where replacing an item with the item
-            #        browser will retain the old item's variant data
-            #        this kills the item
-            variant = bag[i][2]
+            variant = item.variant
             bag[i] = (item_type, int(count), variant)
 
             # so far all non-equip bags are 10 cols long

@@ -8,12 +8,6 @@ from platform import system
 import config
 conf = config.Config().read()
 
-# Regular expression for comments
-comment_re = re.compile(
-    '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
-    re.DOTALL | re.MULTILINE
-)
-
 # source: http://www.lifl.fr/~riquetd/parse-a-json-file-with-comments.html
 def parse_json(filename):
     """
@@ -26,6 +20,13 @@ def parse_json(filename):
     ...
     */
     """
+
+    # Regular expression for comments
+    comment_re = re.compile(
+        '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
+        re.DOTALL | re.MULTILINE
+    )
+
     with open(filename) as f:
         content = ''.join(f.readlines())
 
@@ -64,6 +65,9 @@ class AssetsDb():
 
         Items().add_all_items()
         Blueprints().add_all_blueprints()
+
+    def rebuild_db(self):
+        pass
 
 class Blueprints():
     def __init__(self):
