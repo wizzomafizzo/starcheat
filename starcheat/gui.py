@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon, QImageReader
 
 import save_file, assets, config
-import qt_mainwindow, qt_itemedit, qt_itembrowser, qt_blueprints, qt_options
+import qt_mainwindow, qt_itemedit, qt_itembrowser, qt_blueprints, qt_options, qt_openplayer
 
 conf = config.Config().read()
 
@@ -415,6 +415,64 @@ class OptionsDialog():
         db = assets.AssetsDb()
         # TODO: i want some feedback here
 
+class CharacterSelectDialog():
+    def __init__(self, parent):
+        self.dialog = QDialog(parent)
+        self.ui = qt_openplayer.Ui_OpenPlayer()
+        self.ui.setupUi(self.dialog)
+
+        self.dialog.accepted.connect(self.accept)
+        self.dialog.rejected.connect(sys.exit)
+
+        self.get_players()
+
+        self.populate()
+
+
+    def accept(self):
+        ply = self.ui.listWidget.selectedItems()[0].text()
+        if ply != "":
+            self.selected = self.players[ply]
+            self.dialog.close()
+
+    def get_players(self):
+        players_found = {}
+        for root, dirs, files in os.walk(config.Config().read()["player_folder"]):
+            for f in files:
+                #is there need for regular expressions at this point?
+                if f.endswith(".player"):
+                    try:
+                        ply = save_file.PlayerSave(os.path.join(root, f))
+                        players_found[ply.get_name()] = ply
+                    except save_file.WrongSaveVer:
+                        #ignores players that cannot be loaded
+                        print("{} could not be loaded due to being incompatible with this version of starcheat.".format(ply.get_name()))
+                        #pop the player if it's incompatible
+                        #I didn't expect the dictionary to still hold the player if execution hits the exception block
+                        #I still don't expect it, hence the try. Just in case this is odd behavior.
+                        try:
+                            players_found.pop(ply.get_name())
+                        except KeyError:
+                            pass
+
+        self.players = players_found
+
+    def populate(self):
+        for player in self.players.keys():
+            self.ui.listWidget.addItem(player)
+
+    def show(self):
+        #quit if there are no players
+        if len(self.players) == 0:
+            dialog = QMessageBox()
+            msg = "No save files found that are compatible with this version of starcheat."
+            dialog.setText(msg)
+            dialog.exec()
+            sys.exit();
+        else:
+            self.dialog.exec()
+
+
 class MainWindow():
     def __init__(self):
         """Display the main starcheat window."""
@@ -728,30 +786,35 @@ class MainWindow():
 
     def open_file(self):
         """Display open file dialog and load selected save."""
-        filename = QFileDialog.getOpenFileName(self.window,
-                                               'Open save file...',
-                                               config.Config().read()["player_folder"],
-                                               # FIXME: doesn't seem to filter on windows
-                                               '*.player')
 
-        try:
-            self.player = save_file.PlayerSave(filename[0])
-        except FileNotFoundError:
-            if filename[0] == "":
-                # they probably clicked cancel
-                return False
-            else:
-                dialog = QMessageBox()
-                msg = "Could not read file: " + filename[0]
-                dialog.setText(msg)
-                dialog.exec()
-                return False
-        except save_file.WrongSaveVer:
-            dialog = QMessageBox()
-            msg = "Save file is not compatible with this version of starcheat."
-            dialog.setText(msg)
-            dialog.exec()
-            return False
+        character_select = CharacterSelectDialog(self.window)
+        character_select.show()
+        self.player = character_select.selected
+
+        #filename = QFileDialog.getOpenFileName(self.window,
+        #                                       'Open save file...',
+        #                                       config.Config().read()["player_folder"],
+        #                                       # FIXME: doesn't seem to filter on windows
+        #                                       '*.player')
+        #
+        #try:
+        #    self.player = save_file.PlayerSave(filename[0])
+        #except FileNotFoundError:
+        #    if filename[0] == "":
+        #        # they probably clicked cancel
+        #        return False
+        #    else:
+        #        dialog = QMessageBox()
+        #        msg = "Could not read file: " + filename[0]
+        #        dialog.setText(msg)
+        #        dialog.exec()
+        #        return False
+        #except save_file.WrongSaveVer:
+        #    dialog = QMessageBox()
+        #    msg = "Save file is not compatible with this version of starcheat."
+        #    dialog.setText(msg)
+        #    dialog.exec()
+        #    return False
 
         self.update()
         self.window.setWindowTitle("starcheat - " + os.path.basename(self.player.filename))
