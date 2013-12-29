@@ -106,9 +106,7 @@ class ItemEdit():
         for i in range(variant_rows):
             cell = self.ui.variant.item(i, 0)
             variant.append(cell.get_variant())
-            print(i, variant)
 
-        print((type_name, count, (7, variant)))
         return ItemWidget((type_name, count, (7, variant)))
 
     def new_item_browser(self):

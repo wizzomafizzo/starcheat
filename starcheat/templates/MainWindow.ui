@@ -1257,7 +1257,7 @@ border-radius: 4px;
    <widget class="Line" name="line">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>291</x>
       <y>10</y>
       <width>21</width>
       <height>436</height>
@@ -1276,7 +1276,7 @@ border-radius: 4px;
     </property>
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>9</x>
       <y>10</y>
       <width>221</width>
       <height>20</height>
