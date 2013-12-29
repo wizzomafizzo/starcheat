@@ -64,16 +64,10 @@
      <item row="2" column="0" colspan="2">
       <widget class="QListWidget" name="items">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>250</width>
-         <height>16777215</height>
-        </size>
        </property>
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
