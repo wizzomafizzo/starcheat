@@ -5,7 +5,8 @@ Utility dialogs for starcheat itself
 import sys, os
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 
-import save_file, assets, config
+from config import Config
+import save_file, assets
 import qt_options, qt_openplayer
 
 class OptionsDialog():
@@ -16,7 +17,7 @@ class OptionsDialog():
         self.ui.setupUi(self.dialog)
 
         # read the current config and prefill everything
-        self.config = config.Config().read()
+        self.config = Config().read()
         self.ui.assets_folder.setText(self.config["assets_folder"])
         self.ui.player_folder.setText(self.config["player_folder"])
         # TODO: do backups
@@ -27,11 +28,13 @@ class OptionsDialog():
         self.ui.backup_folder_button.clicked.connect(self.open_backup)
         self.ui.rebuild_button.clicked.connect(self.rebuild_db)
 
+        self.ui.buttonBox.accepted.connect(self.write)
+
     def write(self):
         self.config["assets_folder"] = self.ui.assets_folder.text()
         self.config["player_folder"] = self.ui.player_folder.text()
         self.config["backup_folder"] = self.ui.backup_folder.text()
-        config.Config().write(self.config)
+        Config().write(self.config)
 
     # TODO: windows doesn't like when these default to empty str
     def open_assets(self):
@@ -52,9 +55,16 @@ class OptionsDialog():
                                                self.config["backup_folder"])
         if filename != "": self.ui.backup_folder.setText(filename)
 
+    def validate_options(self):
+        if os.path.isdir(self.ui.assets_folder.text()) == False:
+            return False
+        if os.path.isdir(self.ui.player_folder.text()) == False:
+            return False
+        return True
+
     # TODO: this doesn't work in windows at all because of file locks
-    #       need to make a function to drop and recreate the databases
-    #       instead of just trashing the file
+    # need to make a function to drop and recreate the databases
+    # instead of just trashing the file
     def rebuild_db(self):
         self.write()
         if os.path.isfile(self.config["assets_db"]):
@@ -73,9 +83,9 @@ class CharacterSelectDialog():
         self.ui = qt_openplayer.Ui_OpenPlayer()
         self.ui.setupUi(self.dialog)
 
-        self.player_folder = config.Config().read()["player_folder"]
+        self.player_folder = Config().read("player_folder")
 
-        self.dialog.rejected.connect(sys.exit)
+        self.dialog.rejected.connect(self.dialog.close)
         self.dialog.accepted.connect(self.accept)
         # bizarre, if i set this to self.accpet it just doesn't work...
         self.ui.player_list.itemDoubleClicked.connect(self.dialog.accept)
@@ -91,23 +101,18 @@ class CharacterSelectDialog():
 
     def get_players(self):
         players_found = {}
-        for root, dirs, files in os.walk(self.player_folder):
-            for f in files:
-                # is there need for regular expressions at this point?
+
+        try:
+            for f in os.listdir(self.player_folder):
                 if f.endswith(".player"):
                     try:
-                        player = save_file.PlayerSave(os.path.join(root, f))
+                        player = save_file.PlayerSave(os.path.join(self.player_folder, f))
                         players_found[player.get_name()] = player
                     except save_file.WrongSaveVer:
-                        # ignores players that cannot be loaded
-                        print("%s could not be loaded due to being incompatible with this version of starcheat." % (player.get_name(),))
-                        # pop the player if it's incompatible
-                        # I didn't expect the dictionary to still hold the player if execution hits the exception block
-                        # I still don't expect it, hence the try. Just in case this is odd behavior.
-                        try:
-                            players_found.pop(player.get_name())
-                        except KeyError:
-                            pass
+                        print("WrongSaveVer for file: %s" % (f))
+                        # don't worry, it won't add it
+        except FileNotFoundError:
+            pass
 
         self.players = players_found
 
@@ -115,14 +120,22 @@ class CharacterSelectDialog():
         for player in self.players.keys():
             self.ui.player_list.addItem(player)
 
+    def manual_select(self):
+        manual_select = QFileDialog.getOpenFileName(None,
+                                                    "Select player save file...",
+                                                    self.player_folder,
+                                                    "*.player")
+        return manual_select
+
     def show(self):
         # quit if there are no players
         if len(self.players) == 0:
-            # TODO: what if we popped up an options dialog?
             dialog = QMessageBox()
             msg = "No compatible save files found in: %s" % (self.player_folder)
             dialog.setText(msg)
             dialog.exec()
-            sys.exit();
+            manual_player = self.manual_select()
+            if manual_player[0] != "":
+                self.selected = save_file.PlayerSave(manual_player[0])
         else:
             self.dialog.exec()

@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import QDialog
 
 import assets, qt_blueprints
 
+# TODO: batch add blueprints button
+
 class BlueprintLib():
     def __init__(self, parent, known_blueprints):
         """Blueprint library management dialog."""

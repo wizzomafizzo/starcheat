@@ -7,15 +7,18 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow
 from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
 
-import save_file, assets, config
+from config import Config
+import save_file, assets
 import qt_mainwindow, qt_options, qt_openplayer
-# TODO: it doesn't feel right doing this, might be better with a proper module dir
+# TODO: it doesn't feel right doing this, just import the required specific classes
 from gui_common import *
 from gui_utils import *
 from gui_itemedit import *
 from gui_blueprints import *
 
-conf = config.Config().read()
+# TODO: get rid of this, import Config direct and just use the new read func
+# (same for any other files using config)
+conf = Config().read()
 
 class MainWindow():
     def __init__(self):
@@ -26,11 +29,9 @@ class MainWindow():
         self.ui.setupUi(self.window)
 
         # launch first setup
-        # TODO: might need to rethink the logic to use the ini existence
         self.setup_dialog = None
-        try:
-            open(conf["assets_db"])
-        except FileNotFoundError:
+        config = Config().read()
+        if config["player_folder"] == "" or config["assets_folder"] == "":
             self.new_setup_dialog()
 
         self.filename = None
@@ -57,8 +58,11 @@ class MainWindow():
 
         # launch open file dialog
         # we want this after the races are populated but before the slider setup
-        # TODO: for now let's rely on exceptions, later display dialogs in a try
+        self.player = None
         self.open_file()
+        # we *need* at least an initial save file
+        if self.player == None:
+            return
 
         # set up sliders to update values together
         stats = "health", "energy", "food", "warmth", "breath"
@@ -205,7 +209,7 @@ class MainWindow():
             self.blueprint_lib.dialog.close()
 
         # TODO: find out why this wasn't working since the grid update. what
-        #       makes a buttonBox "automatic" when it's created originally in designer?
+        # makes a buttonBox "automatic" when it's created originally in designer?
         self.blueprint_lib.ui.buttonBox.accepted.connect(update_blueprints)
         self.blueprint_lib.ui.buttonBox.rejected.connect(self.blueprint_lib.dialog.close)
         self.blueprint_lib.dialog.show()
@@ -214,23 +218,17 @@ class MainWindow():
         self.options_dialog = OptionsDialog(self.window)
 
         def write_options():
-            self.options_dialog.write()
+            # TODO: reload icons on asset update?
             self.ui.statusbar.showMessage("Options have been updated", 3000)
 
         self.options_dialog.dialog.accepted.connect(write_options)
-        self.options_dialog.dialog.show()
+        self.options_dialog.dialog.exec()
 
     def new_setup_dialog(self):
         self.setup_dialog = OptionsDialog(self.window)
-
-        def write_options():
-            self.setup_dialog.write()
-            self.setup_dialog.rebuild_db()
-
-        self.setup_dialog.dialog.accepted.connect(write_options)
-        # TODO: make sure this is ok to do
         self.setup_dialog.dialog.rejected.connect(sys.exit)
         self.setup_dialog.dialog.exec()
+        self.setup_dialog.rebuild_db()
 
     def reload(self):
         """Reload the currently open save file and update GUI values."""
@@ -240,11 +238,15 @@ class MainWindow():
 
     def open_file(self):
         """Display open file dialog and load selected save."""
-
         character_select = CharacterSelectDialog(self.window)
         character_select.show()
 
-        self.player = character_select.selected
+        try:
+            self.player = character_select.selected
+        except AttributeError:
+            # didn't pick anything
+            return
+
         self.update()
         self.window.setWindowTitle("starcheat - " + os.path.basename(self.player.filename))
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)

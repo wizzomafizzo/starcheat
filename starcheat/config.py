@@ -22,24 +22,24 @@ make_backups = "no"
 update_timestamps = "no"
 assets_db = os.path.join(config_folder, "assets.db")
 
-# TODO: now that people can change options while running there needs to be
-#       a function to read direct from the config
 class Config():
     def __init__(self):
-        self.config_file = configparser.ConfigParser()
+        self.config = configparser.ConfigParser()
 
         try:
             open(ini_file)
         except FileNotFoundError:
             self.create_config()
 
-        self.config_file.read(ini_file)
-
-    def read(self):
-        return self.config_file["starcheat"]
+    def read(self, option=None):
+        self.config.read(ini_file)
+        if option != None:
+            return self.config["starcheat"][option]
+        else:
+            return self.config["starcheat"]
 
     def create_config(self):
-        self.config_file["starcheat"] = {
+        self.config["starcheat"] = {
             "assets_folder": assets_folder,
             "player_folder": player_folder,
             "backup_folder": backup_folder,
@@ -51,8 +51,8 @@ class Config():
         if os.path.isdir(config_folder) == False:
             os.mkdir(config_folder)
 
-        self.config_file.write(open(ini_file, "w"))
+        self.config.write(open(ini_file, "w"))
 
     def write(self, config):
-        self.config_file["starcheat"] = config
-        self.config_file.write(open(ini_file, "w"))
+        self.config["starcheat"] = config
+        self.config.write(open(ini_file, "w"))

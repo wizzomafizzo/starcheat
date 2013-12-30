@@ -69,12 +69,19 @@ class ItemEdit():
         """Update main item view with current item browser data."""
         name = self.ui.item_type.text()
 
+        def clear_variants():
+            # TODO: we don't support importing variants from assets yet
+            self.ui.variant.clear()
+            # not sure why i need to do this too
+            self.ui.variant.setRowCount(0)
+
         try:
             item = assets.Items().get_item(name)
         except TypeError:
             self.ui.short_desc.setText("")
             self.ui.desc.setText("")
             self.ui.icon.setPixmap(QPixmap())
+            clear_variants()
             return
 
         try:
@@ -93,8 +100,7 @@ class ItemEdit():
             # TODO: change this to the x.png?
             self.ui.icon.setPixmap(QPixmap())
 
-        # TODO: we don't support importing variants from assets yet
-        self.ui.variant.clear()
+        clear_variants()
 
     def get_item(self):
         """Return an ItemWidget of the currently open item."""
@@ -103,6 +109,7 @@ class ItemEdit():
 
         variant_rows = self.ui.variant.rowCount()
         variant = []
+        print(variant_rows)
         for i in range(variant_rows):
             cell = self.ui.variant.item(i, 0)
             variant.append(cell.get_variant())
