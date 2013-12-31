@@ -30,9 +30,13 @@ class MainWindow():
 
         # launch first setup
         self.setup_dialog = None
+        # TODO: I don't like this at all, I want a proper validation when they
+        # try click save but for now we need a way to stop people hitting enter
+        # the second this pops up
         config = Config().read()
-        if config["player_folder"] == "" or config["assets_folder"] == "":
+        while config["player_folder"] == "" or config["assets_folder"] == "":
             self.new_setup_dialog()
+            config = Config().read()
 
         self.filename = None
         self.items = assets.Items()
