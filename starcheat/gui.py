@@ -109,9 +109,17 @@ class MainWindow():
             max_stat = getattr(self.player, "get_max_" + stat)()
             getattr(self.ui, "max_" + stat).setValue(max_stat)
             cur_stat = getattr(self.player, "get_" + stat)()
-            getattr(self.ui, stat).setMaximum(cur_stat[1])
-            getattr(self.ui, stat).setValue(cur_stat[0])
-            getattr(self, "update_" + stat)()
+            # TODO: okay, finally figured this one out. i don't know how it gets
+            # set like this but for some reason the energy stat is getting read wrong
+            # and killing everything. weird part is linux still reads it fine, only
+            # windows dies. there must be a reason for this...
+            try:
+                getattr(self.ui, stat).setMaximum(cur_stat[1])
+                getattr(self.ui, stat).setValue(cur_stat[0])
+                getattr(self, "update_" + stat)()
+            except TypeError as err:
+                print(stat, cur_stat, max_stat)
+                print(err)
         # energy regen rate
         self.ui.energy_regen.setValue(self.player.get_energy_regen())
         # warmth
