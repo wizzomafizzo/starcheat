@@ -7,8 +7,8 @@ from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QInputDialog
 from PyQt5.QtGui import QPixmap
 
 import assets, qt_itemedit
-from gui_common import *
-from gui_itembrowser import *
+from gui_common import inv_icon, pretty_variant, ItemWidget, empty_slot
+from gui_itembrowser import ItemBrowser
 
 class ItemVariant(QTableWidgetItem):
     def __init__(self, variant):

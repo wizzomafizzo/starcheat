@@ -2,7 +2,7 @@
 Utility dialogs for starcheat itself
 """
 
-import sys, os
+import os
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from config import Config

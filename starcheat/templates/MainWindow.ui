@@ -1907,8 +1907,6 @@ border-radius: 4px;
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionAdvanced_Edit"/>
-    <addaction name="separator"/>
     <addaction name="actionOptions"/>
     <addaction name="actionBackups"/>
     <addaction name="actionTimestamps"/>

@@ -4,17 +4,15 @@ GUI module for starcheat
 
 import sys, os
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow
-from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 
 from config import Config
-import save_file, assets
-import qt_mainwindow, qt_options, qt_openplayer
-# TODO: it doesn't feel right doing this, just import the required specific classes
-from gui_common import *
-from gui_utils import *
-from gui_itemedit import *
-from gui_blueprints import *
+import save_file, assets, qt_mainwindow
+
+from gui_common import ItemWidget, empty_slot
+from gui_utils import CharacterSelectDialog, OptionsDialog
+from gui_itemedit import ItemEdit
+from gui_blueprints import BlueprintLib
 
 # TODO: get rid of this, import Config direct and just use the new read func
 # (same for any other files using config)

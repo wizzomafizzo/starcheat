@@ -9,7 +9,7 @@ $ python ./save_file.py <.player file>
 """
 
 import sys, binascii
-from struct import *
+from struct import pack, unpack_from
 
 # compatible save versions
 data_version = range(424, 429)

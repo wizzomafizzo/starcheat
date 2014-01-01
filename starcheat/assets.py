@@ -2,6 +2,9 @@
 Module for reading and indexing Starbound assets
 """
 
+# TODO: investigate those massive json files at the top level. if they turn out
+# to always be up to date (and include mods?) we could ditch a lot of this code
+
 import os, json, re, sqlite3
 from platform import system
 
