@@ -1328,7 +1328,7 @@ border-radius: 4px;
      </rect>
     </property>
     <property name="text">
-     <string>Recipes</string>
+     <string>Blueprints</string>
     </property>
    </widget>
    <widget class="QTableWidget" name="wieldable">

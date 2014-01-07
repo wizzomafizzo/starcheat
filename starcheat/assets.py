@@ -70,7 +70,12 @@ class AssetsDb():
         Blueprints().add_all_blueprints()
 
     def rebuild_db(self):
-        pass
+        tables = ("items", "blueprints")
+        c = self.db.cursor()
+        for t in tables:
+            c.execute("drop table %s" % t)
+        self.db.commit()
+        self.init_db()
 
 class Blueprints():
     def __init__(self):

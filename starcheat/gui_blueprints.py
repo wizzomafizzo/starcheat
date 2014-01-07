@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QDialog
 
 import assets, qt_blueprints
 
-# TODO: batch add blueprints button
+# TODO: rework whole dialog with pretty icons and stuff like that
 
 class BlueprintLib():
     def __init__(self, parent, known_blueprints):
@@ -53,33 +53,34 @@ class BlueprintLib():
     def add_blueprint(self):
         """Add currently select blueprint in available list to known list."""
         try:
-            selected = self.ui.available_blueprints.currentItem().text()
+            selected = self.ui.available_blueprints.selectedItems()
         except AttributeError:
             # nothing selected
             return
 
-        # don't add more than one of each blueprint
-        if selected in self.known_blueprints:
-            return
+        for blueprint in selected:
+            # don't add more than one of each blueprint
+            if blueprint.text() in self.known_blueprints:
+                continue
+            self.known_blueprints.append(blueprint.text())
 
-        # insert the new item and regenerate the list
-        self.known_blueprints.append(selected)
+        # regenerate the list
         self.known_blueprints.sort()
         self.ui.known_blueprints.clear()
         for i in range(len(self.known_blueprints)):
             self.ui.known_blueprints.addItem(self.known_blueprints[i])
-            if self.known_blueprints[i] == selected:
-                self.ui.known_blueprints.setCurrentRow(i)
+        self.ui.known_blueprints.setCurrentRow(0)
 
     def remove_blueprint(self):
         """Remove currently selected blueprint in known list."""
         try:
-            selected = self.ui.known_blueprints.currentItem().text()
+            selected = self.ui.known_blueprints.selectedItems()
         except AttributeError:
             return
 
-        # remove item and regen list
-        self.known_blueprints.remove(selected)
+        for blueprint in selected:
+            self.known_blueprints.remove(blueprint.text())
+
         self.known_blueprints.sort()
         self.ui.known_blueprints.clear()
         for blueprint in self.known_blueprints:

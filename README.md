@@ -2,7 +2,7 @@
 
 Starbound player save editor, you can get free pixels with this (omg)
 
-*if you're looking for a windows version, check the first post of the [discussion thread](http://community.playstarbound.com/index.php?threads/starcheat-player-save-editor-and-python-library.60174/)*
+*if you're looking for a windows/mac version, check the first post of the [discussion thread](http://community.playstarbound.com/index.php?threads/starcheat-player-save-editor-and-python-library.60174/)*
 
 - mod db: http://community.playstarbound.com/index.php?resources/starcheat.699/
 

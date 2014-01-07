@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Manage Recipes</string>
+   <string>Manage Blueprints</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
    <item row="0" column="0">
@@ -22,12 +22,19 @@
      <item row="0" column="0">
       <widget class="QLabel" name="known_label">
        <property name="text">
-        <string>Known Recipes</string>
+        <string>Known Blueprints</string>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QListWidget" name="known_blueprints"/>
+      <widget class="QListWidget" name="known_blueprints">
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::ExtendedSelection</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -85,7 +92,14 @@
       </widget>
      </item>
      <item row="2" column="0" colspan="2">
-      <widget class="QListWidget" name="available_blueprints"/>
+      <widget class="QListWidget" name="available_blueprints">
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::ExtendedSelection</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

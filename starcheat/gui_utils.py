@@ -67,10 +67,7 @@ class OptionsDialog():
     # instead of just trashing the file
     def rebuild_db(self):
         self.write()
-        if os.path.isfile(self.config["assets_db"]):
-            os.remove(self.config["assets_db"])
-        assets.AssetsDb()
-        # TODO: i want some feedback here
+        assets.AssetsDb().rebuild_db()
 
 # TODO: not sure the check for no players found is working? if user forgets
 #       to set a player_folder on setup they will be forced to edit the ini
