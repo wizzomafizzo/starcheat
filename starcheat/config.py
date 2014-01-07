@@ -22,6 +22,8 @@ make_backups = "no"
 update_timestamps = "no"
 assets_db = os.path.join(config_folder, "assets.db")
 
+log_folder = os.path.join(config_folder, "logs")
+
 class Config():
     def __init__(self):
         self.config = configparser.ConfigParser()
@@ -45,7 +47,8 @@ class Config():
             "backup_folder": backup_folder,
             "assets_db": assets_db,
             "make_backups": make_backups,
-            "update_timestamps": update_timestamps
+            "update_timestamps": update_timestamps,
+            "log_folder": log_folder
         }
 
         if os.path.isdir(config_folder) == False:

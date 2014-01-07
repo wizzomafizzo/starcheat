@@ -71,7 +71,6 @@ class OptionsDialog():
 
 # TODO: not sure the check for no players found is working? if user forgets
 #       to set a player_folder on setup they will be forced to edit the ini
-# TODO: put error messages in quick dialogs?
 # TODO: support stuff like sorting by date (add column to table widget)
 # TODO: disable the ok button until a valid item is selected
 class CharacterSelectDialog():
@@ -106,10 +105,9 @@ class CharacterSelectDialog():
                         player = save_file.PlayerSave(os.path.join(self.player_folder, f))
                         players_found[player.get_name()] = player
                     except save_file.WrongSaveVer:
-                        print("WrongSaveVer for file: %s" % (f))
-                        # don't worry, it won't add it
+                        logging.info("Save file %s is not compatible", f)
         except FileNotFoundError:
-            pass
+            logging.exception("Could not open %s", self.player_folder)
 
         self.players = players_found
 

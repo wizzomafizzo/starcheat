@@ -83,7 +83,6 @@ class AssetsDb():
 class Blueprints():
     def __init__(self):
         """Everything dealing with indexing and parsing blueprint asset files."""
-        logging.debug("Blueprints asset db init")
         self.blueprints_folder = os.path.join(config.Config().read()["assets_folder"], "recipes")
         self.db = AssetsDb().db
 
@@ -153,7 +152,6 @@ class Blueprints():
 class Items():
     def __init__(self):
         """Everything dealing with indexing and parsing item asset files."""
-        logging.debug("Items asset db init")
         self.assets_folder = config.Config().read()["assets_folder"]
         self.items_folder = os.path.join(self.assets_folder, "items")
         self.objects_folder = os.path.join(self.assets_folder, "objects")
