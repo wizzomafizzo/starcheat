@@ -89,6 +89,22 @@ data_format = (
     ("the_rest", "__the_rest__", None)
 )
 
+# data format for inventory type
+inv_type = (
+    ("inv_size", "__vlq__", None),
+    ("pixels", ">q", 8),
+    ("main_bag", "__bag__", None),
+    ("tile_bag", "__bag__", None),
+    ("action_bar", "__bag__", None),
+    ("equipment", "__bag__", None),
+    ("wieldable", "__bag__", None),
+    ("swap_active", "__item_desc__", None),
+    ("left_hand_bag", "__vlq__", None),
+    ("left_hand_slot", "__vlq__", None),
+    ("right_hand_bag", "__vlq__", None),
+    ("right_hand_slot", "__vlq__", None)
+)
+
 # TODO: move to assets module
 race_types = ("Apex", "Avian", "Floran", "Glitch", "Human", "Hylotl")
 
@@ -100,7 +116,6 @@ def pack_str(var):
     """Convert a string to a list of bytes."""
     return str(var).encode("utf-8")
 
-# TODO: learn how these work... theory makes sense but this bit manipulation is magic
 # source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
 def unpack_vlq(data):
     """Return the first VLQ number and byte offset from a list of bytes."""
@@ -167,7 +182,7 @@ def pack_str_list(var):
 
 # big endian double
 def unpack_variant2(data):
-    # TODO: can these be plain pack()?
+    # TODO: can these be plain unpack()?
     return unpack_from(">d", data, 0), 8
 
 def pack_variant2(var):
@@ -301,22 +316,7 @@ def pack_bag(var):
         bag += pack_item_desc(item)
     return pack_vlq(len(var)) + bag
 
-# data format for inventory type
-inv_type = (
-    ("inv_size", "__vlq__", None),
-    ("pixels", ">q", 8),
-    ("main_bag", "__bag__", None),
-    ("tile_bag", "__bag__", None),
-    ("action_bar", "__bag__", None),
-    ("equipment", "__bag__", None),
-    ("wieldable", "__bag__", None),
-    ("swap_active", "__item_desc__", None),
-    ("left_hand_bag", "__vlq__", None),
-    ("left_hand_slot", "__vlq__", None),
-    ("right_hand_bag", "__vlq__", None),
-    ("right_hand_slot", "__vlq__", None)
-)
-
+# inventory
 def unpack_inv(data):
     offset = 0
     inv_vars = {}

@@ -11,6 +11,10 @@ import assets, qt_blueprints
 class BlueprintLib():
     def __init__(self, parent, known_blueprints):
         """Blueprint library management dialog."""
+        # BUG: somewhere in here is a bug that stops you from adding blueprints,
+        # on windows, on only some save files
+        # BUG: some of the tier weapons are not importing correctly and showing
+        # as duplicates in the available list
         self.dialog = QDialog(parent)
         self.ui = qt_blueprints.Ui_Dialog()
         self.ui.setupUi(self.dialog)

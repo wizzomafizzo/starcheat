@@ -96,8 +96,15 @@ class MainWindow():
         self.ui.name.setText(self.player.get_name())
         # race
         self.ui.race.setCurrentText(self.player.get_race())
+        # BUG: okay so there is this bug where sometimes on windows pyqt will chuck
+        # a fit and not set values on some stuff. this seems to work itself out
+        # when you overwrite the values and reopen the file. i'm going to just
+        # ignore it but would still like a better solution
         # pixels
-        self.ui.pixels.setValue(self.player.get_pixels())
+        try:
+            self.ui.pixels.setValue(self.player.get_pixels())
+        except TypeError:
+            pass
         # description
         self.ui.description.setPlainText(self.player.get_description())
         # gender
@@ -106,30 +113,31 @@ class MainWindow():
         # stats
         stats = "health", "energy", "food", "breath"
         for stat in stats:
-            max_stat = getattr(self.player, "get_max_" + stat)()
-            getattr(self.ui, "max_" + stat).setValue(max_stat)
-            cur_stat = getattr(self.player, "get_" + stat)()
-            # TODO: okay, finally figured this one out. i don't know how it gets
-            # set like this but for some reason the energy stat is getting read wrong
-            # and killing everything. weird part is linux still reads it fine, only
-            # windows dies. there must be a reason for this...
             try:
+                max_stat = getattr(self.player, "get_max_" + stat)()
+                getattr(self.ui, "max_" + stat).setValue(max_stat)
+                cur_stat = getattr(self.player, "get_" + stat)()
                 getattr(self.ui, stat).setMaximum(cur_stat[1])
                 getattr(self.ui, stat).setValue(cur_stat[0])
                 getattr(self, "update_" + stat)()
-            except TypeError as err:
-                print(stat, cur_stat, max_stat)
-                print(err)
+            except TypeError:
+                pass
         # energy regen rate
-        self.ui.energy_regen.setValue(self.player.get_energy_regen())
+        try:
+            self.ui.energy_regen.setValue(self.player.get_energy_regen())
+        except TypeError:
+            pass
         # warmth
-        max_warmth = self.player.get_max_warmth()
-        self.ui.max_warmth.setValue(max_warmth)
-        cur_warmth = self.player.get_warmth()
-        self.ui.warmth.setMinimum(cur_warmth[0])
-        self.ui.warmth.setMaximum(max_warmth)
-        self.ui.warmth.setValue(cur_warmth[1])
-        self.update_warmth()
+        try:
+            max_warmth = self.player.get_max_warmth()
+            self.ui.max_warmth.setValue(max_warmth)
+            cur_warmth = self.player.get_warmth()
+            self.ui.warmth.setMinimum(cur_warmth[0])
+            self.ui.warmth.setMaximum(max_warmth)
+            self.ui.warmth.setValue(cur_warmth[1])
+            self.update_warmth()
+        except TypeError:
+            pass
 
         # equipment
         equip_bags = "head", "chest", "legs", "back"
