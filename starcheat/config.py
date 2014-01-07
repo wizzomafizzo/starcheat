@@ -6,8 +6,9 @@ import configparser, os, platform
 
 if platform.system() == "Windows":
     config_folder = os.path.join(os.path.expandvars("%APPDATA%"), "starcheat")
+elif platform.system() == "Darwin":
+    config_folder = os.path.expanduser("~/Library/Application\ Support/starcheat")
 else:
-    # TODO: this will work on mac but isn't really correct
     config_folder = os.path.expanduser("~/.starcheat")
 
 ini_file = os.path.join(config_folder, "starcheat.ini")
