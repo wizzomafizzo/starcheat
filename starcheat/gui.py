@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 
 from config import Config
-import save_file, assets, qt_mainwindow
+import logging, save_file, assets, qt_mainwindow
 
 from gui_common import ItemWidget, empty_slot
 from gui_utils import CharacterSelectDialog, OptionsDialog
@@ -26,6 +26,8 @@ class MainWindow():
         self.ui = qt_mainwindow.Ui_MainWindow()
         self.ui.setupUi(self.window)
 
+        logging.info("Main window init")
+
         # launch first setup
         self.setup_dialog = None
         # TODO: I don't like this at all, I want a proper validation when they
@@ -33,10 +35,12 @@ class MainWindow():
         # the second this pops up
         config = Config().read()
         while config["player_folder"] == "" or config["assets_folder"] == "":
+            logging.info("First setup dialog")
             self.new_setup_dialog()
             config = Config().read()
 
         self.filename = None
+        logging.debug("Loading assets")
         self.items = assets.Items()
 
         # atm we only support one of each dialog at a time, don't think this
@@ -61,14 +65,17 @@ class MainWindow():
         # launch open file dialog
         # we want this after the races are populated but before the slider setup
         self.player = None
+        logging.debug("Open file dialog")
         self.open_file()
         # we *need* at least an initial save file
         if self.player == None:
+            logging.warning("No player file selected")
             return
 
         # set up sliders to update values together
         stats = "health", "energy", "food", "warmth", "breath"
         for s in stats:
+            logging.debug("Setting up %s stat", s)
             update = getattr(self, "update_" + s)
             getattr(self.ui, s).valueChanged.connect(update)
             getattr(self.ui, "max_" + s).valueChanged.connect(update)
@@ -76,6 +83,7 @@ class MainWindow():
         # set up bag tables
         bags = "wieldable", "head", "chest", "legs", "back", "main_bag", "action_bar", "tile_bag"
         for b in bags:
+            logging.debug("Setting up %s bag", b)
             item_edit = getattr(self, "new_" + b + "_item_edit")
             getattr(self.ui, b).cellDoubleClicked.connect(item_edit)
             # TODO: still issues with drag drop between tables
@@ -84,11 +92,13 @@ class MainWindow():
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.name.setFocus()
 
+        logging.debug("Showing main window")
         self.window.show()
         sys.exit(self.app.exec_())
 
     def update(self):
         """Update all GUI widgets with values from PlayerSave instance."""
+        logging.info("Updating main window")
         # uuid / save version
         self.ui.uuid_label.setText(self.player.get_uuid())
         self.ui.ver_label.setText("v" + self.player.get_save_ver())
@@ -104,7 +114,7 @@ class MainWindow():
         try:
             self.ui.pixels.setValue(self.player.get_pixels())
         except TypeError:
-            pass
+            logging.exception("Unable to set pixels")
         # description
         self.ui.description.setPlainText(self.player.get_description())
         # gender
@@ -121,12 +131,12 @@ class MainWindow():
                 getattr(self.ui, stat).setValue(cur_stat[0])
                 getattr(self, "update_" + stat)()
             except TypeError:
-                pass
+                logging.exception("Unable to set %s", stat)
         # energy regen rate
         try:
             self.ui.energy_regen.setValue(self.player.get_energy_regen())
         except TypeError:
-            pass
+            logging.exception("Unable to set energy regen rate")
         # warmth
         try:
             max_warmth = self.player.get_max_warmth()
@@ -137,11 +147,12 @@ class MainWindow():
             self.ui.warmth.setValue(cur_warmth[1])
             self.update_warmth()
         except TypeError:
-            pass
+            logging.exception("Unable to set warmth")
 
         # equipment
         equip_bags = "head", "chest", "legs", "back"
         for bag in equip_bags:
+            logging.debug("Updating %s", bag)
             items = [ItemWidget(x) for x in getattr(self.player, "get_" + bag)()]
             getattr(self.ui, bag).setItem(0, 0, items[0])
             getattr(self.ui, bag).setItem(0, 1, items[1])
@@ -156,6 +167,8 @@ class MainWindow():
 
     def save(self):
         """Update internal player dict with GUI values and export to file."""
+        logging.info("Saving player file %s", self.player.filename)
+        logging.debug(self.player.data)
         # name
         self.player.set_name(self.ui.name.text())
         # race
@@ -196,21 +209,24 @@ class MainWindow():
             getattr(self.player, "set_" + b)(self.get_bag(b))
 
         # save and show status
-        self.player.dump()
+        logging.info("Writing file to disk")
         self.player.export_save(self.player.filename)
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)
 
     def new_item_edit(self, bag):
         """Display a new item edit dialog using the select cell in a given bag."""
+        logging.debug("New item edit dialog")
         row = bag.currentRow()
         column = bag.currentColumn()
         item_edit = ItemEdit(self.window, bag.currentItem())
 
         def update_slot():
+            logging.debug("Writing changes to slot")
             new_slot = item_edit.get_item()
             bag.setItem(row, column, new_slot)
 
         def trash_slot():
+            logging.debug("Trashed item")
             bag.setItem(row, column, empty_slot())
             item_edit.dialog.close()
 
@@ -218,11 +234,13 @@ class MainWindow():
         item_edit.ui.trash_button.clicked.connect(trash_slot)
 
     def new_blueprint_edit(self):
+        logging.debug("New blueprint dialog")
         # TODO: why does this only work with and instance var but the other
         # ones don't...???
         self.blueprint_lib = BlueprintLib(self.window, self.player.get_blueprints())
 
         def update_blueprints():
+            logging.debug("Writing blueprints")
             self.player.set_blueprints(self.blueprint_lib.get_known_list())
             self.blueprint_lib.dialog.close()
 
@@ -233,9 +251,11 @@ class MainWindow():
         self.blueprint_lib.dialog.show()
 
     def new_options_dialog(self):
+        logging.debug("New options dialog")
         self.options_dialog = OptionsDialog(self.window)
 
         def write_options():
+            logging.info("Writing options to disk")
             # TODO: reload icons on asset update?
             self.ui.statusbar.showMessage("Options have been updated", 3000)
 
@@ -250,6 +270,7 @@ class MainWindow():
 
     def reload(self):
         """Reload the currently open save file and update GUI values."""
+        logging.info("Reloading file %s", self.player.filename)
         self.player = save_file.PlayerSave(self.player.filename)
         self.update()
         self.ui.statusbar.showMessage("Reloaded " + self.player.filename, 3000)
@@ -262,7 +283,8 @@ class MainWindow():
         try:
             self.player = character_select.selected
         except AttributeError:
-            # didn't pick anything
+            # didn't pick anything... i think?
+            logging.exception("No player selected")
             return
 
         self.update()
@@ -271,6 +293,7 @@ class MainWindow():
 
     def get_bag(self, name):
         """Return the entire contents of a given non-equipment bag as raw values."""
+        logging.debug("Getting %s contents", name)
         row = column = 0
         bag = getattr(self.player, "get_" + name)()
 
@@ -294,6 +317,7 @@ class MainWindow():
 
     def get_equip(self, name):
         """Return the raw values of both slots in a given equipment bag."""
+        logging.debug("Getting %s contents", name)
         equip = getattr(self.ui, name)
         main_cell = equip.item(0, 0)
         glamor_cell = equip.item(0, 1)
@@ -314,6 +338,7 @@ class MainWindow():
 
     def update_bag(self, bag_name):
         """Set the entire contents of any given bag with ItemWidgets based off player data."""
+        logging.debug("Updating %s contents", bag_name)
         row = column = 0
         bag = getattr(self.player, "get_" + bag_name)()
 

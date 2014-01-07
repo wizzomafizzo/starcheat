@@ -6,7 +6,7 @@ from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtGui import QPixmap, QImageReader
 
-import save_file, assets
+import save_file, assets, logging
 
 def inv_icon(item_name):
     """Return a QPixmap object of the inventory icon of a given item (if possible)."""
@@ -64,9 +64,6 @@ class ItemWidget(QTableWidgetItem):
         self.variant = item[2]
         QTableWidgetItem.__init__(self, self.name)
         self.setTextAlignment(QtCore.Qt.AlignCenter)
-
-        # TODO: remove this
-        print(self.variant)
 
         if self.name != "":
             self.setToolTip(self.name + " (" + str(self.item_count) + ")")

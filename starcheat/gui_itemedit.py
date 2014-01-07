@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QInputDialog
 from PyQt5.QtGui import QPixmap
 
-import assets, qt_itemedit
+import assets, qt_itemedit, logging
 from gui_common import inv_icon, pretty_variant, ItemWidget, empty_slot
 from gui_itembrowser import ItemBrowser
 
@@ -19,8 +19,7 @@ class ItemVariant(QTableWidgetItem):
         item_text = self.variant_name + ": " + pretty_variant(variant[1])
         QTableWidgetItem.__init__(self, item_text)
         self.setToolTip(item_text)
-        # TODO: remove this
-        print(variant)
+        logging.debug(variant)
 
     def get_variant(self):
         """Return the full variant in the proper format."""
@@ -109,7 +108,7 @@ class ItemEdit():
 
         variant_rows = self.ui.variant.rowCount()
         variant = []
-        print(variant_rows)
+        logging.debug(variant_rows)
         for i in range(variant_rows):
             cell = self.ui.variant.item(i, 0)
             variant.append(cell.get_variant())

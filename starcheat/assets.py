@@ -5,7 +5,7 @@ Module for reading and indexing Starbound assets
 # TODO: investigate those massive json files at the top level. if they turn out
 # to always be up to date (and include mods?) we could ditch a lot of this code
 
-import os, json, re, sqlite3
+import os, json, re, sqlite3, logging
 from platform import system
 
 import config
@@ -46,7 +46,7 @@ def parse_json(filename):
 class AssetsDb():
     def __init__(self):
         """Master assets database."""
-        self.assets_db = config.Config().read()["assets_db"]
+        self.assets_db = config.Config().read("assets_db")
         try:
             open(self.assets_db)
         except FileNotFoundError:
@@ -56,6 +56,8 @@ class AssetsDb():
 
     def init_db(self):
         """Create and populate a brand new assets database."""
+        logging.info("Creating new assets db")
+
         tables = ("create table items (name text, filename text, folder text, icon text, category text)",
                   "create table blueprints (name text, filename text, folder text, category text)")
         db = sqlite3.connect(self.assets_db)
@@ -70,6 +72,7 @@ class AssetsDb():
         Blueprints().add_all_blueprints()
 
     def rebuild_db(self):
+        logging.info("Rebuilding assets db")
         tables = ("items", "blueprints")
         c = self.db.cursor()
         for t in tables:
@@ -80,6 +83,7 @@ class AssetsDb():
 class Blueprints():
     def __init__(self):
         """Everything dealing with indexing and parsing blueprint asset files."""
+        logging.debug("Blueprints asset db init")
         self.blueprints_folder = os.path.join(config.Config().read()["assets_folder"], "recipes")
         self.db = AssetsDb().db
 
@@ -90,14 +94,14 @@ class Blueprints():
             for f in files:
                 if re.match(".*\.recipe", f) != None:
                     index.append((f, root))
-        print("Found " + str(len(index)) + " blueprint files")
+        logging.info("Found " + str(len(index)) + " blueprint files")
         return index
 
     def add_all_blueprints(self):
         """Parse and insert every indexable blueprint asset."""
         index = self.file_index()
         blueprints = []
-        print("Indexing", end="")
+        logging.info("Started indexing blueprints")
         for f in index:
             full_path = os.path.join(f[1], f[0])
 
@@ -116,12 +120,12 @@ class Blueprints():
                 category = "other"
 
             blueprints.append((name, filename, folder, category))
-            print(".", end="")
+
         c = self.db.cursor()
         q = "insert into blueprints values (?, ?, ?, ?)"
         c.executemany(q, blueprints)
         self.db.commit()
-        print("Done!")
+        logging.info("Finished indexing blueprints")
 
     def get_all_blueprints(self):
         """Return a list of every indexed blueprints."""
@@ -149,6 +153,7 @@ class Blueprints():
 class Items():
     def __init__(self):
         """Everything dealing with indexing and parsing item asset files."""
+        logging.debug("Items asset db init")
         self.assets_folder = config.Config().read()["assets_folder"]
         self.items_folder = os.path.join(self.assets_folder, "items")
         self.objects_folder = os.path.join(self.assets_folder, "objects")
@@ -175,7 +180,7 @@ class Items():
             for f in files:
                 if re.match(".*\.techitem$", f) != None:
                     index.append((f, root))
-        print("Found " + str(len(index)) + " item files")
+        logging.info("Found " + str(len(index)) + " item files")
         return index
 
     def add_all_items(self):
@@ -183,7 +188,7 @@ class Items():
         index = self.file_index()
         items = []
 
-        print("Indexing", end="")
+        logging.info("Started indexing items")
         for f in index:
             # load the asset's json file
             full_path = os.path.join(f[1], f[0])
@@ -226,13 +231,12 @@ class Items():
                     icon = self.missing_icon()
 
             items.append((name, filename, path, icon, category))
-            print(".", end="")
 
         c = self.db.cursor()
         q = "insert into items values (?, ?, ?, ?, ?)"
         c.executemany(q, items)
         self.db.commit()
-        print("Done!")
+        logging.info("Finished indexing items")
 
     def get_all_items(self):
         """Return a list of every indexed item."""
@@ -302,7 +306,7 @@ class Items():
                 open(path)
                 return path
             except FileNotFoundError:
-                return None
+                logging.exception("Unable to open icon file")
         else:
             return None
 
