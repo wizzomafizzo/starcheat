@@ -7,7 +7,7 @@ import configparser, os, platform
 if platform.system() == "Windows":
     config_folder = os.path.join(os.path.expandvars("%APPDATA%"), "starcheat")
 elif platform.system() == "Darwin":
-    config_folder = os.path.expanduser("~/Library/Application\ Support/starcheat")
+    config_folder = os.path.expanduser("~/Library/Application Support/starcheat")
 else:
     config_folder = os.path.expanduser("~/.starcheat")
 
