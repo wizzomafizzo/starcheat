@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QInputDialog
 from PyQt5.QtGui import QPixmap
 
-import assets, qt_itemedit, logging
+import assets, qt_itemedit, qt_variantedit, logging
 from gui_common import inv_icon, pretty_variant, ItemWidget, empty_slot
 from gui_itembrowser import ItemBrowser
 
@@ -24,6 +24,47 @@ class ItemVariant(QTableWidgetItem):
     def get_variant(self):
         """Return the full variant in the proper format."""
         return (self.variant_name, (self.variant_type, self.variant_value))
+
+class VariantEdit():
+    def __init__(self, parent, variant):
+        self.dialog = QDialog(parent)
+        self.ui = qt_variantedit.Ui_Dialog()
+        self.ui.setupUi(self.dialog)
+
+        self.variant = variant
+
+        self.ui.variant.cellDoubleClicked.connect(self.edit_variant)
+
+        if self.variant.variant_type == 7:
+            self.ui.variant.setRowCount(len(self.variant.variant_value))
+            for i in range(len(self.variant.variant_value)):
+                variant_item = ItemVariant(self.variant.variant_value[i])
+                self.ui.variant.setItem(i, 0, variant_item)
+        elif self.variant.variant_type == 6:
+            self.ui.variant.setRowCount(len(self.variant.variant_value))
+            for i in range(len(self.variant.variant_value)):
+                name = "%s[%d]" % (self.variant.variant_name, i)
+                variant_item = ItemVariant((name, self.variant.variant_value[i]))
+                self.ui.variant.setItem(i, 0, variant_item)
+        else:
+            return
+
+        self.dialog.exec()
+
+    def edit_variant(self):
+        edit_variant(self)
+
+    def get_variant(self):
+        rows = self.ui.variant.rowCount()
+        variant_vals = []
+        for i in range(rows):
+            cell = self.ui.variant.item(i, 0)
+            variant_vals.append(cell.get_variant())
+
+        if self.variant.variant_type == 6:
+            return [x[1] for x in variant_vals]
+        elif self.variant.variant_type == 7:
+            return variant_vals
 
 class ItemEdit():
     def __init__(self, parent, item=None):
@@ -126,64 +167,69 @@ class ItemEdit():
         self.ui.count.setValue(1)
 
     def edit_variant(self):
-        selected = self.ui.variant.currentItem()
-        current_row = self.ui.variant.currentRow()
-        new_variant = None
+        edit_variant(self)
 
-        if selected.variant_type == 2:
-            # double
-            dialog = QInputDialog.getDouble(self.dialog,
-                                            "Edit Value",
-                                            selected.variant_name,
-                                            selected.variant_value[0],
-                                            decimals=2)
-            if dialog[1]:
-                # didn't realise i was writing lisp
-                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, (dialog[0],))))
-        elif selected.variant_type == 3:
-            # bool
-            if selected.variant_value[0] == 1:
-                text = "True"
+def edit_variant(parent):
+    selected = parent.ui.variant.currentItem()
+    current_row = parent.ui.variant.currentRow()
+    new_variant = None
+
+    if selected.variant_type == 2:
+        # double
+        dialog = QInputDialog.getDouble(parent.dialog,
+                                        "Edit Value",
+                                        selected.variant_name,
+                                        selected.variant_value[0],
+                                        decimals=2)
+        if dialog[1]:
+            # didn't realise i was writing lisp
+            new_variant = ItemVariant((selected.variant_name, (selected.variant_type, (dialog[0],))))
+    elif selected.variant_type == 3:
+        # bool
+        if selected.variant_value[0] == 1:
+            text = "True"
+        else:
+            text = "False"
+
+        dialog = QInputDialog.getText(parent.dialog,
+                                      "Edit Value (True/False)",
+                                      selected.variant_name,
+                                      QtWidgets.QLineEdit.Normal,
+                                      text)
+        if dialog[1]:
+            if dialog[0] == "True":
+                val = (1,)
             else:
-                text = "False"
+                val = (0,)
 
-            dialog = QInputDialog.getText(self.dialog,
-                                          "Edit Value (True/False)",
-                                          selected.variant_name,
-                                          QtWidgets.QLineEdit.Normal,
-                                          text)
-            if dialog[1]:
-                if dialog[0] == "True":
-                    val = (1,)
-                else:
-                    val = (0,)
+            new_variant = ItemVariant((selected.variant_name, (selected.variant_type, val)))
+    elif selected.variant_type == 4:
+        # int (vlq)
+        dialog = QInputDialog.getInt(parent.dialog,
+                                     "Edit Value",
+                                     selected.variant_name,
+                                     selected.variant_value)
+        if dialog[1]:
+            new_variant = ItemVariant((selected.variant_name, (selected.variant_type, dialog[0])))
+    elif selected.variant_type == 5:
+        # string
+        dialog = QInputDialog.getText(parent.dialog,
+                                      "Edit Value",
+                                      selected.variant_name,
+                                      QtWidgets.QLineEdit.Normal,
+                                      selected.variant_value)
+        if dialog[1]:
+            new_variant = ItemVariant((selected.variant_name, (selected.variant_type, dialog[0])))
+    elif selected.variant_type == 6:
+        # variant list
+        variant_edit = VariantEdit(parent.dialog, selected)
+        new_variant = ItemVariant((selected.variant_name,
+                                   (selected.variant_type, variant_edit.get_variant())))
+    elif selected.variant_type == 7:
+        # variant dicts
+        variant_edit = VariantEdit(parent.dialog, selected)
+        new_variant = ItemVariant((selected.variant_name,
+                                   (selected.variant_type, variant_edit.get_variant())))
 
-                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, val)))
-        elif selected.variant_type == 4:
-            # int (vlq)
-            dialog = QInputDialog.getInt(self.dialog,
-                                         "Edit Value",
-                                         selected.variant_name,
-                                         selected.variant_value)
-            if dialog[1]:
-                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, dialog[0])))
-        elif selected.variant_type == 5:
-            # string
-            dialog = QInputDialog.getText(self.dialog,
-                                          "Edit Value",
-                                          selected.variant_name,
-                                          QtWidgets.QLineEdit.Normal,
-                                          selected.variant_value)
-            if dialog[1]:
-                new_variant = ItemVariant((selected.variant_name, (selected.variant_type, dialog[0])))
-        elif selected.variant_type == 6:
-            # TODO: both of these will require a fair bit of work
-            #       i'd like a recurive variant table
-            # variant list
-            pass
-        elif selected.variant_type == 7:
-            # variant dicts
-            pass
-
-        if new_variant != None:
-            self.ui.variant.setItem(current_row, 0, new_variant)
+    if new_variant != None:
+        parent.ui.variant.setItem(current_row, 0, new_variant)
