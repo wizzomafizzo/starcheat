@@ -52,6 +52,8 @@ def parse_json(filename):
 class AssetsDb():
     def __init__(self):
         """Master assets database."""
+        self.mods_folder = os.path.normpath(os.path.join(config.Config().read("assets_folder"),
+                                                         "..", "mods"))
         self.assets_db = config.Config().read("assets_db")
         try:
             open(self.assets_db)
@@ -74,8 +76,21 @@ class AssetsDb():
         db.commit()
         db.close()
 
+        logging.info("Adding vanilla items")
         Items().add_all_items()
+        for mod in os.listdir(self.mods_folder):
+            folder = os.path.join(self.mods_folder, mod, "assets")
+            if os.path.isdir(folder):
+                logging.info("Adding %s items" % (mod))
+                Items(folder).add_all_items()
+
+        logging.info("Adding vanilla blueprints")
         Blueprints().add_all_blueprints()
+        for mod in os.listdir(self.mods_folder):
+            folder = os.path.join(self.mods_folder, mod, "assets")
+            if os.path.isdir(folder):
+                logging.info("Adding %s blueprints" % (mod))
+                Blueprints(folder).add_all_blueprints()
 
     def rebuild_db(self):
         logging.info("Rebuilding assets db")
@@ -87,9 +102,13 @@ class AssetsDb():
         self.init_db()
 
 class Blueprints():
-    def __init__(self):
+    def __init__(self, folder=None):
         """Everything dealing with indexing and parsing blueprint asset files."""
-        self.blueprints_folder = os.path.join(config.Config().read()["assets_folder"], "recipes")
+        # override folder
+        if folder == None:
+            self.blueprints_folder = os.path.join(config.Config().read("assets_folder"), "recipes")
+        else:
+            self.blueprints_folder = os.path.join(folder, "recipes")
         self.db = AssetsDb().db
 
     def file_index(self):
@@ -156,9 +175,14 @@ class Blueprints():
         return result
 
 class Items():
-    def __init__(self):
+    def __init__(self, folder=None):
         """Everything dealing with indexing and parsing item asset files."""
-        self.assets_folder = config.Config().read()["assets_folder"]
+        # folder override
+        if folder == None:
+            self.assets_folder = config.Config().read("assets_folder")
+        else:
+            self.assets_folder = folder
+
         self.items_folder = os.path.join(self.assets_folder, "items")
         self.objects_folder = os.path.join(self.assets_folder, "objects")
         self.tech_folder = os.path.join(self.assets_folder, "tech")
