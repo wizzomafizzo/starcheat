@@ -47,3 +47,28 @@ install [starcheat-git](https://aur.archlinux.org/packages/starcheat-git/) from 
 ### mac
 - install [homebrew](http://brew.sh/)
 - $ brew install https://gist.github.com/chrmoritz/8177384/raw/starcheat.rb; brew linkapps
+
+## troubleshooting
+stuff you can do when starcheat stops working. clearing local settings and checking you did the setup correctly is always a good first step
+### clear local settings
+this will remove all locally stored data for starcheat and force a new setup dialog next run
+#### linux
+- in a shell
+- $ rm -rf ~/.starcheat
+#### windows
+- in the Command Prompt or PowerShell
+- > rd /s /q %APPDATA%\starcheat
+#### mac
+- in Terminal.app
+- $ rm -rf ~/Library/Application\ Support/starcheat
+### get logs
+this will point you to where the logs are so you can upload them. the logs will contain the full path to starcheat (it'll show your computer username) but no other personal information
+#### linux
+- $ cd ~/.starcheat/logs
+#### windows
+- press the Windows key and R (Win-R)
+- type "%APPDATA%\starcheat\logs" and hit enter
+(you could also just put that path in explorer or go there in powershell or whatevs)
+#### mac
+- in Terminal.app
+- $ open ~/Library/Application\ Support/starcheat

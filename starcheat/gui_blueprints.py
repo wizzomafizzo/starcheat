@@ -15,6 +15,9 @@ class BlueprintLib():
         # on windows, on only some save files
         # BUG: some of the tier weapons are not importing correctly and showing
         # as duplicates in the available list
+        # TODO: is there something new in the crafting system? the dude in the
+        # review is correct, there is no iron back lantern in the browser or in
+        # the assets folder. is it generated on the fly like tech chips?
         self.dialog = QDialog(parent)
         self.ui = qt_blueprints.Ui_Dialog()
         self.ui.setupUi(self.dialog)

@@ -11,7 +11,6 @@ import qt_options, qt_openplayer
 
 class OptionsDialog():
     def __init__(self, parent):
-        # TODO: all the other dialogs should match this naming style
         self.dialog = QDialog(parent)
         self.ui = qt_options.Ui_Dialog()
         self.ui.setupUi(self.dialog)
@@ -36,7 +35,6 @@ class OptionsDialog():
         self.config["backup_folder"] = self.ui.backup_folder.text()
         Config().write(self.config)
 
-    # TODO: windows doesn't like when these default to empty str
     def open_assets(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
                                                "Choose assets folder...",
@@ -62,9 +60,6 @@ class OptionsDialog():
             return False
         return True
 
-    # TODO: this doesn't work in windows at all because of file locks
-    # need to make a function to drop and recreate the databases
-    # instead of just trashing the file
     def rebuild_db(self):
         self.write()
         assets.AssetsDb().rebuild_db()
@@ -83,7 +78,7 @@ class CharacterSelectDialog():
 
         self.dialog.rejected.connect(self.dialog.close)
         self.dialog.accepted.connect(self.accept)
-        # bizarre, if i set this to self.accpet it just doesn't work...
+        # bizarre, if i set this to self.accept it just doesn't work...
         self.ui.player_list.itemDoubleClicked.connect(self.dialog.accept)
 
         self.get_players()

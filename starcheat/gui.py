@@ -1,5 +1,5 @@
 """
-GUI module for starcheat
+Main application window for starcheat GUI
 """
 
 import sys, os

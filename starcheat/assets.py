@@ -5,6 +5,12 @@ Module for reading and indexing Starbound assets
 # TODO: investigate those massive json files at the top level. if they turn out
 # to always be up to date (and include mods?) we could ditch a lot of this code
 
+# TODO: this file should end up similar to save_file in that it has no external
+# deps. need to:
+# - remove all use of the config module, make them arguments to the classes
+# - move all logging/exception handling to gui files
+# - custom exception classes
+
 import os, json, re, sqlite3, logging
 from platform import system
 
