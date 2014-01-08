@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import logging, os, datetime, sys, traceback
+from PyQt5.QtWidgets import QMessageBox
+
 import config, gui
 
 log_folder = config.Config().read("log_folder")
@@ -11,6 +13,13 @@ def exception_handler(type, value, tb):
     for err in traceback.format_exception(type, value, tb):
         logging.debug(err)
     traceback.print_exception(type, value, tb)
+    # simple dialog for now, need at least some feedback
+    dialog = QMessageBox()
+    msg = "starcheat has crashed\n\n"
+    for line in traceback.format_exception(type, value, tb):
+        msg += line
+    dialog.setText(msg)
+    dialog.exec()
     # TODO: crash report qt dialog
 
 if not os.path.isdir(log_folder):
