@@ -72,6 +72,7 @@ class CharacterSelectDialog():
 
         self.get_players()
         self.populate()
+        self.ui.player_list.setFocus()
 
     def accept(self):
         player = self.ui.player_list.currentItem().text()
@@ -97,6 +98,7 @@ class CharacterSelectDialog():
 
     def populate(self):
         total = 0
+        self.ui.player_list.clear()
         for player in self.players.keys():
             list_item = QListWidgetItem(player)
             race = self.players[player].get_race()
@@ -105,6 +107,7 @@ class CharacterSelectDialog():
             self.ui.player_list.addItem(list_item)
             total += 1
         self.ui.total_label.setText(str(total) + " total")
+        self.ui.player_list.setCurrentRow(0)
 
     def manual_select(self):
         manual_select = QFileDialog.getOpenFileName(None,

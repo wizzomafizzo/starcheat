@@ -40,12 +40,17 @@
        <height>32</height>
       </size>
      </property>
-     <property name="selectionRectVisible">
-      <bool>true</bool>
+     <property name="currentRow">
+      <number>0</number>
      </property>
      <property name="sortingEnabled">
       <bool>true</bool>
      </property>
+     <item>
+      <property name="text">
+       <string>Player</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="0" column="1">

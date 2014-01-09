@@ -100,6 +100,7 @@ class ItemEdit():
 
         # set up variant table
         self.ui.variant.setRowCount(len(self.item.variant[1]))
+        self.ui.variant.setHorizontalHeaderLabels(["Options"])
         for i in range(len(self.item.variant[1])):
             variant = ItemVariant(self.item.variant[1][i])
             self.ui.variant.setItem(i, 0, variant)
