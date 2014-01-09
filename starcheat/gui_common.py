@@ -19,6 +19,17 @@ def inv_icon(item_name):
     reader.setClipRect(QtCore.QRect(icon_file[1], 0, 16, 16))
     return QPixmap.fromImageReader(reader).scaled(32, 32)
 
+def preview_icon(race, gender):
+    """Return an icon image for player race/gender previews."""
+    icon_file = assets.Player().get_preview_icon(race, gender)
+
+    if icon_file == None:
+        return QPixmap()
+
+    reader = QImageReader(icon_file)
+    reader.setClipRect(QtCore.QRect(0, 0, 32, 32))
+    return QPixmap.fromImageReader(reader)
+
 def empty_slot():
     """Return an empty bag slot widget."""
     return ItemWidget(save_file.empty_slot())

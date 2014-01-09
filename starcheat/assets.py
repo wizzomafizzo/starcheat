@@ -106,6 +106,24 @@ class AssetsDb():
         self.db.commit()
         self.init_db()
 
+class Player():
+    def __init__(self):
+        self.assets_folder = Config().read("assets_folder")
+
+    def get_preview_icon(self, race, gender):
+        icon_folder = os.path.join(self.assets_folder, "interface", "title")
+        race_map = {
+            "Apex": "sape",
+            "Avian": "avian",
+            "Floran": "plant",
+            "Glitch": "robot",
+            "Human": "human",
+            "Hylotl": "aquatic"
+        }
+
+        name = race_map[race] + gender + ".png"
+        return os.path.join(icon_folder, name)
+
 class Blueprints():
     def __init__(self, folder=None):
         """Everything dealing with indexing and parsing blueprint asset files."""

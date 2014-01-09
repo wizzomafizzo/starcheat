@@ -3,9 +3,11 @@ Utility dialogs for starcheat itself
 """
 
 import os
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QListWidgetItem
+from PyQt5 import QtGui
 
 from config import Config
+from gui_common import preview_icon
 import save_file, assets
 import qt_options, qt_openplayer
 
@@ -54,10 +56,7 @@ class OptionsDialog():
         self.write()
         assets.AssetsDb().rebuild_db()
 
-# TODO: not sure the check for no players found is working? if user forgets
-#       to set a player_folder on setup they will be forced to edit the ini
-# TODO: support stuff like sorting by date (add column to table widget)
-# TODO: disable the ok button until a valid item is selected
+# TODO: support stuff like sorting by date (needs to be a table widget)
 class CharacterSelectDialog():
     def __init__(self, parent):
         self.dialog = QDialog(parent)
@@ -97,8 +96,15 @@ class CharacterSelectDialog():
         self.players = players_found
 
     def populate(self):
+        total = 0
         for player in self.players.keys():
-            self.ui.player_list.addItem(player)
+            list_item = QListWidgetItem(player)
+            race = self.players[player].get_race()
+            gender = self.players[player].get_gender()
+            list_item.setIcon(QtGui.QIcon(preview_icon(race, gender)))
+            self.ui.player_list.addItem(list_item)
+            total += 1
+        self.ui.total_label.setText(str(total) + " total")
 
     def manual_select(self):
         manual_select = QFileDialog.getOpenFileName(None,
