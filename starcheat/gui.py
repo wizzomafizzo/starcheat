@@ -14,10 +14,6 @@ from gui_utils import CharacterSelectDialog, OptionsDialog
 from gui_itemedit import ItemEdit
 from gui_blueprints import BlueprintLib
 
-# TODO: get rid of this, import Config direct and just use the new read func
-# (same for any other files using config)
-conf = Config().read()
-
 class MainWindow():
     def __init__(self):
         """Display the main starcheat window."""
@@ -33,11 +29,9 @@ class MainWindow():
         # TODO: I don't like this at all, I want a proper validation when they
         # try click save but for now we need a way to stop people hitting enter
         # the second this pops up
-        config = Config().read()
-        while config["player_folder"] == "" or config["assets_folder"] == "":
+        while Config().read("player_folder") == "" or Config().read("assets_folder") == "":
             logging.info("First setup dialog")
             self.new_setup_dialog()
-            config = Config().read()
 
         self.filename = None
         logging.debug("Loading assets")

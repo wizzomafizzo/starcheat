@@ -1,5 +1,7 @@
 """
 Config file module
+
+Config and environment stuff goes here, try keep OS-specific functions here too
 """
 
 import configparser, os, platform
@@ -25,6 +27,16 @@ assets_db = os.path.join(config_folder, "assets.db")
 
 log_folder = os.path.join(config_folder, "logs")
 
+defaults = {
+    "assets_folder": assets_folder,
+    "player_folder": player_folder,
+    "backup_folder": backup_folder,
+    "assets_db": assets_db,
+    "make_backups": make_backups,
+    "update_timestamps": update_timestamps,
+    "log_folder": log_folder
+}
+
 class Config():
     def __init__(self):
         self.config = configparser.ConfigParser()
@@ -34,29 +46,24 @@ class Config():
         except FileNotFoundError:
             self.create_config()
 
-    def read(self, option=None):
+    def read(self, option):
         self.config.read(ini_file)
-        if option != None:
+        try:
             return self.config["starcheat"][option]
-        else:
-            return self.config["starcheat"]
+        except KeyError:
+            # if the config setting doesn't exist, attempt to set a default val
+            self.set(option, defaults[option])
+            return self.config["starcheat"][option]
+
+    def set(self, option, value):
+        self.config.read(ini_file)
+        self.config["starcheat"][option] = value
+        self.config.write(open(ini_file, "w"))
 
     def create_config(self):
-        self.config["starcheat"] = {
-            "assets_folder": assets_folder,
-            "player_folder": player_folder,
-            "backup_folder": backup_folder,
-            "assets_db": assets_db,
-            "make_backups": make_backups,
-            "update_timestamps": update_timestamps,
-            "log_folder": log_folder
-        }
+        self.config["starcheat"] = defaults
 
         if os.path.isdir(config_folder) == False:
             os.mkdir(config_folder)
 
-        self.config.write(open(ini_file, "w"))
-
-    def write(self, config):
-        self.config["starcheat"] = config
         self.config.write(open(ini_file, "w"))

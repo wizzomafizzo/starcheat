@@ -14,8 +14,7 @@ Module for reading and indexing Starbound assets
 import os, json, re, sqlite3, logging
 from platform import system
 
-import config
-conf = config.Config().read()
+from config import Config
 
 # source: http://www.lifl.fr/~riquetd/parse-a-json-file-with-comments.html
 def parse_json(filename):
@@ -52,9 +51,9 @@ def parse_json(filename):
 class AssetsDb():
     def __init__(self):
         """Master assets database."""
-        self.mods_folder = os.path.normpath(os.path.join(config.Config().read("assets_folder"),
+        self.mods_folder = os.path.normpath(os.path.join(Config().read("assets_folder"),
                                                          "..", "mods"))
-        self.assets_db = config.Config().read("assets_db")
+        self.assets_db = Config().read("assets_db")
         try:
             open(self.assets_db)
         except FileNotFoundError:
@@ -78,19 +77,25 @@ class AssetsDb():
 
         logging.info("Adding vanilla items")
         Items().add_all_items()
-        for mod in os.listdir(self.mods_folder):
-            folder = os.path.join(self.mods_folder, mod, "assets")
-            if os.path.isdir(folder):
-                logging.info("Adding %s items" % (mod))
-                Items(folder).add_all_items()
+        try:
+            for mod in os.listdir(self.mods_folder):
+                folder = os.path.join(self.mods_folder, mod, "assets")
+                if os.path.isdir(folder):
+                    logging.info("Adding %s items" % (mod))
+                    Items(folder).add_all_items()
+        except FileNotFoundError:
+            pass
 
         logging.info("Adding vanilla blueprints")
         Blueprints().add_all_blueprints()
-        for mod in os.listdir(self.mods_folder):
-            folder = os.path.join(self.mods_folder, mod, "assets")
-            if os.path.isdir(folder):
-                logging.info("Adding %s blueprints" % (mod))
-                Blueprints(folder).add_all_blueprints()
+        try:
+            for mod in os.listdir(self.mods_folder):
+                folder = os.path.join(self.mods_folder, mod, "assets")
+                if os.path.isdir(folder):
+                    logging.info("Adding %s blueprints" % (mod))
+                    Blueprints(folder).add_all_blueprints()
+        except FileNotFoundError:
+            pass
 
     def rebuild_db(self):
         logging.info("Rebuilding assets db")
@@ -106,7 +111,7 @@ class Blueprints():
         """Everything dealing with indexing and parsing blueprint asset files."""
         # override folder
         if folder == None:
-            self.blueprints_folder = os.path.join(config.Config().read("assets_folder"), "recipes")
+            self.blueprints_folder = os.path.join(Config().read("assets_folder"), "recipes")
         else:
             self.blueprints_folder = os.path.join(folder, "recipes")
         self.db = AssetsDb().db
@@ -179,7 +184,7 @@ class Items():
         """Everything dealing with indexing and parsing item asset files."""
         # folder override
         if folder == None:
-            self.assets_folder = config.Config().read("assets_folder")
+            self.assets_folder = Config().read("assets_folder")
         else:
             self.assets_folder = folder
 

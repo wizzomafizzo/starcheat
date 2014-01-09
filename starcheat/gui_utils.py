@@ -15,43 +15,33 @@ class OptionsDialog():
         self.ui = qt_options.Ui_Dialog()
         self.ui.setupUi(self.dialog)
 
+        self.config = Config()
+
         # read the current config and prefill everything
-        self.config = Config().read()
-        self.ui.assets_folder.setText(self.config["assets_folder"])
-        self.ui.player_folder.setText(self.config["player_folder"])
-        # TODO: do backups
-        self.ui.backup_folder.setText(self.config["backup_folder"])
+        self.ui.assets_folder.setText(self.config.read("assets_folder"))
+        self.ui.player_folder.setText(self.config.read("player_folder"))
 
         self.ui.assets_folder_button.clicked.connect(self.open_assets)
         self.ui.player_folder_button.clicked.connect(self.open_player)
-        self.ui.backup_folder_button.clicked.connect(self.open_backup)
         self.ui.rebuild_button.clicked.connect(self.rebuild_db)
 
         self.ui.buttonBox.accepted.connect(self.write)
 
     def write(self):
-        self.config["assets_folder"] = self.ui.assets_folder.text()
-        self.config["player_folder"] = self.ui.player_folder.text()
-        self.config["backup_folder"] = self.ui.backup_folder.text()
-        Config().write(self.config)
+        self.config.set("assets_folder", self.ui.assets_folder.text())
+        self.config.set("player_folder", self.ui.player_folder.text())
 
     def open_assets(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
                                                "Choose assets folder...",
-                                               self.config["assets_folder"])
+                                               self.config.read("assets_folder"))
         if filename != "": self.ui.assets_folder.setText(filename)
 
     def open_player(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
                                                "Choose player save folder...",
-                                               self.config["player_folder"])
+                                               self.config.read("player_folder"))
         if filename != "": self.ui.player_folder.setText(filename)
-
-    def open_backup(self):
-        filename = QFileDialog.getExistingDirectory(self.dialog,
-                                               "Choose backup location...",
-                                               self.config["backup_folder"])
-        if filename != "": self.ui.backup_folder.setText(filename)
 
     def validate_options(self):
         if os.path.isdir(self.ui.assets_folder.text()) == False:
