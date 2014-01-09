@@ -122,6 +122,7 @@ class ItemEdit():
             self.ui.variant.clear()
             # not sure why i need to do this too
             self.ui.variant.setRowCount(0)
+            self.ui.variant.setHorizontalHeaderLabels(["Options"])
 
         try:
             item = assets.Items().get_item(name)

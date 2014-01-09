@@ -15,7 +15,7 @@ def exception_handler(type, value, tb):
     traceback.print_exception(type, value, tb)
     # simple dialog for now, need at least some feedback
     dialog = QMessageBox()
-    msg = "starcheat has crashed\n\n"
+    msg = "Oops, starcheat has crashed.\n\n"
     for line in traceback.format_exception(type, value, tb):
         msg += line
     dialog.setText(msg)

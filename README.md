@@ -75,7 +75,8 @@ this will point you to where the logs are so you can upload them. the logs will 
 
 #### windows
 - press the Windows key and R (Win-R)
-- type "%APPDATA%\starcheat\logs" and hit enter
+- type **"%APPDATA%\starcheat\logs"** and hit enter
+
 (you could also just put that path in explorer or go there in powershell or whatevs)
 
 #### mac
