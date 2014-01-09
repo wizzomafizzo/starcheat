@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from config import Config
 import logging, save_file, assets, qt_mainwindow
 
-from gui_common import ItemWidget, empty_slot
+from gui_common import ItemWidget, empty_slot, preview_icon
 from gui_utils import CharacterSelectDialog, OptionsDialog
 from gui_itemedit import ItemEdit
 from gui_blueprints import BlueprintLib
@@ -84,6 +84,9 @@ class MainWindow():
             getattr(self.ui, b).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
 
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
+        self.ui.race.currentTextChanged.connect(self.update_player_preview)
+        self.ui.male.clicked.connect(self.update_player_preview)
+        self.ui.female.clicked.connect(self.update_player_preview)
         self.ui.name.setFocus()
 
         logging.debug("Showing main window")
@@ -158,6 +161,8 @@ class MainWindow():
         self.update_bag("main_bag")
         self.update_bag("tile_bag")
         self.update_bag("action_bar")
+
+        self.update_player_preview()
 
     def save(self):
         """Update internal player dict with GUI values and export to file."""
@@ -344,6 +349,14 @@ class MainWindow():
             if (column % 10) == 0:
                 row += 1
                 column = 0
+
+    def update_player_preview(self):
+        if self.ui.male.isChecked():
+            gender = "male"
+        else:
+            gender = "female"
+        image = preview_icon(self.ui.race.currentText(), gender)
+        self.ui.player_preview.setPixmap(image.scaled(64, 64))
 
     # these are used for connecting the item edit dialog to bag tables
     def new_main_bag_item_edit(self):

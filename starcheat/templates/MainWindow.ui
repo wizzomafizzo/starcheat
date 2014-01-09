@@ -694,16 +694,6 @@
      <number>99999999</number>
     </property>
    </widget>
-   <widget class="QGraphicsView" name="player_pic">
-    <property name="geometry">
-     <rect>
-      <x>404</x>
-      <y>30</y>
-      <width>101</width>
-      <height>161</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="left_hand_label_2">
     <property name="geometry">
      <rect>
@@ -1134,6 +1124,28 @@
      <string>Action Bar</string>
     </property>
    </widget>
+   <widget class="QLabel" name="player_preview">
+    <property name="geometry">
+     <rect>
+      <x>404</x>
+      <y>30</y>
+      <width>100</width>
+      <height>160</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: white;</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
@@ -1208,7 +1220,7 @@
       </widget>
      </item>
      <item row="3" column="1" colspan="3">
-      <widget class="QWidget" name="widget" native="true">
+      <widget class="QWidget" name="gender_group" native="true">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -1882,7 +1894,6 @@ border-radius: 4px;
   <tabstop>max_breath</tabstop>
   <tabstop>pixels</tabstop>
   <tabstop>back</tabstop>
-  <tabstop>player_pic</tabstop>
   <tabstop>action_bar</tabstop>
   <tabstop>inv_tabs</tabstop>
   <tabstop>main_bag</tabstop>

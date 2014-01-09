@@ -105,7 +105,6 @@ inv_type = (
     ("right_hand_slot", "__vlq__", None)
 )
 
-# TODO: move to assets module
 race_types = ("Apex", "Avian", "Floran", "Glitch", "Human", "Hylotl")
 
 def unpack_str(bytes):
