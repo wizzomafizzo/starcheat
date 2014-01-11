@@ -6,7 +6,7 @@ from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtGui import QPixmap, QImageReader
 
-import save_file, assets, logging
+import save_file, assets
 
 def inv_icon(item_name):
     """Return a QPixmap object of the inventory icon of a given item (if possible)."""

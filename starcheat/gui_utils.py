@@ -8,7 +8,7 @@ from PyQt5 import QtGui
 
 from config import Config
 from gui_common import preview_icon
-import save_file, assets
+import save_file, assets, logging
 import qt_options, qt_openplayer
 
 class OptionsDialog():
