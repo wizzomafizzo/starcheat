@@ -51,8 +51,7 @@ def parse_json(filename):
 class AssetsDb():
     def __init__(self):
         """Master assets database."""
-        self.mods_folder = os.path.normpath(os.path.join(Config().read("assets_folder"),
-                                                         "..", "mods"))
+        self.mods_folder = os.path.normpath(os.path.join(Config().read("starbound_folder"), "mods"))
         self.assets_db = Config().read("assets_db")
         try:
             open(self.assets_db)
@@ -405,6 +404,11 @@ class Items():
                   (category, name))
         result = c.fetchall()
         return result
+
+    def get_item_total(self):
+        c = self.db.cursor()
+        c.execute("select count(*) from items")
+        return c.fetchone()[0]
 
 class Species():
     def __init__(self, folder=None):

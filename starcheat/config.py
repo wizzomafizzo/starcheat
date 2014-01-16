@@ -13,57 +13,69 @@ elif platform.system() == "Darwin":
 else:
     config_folder = os.path.expanduser("~/.starcheat")
 
+if os.path.isdir(config_folder) == False:
+    os.mkdir(config_folder)
+
 ini_file = os.path.join(config_folder, "starcheat.ini")
-
-# Default values
-# TODO: we can do some auto-detection here
-assets_folder = ""
-player_folder = ""
-
-backup_folder = os.path.join(config_folder, "backups")
-make_backups = "no"
-update_timestamps = "no"
-assets_db = os.path.join(config_folder, "assets.db")
-
+# make a special case for this since it is referenced before the main window
 log_folder = os.path.join(config_folder, "logs")
-
-defaults = {
-    "assets_folder": assets_folder,
-    "player_folder": player_folder,
-    "backup_folder": backup_folder,
-    "assets_db": assets_db,
-    "make_backups": make_backups,
-    "update_timestamps": update_timestamps,
-    "log_folder": log_folder
-}
 
 class Config():
     def __init__(self):
         self.config = configparser.ConfigParser()
-
-        try:
-            open(ini_file)
-        except FileNotFoundError:
-            self.create_config()
+        self.config_folder = config_folder
+        self.ini_file = ini_file
 
     def read(self, option):
-        self.config.read(ini_file)
-        try:
-            return self.config["starcheat"][option]
-        except KeyError:
-            # if the config setting doesn't exist, attempt to set a default val
-            self.set(option, defaults[option])
-            return self.config["starcheat"][option]
+        self.config.read(self.ini_file)
+        return self.config["starcheat"][option]
 
     def set(self, option, value):
         self.config.read(ini_file)
         self.config["starcheat"][option] = value
         self.config.write(open(ini_file, "w"))
 
-    def create_config(self):
+    def create_config(self, starbound_folder=None):
+        # Default values
+        # TODO: we can do some auto-detection here
+        if starbound_folder == None:
+            starbound_folder = self.detect_starbound_folder()
+
+        assets_folder = os.path.join(starbound_folder, "assets")
+
+        # TODO: not 100% sure on the Windows and Mac ones
+        if platform.system() == "Linux":
+            folder = "linux" + platform.architecture()[0].replace("bit", "")
+            player_folder = os.path.join(starbound_folder, folder, "player")
+        else:
+            player_folder = os.path.join(starbound_folder, "player")
+
+        backup_folder = os.path.join(config_folder, "backups")
+        make_backups = "no"
+        update_timestamps = "no"
+        assets_db = os.path.join(config_folder, "assets.db")
+
+        defaults = {
+            "starbound_folder": starbound_folder,
+            "assets_folder": assets_folder,
+            "player_folder": player_folder,
+            "backup_folder": backup_folder,
+            "assets_db": assets_db,
+            "make_backups": make_backups,
+            "update_timestamps": update_timestamps,
+        }
+
         self.config["starcheat"] = defaults
 
-        if os.path.isdir(config_folder) == False:
-            os.mkdir(config_folder)
-
         self.config.write(open(ini_file, "w"))
+
+    def detect_starbound_folder(self):
+        # TODO: add common locations for all OSs
+        known_locations = [
+            "/opt/starbound"
+        ]
+
+        for filename in known_locations:
+            if os.path.isdir(filename):
+                return filename
+        return ""

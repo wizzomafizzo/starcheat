@@ -20,9 +20,11 @@ class OptionsDialog():
         self.config = Config()
 
         # read the current config and prefill everything
+        self.ui.starbound_folder.setText(self.config.read("starbound_folder"))
         self.ui.assets_folder.setText(self.config.read("assets_folder"))
         self.ui.player_folder.setText(self.config.read("player_folder"))
 
+        self.ui.starbound_folder_button.clicked.connect(self.open_starbound)
         self.ui.assets_folder_button.clicked.connect(self.open_assets)
         self.ui.player_folder_button.clicked.connect(self.open_player)
         self.ui.rebuild_button.clicked.connect(self.rebuild_db)
@@ -30,27 +32,27 @@ class OptionsDialog():
         self.ui.buttonBox.accepted.connect(self.write)
 
     def write(self):
+        self.config.set("starbound_folder", self.ui.starbound_folder.text())
         self.config.set("assets_folder", self.ui.assets_folder.text())
         self.config.set("player_folder", self.ui.player_folder.text())
 
+    def open_starbound(self):
+        filename = QFileDialog.getExistingDirectory(self.dialog,
+                                                    "Select Starbound folder...",
+                                                    self.config.read("starbound_folder"))
+        if filename != "": self.ui.starbound_folder.setText(filename)
+
     def open_assets(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
-                                                    "Choose assets folder...",
+                                                    "Select assets folder...",
                                                     self.config.read("assets_folder"))
         if filename != "": self.ui.assets_folder.setText(filename)
 
     def open_player(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
-                                               "Choose player save folder...",
-                                               self.config.read("player_folder"))
+                                                    "Select player save folder...",
+                                                    self.config.read("player_folder"))
         if filename != "": self.ui.player_folder.setText(filename)
-
-    def validate_options(self):
-        if os.path.isdir(self.ui.assets_folder.text()) == False:
-            return False
-        if os.path.isdir(self.ui.player_folder.text()) == False:
-            return False
-        return True
 
     def rebuild_db(self):
         self.write()
@@ -120,8 +122,9 @@ class CharacterSelectDialog():
         # quit if there are no players
         if len(self.players) == 0:
             dialog = QMessageBox()
-            msg = "No compatible save files found in: %s" % (self.player_folder)
-            dialog.setText(msg)
+            dialog.setText("No compatible save files found in:")
+            dialog.setInformativeText(self.player_folder)
+            dialog.setIcon(QMessageBox.Warning)
             dialog.exec()
             manual_player = self.manual_select()
             if manual_player[0] != "":

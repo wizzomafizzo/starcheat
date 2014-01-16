@@ -5,6 +5,7 @@ Main application window for starcheat GUI
 import sys, os
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 from config import Config
 import logging, save_file, assets, qt_mainwindow
@@ -24,14 +25,8 @@ class MainWindow():
 
         logging.info("Main window init")
 
-        # launch first setup
-        self.setup_dialog = None
-        # TODO: I don't like this at all, I want a proper validation when they
-        # try click save but for now we need a way to stop people hitting enter
-        # the second this pops up
-        while Config().read("player_folder") == "" or Config().read("assets_folder") == "":
-            logging.info("First setup dialog")
-            self.new_setup_dialog()
+        # launch first setup if we need to
+        self.new_setup()
 
         self.filename = None
         logging.debug("Loading assets")
@@ -58,6 +53,7 @@ class MainWindow():
         logging.debug("Open file dialog")
         self.open_file()
         # we *need* at least an initial save file
+        # TODO: maybe add critical dialog here
         if self.player == None:
             logging.warning("No player file selected")
             return
@@ -249,6 +245,59 @@ class MainWindow():
         self.blueprint_lib.ui.buttonBox.rejected.connect(self.blueprint_lib.dialog.close)
         self.blueprint_lib.dialog.show()
 
+    # TODO: move to gui_utils
+    def new_setup(self):
+        """Run through an initial setup dialog for starcheat if it's required."""
+        if os.path.isfile(Config().ini_file):
+            return
+
+        logging.info("First setup dialog")
+
+        starbound_folder = Config().detect_starbound_folder()
+        if starbound_folder == "":
+            dialog = QMessageBox()
+            dialog.setText("Unable to detect the main Starbound folder.")
+            dialog.setInformativeText("Please select it in the next dialog.")
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec()
+            starbound_folder = QFileDialog.getExistingDirectory(self.window,
+                                                                "Select Starbound folder...")
+        else:
+            dialog = QMessageBox()
+            dialog.setText("Detected the following folder as the location of Starbound. Is this correct?")
+            dialog.setInformativeText(starbound_folder)
+            dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
+            dialog.setIcon(QMessageBox.Question)
+            answer = dialog.exec()
+            if answer == QMessageBox.No:
+                starbound_folder = QFileDialog.getExistingDirectory(self.window,
+                                                                    "Select Starbound folder...")
+
+        if starbound_folder == "":
+            dialog = QMessageBox()
+            dialog.setIcon(QMessageBox.Critical)
+            dialog.setText("starcheat needs Starbound installed to work properly.")
+            dialog.exec()
+            sys.exit()
+
+        Config().create_config(starbound_folder)
+
+        dialog = QMessageBox()
+        dialog.setText("starcheat will now build a database of Starbound assets.")
+        dialog.setInformativeText("This can take a little while, please be patient.")
+        dialog.setIcon(QMessageBox.Information)
+        dialog.exec()
+
+        assets.AssetsDb()
+
+        total_items = assets.Items().get_item_total()
+        if total_items == 0:
+            dialog = QMessageBox()
+            dialog.setText("No assets were found. starcheat may not run correctly.")
+            dialog.setInformativeText("Check the assets location is correct in the Options dialog.")
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec()
+
     def new_options_dialog(self):
         logging.debug("New options dialog")
         self.options_dialog = OptionsDialog(self.window)
@@ -260,12 +309,6 @@ class MainWindow():
 
         self.options_dialog.dialog.accepted.connect(write_options)
         self.options_dialog.dialog.exec()
-
-    def new_setup_dialog(self):
-        self.setup_dialog = OptionsDialog(self.window)
-        self.setup_dialog.dialog.rejected.connect(sys.exit)
-        self.setup_dialog.dialog.exec()
-        self.setup_dialog.rebuild_db()
 
     def reload(self):
         """Reload the currently open save file and update GUI values."""

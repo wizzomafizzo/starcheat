@@ -1,39 +1,39 @@
 # starcheat
 
-starcheat is a Starbound player save editor, you can get free pixels with this (omg)
+starcheat is a Starbound player save editor, you can get free pixels with this! (omg)
 
-_**windows and mac downloads** are in the first post of the [discussion thread](http://community.playstarbound.com/index.php?threads/starcheat-player-save-editor-and-python-library.60174/)_
+_**Windows and Mac downloads** are in the first post of the [discussion thread](http://community.playstarbound.com/index.php?threads/starcheat-player-save-editor-and-python-library.60174/)._
 
 ![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/screen.png)
 
-## build
-here is how to install it. make sure everything in the dependencies section is installed before you do a build
+## Build Instructions
+Here is how to install it. Make sure everything in the dependencies section is installed before you do a build
 
-### dependencies
-- [python 3](http://www.python.org/getit/)
-- [qt 5](http://qt-project.org/downloads) (if you're using Windows you probably don't need this)
-- [pyqt5](http://www.riverbankcomputing.com/software/pyqt/download5)
+### Dependencies
+- [Python 3](http://www.python.org/getit/)
+- [Qt 5](http://qt-project.org/downloads) (Windows users don't need this)
+- [PyQt5](http://www.riverbankcomputing.com/software/pyqt/download5)
 
-### windows
-lines starting with PS> are to be run in powershell. don't forget to [set your execution policy](http://technet.microsoft.com/en-us/library/ee176961.aspx) if it's the first time you're using powershell
+### Windows
+Lines starting with ```PS>``` are to be run in PowerShell. Don't forget to [set your execution policy](http://technet.microsoft.com/en-us/library/ee176961.aspx) if it's the first time you're using PowerShell.
 
 - ```PS> cd <starcheat top folder>```
 - ```PS> ./build.ps1```
-- browse to newly created build/ folder
-- double click starcheat.py
+- Browse to newly created ```build/``` folder
+- Double click ```starcheat.py```
 
-#### standalone build
-standalone build makes an executable and includes all python and qt dependencies
+#### Standalone Build
+The standalone build makes an executable which includes all Python and Qt dependencies.
 
-- install [cx_freeze](http://cx-freeze.sourceforge.net/)
+- Install [cx_freeze](http://cx-freeze.sourceforge.net/)
 - ```PS> cd <starcheat top folder>```
 - ```PS> ./build.ps1 -Standalone```
-- browse to newly created dist/ folder
-- double click starcheat.exe
+- Browse to newly created ```dist/``` folder
+- Double click ```starcheat.exe```
 
-if windows complains about a system error (re: missing msvcr100.dll) you probably need to install the [vs c++ 2010 runtime update](http://www.microsoft.com/en-au/download/details.aspx?id=14632)
+If Windows complains about a system error (re: missing msvcr100.dll), you probably need to install the [Microsoft Visual C++ 2010 Redistributable Package](http://www.microsoft.com/en-au/download/details.aspx?id=14632).
 
-### linux
+### Linux
 ```
 $ cd <starcheat top folder>
 $ ./build.sh
@@ -41,11 +41,11 @@ $ cd build/
 $ ./starcheat.py
 ```
 
-#### arch linux
-install [starcheat-git](https://aur.archlinux.org/packages/starcheat-git/) from AUR
+#### Arch Linux
+Install [starcheat-git](https://aur.archlinux.org/packages/starcheat-git/) from AUR.
 
-### mac
-- install [homebrew](http://brew.sh/)
+### Mac
+- Install [homebrew](http://brew.sh/)
 - ```$ brew install https://gist.github.com/chrmoritz/8177384/raw/starcheat.rb; brew linkapps```
 
 ## Troubleshooting

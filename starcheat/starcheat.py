@@ -5,8 +5,7 @@ from PyQt5.QtWidgets import QMessageBox
 
 import config, gui
 
-log_folder = config.Config().read("log_folder")
-log_file = os.path.join(log_folder,
+log_file = os.path.join(config.log_folder,
                         "starcheat_" + datetime.date.today().isoformat() + ".log")
 
 def exception_handler(type, value, tb):
@@ -17,14 +16,15 @@ def exception_handler(type, value, tb):
     traceback.print_exception(type, value, tb)
     # simple dialog for now, need at least some feedback
     dialog = QMessageBox()
-    msg = "Oops, starcheat has crashed. Take a screenshot of this message if you'd like to report it in the discussion thread.\n\n"
+    dialog.setText("Oops, starcheat has crashed.")
+    msg = "Take a screenshot of this message if you'd like to report it in the discussion thread.\n\n"
     for line in traceback.format_exception(type, value, tb):
         msg += line
-    dialog.setText(msg)
+    dialog.setInformativeText(msg)
     dialog.exec()
 
-if not os.path.isdir(log_folder):
-    os.mkdir(log_folder)
+if not os.path.isdir(config.log_folder):
+    os.mkdir(config.log_folder)
 
 def main():
     # TODO: set logging level in ini and cmd line
