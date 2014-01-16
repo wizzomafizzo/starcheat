@@ -12,15 +12,16 @@ log_file = os.path.join(log_folder,
 def exception_handler(type, value, tb):
     for err in traceback.format_exception(type, value, tb):
         logging.debug(err)
+    logging.debug(config.Config().read("assets_folder"))
+    logging.debug(config.Config().read("player_folder"))
     traceback.print_exception(type, value, tb)
     # simple dialog for now, need at least some feedback
     dialog = QMessageBox()
-    msg = "Oops, starcheat has crashed.\n\n"
+    msg = "Oops, starcheat has crashed. Take a screenshot of this message if you'd like to report it in the discussion thread.\n\n"
     for line in traceback.format_exception(type, value, tb):
         msg += line
     dialog.setText(msg)
     dialog.exec()
-    # TODO: crash report qt dialog
 
 if not os.path.isdir(log_folder):
     os.mkdir(log_folder)

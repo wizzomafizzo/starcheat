@@ -66,7 +66,8 @@ class AssetsDb():
         logging.info("Creating new assets db")
 
         tables = ("create table items (name text, filename text, folder text, icon text, category text)",
-                  "create table blueprints (name text, filename text, folder text, category text)")
+                  "create table blueprints (name text, filename text, folder text, category text)",
+                  "create table species (name text)")
         db = sqlite3.connect(self.assets_db)
         c = db.cursor()
 
@@ -80,10 +81,14 @@ class AssetsDb():
         try:
             for mod in os.listdir(self.mods_folder):
                 folder = os.path.join(self.mods_folder, mod, "assets")
+                logging.info("Adding %s items" % (mod))
                 if os.path.isdir(folder):
-                    logging.info("Adding %s items" % (mod))
+                    Items(folder).add_all_items()
+                else:
+                    folder = os.path.join(self.mods_folder, mod)
                     Items(folder).add_all_items()
         except FileNotFoundError:
+            logging.exception("Error loading modded items")
             pass
 
         logging.info("Adding vanilla blueprints")
@@ -91,21 +96,41 @@ class AssetsDb():
         try:
             for mod in os.listdir(self.mods_folder):
                 folder = os.path.join(self.mods_folder, mod, "assets")
+                logging.info("Adding %s blueprints" % (mod))
                 if os.path.isdir(folder):
-                    logging.info("Adding %s blueprints" % (mod))
+                    Blueprints(folder).add_all_blueprints()
+                else:
+                    folder = os.path.join(self.mods_folder, mod)
                     Blueprints(folder).add_all_blueprints()
         except FileNotFoundError:
+            logging.exception("Error loading modded blueprints")
+            pass
+
+        logging.info("Adding vanilla species")
+        Species().add_all_species()
+        try:
+            for mod in os.listdir(self.mods_folder):
+                folder = os.path.join(self.mods_folder, mod, "assets")
+                logging.info("Adding %s species" % (mod))
+                if os.path.isdir(folder):
+                    Species(folder).add_all_species()
+                else:
+                    folder = os.path.join(self.mods_folder, mod)
+                    Species(folder).add_all_species()
+        except FileNotFoundError:
+            logging.exception("Error loading modded species")
             pass
 
     def rebuild_db(self):
         logging.info("Rebuilding assets db")
-        tables = ("items", "blueprints")
+        tables = ("items", "blueprints", "species")
         c = self.db.cursor()
         for t in tables:
             c.execute("drop table %s" % t)
         self.db.commit()
         self.init_db()
 
+# TODO: probably remove this in favour of the species class
 class Player():
     def __init__(self):
         self.assets_folder = Config().read("assets_folder")
@@ -121,7 +146,12 @@ class Player():
             "Hylotl": "aquatic"
         }
 
-        name = race_map[race] + gender + ".png"
+        # TODO: support for modded race icons
+        try:
+            name = race_map[race] + gender + ".png"
+        except KeyError:
+            return ""
+
         return os.path.join(icon_folder, name)
 
 class Blueprints():
@@ -375,3 +405,57 @@ class Items():
                   (category, name))
         result = c.fetchall()
         return result
+
+class Species():
+    def __init__(self, folder=None):
+        """Everything dealing with indexing and parsing species asset files."""
+        # would be pretty easy to add a name generator
+        # override folder
+        if folder == None:
+            self.species_folder = os.path.join(Config().read("assets_folder"), "species")
+        else:
+            self.species_folder = os.path.join(folder, "species")
+        self.db = AssetsDb().db
+
+    def file_index(self):
+        """Return a list of all valid species files."""
+        index = []
+        for root, dirs, files in os.walk(self.species_folder):
+            for f in files:
+                if re.match(".*\.species", f) != None:
+                    index.append((f, root))
+        logging.info("Found " + str(len(index)) + " species files")
+        return index
+
+    def add_all_species(self):
+        """Parse and insert every indexable species asset."""
+        index = self.file_index()
+        species = []
+        logging.info("Started indexing species")
+        for f in index:
+            full_path = os.path.join(f[1], f[0])
+
+            try:
+                info = parse_json(full_path)
+            except ValueError:
+                continue
+
+            try:
+                name = info["kind"]
+            except (KeyError, IndexError):
+                logging.warning("Could not read species file %s" % (f[0]))
+
+            species.append((name,))
+
+        c = self.db.cursor()
+        q = "insert into species values (?)"
+        c.executemany(q, species)
+        self.db.commit()
+        logging.info("Finished indexing species")
+
+    def get_species_list(self):
+        """Return a formatted list of all species."""
+        c = self.db.cursor()
+        c.execute("select distinct name from species order by name")
+        names = [x[0] for x in c.fetchall()]
+        return [x[0].upper() + x[1:] for x in names]

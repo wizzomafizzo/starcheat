@@ -45,10 +45,6 @@ class MainWindow():
         self.blueprint_lib = None
         self.options_dialog = None
 
-        # populate race combo box
-        for race in save_file.race_types:
-            self.ui.race.addItem(race)
-
         # connect action menu
         self.ui.actionSave.triggered.connect(self.save)
         self.ui.actionReload.triggered.connect(self.reload)
@@ -102,6 +98,10 @@ class MainWindow():
         # name
         self.ui.name.setText(self.player.get_name())
         # race
+        # populate race combo box
+        self.ui.race.clear()
+        for race in assets.Species().get_species_list():
+            self.ui.race.addItem(race)
         self.ui.race.setCurrentText(self.player.get_race())
         # BUG: okay so there is this bug where sometimes on windows pyqt will chuck
         # a fit and not set values on some stuff. this seems to work itself out

@@ -105,8 +105,6 @@ inv_type = (
     ("right_hand_slot", "__vlq__", None)
 )
 
-race_types = ("Apex", "Avian", "Floran", "Glitch", "Human", "Hylotl")
-
 def unpack_str(bytes):
     """Convert a list of bytes to a string."""
     return "".join(map(chr,map(ord,bytes)))
@@ -562,7 +560,7 @@ class PlayerSave():
         self.data["inv"]["equipment"][7] = glamor
 
     def get_race(self):
-        return (self.data["race"][0].upper() + self.data["race"][1:])
+        return self.data["race"][0].upper() + self.data["race"][1:]
 
     def get_pixels(self):
         return self.data["inv"]["pixels"][0]

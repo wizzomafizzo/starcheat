@@ -35,8 +35,8 @@ class OptionsDialog():
 
     def open_assets(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
-                                               "Choose assets folder...",
-                                               self.config.read("assets_folder"))
+                                                    "Choose assets folder...",
+                                                    self.config.read("assets_folder"))
         if filename != "": self.ui.assets_folder.setText(filename)
 
     def open_player(self):

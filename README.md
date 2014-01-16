@@ -48,37 +48,40 @@ install [starcheat-git](https://aur.archlinux.org/packages/starcheat-git/) from 
 - install [homebrew](http://brew.sh/)
 - ```$ brew install https://gist.github.com/chrmoritz/8177384/raw/starcheat.rb; brew linkapps```
 
-## troubleshooting
-stuff you can do when starcheat stops working. clearing local settings and checking you did the setup correctly is always a good first step
+## Troubleshooting
+Stuff you can do when starcheat stops working. Clearing local settings and checking you did the setup correctly is always a good first step.
 
-### clear local settings
-this will remove all locally stored data for starcheat and force a new setup dialog next run
+### Reset all settings
+This will remove all locally stored data for starcheat and force a new setup dialog next run.
 
-#### linux
-in a terminal
-- ```$ rm -rf ~/.starcheat```
+#### Windows
+- Press the Windows key and R (```Win+R```) to bring up the Run... dialog
+- Type ```%APPDATA%\starcheat``` and press Enter
+- Delete ```assets.db``` and ```starcheat.ini``` from the folder that pops up
 
-#### windows
-in the Command Prompt or PowerShell
-- ```> rd /s /q %APPDATA%\starcheat```
+#### Linux
+In a terminal:
+- ```$ rm ~/.starcheat/assets.db```
+- ```$ rm ~/.starcheat/starcheat.ini```
 
-#### mac
-in Terminal.app
-- ```$ rm -rf ~/Library/Application\ Support/starcheat```
+#### Mac
+In Finder:
+- Open the ```Go``` menu and click ```Go to Folder``` (or press ```Cmd+Shift+G```)
+- Type ```~/Library/Application Support/starcheat``` and press Enter
+- Delete ```assets.db``` and ```starcheat.ini``` from the folder that pops up
 
-### get logs
-this will point you to where the logs are so you can upload them. the logs will contain the full path to starcheat (it'll show your computer username) but no other personal information
+### How to get logs
+This will point you to where the starcheat logs are stored. If you're trying to report an error, you only need to upload the latest log file.
 
-#### linux
+#### Windows
+- Press the Windows key and R (```Win+R```) to bring up the Run... dialog
+- Type ```%APPDATA%\starcheat\logs``` and press Enter
+
+#### Linux
+In a terminal:
 - ```$ cd ~/.starcheat/logs```
-- ```$ ls```
 
-#### windows
-- press the Windows key and R (Win-R)
-- type **"%APPDATA%\starcheat\logs"** and hit enter
-
-(you could also just put that path in explorer or go there in powershell or whatevs)
-
-#### mac
-in Terminal.app
-- ```$ open ~/Library/Application\ Support/starcheat```
+#### Mac
+In Finder:
+- Open the ```Go``` menu and click ```Go to Folder``` (or press ```Cmd+Shift+G```)
+- Type ```~/Library/Application Support/starcheat/logs``` and press Enter
