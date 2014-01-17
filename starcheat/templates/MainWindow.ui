@@ -659,7 +659,7 @@
    <widget class="QLabel" name="pixels_label">
     <property name="geometry">
      <rect>
-      <x>614</x>
+      <x>607</x>
       <y>10</y>
       <width>41</width>
       <height>21</height>
@@ -678,9 +678,9 @@
    <widget class="QSpinBox" name="pixels">
     <property name="geometry">
      <rect>
-      <x>610</x>
+      <x>603</x>
       <y>30</y>
-      <width>91</width>
+      <width>98</width>
       <height>23</height>
      </rect>
     </property>
@@ -713,10 +713,10 @@
    <widget class="QPushButton" name="blueprints_button">
     <property name="geometry">
      <rect>
-      <x>610</x>
+      <x>603</x>
       <y>60</y>
-      <width>91</width>
-      <height>22</height>
+      <width>98</width>
+      <height>23</height>
      </rect>
     </property>
     <property name="text">
@@ -1101,10 +1101,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>610</x>
+      <x>603</x>
       <y>90</y>
-      <width>91</width>
-      <height>22</height>
+      <width>98</width>
+      <height>23</height>
      </rect>
     </property>
     <property name="text">
@@ -1326,6 +1326,12 @@ border-radius: 4px;
      </item>
      <item row="6" column="2" colspan="2">
       <widget class="QSpinBox" name="max_health">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>22</height>
+        </size>
+       </property>
        <property name="maximumSize">
         <size>
          <width>100</width>
@@ -1407,6 +1413,12 @@ border-radius: 4px;
      </item>
      <item row="8" column="2" colspan="2">
       <widget class="QSpinBox" name="max_energy">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>22</height>
+        </size>
+       </property>
        <property name="maximumSize">
         <size>
          <width>100</width>
@@ -1436,6 +1448,12 @@ border-radius: 4px;
      </item>
      <item row="9" column="2" colspan="2">
       <widget class="QDoubleSpinBox" name="energy_regen">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>22</height>
+        </size>
+       </property>
        <property name="maximumSize">
         <size>
          <width>100</width>
@@ -1517,6 +1535,12 @@ border-radius: 4px;
      </item>
      <item row="11" column="2" colspan="2">
       <widget class="QSpinBox" name="max_food">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>22</height>
+        </size>
+       </property>
        <property name="maximumSize">
         <size>
          <width>100</width>
@@ -1595,6 +1619,12 @@ border-radius: 4px;
      </item>
      <item row="13" column="2" colspan="2">
       <widget class="QSpinBox" name="max_warmth">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>22</height>
+        </size>
+       </property>
        <property name="maximumSize">
         <size>
          <width>100</width>
@@ -1673,6 +1703,12 @@ border-radius: 4px;
      </item>
      <item row="15" column="2" colspan="2">
       <widget class="QSpinBox" name="max_breath">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>22</height>
+        </size>
+       </property>
        <property name="maximumSize">
         <size>
          <width>100</width>
