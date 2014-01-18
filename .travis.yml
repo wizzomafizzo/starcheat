@@ -8,3 +8,6 @@ install:
   - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then brew install https://raw.github.com/wizzomafizzo/starcheat/master/mac/pyqt5.rb; fi
 script:
   - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then brew install -v https://raw.github.com/wizzomafizzo/starcheat/master/mac/starcheat.rb --with-dist; fi
+branches:
+  only:
+    - master
