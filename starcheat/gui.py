@@ -104,17 +104,15 @@ class MainWindow():
 
         self.ui.name.setFocus()
         self.ui.name.textChanged.connect(self.set_edited)
+
         self.ui.race.currentTextChanged.connect(self.update_player_preview)
+
         self.ui.male.clicked.connect(self.update_player_preview)
         self.ui.female.clicked.connect(self.update_player_preview)
+
         self.ui.description.textChanged.connect(self.set_edited)
 
         self.window.setWindowModified(False)
-
-        logging.debug("Showing main window")
-        self.window.show()
-
-        sys.exit(self.app.exec_())
 
     def update(self):
         """Update all GUI widgets with values from PlayerSave instance."""

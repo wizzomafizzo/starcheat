@@ -9,6 +9,7 @@
 A progress indicator would be nice but it requires splitting up init_db and
 reimplementing it in gui_utils. This would be nice for the initial setup too.
 **** TODO Validate options
+**** TODO Clear logs, show logs size
 **** TODO Move tools menu options to dialog
 ***** TODO Implement save backups
 This would basically save a revision of the save file every time it is updated.
@@ -37,14 +38,12 @@ this one is a bit complicated and pretty minor considering you can spawn chips
 *** TODO Manage pets
 Pets are just inventory items atm. No need.
 *** TODO Better crash dialog
-I'm not sure this is possible anymore. Qt dialogs must have a parent and I can't
-work out a way to pass this to the exception hook.
 **** TODO Crash dialog UI
 Should have:
 - Save log button
 - Text edit box containing traceback (so you can copy paste)
 - Continue/restart buttons?
-**** TODO Add to sys exception hook
+**** DONE Add to sys exception hook
 *** DONE About dialog
 Just a simple one w/ icon, app name, license and link to github/mod db
 *** DONE Access item browser in tools menu

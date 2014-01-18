@@ -18,6 +18,7 @@ def save_modified_dialog():
     dialog.setInformativeText("Do you want to save your changes?")
     dialog.setStandardButtons(QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard)
     dialog.setDefaultButton(QMessageBox.Save)
+    dialog.setIcon(QMessageBox.Question)
     return dialog.exec()
 
 def new_setup_dialog():
