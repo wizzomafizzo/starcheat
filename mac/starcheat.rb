@@ -69,7 +69,7 @@ class Starcheat < Formula
         # Creates and uploades the archive
         system 'tar', 'czf', 'starcheat.tar.gz', 'StarCheat.app'
         # why using octokit when you habe curl and regex ;-) (creates a new release from the current commit and extracts the upload url from it)
-        `curl -H "Authorization: token #{HOMEBREW_GITHUB_API_TOKEN}" -H "Accept: application/json" -d '{"tag_name":"#{ENV['TRAVIS_COMMIT'][0..6]}","target_commitish":"#{ENV['TRAVIS_COMMIT']}","name":"starcheat (#{ENV['TRAVIS_COMMIT'][0..6]})","prerelease":true}' https://api.github.com/repos/chrmoritz/starcheat/releases` =~ /.*"upload_url":\s*"([\w\.\:\/]*){\?name}.*/m
+        `curl -H "Authorization: token #{HOMEBREW_GITHUB_API_TOKEN}" -H "Accept: application/json" -d '{"tag_name":"#{ENV['TRAVIS_COMMIT'][0..6]}","target_commitish":"#{ENV['TRAVIS_COMMIT']}","name":"starcheat (#{ENV['TRAVIS_COMMIT'][0..6]})","prerelease":true}' https://api.github.com/repos/wizzomafizzo/starcheat/releases` =~ /.*"upload_url":\s*"([\w\.\:\/]*){\?name}.*/m
         `curl -H "Authorization: token #{HOMEBREW_GITHUB_API_TOKEN}" -H "Accept: application/json" -H "Content-Type: application/gzip" --data-binary @starcheat.tar.gz #{$1}?name=starcheat-#{ENV['TRAVIS_COMMIT'][0..6]}.tar.gz` unless $1.nil?
         raise "Skipping uploading build because tag is already in use" if $1.nil?
       end if build.with? 'dist'

@@ -1,0 +1,10 @@
+language: objective-c
+before_install:
+  - brew update
+env:
+  secure: "TRQYNASiBc+mf49oNxfL+DIADIgmOk41JGCZ0xFS0YdjMxF1FHz3mLJgjGCqxnaPZ7Xv2POg8zBdlRKPwnqueJT2QtK/PXI8I90/AkLmK2LAbxcAW4enyhNGqREW5ir+avMdq831iGHNsL25JhdIjyVTh3wD1fLybwKXkIav7lc="
+install:
+  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then brew install python3; fi
+  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then brew install https://raw.github.com/wizzomafizzo/starcheat/master/mac/pyqt5.rb; fi
+script:
+  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then brew install -v https://raw.github.com/wizzomafizzo/starcheat/master/mac/starcheat.rb --with-dist; fi
