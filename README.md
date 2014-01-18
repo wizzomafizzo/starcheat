@@ -35,7 +35,7 @@ These are builds of the latest development version. They should work fine, but m
 * Open a player
 
 ### Mac
-[Download](https://github.com/chrmoritz/starcheat/releases) (get the latest release)
+[Download](https://github.com/wizzomafizzo/starcheat/releases) (get the latest release)
 
 ## Build Instructions
 Here is how to build starcheat from source. Make sure everything in the dependencies section is installed before you do a build
