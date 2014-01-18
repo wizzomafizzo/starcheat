@@ -1,5 +1,5 @@
 * starcheat
-** [2/14] Improvements
+** [3/14] Improvements
 *** TODO Manage appearance
 **** TODO Create basic dialog to edit values directly
 **** TODO New system for rendering players
@@ -26,8 +26,6 @@ This needs to be:
 - 32x32 and 64x64 for regular icons (and maybe 16?)
 - vector image
   maybe... i can't really remember how mac icons work. is it svg?
-*** TODO About dialog
-Just a simple one w/ icon, app name, license and link to github/mod db
 *** TODO Update windows standalone build
 Change the folder name from dist to starcheat and I think there is an option in
 cx_freeze to pack all the libraries
@@ -47,6 +45,8 @@ Should have:
 - Text edit box containing traceback (so you can copy paste)
 - Continue/restart buttons?
 **** TODO Add to sys exception hook
+*** DONE About dialog
+Just a simple one w/ icon, app name, license and link to github/mod db
 *** DONE Access item browser in tools menu
 *** DONE Use starbound top level folder
 Will make it easier to do auto detection and less things for users to configure
