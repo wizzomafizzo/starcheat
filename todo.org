@@ -7,6 +7,11 @@
 **** TODO Auto rebuild db if folder was changed
 **** TODO Validate options
 **** TODO Move tools menu options to dialog
+***** TODO Implement save backups
+This would basically save a revision of the save file every time it is updated.
+Perhaps later there could also be a dialog to rollback changes.
+***** TODO Update timestamps
+Don't bother until the next patch. Location of it may change.
 *** TODO Unique item generation
 Depends on having a way to convert from asset to item.
 *** TODO Access item browser in tools menu
@@ -40,8 +45,7 @@ Will make it easier to do auto detection and less things for users to configure
 - Update config
 - Update options dialog
 - Change first setup so it just shows a file open dialog
-** [2/6] Bugs
-*** TODO a 0 items database is obviously broken. add a check for this
+** [3/6] Bugs
 *** TODO can't drag between item tables
 Need to replace the current widget with table views.
 *** TODO some items are missing
@@ -55,6 +59,7 @@ Need to replace the current widget with table views.
 ***** TODO spinbox arrows cut off
 **** [0/1] Windows
 ***** TODO item tables cut off/aligningment
+*** DONE a 0 items database is obviously broken. add a check for this
 *** DONE missing support for modded races
 *** DONE troubleshooting section is still not friendly enough
 Hopefuly that's enough.
