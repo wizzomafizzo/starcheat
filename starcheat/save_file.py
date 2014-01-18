@@ -436,7 +436,7 @@ class PlayerSave():
         header_data = header + version + global_vlq
         file_data = header_data + player_data
 
-        if filename:
+        if filename != None:
             save_file = open(filename, "wb")
             save_file.write(file_data)
             save_file.close()

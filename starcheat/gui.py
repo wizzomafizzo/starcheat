@@ -16,8 +16,8 @@ from gui_itemedit import ItemEdit
 from gui_blueprints import BlueprintLib
 from gui_itembrowser import ItemBrowser
 
-# TODO: move to gui_utils?
 def save_modified_dialog():
+    """Display a prompt asking user what to do about a modified file. Return button clicked."""
     dialog = QMessageBox()
     dialog.setText("This player has been modified.")
     dialog.setInformativeText("Do you want to save your changes?")
@@ -77,6 +77,7 @@ class MainWindow():
         self.ui.actionQuit.triggered.connect(self.app.closeAllWindows)
         self.ui.actionOptions.triggered.connect(self.new_options_dialog)
         self.ui.actionItemBrowser.triggered.connect(self.new_item_browser)
+        self.ui.actionExport.triggered.connect(self.export_save)
 
         # launch open file dialog
         # we want this after the races are populated but before the slider setup
@@ -386,9 +387,16 @@ class MainWindow():
             return
 
         self.update()
-        self.window.setWindowTitle("starcheat - " + os.path.basename(self.player.filename) + "[*]")
+        self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
         self.window.setWindowModified(False)
+
+    def export_save(self):
+        filename = QFileDialog.getSaveFileName(self.window,
+                                               "Export Save File As")
+        if filename[0] != "":
+            self.player.export_save(filename[0])
+            self.ui.statusbar.showMessage("Exported save file to " + filename[0], 3000)
 
     def get_bag(self, name):
         """Return the entire contents of a given non-equipment bag as raw values."""

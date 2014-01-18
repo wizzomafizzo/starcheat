@@ -1760,9 +1760,9 @@ border-radius: 4px;
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionOptions"/>
-    <addaction name="separator"/>
     <addaction name="actionItemBrowser"/>
+    <addaction name="separator"/>
+    <addaction name="actionOptions"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
@@ -1785,7 +1785,7 @@ border-radius: 4px;
     <string>Save</string>
    </property>
    <property name="statusTip">
-    <string>Save all changes to open player save file</string>
+    <string>Save all changes to current player save file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -1793,10 +1793,13 @@ border-radius: 4px;
   </action>
   <action name="actionExport">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Export...</string>
+   </property>
+   <property name="statusTip">
+    <string>Export a copy of the current save file</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -1805,6 +1808,9 @@ border-radius: 4px;
    </property>
    <property name="text">
     <string>About</string>
+   </property>
+   <property name="statusTip">
+    <string>About starcheat</string>
    </property>
   </action>
   <action name="actionQuit">
@@ -1853,7 +1859,7 @@ border-radius: 4px;
     <string>Reload</string>
    </property>
    <property name="statusTip">
-    <string>Reload the currently open player save file</string>
+    <string>Reload the current player save file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -1887,6 +1893,9 @@ border-radius: 4px;
    <property name="text">
     <string>Options</string>
    </property>
+   <property name="statusTip">
+    <string>Configure starcheat options</string>
+   </property>
   </action>
   <action name="actionTimestamps">
    <property name="checkable">
@@ -1916,6 +1925,9 @@ border-radius: 4px;
    </property>
    <property name="text">
     <string>Item Browser</string>
+   </property>
+   <property name="statusTip">
+    <string>Browse indexed Starbound items</string>
    </property>
   </action>
   <action name="actionStarcheat_Help">

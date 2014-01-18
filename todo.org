@@ -1,5 +1,5 @@
 * starcheat
-** [1/14] Improvements
+** [2/14] Improvements
 *** TODO Manage appearance
 **** TODO Create basic dialog to edit values directly
 **** TODO New system for rendering players
@@ -17,7 +17,6 @@ Perhaps later there could also be a dialog to rollback changes.
 Don't bother until the next patch. Location of it may change.
 *** TODO Unique item generation
 Depends on having a way to convert from asset to item.
-*** TODO Access item browser in tools menu
 *** TODO Improve variant edit ui
 This should be a tree model view. I think before this happens there needs to be
 a way to convert between the save file variants to json/plain python types
@@ -48,6 +47,7 @@ Should have:
 - Text edit box containing traceback (so you can copy paste)
 - Continue/restart buttons?
 **** TODO Add to sys exception hook
+*** DONE Access item browser in tools menu
 *** DONE Use starbound top level folder
 Will make it easier to do auto detection and less things for users to configure
 - Update config
