@@ -1,5 +1,5 @@
 * starcheat
-** [3/14] Improvements
+** [3/15] Improvements
 *** TODO Manage appearance
 **** TODO Create basic dialog to edit values directly
 **** TODO New system for rendering players
@@ -21,6 +21,8 @@ Depends on having a way to convert from asset to item.
 *** TODO Improve variant edit ui
 This should be a tree model view. I think before this happens there needs to be
 a way to convert between the save file variants to json/plain python types
+*** TODO Inventory management
+Maybe like inventory sorting? Store in ship?
 *** TODO Application icon
 This needs to be:
 - 96x96 for the mod db

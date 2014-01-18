@@ -43,9 +43,6 @@
        <height>32</height>
       </size>
      </property>
-     <property name="currentRow">
-      <number>0</number>
-     </property>
      <property name="sortingEnabled">
       <bool>true</bool>
      </property>
@@ -87,7 +84,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Open</set>
      </property>
     </widget>
    </item>

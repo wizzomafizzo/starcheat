@@ -131,6 +131,7 @@ class CharacterSelectDialog():
         self.ui.setupUi(self.dialog)
 
         self.player_folder = Config().read("player_folder")
+        self.selected = None
 
         self.dialog.rejected.connect(self.dialog.close)
         self.dialog.accepted.connect(self.accept)

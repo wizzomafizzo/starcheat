@@ -50,7 +50,7 @@ class MainWindow():
         new_setup_dialog()
 
         self.filename = None
-        logging.debug("Loading assets")
+        logging.debug("Loading items")
         self.items = assets.Items()
 
         # atm we only support one of each dialog at a time, don't think this
@@ -73,11 +73,10 @@ class MainWindow():
         # launch open file dialog
         # we want this after the races are populated but before the slider setup
         self.player = None
-        logging.debug("Open file dialog")
-        self.open_file()
         # we *need* at least an initial save file
-        # TODO: maybe add critical dialog here
-        if self.player == None:
+        logging.debug("Open file dialog")
+        open_player = self.open_file()
+        if not open_player:
             logging.warning("No player file selected")
             return
 
@@ -111,6 +110,10 @@ class MainWindow():
         self.ui.description.textChanged.connect(self.set_edited)
 
         self.window.setWindowModified(False)
+
+        logging.debug("Showing main window")
+        self.window.show()
+        sys.exit(self.app.exec_())
 
     def update(self):
         """Update all GUI widgets with values from PlayerSave instance."""
@@ -312,24 +315,24 @@ class MainWindow():
         if self.window.isWindowModified():
             button = save_modified_dialog()
             if button == QMessageBox.Cancel:
-                return
+                return False
             elif button == QMessageBox.Save:
                 self.save()
 
         character_select = CharacterSelectDialog(self.window)
         character_select.show()
 
-        try:
+        if character_select.selected == None:
+            logging.warning("No player selected")
+            return False
+        else:
             self.player = character_select.selected
-        except AttributeError:
-            # didn't pick anything... i think?
-            logging.exception("No player selected")
-            return
 
         self.update()
         self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
         self.window.setWindowModified(False)
+        return True
 
     def export_save(self):
         filename = QFileDialog.getSaveFileName(self.window,

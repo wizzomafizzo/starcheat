@@ -72,7 +72,10 @@ class Config():
     def detect_starbound_folder(self):
         # TODO: add common locations for all OSs
         known_locations = [
-            "/opt/starbound"
+            'C:\Program Files\Steam\SteamApps\common\Starbound',
+            'C:\Program Files (x86)\Steam\SteamApps\common\Starbound',
+            os.path.expanduser("~/Library/Application Support/Steam/SteamApps/common/Starbound"),
+            os.path.expanduser("~/.steam/root/SteamApps/common/Starbound")
         ]
 
         for filename in known_locations:

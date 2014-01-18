@@ -17,8 +17,6 @@ def main():
     logging.basicConfig(filename=log_file, level=logging.DEBUG,
                         format='%(asctime)s: %(message)s')
 
-    main_window = gui.MainWindow()
-
     def crash_gui(error):
         dialog = QMessageBox()
         dialog.setIcon(QMessageBox.Critical)
@@ -46,9 +44,7 @@ def main():
     sys.excepthook = exception_handler
 
     logging.info('starcheat init')
-    logging.debug("Showing main window")
-    main_window.window.show()
-    sys.exit(main_window.app.exec_())
+    gui.MainWindow()
 
 if __name__ == "__main__":
     main()
