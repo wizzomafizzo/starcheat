@@ -2,7 +2,7 @@
 Utility dialogs for starcheat itself
 """
 
-import os
+import os, sys
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QListWidgetItem
 from PyQt5 import QtGui
 
@@ -35,8 +35,7 @@ def new_setup_dialog():
         dialog.setInformativeText("Please select it in the next dialog.")
         dialog.setIcon(QMessageBox.Warning)
         dialog.exec()
-        starbound_folder = QFileDialog.getExistingDirectory(self.window,
-                                                            "Select Starbound Folder")
+        starbound_folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
     else:
         dialog = QMessageBox()
         dialog.setText("Detected the following folder as the location of Starbound. Is this correct?")
@@ -45,8 +44,7 @@ def new_setup_dialog():
         dialog.setIcon(QMessageBox.Question)
         answer = dialog.exec()
         if answer == QMessageBox.No:
-            starbound_folder = QFileDialog.getExistingDirectory(self.window,
-                                                                "Select Starbound Folder")
+            starbound_folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
     if starbound_folder == "":
         dialog = QMessageBox()
         dialog.setIcon(QMessageBox.Critical)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import logging, os, datetime, sys, traceback
-from PyQt5.QtWidgets import QMessageBox, QPushButton
+from PyQt5.QtWidgets import QMessageBox
 
 import config, gui
 

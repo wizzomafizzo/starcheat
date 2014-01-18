@@ -2,14 +2,12 @@
 Main application window for starcheat GUI
 """
 
-import sys, os
+import sys, logging
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
-from config import Config
-import logging, save_file, assets, qt_mainwindow
-
+import save_file, assets, qt_mainwindow
 from gui_common import ItemWidget, empty_slot, preview_icon
 from gui_utils import CharacterSelectDialog, OptionsDialog, AboutDialog
 from gui_utils import save_modified_dialog, new_setup_dialog
