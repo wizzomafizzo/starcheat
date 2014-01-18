@@ -77,7 +77,9 @@ Install [starcheat-git](https://aur.archlinux.org/packages/starcheat-git/) from 
 
 ### Mac
 - Install [homebrew](http://brew.sh/)
-- ```$ brew install https://gist.github.com/chrmoritz/8177384/raw/starcheat.rb; brew linkapps```
+- ```$ brew install python3```
+- ```$ brew install https://raw.github.com/wizzomafizzo/starcheat/master/mac/starcheat.rb``` (optionally pass ```--without-app``` (create no .app) or ```--without-binary``` (creates no binary linked into your prefix) )
+- ```brew linkapps```(symlinks the .app into your Applications folder)
 
 ## Troubleshooting
 Stuff you can do when starcheat stops working. Clearing local settings and checking you did the setup correctly is always a good first step.
