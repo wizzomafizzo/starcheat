@@ -2,18 +2,21 @@
 Qt item browser dialog
 """
 
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 from PyQt5.QtGui import QPixmap
 
 import assets, qt_itembrowser
 from gui_common import inv_icon
 
 class ItemBrowser():
-    def __init__(self, parent):
+    def __init__(self, parent, just_browse=False):
         """Dialog for viewing/searching indexed items and returning selection."""
         self.dialog = QDialog(parent)
         self.ui = qt_itembrowser.Ui_Dialog()
         self.ui.setupUi(self.dialog)
+
+        if just_browse:
+            self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Close)
 
         self.item_browse_select = None
         self.items = assets.Items()

@@ -1762,7 +1762,7 @@ border-radius: 4px;
     </property>
     <addaction name="actionOptions"/>
     <addaction name="separator"/>
-    <addaction name="actionItem_Browser_2"/>
+    <addaction name="actionItemBrowser"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
@@ -1910,9 +1910,9 @@ border-radius: 4px;
     <string>Make Backups</string>
    </property>
   </action>
-  <action name="actionItem_Browser_2">
+  <action name="actionItemBrowser">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Item Browser</string>

@@ -14,6 +14,7 @@ from gui_common import ItemWidget, empty_slot, preview_icon
 from gui_utils import CharacterSelectDialog, OptionsDialog
 from gui_itemedit import ItemEdit
 from gui_blueprints import BlueprintLib
+from gui_itembrowser import ItemBrowser
 
 # TODO: move to gui_utils?
 def save_modified_dialog():
@@ -64,8 +65,7 @@ class MainWindow():
 
         # atm we only support one of each dialog at a time, don't think this
         # will be a problem tho
-        # TODO: some really weird behaviour here w/ blueprint
-        #self.item_browser = None
+        self.item_browser = None
         self.item_edit = None
         self.blueprint_lib = None
         self.options_dialog = None
@@ -76,6 +76,7 @@ class MainWindow():
         self.ui.actionOpen.triggered.connect(self.open_file)
         self.ui.actionQuit.triggered.connect(self.app.closeAllWindows)
         self.ui.actionOptions.triggered.connect(self.new_options_dialog)
+        self.ui.actionItemBrowser.triggered.connect(self.new_item_browser)
 
         # launch open file dialog
         # we want this after the races are populated but before the slider setup
@@ -287,6 +288,10 @@ class MainWindow():
         self.blueprint_lib.ui.buttonBox.accepted.connect(update_blueprints)
         self.blueprint_lib.ui.buttonBox.rejected.connect(self.blueprint_lib.dialog.close)
         self.blueprint_lib.dialog.show()
+
+    def new_item_browser(self):
+        self.item_browser = ItemBrowser(self.window, True)
+        self.item_browser.dialog.show()
 
     # TODO: move to gui_utils
     def new_setup(self):
