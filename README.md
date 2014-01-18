@@ -2,12 +2,43 @@
 
 starcheat is a Starbound player save editor, you can get free pixels with this! (omg)
 
-_**Windows and Mac downloads** are in the first post of the [discussion thread](http://community.playstarbound.com/index.php?threads/starcheat-player-save-editor-and-python-library.60174/)._
-
 ![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/screen.png)
 
+## Table of Contents
+
+- [Downloads](#downloads)
+	- [Windows](#windows)
+	- [Mac](#mac)
+- [Build Instructions](#build-instructions)
+	- [Dependencies](#dependencies)
+	- [Windows](#windows-1)
+	- [Linux](#linux)
+	- [Mac](#mac-1)
+- [Troubleshooting](#troubleshooting)
+	- [Reset all settings](#reset-all-settings)
+	- [How to get logs](#how-to-get-logs)
+
+## Downloads
+These are builds of the latest development version. They should work fine, but may be unstable. **Don't forget to back up your save files before using them.**
+
+### Windows
+[Download (64bit)](http://callan.io/builds/starcheat-latest.zip)
+
+[Download (32bit)](http://mcsi.mp/starcheat/) (get the latest file)
+
+#### How to run
+* Download starcheat for your version of Windows (32 or 64bit)
+* Extract all files somewhere
+* Go into the ```dist/``` folder
+* Run ```starcheat.exe```
+* Follow the prompts to configure starcheat (only happens once)
+* Open a player
+
+### Mac
+[Download](https://github.com/chrmoritz/starcheat/releases) (get the latest release)
+
 ## Build Instructions
-Here is how to install it. Make sure everything in the dependencies section is installed before you do a build
+Here is how to build starcheat from source. Make sure everything in the dependencies section is installed before you do a build
 
 ### Dependencies
 - [Python 3](http://www.python.org/getit/)
