@@ -566,8 +566,8 @@
    <widget class="QTableWidget" name="back">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>70</y>
+      <x>320</x>
+      <y>60</y>
       <width>78</width>
       <height>40</height>
      </rect>

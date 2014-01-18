@@ -43,6 +43,7 @@ Should have:
 - Save log button
 - Text edit box containing traceback (so you can copy paste)
 - Continue/restart buttons?
+- More info in the traceback (config stuff, platform)
 **** DONE Add to sys exception hook
 *** DONE About dialog
 Just a simple one w/ icon, app name, license and link to github/mod db

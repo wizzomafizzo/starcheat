@@ -36,7 +36,7 @@ def new_setup_dialog():
         dialog.setIcon(QMessageBox.Warning)
         dialog.exec()
         starbound_folder = QFileDialog.getExistingDirectory(self.window,
-                                                            "Select Starbound folder...")
+                                                            "Select Starbound Folder")
     else:
         dialog = QMessageBox()
         dialog.setText("Detected the following folder as the location of Starbound. Is this correct?")
@@ -46,7 +46,7 @@ def new_setup_dialog():
         answer = dialog.exec()
         if answer == QMessageBox.No:
             starbound_folder = QFileDialog.getExistingDirectory(self.window,
-                                                                "Select Starbound folder...")
+                                                                "Select Starbound Folder")
     if starbound_folder == "":
         dialog = QMessageBox()
         dialog.setIcon(QMessageBox.Critical)

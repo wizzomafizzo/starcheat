@@ -77,7 +77,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Select a player</string>
+      <string>Select a player:</string>
      </property>
     </widget>
    </item>
