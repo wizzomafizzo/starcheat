@@ -1,10 +1,13 @@
 * starcheat
-** [1/12] Improvements
+** [1/14] Improvements
 *** TODO Manage appearance
 **** TODO Create basic dialog to edit values directly
 **** TODO New system for rendering players
 *** TODO Options dialog
 **** TODO Auto rebuild db if folder was changed
+**** TODO Rebuild DB feedback
+A progress indicator would be nice but it requires splitting up init_db and
+reimplementing it in gui_utils. This would be nice for the initial setup too.
 **** TODO Validate options
 **** TODO Move tools menu options to dialog
 ***** TODO Implement save backups
@@ -18,19 +21,24 @@ Depends on having a way to convert from asset to item.
 *** TODO Improve variant edit ui
 This should be a tree model view. I think before this happens there needs to be
 a way to convert between the save file variants to json/plain python types
-*** TODO Unit tests
 *** TODO Application icon
 This needs to be:
 - 96x96 for the mod db
 - 32x32 and 64x64 for regular icons (and maybe 16?)
 - vector image
   maybe... i can't really remember how mac icons work. is it svg?
+*** TODO About dialog
+Just a simple one w/ icon, app name, license and link to github/mod db
+*** TODO Update windows standalone build
+Change the folder name from dist to starcheat and I think there is an option in
+cx_freeze to pack all the libraries
 *** TODO Remove config and logging modules from assets.py
 I want this to be a relatively portable assets library
-*** TODO Manage pets
-Is this possible? I don't see it in the .player file.
+*** TODO Unit tests
 *** TODO Manage techs
 this one is a bit complicated and pretty minor considering you can spawn chips
+*** TODO Manage pets
+Pets are just inventory items atm. No need.
 *** TODO Better crash dialog
 I'm not sure this is possible anymore. Qt dialogs must have a parent and I can't
 work out a way to pass this to the exception hook.

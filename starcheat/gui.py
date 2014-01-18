@@ -15,11 +15,41 @@ from gui_utils import CharacterSelectDialog, OptionsDialog
 from gui_itemedit import ItemEdit
 from gui_blueprints import BlueprintLib
 
+# TODO: move to gui_utils?
+def save_modified_dialog():
+    dialog = QMessageBox()
+    dialog.setText("This player has been modified.")
+    dialog.setInformativeText("Do you want to save your changes?")
+    dialog.setStandardButtons(QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard)
+    dialog.setDefaultButton(QMessageBox.Save)
+    return dialog.exec()
+
+# TODO: had to make this so i could override closeEvent properly
+# not sure if i should move everything here or not
+class StarcheatMainWindow(QMainWindow):
+    def __init__(self, parent):
+        super(QMainWindow, self).__init__()
+        self.parent = parent
+
+    def closeEvent(self, event):
+        if not self.isWindowModified():
+            event.accept()
+            return
+
+        button = save_modified_dialog()
+        if button == QMessageBox.Save:
+            self.parent.save()
+            event.accept()
+        elif button == QMessageBox.Cancel:
+            event.ignore()
+        elif button == QMessageBox.Discard:
+            event.accept()
+
 class MainWindow():
     def __init__(self):
         """Display the main starcheat window."""
         self.app = QApplication(sys.argv)
-        self.window = QMainWindow()
+        self.window = StarcheatMainWindow(self)
         self.ui = qt_mainwindow.Ui_MainWindow()
         self.ui.setupUi(self.window)
 
@@ -76,13 +106,19 @@ class MainWindow():
             getattr(self.ui, b).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
 
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
+
+        self.ui.name.setFocus()
+        self.ui.name.textChanged.connect(self.set_edited)
         self.ui.race.currentTextChanged.connect(self.update_player_preview)
         self.ui.male.clicked.connect(self.update_player_preview)
         self.ui.female.clicked.connect(self.update_player_preview)
-        self.ui.name.setFocus()
+        self.ui.description.textChanged.connect(self.set_edited)
+
+        self.window.setWindowModified(False)
 
         logging.debug("Showing main window")
         self.window.show()
+
         sys.exit(self.app.exec_())
 
     def update(self):
@@ -207,6 +243,7 @@ class MainWindow():
         logging.info("Writing file to disk")
         self.player.export_save(self.player.filename)
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)
+        self.window.setWindowModified(False)
 
     def new_item_edit(self, bag):
         """Display a new item edit dialog using the select cell in a given bag."""
@@ -219,14 +256,19 @@ class MainWindow():
             logging.debug("Writing changes to slot")
             new_slot = item_edit.get_item()
             bag.setItem(row, column, new_slot)
+            self.set_edited()
 
         def trash_slot():
             logging.debug("Trashed item")
             bag.setItem(row, column, empty_slot())
             item_edit.dialog.close()
+            self.set_edited()
 
         item_edit.dialog.accepted.connect(update_slot)
         item_edit.ui.trash_button.clicked.connect(trash_slot)
+
+    def set_edited(self):
+        self.window.setWindowModified(True)
 
     def new_blueprint_edit(self):
         logging.debug("New blueprint dialog")
@@ -238,6 +280,7 @@ class MainWindow():
             logging.debug("Writing blueprints")
             self.player.set_blueprints(self.blueprint_lib.get_known_list())
             self.blueprint_lib.dialog.close()
+            self.set_edited()
 
         # TODO: find out why this wasn't working since the grid update. what
         # makes a buttonBox "automatic" when it's created originally in designer?
@@ -316,9 +359,17 @@ class MainWindow():
         self.player = save_file.PlayerSave(self.player.filename)
         self.update()
         self.ui.statusbar.showMessage("Reloaded " + self.player.filename, 3000)
+        self.window.setWindowModified(False)
 
     def open_file(self):
         """Display open file dialog and load selected save."""
+        if self.window.isWindowModified():
+            button = save_modified_dialog()
+            if button == QMessageBox.Cancel:
+                return
+            elif button == QMessageBox.Save:
+                self.save()
+
         character_select = CharacterSelectDialog(self.window)
         character_select.show()
 
@@ -330,8 +381,9 @@ class MainWindow():
             return
 
         self.update()
-        self.window.setWindowTitle("starcheat - " + os.path.basename(self.player.filename))
+        self.window.setWindowTitle("starcheat - " + os.path.basename(self.player.filename) + "[*]")
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
+        self.window.setWindowModified(False)
 
     def get_bag(self, name):
         """Return the entire contents of a given non-equipment bag as raw values."""
@@ -400,6 +452,7 @@ class MainWindow():
             gender = "female"
         image = preview_icon(self.ui.race.currentText(), gender)
         self.ui.player_preview.setPixmap(image.scaled(64, 64))
+        self.set_edited()
 
     # these are used for connecting the item edit dialog to bag tables
     def new_main_bag_item_edit(self):
@@ -423,15 +476,20 @@ class MainWindow():
     def update_energy(self):
         self.ui.energy.setMaximum(self.ui.max_energy.value())
         self.ui.energy_val.setText(str(self.ui.energy.value()) + " /")
+        self.set_edited()
     def update_health(self):
         self.ui.health.setMaximum(self.ui.max_health.value())
         self.ui.health_val.setText(str(self.ui.health.value()) + " /")
+        self.set_edited()
     def update_food(self):
         self.ui.food.setMaximum(self.ui.max_food.value())
         self.ui.food_val.setText(str(self.ui.food.value()) + " /")
+        self.set_edited()
     def update_warmth(self):
         self.ui.warmth.setMaximum(self.ui.max_warmth.value())
         self.ui.warmth_val.setText(str(self.ui.warmth.value()) + " /")
+        self.set_edited()
     def update_breath(self):
         self.ui.breath.setMaximum(self.ui.max_breath.value())
         self.ui.breath_val.setText(str(self.ui.breath.value()) + " /")
+        self.set_edited()
