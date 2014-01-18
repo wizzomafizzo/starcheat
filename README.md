@@ -4,6 +4,20 @@ starcheat is a Starbound player save editor, you can get free pixels with this! 
 
 ![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/screen.png)
 
+## Table of Contents
+
+- [Downloads](#downloads)
+	- [Windows](#windows)
+	- [Mac](#mac)
+- [Build Instructions](#build-instructions)
+	- [Dependencies](#dependencies)
+	- [Windows](#windows-1)
+	- [Linux](#linux)
+	- [Mac](#mac-1)
+- [Troubleshooting](#troubleshooting)
+	- [Reset all settings](#reset-all-settings)
+	- [How to get logs](#how-to-get-logs)
+
 ## Downloads
 These are builds of the latest development version. They should work fine, but may be unstable. **Don't forget to back up your save files before using them.**
 
