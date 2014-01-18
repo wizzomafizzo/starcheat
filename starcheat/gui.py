@@ -11,19 +11,11 @@ from config import Config
 import logging, save_file, assets, qt_mainwindow
 
 from gui_common import ItemWidget, empty_slot, preview_icon
-from gui_utils import CharacterSelectDialog, OptionsDialog
+from gui_utils import CharacterSelectDialog, OptionsDialog, AboutDialog
+from gui_utils import save_modified_dialog, new_setup_dialog
 from gui_itemedit import ItemEdit
 from gui_blueprints import BlueprintLib
 from gui_itembrowser import ItemBrowser
-
-def save_modified_dialog():
-    """Display a prompt asking user what to do about a modified file. Return button clicked."""
-    dialog = QMessageBox()
-    dialog.setText("This player has been modified.")
-    dialog.setInformativeText("Do you want to save your changes?")
-    dialog.setStandardButtons(QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard)
-    dialog.setDefaultButton(QMessageBox.Save)
-    return dialog.exec()
 
 # TODO: had to make this so i could override closeEvent properly
 # not sure if i should move everything here or not
@@ -57,7 +49,7 @@ class MainWindow():
         logging.info("Main window init")
 
         # launch first setup if we need to
-        self.new_setup()
+        new_setup_dialog()
 
         self.filename = None
         logging.debug("Loading assets")
@@ -78,6 +70,7 @@ class MainWindow():
         self.ui.actionOptions.triggered.connect(self.new_options_dialog)
         self.ui.actionItemBrowser.triggered.connect(self.new_item_browser)
         self.ui.actionExport.triggered.connect(self.export_save)
+        self.ui.actionAbout.triggered.connect(self.new_about_dialog)
 
         # launch open file dialog
         # we want this after the races are populated but before the slider setup
@@ -294,59 +287,6 @@ class MainWindow():
         self.item_browser = ItemBrowser(self.window, True)
         self.item_browser.dialog.show()
 
-    # TODO: move to gui_utils
-    def new_setup(self):
-        """Run through an initial setup dialog for starcheat if it's required."""
-        if os.path.isfile(Config().ini_file):
-            return
-
-        logging.info("First setup dialog")
-
-        starbound_folder = Config().detect_starbound_folder()
-        if starbound_folder == "":
-            dialog = QMessageBox()
-            dialog.setText("Unable to detect the main Starbound folder.")
-            dialog.setInformativeText("Please select it in the next dialog.")
-            dialog.setIcon(QMessageBox.Warning)
-            dialog.exec()
-            starbound_folder = QFileDialog.getExistingDirectory(self.window,
-                                                                "Select Starbound folder...")
-        else:
-            dialog = QMessageBox()
-            dialog.setText("Detected the following folder as the location of Starbound. Is this correct?")
-            dialog.setInformativeText(starbound_folder)
-            dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
-            dialog.setIcon(QMessageBox.Question)
-            answer = dialog.exec()
-            if answer == QMessageBox.No:
-                starbound_folder = QFileDialog.getExistingDirectory(self.window,
-                                                                    "Select Starbound folder...")
-
-        if starbound_folder == "":
-            dialog = QMessageBox()
-            dialog.setIcon(QMessageBox.Critical)
-            dialog.setText("starcheat needs Starbound installed to work properly.")
-            dialog.exec()
-            sys.exit()
-
-        Config().create_config(starbound_folder)
-
-        dialog = QMessageBox()
-        dialog.setText("starcheat will now build a database of Starbound assets.")
-        dialog.setInformativeText("This can take a little while, please be patient.")
-        dialog.setIcon(QMessageBox.Information)
-        dialog.exec()
-
-        assets.AssetsDb()
-
-        total_items = assets.Items().get_item_total()
-        if total_items == 0:
-            dialog = QMessageBox()
-            dialog.setText("No assets were found. starcheat may not run correctly.")
-            dialog.setInformativeText("Check the assets location is correct in the Options dialog.")
-            dialog.setIcon(QMessageBox.Warning)
-            dialog.exec()
-
     def new_options_dialog(self):
         logging.debug("New options dialog")
         self.options_dialog = OptionsDialog(self.window)
@@ -358,6 +298,10 @@ class MainWindow():
 
         self.options_dialog.dialog.accepted.connect(write_options)
         self.options_dialog.dialog.exec()
+
+    def new_about_dialog(self):
+        self.about_dialog = AboutDialog(self.window)
+        self.about_dialog.dialog.exec()
 
     def reload(self):
         """Reload the currently open save file and update GUI values."""

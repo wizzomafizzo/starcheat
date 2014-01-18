@@ -1803,9 +1803,6 @@ border-radius: 4px;
    </property>
   </action>
   <action name="actionAbout">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>About</string>
    </property>

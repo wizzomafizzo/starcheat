@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Item Browser</string>
   </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">

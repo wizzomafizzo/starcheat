@@ -9,7 +9,73 @@ from PyQt5 import QtGui
 from config import Config
 from gui_common import preview_icon
 import save_file, assets, logging
-import qt_options, qt_openplayer
+import qt_options, qt_openplayer, qt_about
+
+def save_modified_dialog():
+    """Display a prompt asking user what to do about a modified file. Return button clicked."""
+    dialog = QMessageBox()
+    dialog.setText("This player has been modified.")
+    dialog.setInformativeText("Do you want to save your changes?")
+    dialog.setStandardButtons(QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard)
+    dialog.setDefaultButton(QMessageBox.Save)
+    return dialog.exec()
+
+def new_setup_dialog():
+    """Run through an initial setup dialog for starcheat if it's required."""
+    if os.path.isfile(Config().ini_file):
+        return
+
+    logging.info("First setup dialog")
+    starbound_folder = Config().detect_starbound_folder()
+
+    if starbound_folder == "":
+        dialog = QMessageBox()
+        dialog.setText("Unable to detect the main Starbound folder.")
+        dialog.setInformativeText("Please select it in the next dialog.")
+        dialog.setIcon(QMessageBox.Warning)
+        dialog.exec()
+        starbound_folder = QFileDialog.getExistingDirectory(self.window,
+                                                            "Select Starbound folder...")
+    else:
+        dialog = QMessageBox()
+        dialog.setText("Detected the following folder as the location of Starbound. Is this correct?")
+        dialog.setInformativeText(starbound_folder)
+        dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
+        dialog.setIcon(QMessageBox.Question)
+        answer = dialog.exec()
+        if answer == QMessageBox.No:
+            starbound_folder = QFileDialog.getExistingDirectory(self.window,
+                                                                "Select Starbound folder...")
+    if starbound_folder == "":
+        dialog = QMessageBox()
+        dialog.setIcon(QMessageBox.Critical)
+        dialog.setText("starcheat needs Starbound installed to work properly.")
+        dialog.exec()
+        sys.exit()
+
+    Config().create_config(starbound_folder)
+
+    dialog = QMessageBox()
+    dialog.setText("starcheat will now build a database of Starbound assets.")
+    dialog.setInformativeText("This can take a little while, please be patient.")
+    dialog.setIcon(QMessageBox.Information)
+    dialog.exec()
+
+    assets.AssetsDb()
+    total_items = assets.Items().get_item_total()
+
+    if total_items == 0:
+        dialog = QMessageBox()
+        dialog.setText("No assets were found. starcheat may not run correctly.")
+        dialog.setInformativeText("Check the assets location is correct in the Options dialog.")
+        dialog.setIcon(QMessageBox.Warning)
+        dialog.exec()
+
+class AboutDialog():
+    def __init__(self, parent):
+        self.dialog = QDialog(parent)
+        self.ui = qt_about.Ui_Dialog()
+        self.ui.setupUi(self.dialog)
 
 class OptionsDialog():
     def __init__(self, parent):
@@ -38,19 +104,19 @@ class OptionsDialog():
 
     def open_starbound(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
-                                                    "Select Starbound folder...",
+                                                    "Select Starbound Folder",
                                                     self.config.read("starbound_folder"))
         if filename != "": self.ui.starbound_folder.setText(filename)
 
     def open_assets(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
-                                                    "Select assets folder...",
+                                                    "Select Assets Folder",
                                                     self.config.read("assets_folder"))
         if filename != "": self.ui.assets_folder.setText(filename)
 
     def open_player(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
-                                                    "Select player save folder...",
+                                                    "Select Player Save Folder",
                                                     self.config.read("player_folder"))
         if filename != "": self.ui.player_folder.setText(filename)
 

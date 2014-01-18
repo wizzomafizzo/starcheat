@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Options</string>
   </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="2">
     <widget class="QToolButton" name="assets_folder_button">
