@@ -121,6 +121,7 @@ class Blueprints():
 
         index = self.file_index(os.path.join(assets_folder, "recipes"))
 
+        # TODO: use modinfo file to figure this out
         for mod in os.listdir(mods_folder):
             path = os.path.join(mods_folder, mod)
             if os.path.isdir(os.path.join(path, "assets", "recipes")):
@@ -136,7 +137,7 @@ class Blueprints():
             full_path = os.path.join(f[1], f[0])
 
             try:
-                info = parse_json(full_path)
+                info = load_asset_file(full_path)
             except ValueError:
                 continue
 
@@ -240,7 +241,7 @@ class Items():
             # load the asset's json file
             full_path = os.path.join(f[1], f[0])
             try:
-                info = parse_json(full_path)
+                info = load_asset_file(full_path)
             except ValueError:
                 continue
 
@@ -300,7 +301,7 @@ class Items():
         c = self.db.cursor()
         c.execute("select folder, filename from items where name = ?", (name,))
         meta = c.fetchone()
-        item = parse_json(os.path.join(meta[0], meta[1]))
+        item = load_asset_file(os.path.join(meta[0], meta[1]))
         return item, meta[0], meta[1]
 
     def get_categories(self):
@@ -421,7 +422,7 @@ class Species():
             path = os.path.realpath(os.path.join(f[1], ".."))
 
             try:
-                info = parse_json(full_path)
+                info = load_asset_file(full_path)
             except ValueError:
                 continue
 

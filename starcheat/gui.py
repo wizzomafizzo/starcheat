@@ -407,11 +407,17 @@ class MainWindow():
                 column = 0
 
     def update_player_preview(self):
+        race = self.ui.race.currentText()
+        if race == "":
+            # probably in the middle of an update/reload
+            return
+
         if self.ui.male.isChecked():
             gender = "male"
         else:
             gender = "female"
-        image = preview_icon(self.ui.race.currentText(), gender)
+
+        image = preview_icon(race, gender)
         self.ui.player_preview.setPixmap(image.scaled(64, 64))
         self.set_edited()
 
