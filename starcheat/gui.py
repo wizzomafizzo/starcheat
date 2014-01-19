@@ -14,6 +14,7 @@ from gui_utils import save_modified_dialog, new_setup_dialog
 from gui_itemedit import ItemEdit
 from gui_blueprints import BlueprintLib
 from gui_itembrowser import ItemBrowser
+from gui_appearance import Appearance
 
 # TODO: had to make this so i could override closeEvent properly
 # not sure if i should move everything here or not
@@ -61,6 +62,7 @@ class MainWindow():
         self.blueprint_lib = None
         self.options_dialog = None
         self.about_dialog = None
+        self.appearance_dialog = None
 
         # connect action menu
         self.ui.actionSave.triggered.connect(self.save)
@@ -100,6 +102,7 @@ class MainWindow():
             getattr(self.ui, b).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
 
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
+        self.ui.appearance_button.clicked.connect(self.new_appearance_dialog)
 
         self.ui.name.setFocus()
         self.ui.name.textChanged.connect(self.set_edited)
@@ -304,6 +307,10 @@ class MainWindow():
         """Launch a new about dialog."""
         self.about_dialog = AboutDialog(self.window)
         self.about_dialog.dialog.exec()
+
+    def new_appearance_dialog(self):
+        self.appearance_dialog = Appearance(self.window)
+        self.appearance_dialog.dialog.exec()
 
     def reload(self):
         """Reload the currently open save file and update GUI values."""
