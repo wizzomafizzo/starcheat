@@ -21,7 +21,7 @@ def inv_icon(item_name):
 
 def preview_icon(race, gender):
     """Return an icon image for player race/gender previews."""
-    icon_file = assets.Player().get_preview_icon(race, gender)
+    icon_file = assets.Species().get_preview_image(race, gender)
 
     if icon_file == None:
         return QPixmap()

@@ -48,6 +48,10 @@ def parse_json(filename):
         # Return json file
         return json.loads(content)
 
+def load_asset_file(filename):
+    # TODO: probably need to put deflate here after patch
+    return parse_json(filename)
+
 class AssetsDb():
     def __init__(self):
         """Master assets database."""
@@ -66,7 +70,7 @@ class AssetsDb():
 
         tables = ("create table items (name text, filename text, folder text, icon text, category text)",
                   "create table blueprints (name text, filename text, folder text, category text)",
-                  "create table species (name text)")
+                  "create table species (name text, filename text, folder text)")
         db = sqlite3.connect(self.assets_db)
         c = db.cursor()
 
@@ -128,30 +132,6 @@ class AssetsDb():
             c.execute("drop table %s" % t)
         self.db.commit()
         self.init_db()
-
-# TODO: probably remove this in favour of the species class
-class Player():
-    def __init__(self):
-        self.assets_folder = Config().read("assets_folder")
-
-    def get_preview_icon(self, race, gender):
-        icon_folder = os.path.join(self.assets_folder, "interface", "title")
-        race_map = {
-            "Apex": "sape",
-            "Avian": "avian",
-            "Floran": "plant",
-            "Glitch": "robot",
-            "Human": "human",
-            "Hylotl": "aquatic"
-        }
-
-        # TODO: support for modded race icons
-        try:
-            name = race_map[race] + gender + ".png"
-        except KeyError:
-            return ""
-
-        return os.path.join(icon_folder, name)
 
 class Blueprints():
     def __init__(self, folder=None):
@@ -416,9 +396,12 @@ class Species():
         # would be pretty easy to add a name generator
         # override folder
         if folder == None:
-            self.species_folder = os.path.join(Config().read("assets_folder"), "species")
+            assets_folder = Config().read("assets_folder")
+            self.species_folder = os.path.join(assets_folder, "species")
+            self.assets_folder = assets_folder
         else:
             self.species_folder = os.path.join(folder, "species")
+            self.assets_folder = folder
         self.db = AssetsDb().db
 
     def file_index(self):
@@ -438,6 +421,8 @@ class Species():
         logging.info("Started indexing species")
         for f in index:
             full_path = os.path.join(f[1], f[0])
+            filename = f[0]
+            path = f[1]
 
             try:
                 info = parse_json(full_path)
@@ -449,10 +434,10 @@ class Species():
             except (KeyError, IndexError):
                 logging.warning("Could not read species file %s" % (f[0]))
 
-            species.append((name,))
+            species.append((name, filename, path))
 
         c = self.db.cursor()
-        q = "insert into species values (?)"
+        q = "insert into species values (?, ?, ?)"
         c.executemany(q, species)
         self.db.commit()
         logging.info("Finished indexing species")
@@ -463,3 +448,21 @@ class Species():
         c.execute("select distinct name from species order by name")
         names = [x[0] for x in c.fetchall()]
         return [x[0].upper() + x[1:] for x in names]
+
+    def get_species(self, name):
+        """Look up a species from the index and return contents of species files."""
+        c = self.db.cursor()
+        c.execute("select * from species where name = ?", (name,))
+        species = c.fetchone()
+        species_data = load_asset_file(os.path.join(species[2], species[1]))
+        return species, species_data
+
+    def get_preview_image(self, name, gender):
+        species = self.get_species(name.lower())
+
+        if gender == "male":
+            gender_data = species[1]["genders"][0]
+        else:
+            gender_data = species[1]["genders"][1]
+
+        return os.path.join(self.assets_folder, gender_data["characterImage"][1:])

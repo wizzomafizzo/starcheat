@@ -18,6 +18,7 @@ from gui_itembrowser import ItemBrowser
 # TODO: had to make this so i could override closeEvent properly
 # not sure if i should move everything here or not
 class StarcheatMainWindow(QMainWindow):
+    """Overrides closeEvent on the main window to allow "want to save changes?" dialog"""
     def __init__(self, parent):
         super(QMainWindow, self).__init__()
         self.parent = parent
@@ -59,6 +60,7 @@ class MainWindow():
         self.item_edit = None
         self.blueprint_lib = None
         self.options_dialog = None
+        self.about_dialog = None
 
         # connect action menu
         self.ui.actionSave.triggered.connect(self.save)
@@ -265,9 +267,8 @@ class MainWindow():
         self.window.setWindowModified(True)
 
     def new_blueprint_edit(self):
+        """Launch a new blueprint management dialog."""
         logging.debug("New blueprint dialog")
-        # TODO: why does this only work with and instance var but the other
-        # ones don't...???
         self.blueprint_lib = BlueprintLib(self.window, self.player.get_blueprints())
 
         def update_blueprints():
@@ -276,17 +277,18 @@ class MainWindow():
             self.blueprint_lib.dialog.close()
             self.set_edited()
 
-        # TODO: find out why this wasn't working since the grid update. what
-        # makes a buttonBox "automatic" when it's created originally in designer?
+        # TODO: check the button roles on this. may not be set correctly
         self.blueprint_lib.ui.buttonBox.accepted.connect(update_blueprints)
         self.blueprint_lib.ui.buttonBox.rejected.connect(self.blueprint_lib.dialog.close)
         self.blueprint_lib.dialog.show()
 
     def new_item_browser(self):
+        """Launch a standalone item browser dialog that does write any changes."""
         self.item_browser = ItemBrowser(self.window, True)
         self.item_browser.dialog.show()
 
     def new_options_dialog(self):
+        """Launch a new options config dialog."""
         logging.debug("New options dialog")
         self.options_dialog = OptionsDialog(self.window)
 
@@ -299,6 +301,7 @@ class MainWindow():
         self.options_dialog.dialog.exec()
 
     def new_about_dialog(self):
+        """Launch a new about dialog."""
         self.about_dialog = AboutDialog(self.window)
         self.about_dialog.dialog.exec()
 
@@ -335,6 +338,8 @@ class MainWindow():
         return True
 
     def export_save(self):
+        """Save a copy of the current player file to another location.
+        Doesn't change the current filename."""
         filename = QFileDialog.getSaveFileName(self.window,
                                                "Export Save File As")
         if filename[0] != "":

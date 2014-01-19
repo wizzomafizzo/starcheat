@@ -1,5 +1,5 @@
 * starcheat
-** [3/15] Improvements
+** [3/16] Improvements
 *** TODO Manage appearance
 **** TODO Create basic dialog to edit values directly
 **** TODO New system for rendering players
@@ -23,6 +23,10 @@ This should be a tree model view. I think before this happens there needs to be
 a way to convert between the save file variants to json/plain python types
 *** TODO Inventory management
 Maybe like inventory sorting? Store in ship?
+*** TODO Manage players
+Stick a delete button on the open player dialog. Make it move the player file (and metadata)
+to the backup dir
+**** TODO Backup revision rollback
 *** TODO Application icon
 This needs to be:
 - 96x96 for the mod db
@@ -32,6 +36,7 @@ This needs to be:
 *** TODO Update windows standalone build
 Change the folder name from dist to starcheat and I think there is an option in
 cx_freeze to pack all the libraries. Hide the terminal window
+LICENSE.txt should be copied in as well
 *** TODO Remove config and logging modules from assets.py
 I want this to be a relatively portable assets library
 *** TODO Unit tests
