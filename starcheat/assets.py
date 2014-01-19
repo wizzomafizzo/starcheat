@@ -79,50 +79,14 @@ class AssetsDb():
         db.commit()
         db.close()
 
-        logging.info("Adding vanilla items")
+        logging.info("Adding items")
         Items().add_all_items()
-        try:
-            for mod in os.listdir(self.mods_folder):
-                folder = os.path.join(self.mods_folder, mod, "assets")
-                logging.info("Adding %s items" % (mod))
-                if os.path.isdir(folder):
-                    Items(folder).add_all_items()
-                else:
-                    folder = os.path.join(self.mods_folder, mod)
-                    Items(folder).add_all_items()
-        except FileNotFoundError:
-            logging.exception("Error loading modded items")
-            pass
 
-        logging.info("Adding vanilla blueprints")
+        logging.info("Adding blueprints")
         Blueprints().add_all_blueprints()
-        try:
-            for mod in os.listdir(self.mods_folder):
-                folder = os.path.join(self.mods_folder, mod, "assets")
-                logging.info("Adding %s blueprints" % (mod))
-                if os.path.isdir(folder):
-                    Blueprints(folder).add_all_blueprints()
-                else:
-                    folder = os.path.join(self.mods_folder, mod)
-                    Blueprints(folder).add_all_blueprints()
-        except FileNotFoundError:
-            logging.exception("Error loading modded blueprints")
-            pass
 
-        logging.info("Adding vanilla species")
+        logging.info("Adding species")
         Species().add_all_species()
-        try:
-            for mod in os.listdir(self.mods_folder):
-                folder = os.path.join(self.mods_folder, mod, "assets")
-                logging.info("Adding %s species" % (mod))
-                if os.path.isdir(folder):
-                    Species(folder).add_all_species()
-                else:
-                    folder = os.path.join(self.mods_folder, mod)
-                    Species(folder).add_all_species()
-        except FileNotFoundError:
-            logging.exception("Error loading modded species")
-            pass
 
     def rebuild_db(self):
         logging.info("Rebuilding assets db")
@@ -134,19 +98,16 @@ class AssetsDb():
         self.init_db()
 
 class Blueprints():
-    def __init__(self, folder=None):
+    def __init__(self):
         """Everything dealing with indexing and parsing blueprint asset files."""
         # override folder
-        if folder == None:
-            self.blueprints_folder = os.path.join(Config().read("assets_folder"), "recipes")
-        else:
-            self.blueprints_folder = os.path.join(folder, "recipes")
         self.db = AssetsDb().db
 
-    def file_index(self):
+    def file_index(self, folder):
         """Return a list of all valid blueprints files."""
         index = []
-        for root, dirs, files in os.walk(self.blueprints_folder):
+        logging.info("Indexing " + folder)
+        for root, dirs, files in os.walk(folder):
             for f in files:
                 if re.match(".*\.recipe", f) != None:
                     index.append((f, root))
@@ -155,7 +116,20 @@ class Blueprints():
 
     def add_all_blueprints(self):
         """Parse and insert every indexable blueprint asset."""
-        index = self.file_index()
+        mods_folder = os.path.normpath(os.path.join(Config().read("starbound_folder"), "mods"))
+        assets_folder = Config().read("assets_folder")
+
+        index = self.file_index(os.path.join(assets_folder, "recipes"))
+
+        for mod in os.listdir(mods_folder):
+            path = os.path.join(mods_folder, mod)
+            if os.path.isdir(os.path.join(path, "assets", "recipes")):
+                index += self.file_index(os.path.join(path, "assets", "recipes"))
+            elif os.path.isdir(os.path.join(path, "recipes")):
+                index += self.file_index(os.path.join(path, "recipes"))
+            else:
+                logging.debug("No blueprints in " + mod)
+
         blueprints = []
         logging.info("Started indexing blueprints")
         for f in index:
@@ -207,47 +181,60 @@ class Blueprints():
         return result
 
 class Items():
-    def __init__(self, folder=None):
+    def __init__(self):
         """Everything dealing with indexing and parsing item asset files."""
-        # folder override
-        if folder == None:
-            self.assets_folder = Config().read("assets_folder")
-        else:
-            self.assets_folder = folder
-
-        self.items_folder = os.path.join(self.assets_folder, "items")
-        self.objects_folder = os.path.join(self.assets_folder, "objects")
-        self.tech_folder = os.path.join(self.assets_folder, "tech")
-        self.ignore_items = ".*\.(png|config|frames|coinitem)"
         self.db = AssetsDb().db
+        self.starbound_folder = Config().read("starbound_folder")
 
-    def file_index(self):
+    def file_index(self, assets_folder):
         """Return a list of every indexable Starbound item asset."""
         index = []
+        logging.info("Indexing " + assets_folder)
+
+        items_folder = os.path.join(assets_folder, "items")
+        ignore_items = ".*\.(png|config|frames|coinitem)"
         # regular items
-        for root, dirs, files in os.walk(self.items_folder):
+        for root, dirs, files in os.walk(items_folder):
             for f in files:
                 # don't care about png and config and all that
-                if re.match(self.ignore_items, f) == None:
+                if re.match(ignore_items, f) == None:
                     index.append((f, root))
+
+        objects_folder = os.path.join(assets_folder, "objects")
         # objects
-        for root, dirs, files in os.walk(self.objects_folder):
+        for root, dirs, files in os.walk(objects_folder):
             for f in files:
                 if re.match(".*\.object$", f) != None:
                     index.append((f, root))
+
+        tech_folder = os.path.join(assets_folder, "tech")
         # techs
-        for root, dirs, files in os.walk(self.tech_folder):
+        for root, dirs, files in os.walk(tech_folder):
             for f in files:
                 if re.match(".*\.techitem$", f) != None:
                     index.append((f, root))
+
         logging.info("Found " + str(len(index)) + " item files")
         return index
 
     def add_all_items(self):
         """Insert metadata for every possible item into the database."""
-        index = self.file_index()
-        items = []
+        mods_folder = os.path.normpath(os.path.join(self.starbound_folder, "mods"))
+        index = self.file_index(Config().read("assets_folder"))
 
+        # Index mods
+        for mod in os.listdir(mods_folder):
+            path = os.path.join(mods_folder, mod)
+            if os.path.isdir(os.path.join(path, "assets")):
+                index += self.file_index(os.path.join(path, "assets"))
+            else:
+                index += self.file_index(path)
+
+        for f in index:
+            #print(f)
+            pass
+
+        items = []
         logging.info("Started indexing items")
         for f in index:
             # load the asset's json file
@@ -275,7 +262,7 @@ class Items():
             try:
                 asset_icon = info["inventoryIcon"]
                 if re.match(".*\.techitem$", f[0]) != None:
-                    icon = self.assets_folder + asset_icon
+                    icon = os.path.realpath(os.path.join(f[1], "..", asset_icon))
                     # index dynamic tech chip items too
                     # TODO: do we keep the non-chip items in or not? i don't
                     #       think you're meant to have them outside tech slots
@@ -286,7 +273,8 @@ class Items():
             except KeyError:
                 if re.search("(sword|shield)", category) != None:
                     cat = category.replace("generated", "")
-                    icon = os.path.join(self.assets_folder, "interface", "inventory", cat + ".png")
+                    icon = os.path.join(self.starbound_folder, "assets",
+                                        "interface", "inventory", cat + ".png")
                 else:
                     icon = self.missing_icon()
 
@@ -372,7 +360,7 @@ class Items():
 
     def missing_icon(self):
         """Return the path to the default inventory placeholder icon."""
-        return os.path.join(self.assets_folder, "interface", "inventory", "x.png")
+        return os.path.join(self.starbound_folder, "assets", "interface", "inventory", "x.png")
 
     def filter_items(self, category, name):
         """Search for indexed items based on name and category."""
@@ -391,38 +379,46 @@ class Items():
         return c.fetchone()[0]
 
 class Species():
-    def __init__(self, folder=None):
+    def __init__(self):
         """Everything dealing with indexing and parsing species asset files."""
-        # would be pretty easy to add a name generator
-        # override folder
-        if folder == None:
-            assets_folder = Config().read("assets_folder")
-            self.species_folder = os.path.join(assets_folder, "species")
-            self.assets_folder = assets_folder
-        else:
-            self.species_folder = os.path.join(folder, "species")
-            self.assets_folder = folder
+        self.starbound_folder = Config().read("starbound_folder")
         self.db = AssetsDb().db
 
-    def file_index(self):
-        """Return a list of all valid species files."""
+    def file_index(self, folder):
+        """Return a list of all valid species files from a given folder."""
         index = []
-        for root, dirs, files in os.walk(self.species_folder):
+        logging.info("Indexing " + folder)
+        for root, dirs, files in os.walk(folder):
             for f in files:
-                if re.match(".*\.species", f) != None:
+                if f.endswith(".species"):
                     index.append((f, root))
         logging.info("Found " + str(len(index)) + " species files")
+
         return index
 
     def add_all_species(self):
         """Parse and insert every indexable species asset."""
-        index = self.file_index()
+        mods_folder = os.path.normpath(os.path.join(self.starbound_folder, "mods"))
+        assets_folder = os.path.join(self.starbound_folder, "assets")
+
+        index = self.file_index(os.path.join(assets_folder, "species"))
+
+        for mod in os.listdir(mods_folder):
+            path = os.path.join(mods_folder, mod)
+            if os.path.isdir(os.path.join(path, "assets", "species")):
+                index += self.file_index(os.path.join(path, "assets", "species"))
+            elif os.path.isdir(os.path.join(path, "species")):
+                index += self.file_index(os.path.join(path, "species"))
+            else:
+                logging.debug("No species in " + mod)
+
         species = []
         logging.info("Started indexing species")
         for f in index:
             full_path = os.path.join(f[1], f[0])
             filename = f[0]
-            path = f[1]
+            # top assets folder
+            path = os.path.realpath(os.path.join(f[1], ".."))
 
             try:
                 info = parse_json(full_path)
@@ -454,8 +450,13 @@ class Species():
         c = self.db.cursor()
         c.execute("select * from species where name = ?", (name,))
         species = c.fetchone()
-        species_data = load_asset_file(os.path.join(species[2], species[1]))
+        species_data = load_asset_file(os.path.join(species[2], "species", species[1]))
         return species, species_data
+
+    def get_all_species(self):
+        c = self.db.cursor()
+        c.execute("select * from species")
+        return c.fetchall()
 
     def get_preview_image(self, name, gender):
         species = self.get_species(name.lower())
@@ -465,4 +466,4 @@ class Species():
         else:
             gender_data = species[1]["genders"][1]
 
-        return os.path.join(self.assets_folder, gender_data["characterImage"][1:])
+        return os.path.join(species[0][2],gender_data["characterImage"][1:])

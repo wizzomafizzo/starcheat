@@ -1,5 +1,5 @@
 * starcheat
-** [3/16] Improvements
+** [3/17] Improvements
 *** TODO Manage appearance
 **** TODO Create basic dialog to edit values directly
 **** TODO New system for rendering players
@@ -37,6 +37,7 @@ This needs to be:
 Change the folder name from dist to starcheat and I think there is an option in
 cx_freeze to pack all the libraries. Hide the terminal window
 LICENSE.txt should be copied in as well
+*** TODO Use modinfo file when loading mod assets
 *** TODO Remove config and logging modules from assets.py
 I want this to be a relatively portable assets library
 *** TODO Unit tests
