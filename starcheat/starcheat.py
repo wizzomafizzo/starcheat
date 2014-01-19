@@ -12,6 +12,10 @@ if not os.path.isdir(config.log_folder):
     os.mkdir(config.log_folder)
 
 def main():
+    if ("--version" in sys.argv or "-v" in sys.argv):
+        sys.stdout.write("starcheat alpha\n")
+        sys.exit(0)
+
     # TODO: set logging level in ini and cmd line
     # TODO: probably can save some file space omitting the date in timestamp
     logging.basicConfig(filename=log_file, level=logging.DEBUG,
