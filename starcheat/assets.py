@@ -382,6 +382,8 @@ class Species():
     def __init__(self):
         """Everything dealing with indexing and parsing species asset files."""
         self.starbound_folder = Config().read("starbound_folder")
+        self.humanoid_config = load_asset_file(os.path.join(self.starbound_folder,
+                                                            "assets", "humanoid.config"))
         self.db = AssetsDb().db
 
     def file_index(self, folder):
@@ -458,12 +460,27 @@ class Species():
         c.execute("select * from species")
         return c.fetchall()
 
+    def get_facial_hair(self, name, gender):
+        species = self.get_species(name)
+        return self.get_gender_data(species, gender)["facialHair"]
+
+    def get_facial_mask(self, name, gender):
+        species = self.get_species(name)
+        return self.get_gender_data(species, gender)["facialMask"]
+
+    def get_hair(self, name, gender):
+        species = self.get_species(name)
+        return self.get_gender_data(species, gender)["hair"]
+
+    def get_personality(self):
+        return self.humanoid_config["charGen"]["personalities"]
+
+    def get_gender_data(self, species_data, gender):
+        if gender == "male":
+            return species_data[1]["genders"][0]
+        else:
+            return species_data[1]["genders"][1]
+
     def get_preview_image(self, name, gender):
         species = self.get_species(name.lower())
-
-        if gender == "male":
-            gender_data = species[1]["genders"][0]
-        else:
-            gender_data = species[1]["genders"][1]
-
-        return os.path.join(species[0][2],gender_data["characterImage"][1:])
+        return os.path.join(species[0][2], self.get_gender_data(species, gender)["characterImage"][1:])

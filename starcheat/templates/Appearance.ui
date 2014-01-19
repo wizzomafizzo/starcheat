@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
+    <width>365</width>
     <height>216</height>
    </rect>
   </property>
@@ -87,8 +87,11 @@
          </item>
          <item>
           <widget class="QToolButton" name="hair_color">
+           <property name="styleSheet">
+            <string notr="true">background-color: white</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -108,8 +111,11 @@
          </item>
          <item>
           <widget class="QToolButton" name="facial_hair_color">
+           <property name="styleSheet">
+            <string notr="true">background-color: white</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -129,8 +135,11 @@
          </item>
          <item>
           <widget class="QToolButton" name="facial_mask_color">
+           <property name="styleSheet">
+            <string notr="true">background-color: white</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -155,8 +164,11 @@
        </item>
        <item row="4" column="1">
         <widget class="QToolButton" name="body_color">
+         <property name="styleSheet">
+          <string notr="true">background-color: white</string>
+         </property>
          <property name="text">
-          <string>...</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -169,8 +181,11 @@
        </item>
        <item row="5" column="1">
         <widget class="QToolButton" name="favorite_color">
+         <property name="styleSheet">
+          <string notr="true">background-color: white</string>
+         </property>
          <property name="text">
-          <string>...</string>
+          <string/>
          </property>
         </widget>
        </item>

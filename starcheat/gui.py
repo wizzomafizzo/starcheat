@@ -309,7 +309,16 @@ class MainWindow():
         self.about_dialog.dialog.exec()
 
     def new_appearance_dialog(self):
-        self.appearance_dialog = Appearance(self.window)
+        if self.ui.male.isChecked():
+            gender = "male"
+        else:
+            gender = "female"
+        self.player.set_gender(gender)
+
+        race = self.ui.race.currentText()
+        self.player.set_race(race)
+
+        self.appearance_dialog = Appearance(self.window, self.player)
         self.appearance_dialog.dialog.exec()
 
     def reload(self):
