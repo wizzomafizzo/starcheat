@@ -1,7 +1,4 @@
 build/
 dist/
-linux/build/
-mac/build/
-mac/dist/
 starcheat/__pycache__/
 .projectile
