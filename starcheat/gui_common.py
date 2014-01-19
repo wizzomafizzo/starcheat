@@ -12,9 +12,6 @@ def inv_icon(item_name):
     """Return a QPixmap object of the inventory icon of a given item (if possible)."""
     icon_file = assets.Items().get_item_icon(item_name)
 
-    if icon_file == None:
-        return QPixmap()
-
     reader = QImageReader(icon_file[0])
     reader.setClipRect(QtCore.QRect(icon_file[1], 0, 16, 16))
     return QPixmap.fromImageReader(reader).scaled(32, 32)

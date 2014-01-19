@@ -2,7 +2,7 @@
 Qt appearance management dialog
 """
 
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QColorDialog
 
 import assets, qt_appearance
 

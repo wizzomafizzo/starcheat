@@ -263,7 +263,7 @@ class Items():
             try:
                 asset_icon = info["inventoryIcon"]
                 if re.match(".*\.techitem$", f[0]) != None:
-                    icon = os.path.realpath(os.path.join(f[1], "..", asset_icon))
+                    icon = os.path.join(self.starbound_folder, "assets", asset_icon[1:])
                     # index dynamic tech chip items too
                     # TODO: do we keep the non-chip items in or not? i don't
                     #       think you're meant to have them outside tech slots
@@ -272,13 +272,12 @@ class Items():
                 else:
                     icon = os.path.join(f[1], info["inventoryIcon"])
             except KeyError:
+                inv_assets = os.path.join(self.starbound_folder, "assets", "interface", "inventory")
                 if re.search("(sword|shield)", category) != None:
                     cat = category.replace("generated", "")
-                    icon = os.path.join(self.starbound_folder, "assets",
-                                        "interface", "inventory", cat + ".png")
+                    icon = os.path.join(inv_assets, cat + ".png")
                 else:
                     icon = self.missing_icon()
-
             items.append((name, filename, path, icon, category))
 
         c = self.db.cursor()
@@ -324,7 +323,7 @@ class Items():
             if len(icon) < 2:
                 icon = icon[0], 0
         except TypeError:
-            return None
+            return self.missing_icon(), 0
 
         try:
             open(icon[0])

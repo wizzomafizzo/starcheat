@@ -31,6 +31,7 @@ class ItemBrowser():
             self.ui.items.addItem(item[0])
 
         self.ui.items.itemSelectionChanged.connect(self.update_item_view)
+        self.ui.items.itemDoubleClicked.connect(self.dialog.accept)
         self.ui.filter.textChanged.connect(self.update_item_list)
         self.ui.category.currentTextChanged.connect(self.update_item_list)
 
