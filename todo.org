@@ -31,7 +31,7 @@ This needs to be:
   maybe... i can't really remember how mac icons work. is it svg?
 *** TODO Update windows standalone build
 Change the folder name from dist to starcheat and I think there is an option in
-cx_freeze to pack all the libraries
+cx_freeze to pack all the libraries. Hide the terminal window
 *** TODO Remove config and logging modules from assets.py
 I want this to be a relatively portable assets library
 *** TODO Unit tests
@@ -55,9 +55,10 @@ Will make it easier to do auto detection and less things for users to configure
 - Update config
 - Update options dialog
 - Change first setup so it just shows a file open dialog
-** [3/6] Bugs
+** [3/7] Bugs
 *** TODO can't drag between item tables
 Need to replace the current widget with table views.
+*** TODO Moving items does not trigger modified state
 *** TODO some items are missing
 **** iron lantern
 **** some tier crafted weapons

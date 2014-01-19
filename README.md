@@ -66,10 +66,9 @@ If Windows complains about a system error (re: missing msvcr100.dll), you probab
 
 ### Linux
 ```
-$ cd <starcheat top folder>
+$ cd <starcheat top folder>/linux
 $ ./build.sh
-$ cd build/
-$ ./starcheat.py
+$ ./build/starcheat.py
 ```
 
 #### Arch Linux
