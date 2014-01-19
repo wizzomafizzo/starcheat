@@ -10,8 +10,8 @@ class Starcheat < Formula
   depends_on :hg
 
   option 'without-app', 'Build without the .app (started via starcheat terminal command)'
-  option 'with-dist', 'Creates an tar.gz archive for distributing.'
   option 'without-binary', 'Only builds the .app, no binary install to your prefix'
+  option 'with-dist', 'BUILD BOT ONLY!: uploads .app to github releases'
 
   resource 'setup.py' do
     url 'https://raw.github.com/wizzomafizzo/starcheat/master/mac/setup.py'
