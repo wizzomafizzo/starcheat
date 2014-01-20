@@ -35,6 +35,10 @@ def parse_json(filename):
     with open(filename) as f:
         content = ''.join(f.readlines())
 
+        # TODO: really annoying.. hopefully this is fixed after the patch
+        if filename.endswith(".grapplinghook"):
+            content = content.replace("[-.", "[-0.")
+
         # Looking for comments
         match = comment_re.search(content)
         while match:
@@ -270,6 +274,7 @@ class Items():
             try:
                 info = load_asset_file(full_path)
             except ValueError:
+                logging.exception("Unable to index asset: " + full_path)
                 continue
 
             # figure out the item's name. it can be a few things
