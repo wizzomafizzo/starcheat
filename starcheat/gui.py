@@ -133,7 +133,8 @@ class MainWindow():
         self.ui.race.clear()
         for race in assets.Species().get_species_list():
             self.ui.race.addItem(race)
-        self.ui.race.setCurrentText(self.player.get_race())
+        raw_race = self.player.get_race()
+        self.ui.race.setCurrentText(raw_race[0].upper() + raw_race[1:])
         # BUG: okay so there is this bug where sometimes on windows pyqt will chuck
         # a fit and not set values on some stuff. this seems to work itself out
         # when you overwrite the values and reopen the file. i'm going to just

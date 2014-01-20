@@ -57,7 +57,6 @@ def mod_asset_folder(mod_folder):
     for file in os.listdir(mod_folder):
         if file.endswith(".modinfo"):
             modinfo = os.path.join(mod_folder, file)
-            print(modinfo)
             try:
                 path = parse_json(modinfo)["path"]
             except ValueError:
@@ -73,11 +72,6 @@ class AssetsDb():
         """Master assets database."""
         self.mods_folder = os.path.normpath(os.path.join(Config().read("starbound_folder"), "mods"))
         self.assets_db = Config().read("assets_db")
-        try:
-            open(self.assets_db)
-        except FileNotFoundError:
-            self.init_db()
-
         self.db = sqlite3.connect(self.assets_db)
 
     def init_db(self):

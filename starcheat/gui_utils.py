@@ -62,8 +62,12 @@ def new_setup_dialog():
     dialog.setIcon(QMessageBox.Information)
     dialog.exec()
 
+    assets_db = Config().read("assets_db")
     try:
-        assets.AssetsDb()
+        if os.path.isfile(assets_db):
+            assets.AssetsDb().rebuild_db()
+        else:
+            assets.AssetsDb().init_db()
     except FileNotFoundError:
         logging.exception("Asset folder not found")
         dialog = QMessageBox()
