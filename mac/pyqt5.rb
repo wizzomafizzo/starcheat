@@ -8,10 +8,13 @@ class Pyqt5 < Formula
   option 'enable-debug', "Build with debug symbols"
 
   depends_on 'python3'
-
   depends_on 'qt5' => :build
-
   depends_on 'https://raw.github.com/wizzomafizzo/starcheat/master/mac/sip.rb'
+
+  bottle do
+    root_url 'https://github.com/chrmoritz/starcheat/releases/download/67d39a4'
+    sha1 '80a58e23671775a4396a9cf1c4e1574f896ad7aa' => :lion_or_later
+  end
 
   def install
     args = [ "--confirm-license",
