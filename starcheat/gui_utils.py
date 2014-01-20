@@ -65,9 +65,8 @@ def new_setup_dialog():
     assets_db = Config().read("assets_db")
     try:
         if os.path.isfile(assets_db):
-            assets.AssetsDb().rebuild_db()
-        else:
-            assets.AssetsDb().init_db()
+            os.remove(assets_db)
+        assets.AssetsDb().init_db()
     except FileNotFoundError:
         logging.exception("Asset folder not found")
         dialog = QMessageBox()
@@ -76,6 +75,7 @@ def new_setup_dialog():
         dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
         Config().remove_config()
+        os.remove(assets_db)
         sys.exit()
 
     total_assets = assets.AssetsDb().get_total_indexed()
@@ -89,6 +89,7 @@ def new_setup_dialog():
         dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
         Config().remove_config()
+        os.remove(assets_db)
         sys.exit()
 
 class AboutDialog():
