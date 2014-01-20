@@ -8,11 +8,6 @@ class Sip < Formula
   head 'http://www.riverbankcomputing.co.uk/hg/sip', :using => :hg
   
   depends_on 'python3'
-  
-  bottle do
-    root_url 'https://github.com/chrmoritz/starcheat/releases/download/67d39a4'
-    sha1 'd5f7345f3d42ccc9ea0ea2dba8528666ad6406a3' => :lion_or_later
-  end
 
   def install
     if build.head?
