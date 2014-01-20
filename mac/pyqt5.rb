@@ -13,7 +13,7 @@ class Pyqt5 < Formula
 
   bottle do
     root_url 'https://github.com/chrmoritz/starcheat/releases/download/67d39a4'
-    sha1 '80a58e23671775a4396a9cf1c4e1574f896ad7aa' => :lion_or_later
+    sha1 'e2e61a1b052cd19e6809b6fbd5b6b7a92df15bf7' => :lion_or_later
   end
 
   def install
