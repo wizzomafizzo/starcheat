@@ -506,10 +506,9 @@ class Species():
         try:
             return os.path.join(species[0][2], self.get_gender_data(species, gender)["characterImage"][1:])
         except IndexError:
-            # TODO: perhaps we can load a default icon?
             # corrupt save, no race set
             logging.warning("No race set on player")
-            return ""
+            return os.path.join(self.starbound_folder, "assets", "interface", "inventory", "x.png")
 
     def get_species_total(self):
         c = self.db.cursor()
