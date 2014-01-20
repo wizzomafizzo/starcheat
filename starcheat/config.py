@@ -42,14 +42,7 @@ class Config():
             starbound_folder = self.detect_starbound_folder()
 
         assets_folder = os.path.join(starbound_folder, "assets")
-
-        # TODO: not 100% sure on the Windows and Mac ones
-        if platform.system() == "Linux":
-            folder = "linux" + platform.architecture()[0].replace("bit", "")
-            player_folder = os.path.join(starbound_folder, folder, "player")
-        else:
-            player_folder = os.path.join(starbound_folder, "player")
-
+        player_folder = self.detect_player_folder(starbound_folder)
         backup_folder = os.path.join(config_folder, "backups")
         make_backups = "no"
         update_timestamps = "no"
@@ -69,8 +62,14 @@ class Config():
 
         self.config.write(open(ini_file, "w"))
 
+    def remove_config(self):
+        """Delete/reset the current config file if possible."""
+        try:
+            os.remove(ini_file)
+        except FileNotFoundError:
+            pass
+
     def detect_starbound_folder(self):
-        # TODO: add common locations for all OSs
         known_locations = [
             'C:\Program Files\Steam\SteamApps\common\Starbound',
             'C:\Program Files (x86)\Steam\SteamApps\common\Starbound',
@@ -82,3 +81,12 @@ class Config():
             if os.path.isdir(filename):
                 return filename
         return ""
+
+    def detect_player_folder(self, starbound_folder):
+        # TODO: not 100% sure on the Windows and Mac ones
+        if platform.system() == "Linux":
+            folder = "linux" + platform.architecture()[0].replace("bit", "")
+            player_folder = os.path.join(starbound_folder, folder, "player")
+        else:
+            player_folder = os.path.join(starbound_folder, "player")
+        return player_folder

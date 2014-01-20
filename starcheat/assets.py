@@ -2,9 +2,6 @@
 Module for reading and indexing Starbound assets
 """
 
-# TODO: investigate those massive json files at the top level. if they turn out
-# to always be up to date (and include mods?) we could ditch a lot of this code
-
 # TODO: this file should end up similar to save_file in that it has no external
 # deps. need to:
 # - remove all use of the config module, make them arguments to the classes
@@ -88,6 +85,19 @@ class AssetsDb():
         logging.info("Adding species")
         Species().add_all_species()
 
+    def get_total_indexed(self):
+        c = self.db.cursor()
+        tables = ("(select count(*) from items)",
+                  "(select count(*) from blueprints)",
+                  "(select count(*) from species)")
+        q = "select " + " + ".join([x for x in tables])
+        try:
+            c.execute(q)
+        except sqlite3.OperationalError:
+            # database probably corrupt
+            return 0
+        return c.fetchone()[0]
+
     def rebuild_db(self):
         logging.info("Rebuilding assets db")
         tables = ("items", "blueprints", "species")
@@ -116,7 +126,7 @@ class Blueprints():
 
     def add_all_blueprints(self):
         """Parse and insert every indexable blueprint asset."""
-        mods_folder = os.path.normpath(os.path.join(Config().read("starbound_folder"), "mods"))
+        mods_folder = os.path.join(Config().read("starbound_folder"), "mods")
         assets_folder = Config().read("assets_folder")
 
         index = self.file_index(os.path.join(assets_folder, "recipes"))
@@ -181,6 +191,11 @@ class Blueprints():
         result = c.fetchall()
         return result
 
+    def get_blueprint_total(self):
+        c = self.db.cursor()
+        c.execute("select count(*) from blueprints")
+        return c.fetchone()[0]
+
 class Items():
     def __init__(self):
         """Everything dealing with indexing and parsing item asset files."""
@@ -220,7 +235,7 @@ class Items():
 
     def add_all_items(self):
         """Insert metadata for every possible item into the database."""
-        mods_folder = os.path.normpath(os.path.join(self.starbound_folder, "mods"))
+        mods_folder = os.path.join(self.starbound_folder, "mods")
         index = self.file_index(Config().read("assets_folder"))
 
         # Index mods
@@ -400,7 +415,7 @@ class Species():
 
     def add_all_species(self):
         """Parse and insert every indexable species asset."""
-        mods_folder = os.path.normpath(os.path.join(self.starbound_folder, "mods"))
+        mods_folder = os.path.join(self.starbound_folder, "mods")
         assets_folder = os.path.join(self.starbound_folder, "assets")
 
         index = self.file_index(os.path.join(assets_folder, "species"))
@@ -452,7 +467,12 @@ class Species():
         c = self.db.cursor()
         c.execute("select * from species where name = ?", (name,))
         species = c.fetchone()
-        species_data = load_asset_file(os.path.join(species[2], "species", species[1]))
+        try:
+            species_data = load_asset_file(os.path.join(species[2], "species", species[1]))
+        except TypeError:
+            # corrupt save, no race set
+            logging.warning("No race set on player")
+            return "", ""
         return species, species_data
 
     def get_all_species(self):
@@ -483,4 +503,15 @@ class Species():
 
     def get_preview_image(self, name, gender):
         species = self.get_species(name.lower())
-        return os.path.join(species[0][2], self.get_gender_data(species, gender)["characterImage"][1:])
+        try:
+            return os.path.join(species[0][2], self.get_gender_data(species, gender)["characterImage"][1:])
+        except IndexError:
+            # TODO: perhaps we can load a default icon?
+            # corrupt save, no race set
+            logging.warning("No race set on player")
+            return ""
+
+    def get_species_total(self):
+        c = self.db.cursor()
+        c.execute("select count(*) from species")
+        return c.fetchone()[0]

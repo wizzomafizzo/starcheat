@@ -50,25 +50,42 @@ def new_setup_dialog():
         dialog.setIcon(QMessageBox.Critical)
         dialog.setText("starcheat needs Starbound installed to work properly.")
         dialog.exec()
+        Config().remove_config()
         sys.exit()
 
     Config().create_config(starbound_folder)
 
+    logging.info("Indexing assets")
     dialog = QMessageBox()
     dialog.setText("starcheat will now build a database of Starbound assets.")
     dialog.setInformativeText("This can take a little while, please be patient.")
     dialog.setIcon(QMessageBox.Information)
     dialog.exec()
 
-    assets.AssetsDb()
-    total_items = assets.Items().get_item_total()
+    try:
+        assets.AssetsDb()
+    except FileNotFoundError:
+        logging.exception("Asset folder not found")
+        dialog = QMessageBox()
+        dialog.setText("Unable to index assets.")
+        dialog.setInformativeText("Try run starcheat again and check the Starbound folder is correct.")
+        dialog.setIcon(QMessageBox.Critical)
+        dialog.exec()
+        Config().remove_config()
+        sys.exit()
 
-    if total_items == 0:
+    total_assets = assets.AssetsDb().get_total_indexed()
+    logging.debug(total_assets)
+
+    if total_assets == 0:
+        logging.error("No assets indexed")
         dialog = QMessageBox()
         dialog.setText("No assets were found. starcheat may not run correctly.")
-        dialog.setInformativeText("Check the assets location is correct in the Options dialog.")
-        dialog.setIcon(QMessageBox.Warning)
+        dialog.setInformativeText("Try run starcheat again and check the Starbound folder is correct.")
+        dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
+        Config().remove_config()
+        sys.exit()
 
 class AboutDialog():
     def __init__(self, parent):
@@ -86,42 +103,49 @@ class OptionsDialog():
 
         # read the current config and prefill everything
         self.ui.starbound_folder.setText(self.config.read("starbound_folder"))
-        self.ui.assets_folder.setText(self.config.read("assets_folder"))
-        self.ui.player_folder.setText(self.config.read("player_folder"))
+        self.ui.total_indexed.setText(str(assets.AssetsDb().get_total_indexed()) + " indexed")
 
         self.ui.starbound_folder_button.clicked.connect(self.open_starbound)
-        self.ui.assets_folder_button.clicked.connect(self.open_assets)
-        self.ui.player_folder_button.clicked.connect(self.open_player)
         self.ui.rebuild_button.clicked.connect(self.rebuild_db)
 
         self.ui.buttonBox.accepted.connect(self.write)
 
     def write(self):
-        self.config.set("starbound_folder", self.ui.starbound_folder.text())
-        self.config.set("assets_folder", self.ui.assets_folder.text())
-        self.config.set("player_folder", self.ui.player_folder.text())
+        starbound_folder = self.ui.starbound_folder.text()
+        self.config.set("starbound_folder", starbound_folder)
+        # TODO: remove these settings completely at some point
+        self.config.set("assets_folder", os.path.join(starbound_folder, "assets"))
+        self.config.set("player_folder", self.config.detect_player_folder(starbound_folder))
 
     def open_starbound(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
                                                     "Select Starbound Folder",
                                                     self.config.read("starbound_folder"))
-        if filename != "": self.ui.starbound_folder.setText(filename)
-
-    def open_assets(self):
-        filename = QFileDialog.getExistingDirectory(self.dialog,
-                                                    "Select Assets Folder",
-                                                    self.config.read("assets_folder"))
-        if filename != "": self.ui.assets_folder.setText(filename)
-
-    def open_player(self):
-        filename = QFileDialog.getExistingDirectory(self.dialog,
-                                                    "Select Player Save Folder",
-                                                    self.config.read("player_folder"))
-        if filename != "": self.ui.player_folder.setText(filename)
+        if filename != "":
+            self.ui.starbound_folder.setText(filename)
 
     def rebuild_db(self):
         self.write()
-        assets.AssetsDb().rebuild_db()
+
+        try:
+            assets.AssetsDb().rebuild_db()
+        except FileNotFoundError:
+            dialog = QMessageBox()
+            dialog.setText("No assets found.")
+            dialog.setInformativeText("Check the Starbound folder is set correctly.")
+            dialog.setIcon(QMessageBox.Critical)
+            dialog.exec()
+            return
+
+        total = str(assets.AssetsDb().get_total_indexed())
+
+        dialog = QMessageBox()
+        dialog.setText("Finished indexing Starbound assets.")
+        dialog.setInformativeText("Found %s assets." % total)
+        dialog.setIcon(QMessageBox.Information)
+        dialog.exec()
+
+        self.ui.total_indexed.setText(total + " indexed")
 
 # TODO: support stuff like sorting by date (needs to be a table widget)
 class CharacterSelectDialog():

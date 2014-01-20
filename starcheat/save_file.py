@@ -560,7 +560,7 @@ class PlayerSave():
         self.data["inv"]["equipment"][7] = glamor
 
     def get_race(self):
-        return self.data["race"][0].upper() + self.data["race"][1:]
+        return self.data["race"]
 
     def get_pixels(self):
         return self.data["inv"]["pixels"][0]
