@@ -49,6 +49,25 @@ def load_asset_file(filename):
     # TODO: probably need to put deflate here after patch
     return parse_json(filename)
 
+def mod_asset_folder(mod_folder):
+    """Read mod assets folder from modinfo file."""
+    # TODO: this still doesn't work if mod contains multiple modinfo files
+    # like tabula rasa
+    path = "."
+    for file in os.listdir(mod_folder):
+        if file.endswith(".modinfo"):
+            modinfo = os.path.join(mod_folder, file)
+            print(modinfo)
+            try:
+                path = parse_json(modinfo)["path"]
+            except ValueError:
+                # gosh this is hard...
+                last_ditch = os.path.join(mod_folder, "assets")
+                if os.path.isdir(last_ditch):
+                    path = last_ditch
+
+    return os.path.realpath(os.path.join(mod_folder, path))
+
 class AssetsDb():
     def __init__(self):
         """Master assets database."""
@@ -131,15 +150,15 @@ class Blueprints():
 
         index = self.file_index(os.path.join(assets_folder, "recipes"))
 
-        # TODO: use modinfo file to figure this out
-        for mod in os.listdir(mods_folder):
-            path = os.path.join(mods_folder, mod)
-            if os.path.isdir(os.path.join(path, "assets", "recipes")):
-                index += self.file_index(os.path.join(path, "assets", "recipes"))
-            elif os.path.isdir(os.path.join(path, "recipes")):
-                index += self.file_index(os.path.join(path, "recipes"))
-            else:
-                logging.debug("No blueprints in " + mod)
+        if os.path.isdir(mods_folder):
+            for mod in os.listdir(mods_folder):
+                path = os.path.join(mods_folder, mod)
+                if not os.path.isdir(path): continue
+                assets = mod_asset_folder(path)
+                if os.path.isdir(os.path.join(assets, "recipes")):
+                    index += self.file_index(os.path.join(assets, "recipes"))
+                else:
+                    logging.debug("No blueprints in " + mod)
 
         blueprints = []
         logging.info("Started indexing blueprints")
@@ -239,16 +258,15 @@ class Items():
         index = self.file_index(Config().read("assets_folder"))
 
         # Index mods
-        for mod in os.listdir(mods_folder):
-            path = os.path.join(mods_folder, mod)
-            if os.path.isdir(os.path.join(path, "assets")):
-                index += self.file_index(os.path.join(path, "assets"))
-            else:
-                index += self.file_index(path)
-
-        for f in index:
-            #print(f)
-            pass
+        if os.path.isdir(mods_folder):
+            for mod in os.listdir(mods_folder):
+                path = os.path.join(mods_folder, mod)
+                if not os.path.isdir(path): continue
+                assets = mod_asset_folder(path)
+                if os.path.isdir(os.path.join(assets)):
+                    index += self.file_index(os.path.join(assets))
+                else:
+                    logging.debug("No assets in " + mod)
 
         items = []
         logging.info("Started indexing items")
@@ -420,14 +438,15 @@ class Species():
 
         index = self.file_index(os.path.join(assets_folder, "species"))
 
-        for mod in os.listdir(mods_folder):
-            path = os.path.join(mods_folder, mod)
-            if os.path.isdir(os.path.join(path, "assets", "species")):
-                index += self.file_index(os.path.join(path, "assets", "species"))
-            elif os.path.isdir(os.path.join(path, "species")):
-                index += self.file_index(os.path.join(path, "species"))
-            else:
-                logging.debug("No species in " + mod)
+        if os.path.isdir(mods_folder):
+            for mod in os.listdir(mods_folder):
+                path = os.path.join(mods_folder, mod)
+                if not os.path.isdir(path): continue
+                assets = mod_asset_folder(path)
+                if os.path.isdir(os.path.join(assets, "species")):
+                    index += self.file_index(os.path.join(assets, "species"))
+                else:
+                    logging.debug("No species in " + mod)
 
         species = []
         logging.info("Started indexing species")
