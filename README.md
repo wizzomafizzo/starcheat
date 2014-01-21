@@ -24,12 +24,10 @@ starcheat is a Starbound player save editor, you can get free pixels with this! 
 These are builds of the latest development version. They should work fine, but may be unstable. **Don't forget to back up your save files before using them.**
 
 ### Windows
-[Download (64bit)](http://callan.io/builds/starcheat-latest.zip)
-
-[Download (32bit)](http://mcsi.mp/starcheat/) (get the latest file)
+[Download](http://mcsi.mp/starcheat/) (get the latest file)
 
 #### How to run
-* Download starcheat for your version of Windows (32 or 64bit)
+* Download starcheat
 * Extract all files somewhere
 * Go into the ```dist/``` folder
 * Run ```starcheat.exe```
