@@ -62,10 +62,11 @@ Will make it easier to do auto detection and less things for users to configure
 - Update config
 - Update options dialog
 - Change first setup so it just shows a file open dialog
-** [3/7] Bugs
+** [3/9] Bugs
 *** TODO can't drag between item tables
 Need to replace the current widget with table views.
 *** TODO Moving items does not trigger modified state
+*** TODO duplicate assets imported if they overwrite default ones
 *** TODO some items are missing
 **** iron lantern
 **** some tier crafted weapons
