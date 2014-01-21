@@ -225,7 +225,8 @@ class Items():
         logging.info("Indexing " + assets_folder)
 
         items_folder = os.path.join(assets_folder, "items")
-        ignore_items = ".*\.(png|config|frames|coinitem)"
+        # TODO: there is an ignore list in a config file we could use
+        ignore_items = ".*\.(png|config|frames|coinitem|db)"
         # regular items
         for root, dirs, files in os.walk(items_folder):
             for f in files:
@@ -414,8 +415,13 @@ class Species():
     def __init__(self):
         """Everything dealing with indexing and parsing species asset files."""
         self.starbound_folder = Config().read("starbound_folder")
-        self.humanoid_config = load_asset_file(os.path.join(self.starbound_folder,
-                                                            "assets", "humanoid.config"))
+        # TODO: this feels too hacky. remove it
+        try:
+            self.humanoid_config = load_asset_file(os.path.join(self.starbound_folder,
+                                                                "assets", "humanoid.config"))
+        except FileNotFoundError:
+            logging.exception("Missing humanoid.config")
+            self.humanoid_config = None
         self.db = AssetsDb().db
 
     def file_index(self, folder):
@@ -511,7 +517,11 @@ class Species():
         return self.get_gender_data(species, gender)["hair"]
 
     def get_personality(self):
-        return self.humanoid_config["charGen"]["personalities"]
+        # BUG: remove this workaround. okay for now since appearance isn't working anyway
+        if self.humanoid_config == None:
+            return []
+        else:
+            return self.humanoid_config["charGen"]["personalities"]
 
     def get_gender_data(self, species_data, gender):
         if gender == "male":

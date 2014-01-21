@@ -1,5 +1,5 @@
 * starcheat
-** [3/17] Improvements
+** [3/18] Improvements
 *** TODO Manage appearance
 **** TODO Create basic dialog to edit values directly
 **** TODO New system for rendering players
@@ -18,6 +18,9 @@ Perhaps later there could also be a dialog to rollback changes.
 Don't bother until the next patch. Location of it may change.
 *** TODO Unique item generation
 Depends on having a way to convert from asset to item.
+*** TODO Add checks during indexing and prompt to reselect folder
+init_db will need to be redone in gui_utils. this will also let us
+do feedback during a rebuild
 *** TODO Improve variant edit ui
 This should be a tree model view. I think before this happens there needs to be
 a way to convert between the save file variants to json/plain python types
