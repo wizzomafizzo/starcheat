@@ -1,5 +1,5 @@
 * starcheat
-** [3/18] Improvements
+** [3/20] Improvements
 *** TODO Manage appearance
 **** TODO Create basic dialog to edit values directly
 **** TODO New system for rendering players
@@ -18,6 +18,7 @@ Perhaps later there could also be a dialog to rollback changes.
 Don't bother until the next patch. Location of it may change.
 *** TODO Unique item generation
 Depends on having a way to convert from asset to item.
+*** TODO Backups management
 *** TODO Add checks during indexing and prompt to reselect folder
 init_db will need to be redone in gui_utils. this will also let us
 do feedback during a rebuild
@@ -30,6 +31,11 @@ Maybe like inventory sorting? Store in ship?
 Stick a delete button on the open player dialog. Make it move the player file (and metadata)
 to the backup dir
 **** TODO Backup revision rollback
+*** TODO Build number in about dialog and logs
+*** TODO Add more details to crash dialog log
+build version
+config
+os
 *** TODO Application icon
 This needs to be:
 - 96x96 for the mod db
@@ -44,7 +50,6 @@ LICENSE.txt should be copied in as well
 After patch.
 *** TODO Remove config and logging modules from assets.py
 I want this to be a relatively portable assets library
-*** TODO Unit tests
 *** TODO Manage techs
 this one is a bit complicated and pretty minor considering you can spawn chips
 *** TODO Manage pets
@@ -68,6 +73,9 @@ Will make it easier to do auto detection and less things for users to configure
 ** [3/9] Bugs
 *** TODO can't drag between item tables
 Need to replace the current widget with table views.
+*** TODO issues importing itemnames
+not sure what the items are but apparently they're valid json. mods?
+might just add a skip if itemname can't be found anywhere
 *** TODO Moving items does not trigger modified state
 *** TODO duplicate assets imported if they overwrite default ones
 *** TODO some items are missing
@@ -79,8 +87,13 @@ Need to replace the current widget with table views.
 ***** TODO item tables in tab box are out of alignment/wrong length
 ***** TODO description box only one line
 ***** TODO spinbox arrows cut off
-**** [0/1] Windows
+**** [0/2] Windows
 ***** TODO item tables cut off/aligningment
+***** TODO issue on win 8 fonts too large
+possibly system wide font setting?
+check if it's an issue in dialogs
+how hard would it be to make the main window resizable? i think the inventory tables
+are the biggest hurdle
 *** DONE a 0 items database is obviously broken. add a check for this
 *** DONE missing support for modded races
 *** DONE troubleshooting section is still not friendly enough
