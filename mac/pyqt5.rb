@@ -28,7 +28,7 @@ class Pyqt5 < Formula
              "QMAKE_MACOSX_DEPLOYMENT_TARGET=#{MacOS.version}" ]
     args << '--debug' if build.include? 'enable-debug'
 
-    system "python3.3", "./configure.py", *args
+    system "python3", "./configure.py", *args
     system "make"
     system "make", "install"
   end
@@ -52,6 +52,6 @@ class Pyqt5 < Formula
       window.show()
       sys.exit(app.exec_())
     EOS
-    system "python3.3", "test.py"
+    system "python3", "test.py"
   end
 end

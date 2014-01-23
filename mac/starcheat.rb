@@ -40,26 +40,26 @@ class Starcheat < Formula
   skip_clean 'StarCheat.app' if build.with? 'app'
 
   def install
-    system './build.sh'
+    system 'python3', 'build.py', '-v'
 
     cd 'build' do
       # install py2app (with dependencies modulegraph and altgraph) HEAD
       system 'pip3', 'install', '--upgrade', 'setuptools'
       resource('altgraph').stage do
-        system 'python3.3', 'setup.py', 'install'
+        system 'python3', 'setup.py', 'install'
       end
       resource('modulegraph').stage do
-        system 'python3.3', 'setup.py', 'install'
+        system 'python3', 'setup.py', 'install'
       end
       resource('py2app').stage do
-        system 'python3.3', 'setup.py', 'install'
+        system 'python3', 'setup.py', 'install'
       end
 
       (buildpath/'build').install resource('setup.py')
       # give write access to Qt's frameworks (fixes py2app permission errors)
       system 'chmod', '-R', 'u+w', Formula.factory('qt5').lib
 
-      system 'python3.3', 'setup.py', 'py2app'
+      system 'python3', 'setup.py', 'py2app'
       # convert dynamic links into static links and adds qt5 plugins (cocoa...)
       system "#{Formula.factory('qt5').bin}/macdeployqt", 'dist/starcheat.app', '-verbose=2'
       cp_r 'dist/starcheat.app', prefix/'StarCheat.app'

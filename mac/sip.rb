@@ -14,13 +14,13 @@ class Sip < Formula
       # Link the Mercurial repository into the download directory so
       # buid.py can use it to figure out a version number.
       ln_s downloader.cached_location + '.hg', '.hg'
-      system "python3.3", "build.py", "prepare"
+      system "python3", "build.py", "prepare"
     end
 
     # The python block is run once for each python (2.x and 3.x if requested)
     # Note the binary `sip` is the same for python 2.x and 3.x
     # Set --destdir such that the python modules will be in the HOMEBREWPREFIX/lib/pythonX.Y/site-packages
-    system "python3.3", "configure.py",
+    system "python3", "configure.py",
                             "--deployment-target=#{MacOS.version}",
                             "--destdir=#{lib}/python3.3/site-packages",
                             "--bindir=#{bin}",
