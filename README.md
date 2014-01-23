@@ -72,7 +72,7 @@ $ ./build/starcheat.py
 ```
 
 #### Arch Linux
-Install [starcheat-git](https://aur.archlinux.org/packages/starcheat-git/) from AUR.
+Install [starcheat](https://aur.archlinux.org/packages/starcheat/ from AUR.
 
 ### Mac
 - Install [homebrew](http://brew.sh/)
