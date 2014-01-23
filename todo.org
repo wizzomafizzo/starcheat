@@ -1,9 +1,9 @@
 * starcheat
-** [3/20] Improvements
-*** TODO Manage appearance
+** [10/20] Improvements
+*** DONE Manage appearance
 **** TODO Create basic dialog to edit values directly
 **** TODO New system for rendering players
-*** TODO Options dialog
+*** DONE Options dialog
 **** TODO Auto rebuild db if folder was changed
 **** TODO Rebuild DB feedback
 A progress indicator would be nice but it requires splitting up init_db and
@@ -16,10 +16,10 @@ This would basically save a revision of the save file every time it is updated.
 Perhaps later there could also be a dialog to rollback changes.
 ***** TODO Update timestamps
 Don't bother until the next patch. Location of it may change.
-*** TODO Unique item generation
+*** DONE Unique item generation
 Depends on having a way to convert from asset to item.
-*** TODO Backups management
-*** TODO Add checks during indexing and prompt to reselect folder
+*** DONE Backups management
+*** DONE [#B] Add checks dur0ing indexing and prompt to reselect folder
 init_db will need to be redone in gui_utils. this will also let us
 do feedback during a rebuild
 *** TODO Improve variant edit ui
@@ -27,7 +27,7 @@ This should be a tree model view. I think before this happens there needs to be
 a way to convert between the save file variants to json/plain python types
 *** TODO Inventory management
 Maybe like inventory sorting? Store in ship?
-*** TODO Manage players
+*** DONE Manage players
 Stick a delete button on the open player dialog. Make it move the player file (and metadata)
 to the backup dir
 **** TODO Backup revision rollback
@@ -46,8 +46,6 @@ This needs to be:
 Change the folder name from dist to starcheat and I think there is an option in
 cx_freeze to pack all the libraries. Hide the terminal window
 LICENSE.txt should be copied in as well
-*** TODO Use modinfo file when loading mod assets
-After patch.
 *** TODO Remove config and logging modules from assets.py
 I want this to be a relatively portable assets library
 *** TODO Manage techs
@@ -62,6 +60,8 @@ Should have:
 - Continue/restart buttons?
 - More info in the traceback (config stuff, platform)
 **** DONE Add to sys exception hook
+*** DONE Use modinfo file when loading mod assets
+After patch.
 *** DONE About dialog
 Just a simple one w/ icon, app name, license and link to github/mod db
 *** DONE Access item browser in tools menu

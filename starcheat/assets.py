@@ -226,7 +226,7 @@ class Items():
 
         items_folder = os.path.join(assets_folder, "items")
         # TODO: there is an ignore list in a config file we could use
-        ignore_items = ".*\.(png|config|frames|coinitem|db)"
+        ignore_items = re.compile(".*\.(png|config|frames|coinitem|db|ds_store)", re.IGNORECASE)
         # regular items
         for root, dirs, files in os.walk(items_folder):
             for f in files:
@@ -279,13 +279,18 @@ class Items():
                 continue
 
             # figure out the item's name. it can be a few things
-            try:
-                name = info["itemName"]
-            except KeyError:
+            name = False
+            item_name_keys = ["itemName", "name", "objectName"]
+            for key in item_name_keys:
                 try:
-                    name = info["name"]
+                    name = info[key]
+                    continue
                 except KeyError:
-                    name = info["objectName"]
+                    pass
+            # don't import items without names
+            # i think technically we can without problems but idk how safe exactly
+            if not name:
+                continue
 
             filename = f[0]
             path = f[1]
