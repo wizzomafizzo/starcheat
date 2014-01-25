@@ -65,7 +65,7 @@ def main():
         shutil.copy(os.path.join(pyqt5_dir, "libEGL.dll"), dist)
 
         if options.verbose:
-            print("Launching cx_freeze...")
+            print("Standalone build is complete!")
 
 if __name__ == "__main__":
     main()
