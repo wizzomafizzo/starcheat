@@ -139,4 +139,4 @@ In a terminal:
 
 #### Mac
 In a terminal:
-- $ "~/Library/Application Support/Steam/SteamApps/common/Starbound/Starbound.app/Contents/MacOS/asset_unpacker" "~/Library/Application Support/Steam/SteamApps/common/Starbound/assets/packed.pak" "~/Library/Application Support/Steam/SteamApps/common/Starbound/assets"
+- ```$ cd ~/Library/Application\ Support/Steam/SteamApps/common/Starbound; Starbound.app/Contents/MacOS/asset_unpacker assets/packed.pak assets```
