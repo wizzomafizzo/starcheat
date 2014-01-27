@@ -25,7 +25,7 @@ def main():
         dialog = QMessageBox()
         dialog.setIcon(QMessageBox.Critical)
         dialog.setText("Oops, starcheat has crashed.")
-        detail = """<html><head/>
+        detail = """<html><head/><body>
 <p>To report this error, click <strong>Show Details...</strong> and post the crash report it displays to the starcheat <a href="http://community.playstarbound.com/index.php?threads/starcheat-player-save-editor-and-python-library.60174/">discussion thread</a>.</p>
 </body></html>"""
         dialog.setInformativeText(detail)
