@@ -31,33 +31,6 @@ def empty_slot():
     """Return an empty bag slot widget."""
     return ItemWidget(None)
 
-def pretty_variant(variant):
-    variant_type = variant[0]
-    variant_value = variant[1]
-    if variant_type == 2:
-        return str(variant_value[0])
-    elif variant_type == 3:
-        if variant_value[0] == 1:
-            return "True"
-        else:
-            return "False"
-    elif variant_type == 4:
-        return str(variant_value)
-    elif variant_type == 5:
-        return '"' + str(variant_value) + '"'
-    elif variant_type == 6:
-        items = []
-        for i in variant_value:
-            items.append(pretty_variant(i))
-        return ", ".join(items)
-    elif variant_type == 7:
-        items = []
-        for i in variant_value:
-            items.append(i[0] + ": " + pretty_variant(i[1]))
-        return "{ " + ", ".join(items) + " }"
-    else:
-        return "__UNKNOWN_TYPE__"
-
 # TODO: a decision needs to be made here whether to continue with the custom
 #       widget item or an entirely new custom table view. if the features below
 #       are easy enough to add then we'll just stick with the current method

@@ -8,8 +8,11 @@ It can also be run from the command line to dump the contents, like this:
 $ python ./save_file.py <.player file>
 """
 
-import sys, pprint
+import sys
+from pprint import pprint
 from struct import pack, unpack_from
+
+# TODO: it turns out logging is okay without setup, probably add it here
 
 # compatible save version
 data_version = "SBVJ01"
@@ -64,9 +67,13 @@ def pack_vlq(n):
         round += 1
     return result
 
-def unpack_vlqs(data):
+def unpack_vlqi(data):
+    # TODO: not correct
     vlq = unpack_vlq(data)
     return (vlq[0] - 1), vlq[1]
+
+def pack_vlqi(var):
+    pass
 
 # <vlq len of str><str>
 def unpack_vlq_str(data):
@@ -248,8 +255,8 @@ variant_types = (
     (unpack_variant2, pack_variant2),
     # 3: boolean
     (unpack_variant3, pack_variant3),
-    # 4: vlqs (signed vlq)
-    (unpack_vlqs, pack_vlq),
+    # 4: vlqi
+    (unpack_vlqi, pack_vlqi),
     # 5: vlq string
     (unpack_vlq_str, pack_vlq_str),
     # 6: list of variants
@@ -266,7 +273,7 @@ class PlayerSave():
         self.data = {}
         self.import_save(filename)
         self.filename = filename
-        # TODO: don't forget to update seflf.data with this on export
+        # this is just to shorten variable names, we copy it back on export
         self.entity = self.data["save"]["data"]
 
     def import_save(self, filename=None):
@@ -278,35 +285,35 @@ class PlayerSave():
         if save_ver != data_version:
             raise WrongSaveVer("Wrong save format version detected")
 
+        # populate self.data with save data
         offset = 0
         for var in data_format:
             unpacked = unpack_var(var, save_data[offset:])
             self.data[var[0]] = unpacked[0]
             offset += unpacked[1]
+
         save_file.close()
 
     def export_save(self, filename=None):
+        self.data["save"]["data"] = self.entity
         player_data = b""
-        for var in data_format[3:]:
-            player_data += pack_var(var, self.data[var[0]])
 
-        header = pack_var(data_format[0], self.data["header"])
-        version = pack_var(data_format[1], self.data["version"])
-        global_vlq = pack_vlq(len(player_data))
-        header_data = header + version + global_vlq
-        file_data = header_data + player_data
+        for var in data_format:
+            player_data += pack_var(var, self.data[var[0]])
 
         if filename != None:
             save_file = open(filename, "wb")
-            #save_file.write(file_data)
+            self.dump()
+            #save_file.write(player_data)
             save_file.close()
             return filename
         else:
-            return file_data
+            return player_data
 
     def dump(self):
-        pprint.pprint(self.data)
+        pprint(self.data)
 
+    # getters
     def get_header(self):
         return unpack_str(self.data["header"])
 
@@ -403,87 +410,70 @@ class PlayerSave():
         self.entity["identity"]["species"] = race.lower()
 
     def set_pixels(self, pixels):
-        self.data["inv"]["pixels"] = (int(pixels),)
+        self.entity["inventory"]["money"] = int(pixels)
 
     def set_description(self, description):
-        self.data["description"] = description
+        self.entity["description"] = description
 
     def set_gender(self, gender):
-        bit = 0
-        if gender == "female":
-            bit = 1
-        self.data["gender"] = (bit,)
+        self.entity["identity"]["gender"] = gender.lower()
 
-    def set_health(self, current, maximum):
-        self.data["health"] = (current, maximum)
+    def set_health(self, current):
+        self.entity["status"]["healthSchema"]["value"] = float(current)
 
     def set_max_health(self, maximum):
-        self.data["base_max_health"] = (maximum,)
+        self.entity["status"]["healthSchema"]["max"] =  float(maximum)
 
-    def set_energy(self, current, maximum):
-        self.data["energy"] = (current, maximum)
+    def set_energy(self, current):
+        self.entity["status"]["energySchema"]["value"] = float(current)
 
     def set_max_energy(self, maximum):
-        self.data["base_max_energy"] = (maximum,)
+        self.entity["status"]["energySchema"]["max"] = float(maximum)
 
-    def set_food(self, current, maximum):
-        self.data["food"] = (current, maximum)
+    def set_food(self, current):
+        self.entity["status"]["foodSchema"]["value"] = float(current)
 
     def set_max_food(self, maximum):
-        self.data["base_max_food"] = (maximum,)
-
-    def set_warmth(self, maximum):
-        self.data["warmth"] = (self.data["warmth"][0], maximum)
+        self.entity["status"]["foodSchema"]["max"] = float(maximum)
 
     def set_max_warmth(self, maximum):
-        self.data["base_max_warmth"] = (maximum,)
-
-    def set_breath(self, current, maximum):
-        self.data["breath"] = (current, maximum)
+        self.entity["status"]["warmthSchema"]["max"] = float(maximum)
 
     def set_max_breath(self, maximum):
-        self.data["base_max_breath"] = (maximum,)
+        self.entity["status"]["breathSchema"]["max"] = float(maximum)
 
     def set_energy_regen(self, rate):
-        self.data["energy_regen_rate"] = (rate,)
+        self.entity["statusParameters"]["energyReplenishmentRate"] = float(rate)
 
     def set_main_bag(self, bag):
-        self.data["inv"]["main_bag"] = bag
+        self.entity["inventory"]["bag"] = bag
 
     def set_tile_bag(self, bag):
-        self.data["inv"]["tile_bag"] = bag
+        self.entity["inventory"]["tileBag"] = bag
 
     def set_action_bar(self, bag):
-        self.data["inv"]["action_bar"] = bag
+        self.entity["inventory"]["actionBar"] = bag
 
     def set_wieldable(self, bag):
-        self.data["inv"]["wieldable"] = bag
+        self.entity["inventory"]["wieldable"] = bag
 
     # equipment gets set in two places, there is an individual slot and then
     # a bag for each equpment group. unusual behaviour if you don't set both
     def set_head(self, main, glamor):
-        self.data["head"] = main
-        self.data["inv"]["equipment"][0] = main
-        self.data["head_glamor"] = glamor
-        self.data["inv"]["equipment"][4] = glamor
+        self.entity["inventory"]["equipment"][0] = main
+        self.entity["inventory"]["equipment"][4] = glamor
 
     def set_chest(self, main, glamor):
-        self.data["chest"] = main
-        self.data["inv"]["equipment"][1] = main
-        self.data["chest_glamor"] = glamor
-        self.data["inv"]["equipment"][5] = glamor
+        self.entity["inventory"]["equipment"][1] = main
+        self.entity["inventory"]["equipment"][5] = glamor
 
     def set_legs(self, main, glamor):
-        self.data["legs"] = main
-        self.data["inv"]["equipment"][2] = main
-        self.data["legs_glamor"] = glamor
-        self.data["inv"]["equipment"][6] = glamor
+        self.entity["inventory"]["equipment"][2] = main
+        self.entity["inventory"]["equipment"][6] = glamor
 
     def set_back(self, main, glamor):
-        self.data["back"] = main
-        self.data["inv"]["equipment"][3] = main
-        self.data["back_glamor"] = glamor
-        self.data["inv"]["equipment"][7] = glamor
+        self.entity["inventory"]["equipment"][3] = main
+        self.entity["inventory"]["equipment"][7] = glamor
 
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])
