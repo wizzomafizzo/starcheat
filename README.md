@@ -132,7 +132,7 @@ If these instructions don't work for you, check out [this post](http://community
   - "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\win32\asset_unpacker.exe" "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\assets\packed.pak" "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\assets"
 
 #### Linux
-**NOTE: If you're on 32 bit, change the path to Starbound.***
+**NOTE: If you're on 32 bit, change the path to Starbound.**
 
 In a terminal:
 - $ "~/.steam/root/SteamApps/common/Starbound/linux64/asset_unpacker" "~/.steam/root/SteamApps/common/Starbound/assets/packed.pak" "~/.steam/root/SteamApps/common/Starbound/assets"
