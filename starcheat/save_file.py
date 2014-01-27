@@ -320,111 +320,74 @@ class PlayerSave():
         return self.entity["status"]["foodSchema"]["max"]
 
     def get_health(self):
-        return self.data["health"]
+        return self.entity["status"]["healthSchema"]["value"]
 
     def get_max_health(self):
-        return self.data["base_max_health"][0]
+        return self.entity["status"]["healthSchema"]["max"]
 
     def get_max_warmth(self):
-        return self.data["base_max_warmth"][0]
+        return self.entity["status"]["warmthSchema"]["max"]
 
     def get_warmth(self):
-        return self.data["warmth"]
+        return self.entity["status"]["warmthSchema"]["value"]
 
     def get_energy(self):
-        return self.data["energy"]
+        return self.entity["status"]["energySchema"]["value"]
 
     def get_max_energy(self):
-        return self.data["base_max_energy"][0]
+        return self.entity["status"]["energySchema"]["value"]
 
     def get_energy_regen(self):
-        return self.data["energy_regen_rate"][0]
+        return self.entity["statusParameters"]["energyReplenishmentRate"]
 
     def get_gender(self):
-        if self.data["gender"][0] == 0:
-            return "male"
-        else:
-            return "female"
+        return self.entity["identity"]["gender"]
 
     def get_breath(self):
-        return self.data["breath"]
+        return self.entity["status"]["breathSchema"]["value"]
 
     def get_max_breath(self):
-        return self.data["base_max_breath"][0]
+        return self.entity["status"]["breathSchema"]["max"]
 
     def get_head(self):
-        return self.data["head"], self.data["head_glamor"]
+        equip = self.entity["inventory"]["equipment"]
+        return equip[0], equip[4]
 
     def get_chest(self):
-        return self.data["chest"], self.data["chest_glamor"]
+        equip = self.entity["inventory"]["equipment"]
+        return equip[1], equip[5]
 
     def get_legs(self):
-        return self.data["legs"], self.data["legs_glamor"]
+        equip = self.entity["inventory"]["equipment"]
+        return equip[2], equip[6]
 
     def get_back(self):
-        return self.data["back"], self.data["back_glamor"]
+        equip = self.entity["inventory"]["equipment"]
+        return equip[3], equip[7]
 
     def get_main_bag(self):
-        return self.data["inv"]["main_bag"]
+        return self.entity["inventory"]["bag"]
 
     def get_tile_bag(self):
-        return self.data["inv"]["tile_bag"]
+        return self.entity["inventory"]["tileBag"]
 
     def get_action_bar(self):
-        return self.data["inv"]["action_bar"]
+        return self.entity["inventory"]["actionBar"]
 
     def get_wieldable(self):
-        return self.data["inv"]["wieldable"]
-
-    def set_main_bag(self, bag):
-        self.data["inv"]["main_bag"] = bag
-
-    def set_tile_bag(self, bag):
-        self.data["inv"]["tile_bag"] = bag
-
-    def set_action_bar(self, bag):
-        self.data["inv"]["action_bar"] = bag
-
-    def set_wieldable(self, bag):
-        self.data["inv"]["wieldable"] = bag
-
-    # equipment gets set in two places, there is an individual slot and then
-    # a bag for each equpment group. unusual behaviour if you don't set both
-    def set_head(self, main, glamor):
-        self.data["head"] = main
-        self.data["inv"]["equipment"][0] = main
-        self.data["head_glamor"] = glamor
-        self.data["inv"]["equipment"][4] = glamor
-
-    def set_chest(self, main, glamor):
-        self.data["chest"] = main
-        self.data["inv"]["equipment"][1] = main
-        self.data["chest_glamor"] = glamor
-        self.data["inv"]["equipment"][5] = glamor
-
-    def set_legs(self, main, glamor):
-        self.data["legs"] = main
-        self.data["inv"]["equipment"][2] = main
-        self.data["legs_glamor"] = glamor
-        self.data["inv"]["equipment"][6] = glamor
-
-    def set_back(self, main, glamor):
-        self.data["back"] = main
-        self.data["inv"]["equipment"][3] = main
-        self.data["back_glamor"] = glamor
-        self.data["inv"]["equipment"][7] = glamor
+        return self.entity["inventory"]["wieldable"]
 
     def get_race(self):
-        return self.data["race"]
+        return self.entity["identity"]["species"]
 
     def get_pixels(self):
-        return self.data["inv"]["pixels"][0]
+        return self.entity["inventory"]["money"]
 
     def get_name(self):
-        return self.data["name"]
+        return self.entity["identity"]["name"]
 
     def get_description(self):
-        return self.data["description"]
+        return self.entity["description"]
 
     # blueprints are stored identically to inventory slots but as far as i've
     # seen there is never any variant data stored. let's just convert to a
@@ -433,6 +396,7 @@ class PlayerSave():
         blueprints = [x[0] for x in self.data["blueprint_lib"]]
         return blueprints
 
+    # here be setters
     def set_blueprints(self, blueprints):
         self.data["blueprint_lib"] = [(x, 1, (7, [])) for x in blueprints]
 
@@ -486,6 +450,44 @@ class PlayerSave():
 
     def set_energy_regen(self, rate):
         self.data["energy_regen_rate"] = (rate,)
+
+    def set_main_bag(self, bag):
+        self.data["inv"]["main_bag"] = bag
+
+    def set_tile_bag(self, bag):
+        self.data["inv"]["tile_bag"] = bag
+
+    def set_action_bar(self, bag):
+        self.data["inv"]["action_bar"] = bag
+
+    def set_wieldable(self, bag):
+        self.data["inv"]["wieldable"] = bag
+
+    # equipment gets set in two places, there is an individual slot and then
+    # a bag for each equpment group. unusual behaviour if you don't set both
+    def set_head(self, main, glamor):
+        self.data["head"] = main
+        self.data["inv"]["equipment"][0] = main
+        self.data["head_glamor"] = glamor
+        self.data["inv"]["equipment"][4] = glamor
+
+    def set_chest(self, main, glamor):
+        self.data["chest"] = main
+        self.data["inv"]["equipment"][1] = main
+        self.data["chest_glamor"] = glamor
+        self.data["inv"]["equipment"][5] = glamor
+
+    def set_legs(self, main, glamor):
+        self.data["legs"] = main
+        self.data["inv"]["equipment"][2] = main
+        self.data["legs_glamor"] = glamor
+        self.data["inv"]["equipment"][6] = glamor
+
+    def set_back(self, main, glamor):
+        self.data["back"] = main
+        self.data["inv"]["equipment"][3] = main
+        self.data["back_glamor"] = glamor
+        self.data["inv"]["equipment"][7] = glamor
 
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])

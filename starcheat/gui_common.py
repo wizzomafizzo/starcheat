@@ -70,9 +70,13 @@ def pretty_variant(variant):
 class ItemWidget(QTableWidgetItem):
     """Custom table wiget item with icon support and extra item variables."""
     def __init__(self, item):
-        self.name = item[0]
-        self.item_count = item[1]
-        self.variant = item[2]
+        if item is None:
+            QTableWidgetItem.__init__(self)
+            return
+
+        self.name = item["name"]
+        self.item_count = item["count"]
+        self.variant = item["data"]
         QTableWidgetItem.__init__(self, self.name)
         self.setTextAlignment(QtCore.Qt.AlignCenter)
 

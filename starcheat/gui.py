@@ -125,7 +125,7 @@ class MainWindow():
         logging.info("Updating main window")
         # uuid / save version
         self.ui.uuid_label.setText(self.player.get_uuid())
-        self.ui.ver_label.setText("v" + self.player.get_save_ver())
+        self.ui.ver_label.setText(self.player.get_header())
         # name
         self.ui.name.setText(self.player.get_name())
         # race

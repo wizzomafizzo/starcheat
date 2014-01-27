@@ -75,10 +75,10 @@ def new_setup_dialog():
         dialog.setInformativeText("Try run starcheat again and check the Starbound folder is correct.")
         dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
-        Config().remove_config()
+        #Config().remove_config()
         assets_db.db.close()
-        os.remove(assets_db_file)
-        sys.exit()
+        #os.remove(assets_db_file)
+        #sys.exit()
 
     total_assets = assets.AssetsDb().get_total_indexed()
     logging.debug(total_assets)
@@ -90,10 +90,10 @@ def new_setup_dialog():
         dialog.setInformativeText("Try run starcheat again and check the Starbound folder is correct.")
         dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
-        Config().remove_config()
+        #Config().remove_config()
         assets_db.db.close()
-        os.remove(assets_db_file)
-        sys.exit()
+        #os.remove(assets_db_file)
+        #sys.exit()
 
 class AboutDialog():
     def __init__(self, parent):
