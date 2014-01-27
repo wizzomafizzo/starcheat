@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>715</width>
-    <height>500</height>
+    <height>510</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -15,18 +15,6 @@
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>715</width>
-    <height>500</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>715</width>
-    <height>500</height>
-   </size>
   </property>
   <property name="windowTitle">
    <string>starcheat[*]</string>
@@ -1152,7 +1140,7 @@
       <x>10</x>
       <y>10</y>
       <width>291</width>
-      <height>443</height>
+      <height>441</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -1219,6 +1207,9 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="1" colspan="3">
+      <widget class="QPlainTextEdit" name="description"/>
+     </item>
      <item row="3" column="1" colspan="3">
       <widget class="QWidget" name="gender_group" native="true">
        <property name="minimumSize">
@@ -1261,9 +1252,6 @@
         <string>Description</string>
        </property>
       </widget>
-     </item>
-     <item row="4" column="1" colspan="3">
-      <widget class="QPlainTextEdit" name="description"/>
      </item>
      <item row="5" column="0">
       <widget class="QLabel" name="health_label">
@@ -1324,6 +1312,13 @@ border-radius: 4px;
        </property>
       </widget>
      </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="energy_label">
+       <property name="text">
+        <string>Energy</string>
+       </property>
+      </widget>
+     </item>
      <item row="6" column="2" colspan="2">
       <widget class="QSpinBox" name="max_health">
        <property name="minimumSize">
@@ -1346,13 +1341,6 @@ border-radius: 4px;
        </property>
        <property name="singleStep">
         <number>10</number>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="energy_label">
-       <property name="text">
-        <string>Energy</string>
        </property>
       </widget>
      </item>
@@ -1411,41 +1399,6 @@ border-radius: 4px;
        </property>
       </widget>
      </item>
-     <item row="8" column="2" colspan="2">
-      <widget class="QSpinBox" name="max_energy">
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>22</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>1000000</number>
-       </property>
-       <property name="singleStep">
-        <number>10</number>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QLabel" name="energy_regen_label">
-       <property name="text">
-        <string>Regen Rate</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
      <item row="9" column="2" colspan="2">
       <widget class="QDoubleSpinBox" name="energy_regen">
        <property name="minimumSize">
@@ -1474,10 +1427,45 @@ border-radius: 4px;
        </property>
       </widget>
      </item>
+     <item row="8" column="2" colspan="2">
+      <widget class="QSpinBox" name="max_energy">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>1000000</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
      <item row="10" column="0">
       <widget class="QLabel" name="food_label">
        <property name="text">
         <string>Hunger</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QLabel" name="energy_regen_label">
+       <property name="text">
+        <string>Regen Rate</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -1523,16 +1511,6 @@ border-radius: 4px;
        </property>
       </widget>
      </item>
-     <item row="11" column="1">
-      <widget class="QLabel" name="food_val">
-       <property name="text">
-        <string>1 /</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
      <item row="11" column="2" colspan="2">
       <widget class="QSpinBox" name="max_food">
        <property name="minimumSize">
@@ -1555,149 +1533,6 @@ border-radius: 4px;
        </property>
        <property name="singleStep">
         <number>10</number>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="0">
-      <widget class="QLabel" name="warmth_label">
-       <property name="text">
-        <string>Warmth</string>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="1" colspan="3">
-      <widget class="QSlider" name="warmth">
-       <property name="styleSheet">
-        <string notr="true">QSlider::groove:horizontal {
-border: 1px solid #bbb;
-background: white;
-height: 10px;
-border-radius: 4px;
-}
-
-QSlider::sub-page:horizontal {
-background: rgb(255, 170, 0);
-border: 1px solid #777;
-height: 10px;
-border-radius: 4px;
-}
-
-QSlider::add-page:horizontal {
-background: #000;
-border: 1px solid #777;
-height: 10px;
-border-radius: 4px;
-}
-
-QSlider::handle:horizontal {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-    stop:0 #eee, stop:1 #ccc);
-border: 1px solid #777;
-width: 13px;
-margin-top: -2px;
-margin-bottom: -2px;
-border-radius: 4px;
-}</string>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="1">
-      <widget class="QLabel" name="warmth_val">
-       <property name="text">
-        <string>1 /</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="2" colspan="2">
-      <widget class="QSpinBox" name="max_warmth">
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>22</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>1000000</number>
-       </property>
-       <property name="singleStep">
-        <number>10</number>
-       </property>
-      </widget>
-     </item>
-     <item row="14" column="0">
-      <widget class="QLabel" name="breath_label">
-       <property name="text">
-        <string>Breath</string>
-       </property>
-      </widget>
-     </item>
-     <item row="14" column="1" colspan="3">
-      <widget class="QSlider" name="breath">
-       <property name="styleSheet">
-        <string notr="true">QSlider::groove:horizontal {
-border: 1px solid #bbb;
-background: white;
-height: 10px;
-border-radius: 4px;
-}
-
-QSlider::sub-page:horizontal {
-background: rgb(85, 255, 255);
-border: 1px solid #777;
-height: 10px;
-border-radius: 4px;
-}
-
-QSlider::add-page:horizontal {
-background: #000;
-border: 1px solid #777;
-height: 10px;
-border-radius: 4px;
-}
-
-QSlider::handle:horizontal {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-    stop:0 #eee, stop:1 #ccc);
-border: 1px solid #777;
-width: 13px;
-margin-top: -2px;
-margin-bottom: -2px;
-border-radius: 4px;
-}</string>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="15" column="1">
-      <widget class="QLabel" name="breath_val">
-       <property name="text">
-        <string>1 /</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -1726,6 +1561,55 @@ border-radius: 4px;
        </property>
       </widget>
      </item>
+     <item row="13" column="0">
+      <widget class="QLabel" name="warmth_label">
+       <property name="text">
+        <string>Max Warmth</string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="2" colspan="2">
+      <widget class="QSpinBox" name="max_warmth">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>1000000</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="0">
+      <widget class="QLabel" name="breath_label">
+       <property name="text">
+        <string>Max Breath</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="QLabel" name="food_val">
+       <property name="text">
+        <string>1 /</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -1735,7 +1619,7 @@ border-radius: 4px;
      <x>0</x>
      <y>0</y>
      <width>715</width>
-     <height>19</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1946,9 +1830,7 @@ border-radius: 4px;
   <tabstop>energy_regen</tabstop>
   <tabstop>food</tabstop>
   <tabstop>max_food</tabstop>
-  <tabstop>warmth</tabstop>
   <tabstop>max_warmth</tabstop>
-  <tabstop>breath</tabstop>
   <tabstop>max_breath</tabstop>
   <tabstop>pixels</tabstop>
   <tabstop>back</tabstop>

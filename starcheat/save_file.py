@@ -298,7 +298,7 @@ class PlayerSave():
 
         if filename != None:
             save_file = open(filename, "wb")
-            save_file.write(file_data)
+            #save_file.write(file_data)
             save_file.close()
             return filename
         else:
@@ -389,22 +389,18 @@ class PlayerSave():
     def get_description(self):
         return self.entity["description"]
 
-    # blueprints are stored identically to inventory slots but as far as i've
-    # seen there is never any variant data stored. let's just convert to a
-    # regular list
     def get_blueprints(self):
-        blueprints = [x[0] for x in self.data["blueprint_lib"]]
-        return blueprints
+        return self.entity["blueprints"]
 
     # here be setters
     def set_blueprints(self, blueprints):
-        self.data["blueprint_lib"] = [(x, 1, (7, [])) for x in blueprints]
+        self.entity["blueprints"] = blueprints
 
     def set_name(self, name):
-        self.data["name"] = name
+        self.entity["identity"]["name"] = name
 
     def set_race(self, race):
-        self.data["race"] = race.lower()
+        self.entity["identity"]["species"] = race.lower()
 
     def set_pixels(self, pixels):
         self.data["inv"]["pixels"] = (int(pixels),)

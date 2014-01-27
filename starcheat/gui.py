@@ -85,7 +85,7 @@ class MainWindow():
             return
 
         # set up sliders to update values together
-        stats = "health", "energy", "food", "warmth", "breath"
+        stats = "health", "energy", "food"
         for s in stats:
             logging.debug("Setting up %s stat", s)
             update = getattr(self, "update_" + s)
@@ -123,6 +123,7 @@ class MainWindow():
     def update(self):
         """Update all GUI widgets with values from PlayerSave instance."""
         logging.info("Updating main window")
+        self.player.dump()
         # uuid / save version
         self.ui.uuid_label.setText(self.player.get_uuid())
         self.ui.ver_label.setText(self.player.get_header())
@@ -155,14 +156,14 @@ class MainWindow():
         getattr(self.ui, self.player.get_gender()).toggle()
 
         # stats
-        stats = "health", "energy", "food", "breath"
+        stats = "health", "energy", "food"
         for stat in stats:
             try:
                 max_stat = getattr(self.player, "get_max_" + stat)()
                 getattr(self.ui, "max_" + stat).setValue(max_stat)
                 cur_stat = getattr(self.player, "get_" + stat)()
-                getattr(self.ui, stat).setMaximum(cur_stat[1])
-                getattr(self.ui, stat).setValue(cur_stat[0])
+                getattr(self.ui, stat).setMaximum(max_stat)
+                getattr(self.ui, stat).setValue(cur_stat)
                 getattr(self, "update_" + stat)()
             except TypeError:
                 logging.exception("Unable to set %s", stat)
@@ -175,11 +176,12 @@ class MainWindow():
         try:
             max_warmth = self.player.get_max_warmth()
             self.ui.max_warmth.setValue(max_warmth)
-            cur_warmth = self.player.get_warmth()
-            self.ui.warmth.setMinimum(cur_warmth[0])
-            self.ui.warmth.setMaximum(max_warmth)
-            self.ui.warmth.setValue(cur_warmth[1])
-            self.update_warmth()
+        except TypeError:
+            logging.exception("Unable to set warmth")
+        # breath
+        try:
+            max_breath = self.player.get_max_breath()
+            self.ui.max_breath.setValue(max_breath)
         except TypeError:
             logging.exception("Unable to set warmth")
 
@@ -473,12 +475,4 @@ class MainWindow():
     def update_food(self):
         self.ui.food.setMaximum(self.ui.max_food.value())
         self.ui.food_val.setText(str(self.ui.food.value()) + " /")
-        self.set_edited()
-    def update_warmth(self):
-        self.ui.warmth.setMaximum(self.ui.max_warmth.value())
-        self.ui.warmth_val.setText(str(self.ui.warmth.value()) + " /")
-        self.set_edited()
-    def update_breath(self):
-        self.ui.breath.setMaximum(self.ui.max_breath.value())
-        self.ui.breath_val.setText(str(self.ui.breath.value()) + " /")
         self.set_edited()
