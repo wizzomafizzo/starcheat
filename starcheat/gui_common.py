@@ -29,7 +29,7 @@ def preview_icon(race, gender):
 
 def empty_slot():
     """Return an empty bag slot widget."""
-    return ItemWidget(save_file.empty_slot())
+    return ItemWidget(None)
 
 def pretty_variant(variant):
     variant_type = variant[0]
