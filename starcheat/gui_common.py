@@ -23,9 +23,6 @@ def preview_icon(race, gender):
     """Return an icon image for player race/gender previews."""
     icon_file = assets.Species().get_preview_image(race, gender)
 
-    if icon_file == None:
-        return QPixmap()
-
     reader = QImageReader(icon_file)
     reader.setClipRect(QtCore.QRect(0, 0, 32, 32))
     return QPixmap.fromImageReader(reader)
@@ -71,6 +68,7 @@ class ItemWidget(QTableWidgetItem):
     """Custom table wiget item with icon support and extra item variables."""
     def __init__(self, item):
         if item is None:
+            # empty slot
             QTableWidgetItem.__init__(self)
             return
 

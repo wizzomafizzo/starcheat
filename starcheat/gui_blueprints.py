@@ -8,6 +8,14 @@ import assets, qt_blueprints
 
 # TODO: rework whole dialog with pretty icons and stuff like that
 
+def new_blueprint(name):
+    bp = {
+        "name": name,
+        "count": 1,
+        "data": {}
+    }
+    return bp
+
 class BlueprintLib():
     def __init__(self, parent, known_blueprints):
         """Blueprint library management dialog."""
@@ -23,7 +31,7 @@ class BlueprintLib():
         self.ui.setupUi(self.dialog)
 
         self.blueprints = assets.Blueprints()
-        self.known_blueprints = known_blueprints
+        self.known_blueprints = [x["name"] for x in known_blueprints]
 
         # populate known list
         self.ui.known_blueprints.clear()
@@ -94,4 +102,4 @@ class BlueprintLib():
             self.ui.known_blueprints.addItem(blueprint)
 
     def get_known_list(self):
-        return self.known_blueprints
+        return [new_blueprint(x) for x in self.known_blueprints]
