@@ -18,7 +18,7 @@ def main():
 
     # TODO: set logging level in ini and cmd line
     # TODO: probably can save some file space omitting the date in timestamp
-    logging.basicConfig(filename=log_file, level=logging.DEBUG,
+    logging.basicConfig(filename=log_file, level=logging.WARNING,
                         format='%(asctime)s: %(message)s')
 
     def crash_gui(error):
