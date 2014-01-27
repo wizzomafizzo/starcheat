@@ -123,7 +123,6 @@ class MainWindow():
     def update(self):
         """Update all GUI widgets with values from PlayerSave instance."""
         logging.info("Updating main window")
-        self.player.dump()
         # uuid / save version
         self.ui.uuid_label.setText(self.player.get_uuid())
         self.ui.ver_label.setText(self.player.get_header())

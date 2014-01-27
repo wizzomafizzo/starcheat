@@ -13,7 +13,7 @@ if not os.path.isdir(config.log_folder):
 
 def main():
     if ("--version" in sys.argv or "-v" in sys.argv):
-        sys.stdout.write("starcheat alpha\n")
+        sys.stdout.write("starcheat alpha (Furious Koala)\n")
         sys.exit(0)
 
     # TODO: set logging level in ini and cmd line

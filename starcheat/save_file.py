@@ -8,7 +8,7 @@ It can also be run from the command line to dump the contents, like this:
 $ python ./save_file.py <.player file>
 """
 
-import sys, logging
+import sys, logging, struct
 from pprint import pprint
 from struct import pack, unpack_from
 
@@ -67,15 +67,30 @@ def pack_vlq(n):
         round += 1
     return result
 
-def unpack_vlqi(data):
-    logging.debug("Unpacking VLQI")
-    # TODO: not correct
-    vlq = unpack_vlq(data)
-    return (vlq[0] - 1), vlq[1]
+# i don't know how the hell this works. thanks starrypy dude
+# source: https://github.com/CarrotsAreMediocre/StarryPy/blob/master/packets/data_types.py
+# funny license
+def unpack_vlqs(data):
+    logging.debug("Unpacking VLQS")
+    value = 0
+    offset = 0
+    while True:
+        tmp = data[offset]
+        value = (value << 7) | (tmp & 0x7f)
+        offset += 1
+        if tmp & 0x80 == 0:
+            break
+    if (value & 1) == 0x00:
+        return (value >> 1), offset
+    else:
+        return -((value >> 1)+1), offset
 
-def pack_vlqi(var):
-    logging.debug("Packing VLQI")
-    return pack_vlq(var + 1)
+def pack_vlqs(var):
+    logging.debug("Packing VLQS")
+    value = abs(var * 2)
+    if var < 0:
+        value -= 1
+    return pack_vlq(value)
 
 # <vlq len of str><str>
 def unpack_vlq_str(data):
@@ -261,7 +276,6 @@ def pack_the_rest(var):
 
 # unpack any starbound save type
 def unpack_var(var, data):
-    name = var[0]
     pattern = var[1]
     length = var[2]
 
@@ -272,9 +286,7 @@ def unpack_var(var, data):
         return unpack_from(pattern, data, 0), length
 
 def pack_var(var, data):
-    name = var[0]
     pattern = var[1]
-    length = var[2]
 
     if pattern in save_file_types:
         return save_file_types[pattern][1](data)
@@ -299,8 +311,8 @@ variant_types = (
     (unpack_variant2, pack_variant2),
     # 3: boolean
     (unpack_variant3, pack_variant3),
-    # 4: vlqi
-    (unpack_vlqi, pack_vlqi),
+    # 4: vlqs
+    (unpack_vlqs, pack_vlqs),
     # 5: vlq string
     (unpack_vlq_str, pack_vlq_str),
     # 6: list of variants
@@ -388,6 +400,8 @@ class PlayerSave():
     def get_uuid(self):
         return self.entity["uuid"]
 
+    # stats
+    # until we can calculate item active effects we just use base max as current max
     def get_food(self):
         return self.entity["status"]["foodSchema"]["value"]
 
@@ -410,7 +424,7 @@ class PlayerSave():
         return self.entity["status"]["energySchema"]["value"]
 
     def get_max_energy(self):
-        return self.entity["status"]["energySchema"]["value"]
+        return self.entity["status"]["energySchema"]["max"]
 
     def get_energy_regen(self):
         return self.entity["statusParameters"]["energyReplenishmentRate"]
@@ -486,29 +500,35 @@ class PlayerSave():
     def set_gender(self, gender):
         self.entity["identity"]["gender"] = gender.lower()
 
+    # stats
     def set_health(self, current):
         self.entity["status"]["healthSchema"]["value"] = float(current)
 
     def set_max_health(self, maximum):
         self.entity["status"]["healthSchema"]["max"] =  float(maximum)
+        self.entity["statusParameters"]["baseMaxHealth"] = float(maximum)
 
     def set_energy(self, current):
         self.entity["status"]["energySchema"]["value"] = float(current)
 
     def set_max_energy(self, maximum):
         self.entity["status"]["energySchema"]["max"] = float(maximum)
+        self.entity["statusParameters"]["baseMaxEnergy"] = float(maximum)
 
     def set_food(self, current):
         self.entity["status"]["foodSchema"]["value"] = float(current)
 
     def set_max_food(self, maximum):
         self.entity["status"]["foodSchema"]["max"] = float(maximum)
+        self.entity["statusParameters"]["baseMaxFood"] = float(maximum)
 
     def set_max_warmth(self, maximum):
         self.entity["status"]["warmthSchema"]["max"] = float(maximum)
+        self.entity["statusParameters"]["baseMaxWarmth"] = float(maximum)
 
     def set_max_breath(self, maximum):
         self.entity["status"]["breathSchema"]["max"] = float(maximum)
+        self.entity["statusParameters"]["baseMaxBreath"] = float(maximum)
 
     def set_energy_regen(self, rate):
         self.entity["statusParameters"]["energyReplenishmentRate"] = float(rate)
@@ -542,7 +562,7 @@ class PlayerSave():
         self.entity["inventory"]["equipment"][7] = glamor
 
 if __name__ == '__main__':
-    logging.basicConfig(filename="save_file.log", level=logging.DEBUG)
+    #logging.basicConfig(filename="save_file.log", level=logging.DEBUG)
     player = PlayerSave(sys.argv[1])
     player.dump()
     print(player.export_save())

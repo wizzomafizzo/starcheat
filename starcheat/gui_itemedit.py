@@ -9,11 +9,10 @@ Qt item edit dialog
 # once that's complete, work can be started on proper item generation. to begin,
 # we just wanna pull in all the default values of an item
 
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QInputDialog
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem
 from PyQt5.QtGui import QPixmap
 
-import assets, qt_itemedit, qt_variantedit, logging
+import assets, qt_itemedit, save_file
 from gui_common import inv_icon, ItemWidget, empty_slot
 from gui_itembrowser import ItemBrowser
 

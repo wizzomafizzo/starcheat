@@ -2,7 +2,7 @@
 
 starcheat is a Starbound player save editor, you can get free pixels with this! (omg)
 
-**Binary downloads for starcheat are [here](#downloads).**
+**Downloads for starcheat are [here](#downloads).**
 
 ![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/screen.png)
 
@@ -19,12 +19,17 @@ starcheat is a Starbound player save editor, you can get free pixels with this! 
 - [Troubleshooting](#troubleshooting)
 	- [Reset all settings](#reset-all-settings)
 	- [How to get logs](#how-to-get-logs)
+	- [Unpacking Starbound assets](#unpacking-starbound-assets)
 
 ## Downloads
+**Upgraded to Furious Koala? Don't forget to [clear your settings](#reset-all-settings) and [unpack your Starbound assets](#unpacking-starbound-assets) before trying to run starcheat.**
+
 These are builds of the latest development version. They should work fine, but may be unstable. **Don't forget to back up your save files before using them.**
 
 ### Windows
-[Download](http://mcsi.mp/starcheat/) (get the latest file)
+[Download](http://mcsi.mp/starcheat/) (get the newest file)
+
+**NOTE:** If Windows complains about a system error (re: missing msvcr100.dll), you probably need to install the [Microsoft Visual C++ 2010 Redistributable Package](http://www.microsoft.com/en-au/download/details.aspx?id=14632).
 
 #### How to run
 * Download starcheat
@@ -35,7 +40,7 @@ These are builds of the latest development version. They should work fine, but m
 * Open a player
 
 ### Mac
-[Download](https://github.com/wizzomafizzo/starcheat/releases) (get the latest release)
+[Download](https://github.com/wizzomafizzo/starcheat/releases) (get the newest release)
 
 ## Build Instructions
 Here is how to build starcheat from source. Make sure everything in the dependencies section is installed before you do a build
@@ -61,8 +66,6 @@ The standalone build makes an executable which includes all Python and Qt depend
 - ```PS> ./build.ps1 -Standalone```
 - Browse to newly created ```dist/``` folder
 - Double click ```starcheat.exe```
-
-If Windows complains about a system error (re: missing msvcr100.dll), you probably need to install the [Microsoft Visual C++ 2010 Redistributable Package](http://www.microsoft.com/en-au/download/details.aspx?id=14632).
 
 ### Linux
 ```
@@ -117,3 +120,21 @@ In a terminal:
 In Finder:
 - Open the ```Go``` menu and click ```Go to Folder``` (or press ```Cmd+Shift+G```)
 - Type ```~/Library/Application Support/starcheat/logs``` and press Enter
+
+### Unpacking Starbound assets
+Furious Koala packs assets into a single file which we can't read yet. For now, you'll need to manually unpack the vanilla Starbound assets. You will have to do this for each mod you want starcheat to include as well.
+
+#### Windows
+- Press the Windows key and R (```Win+R```) to bring up the Run... dialog
+- Enter the following text into the prompt and press Enter:
+  - ~~~"C:\Program Files (x86)\Steam\SteamApps\common\Starbound\win32\asset_unpacker.exe" "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\assets\packed.pak" "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\assets"~~~
+
+#### Linux
+**NOTE: If you're on 32 bit, change the path to Starbound.***
+
+In a terminal:
+- ```$ "~/.steam/root/SteamApps/common/Starbound/linux64/asset_unpacker" "~/.steam/root/SteamApps/common/Starbound/assets/packed.pak" "~/.steam/root/SteamApps/common/Starbound/assets"```
+
+#### Mac
+In a terminal:
+- ```$ "~/Library/Application Support/Steam/SteamApps/common/Starbound/Starbound.app/Contents/MacOS/asset_unpacker" "~/Library/Application Support/Steam/SteamApps/common/Starbound/assets/packed.pak" "~/Library/Application Support/Steam/SteamApps/common/Starbound/assets"```

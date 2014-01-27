@@ -48,7 +48,7 @@ def new_setup_dialog():
     if starbound_folder == "":
         dialog = QMessageBox()
         dialog.setIcon(QMessageBox.Critical)
-        dialog.setText("starcheat needs Starbound installed to work properly.")
+        dialog.setText("starcheat needs Starbound installed to work.")
         dialog.exec()
         Config().remove_config()
         sys.exit()
@@ -62,6 +62,15 @@ def new_setup_dialog():
     dialog.setIcon(QMessageBox.Information)
     dialog.exec()
 
+    missing_assets_text = """<html><head/><body>
+<p>starcheat couldn't find any Starbound assets. You should double check:</p>
+<ol>
+    <li>You selected the right Starbound folder.</li>
+    <li>The assets you want to use have been unpacked. Instructions are <a href="https://github.com/wizzomafizzo/starcheat#unpacking-starbound-assets">here</a> and this includes vanilla Starbound assets.</li>
+</ol>
+<p>Once that's done, try restart starcheat to run the setup again.</p>
+</body></html>"""
+
     assets_db_file = Config().read("assets_db")
     if os.path.isfile(assets_db_file):
         os.remove(assets_db_file)
@@ -72,7 +81,7 @@ def new_setup_dialog():
         logging.exception("Asset folder not found")
         dialog = QMessageBox()
         dialog.setText("Unable to index assets.")
-        dialog.setInformativeText("Try run starcheat again and check the Starbound folder is correct.")
+        dialog.setInformativeText(missing_assets_text)
         dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
         Config().remove_config()
@@ -86,8 +95,8 @@ def new_setup_dialog():
     if total_assets == 0:
         logging.error("No assets indexed")
         dialog = QMessageBox()
-        dialog.setText("No assets were found. starcheat may not run correctly.")
-        dialog.setInformativeText("Try run starcheat again and check the Starbound folder is correct.")
+        dialog.setText("No assets were found.")
+        dialog.setInformativeText(missing_assets_text)
         dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
         Config().remove_config()

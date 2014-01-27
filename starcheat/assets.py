@@ -134,6 +134,9 @@ class Blueprints():
         """Return a list of all valid blueprints files."""
         index = []
         logging.info("Indexing " + folder)
+        if not os.path.isdir(folder):
+            logging.warning("Missing " + folder)
+            return index
         for root, dirs, files in os.walk(folder):
             for f in files:
                 if re.match(".*\.recipe", f) != None:
@@ -225,6 +228,10 @@ class Items():
         logging.info("Indexing " + assets_folder)
 
         items_folder = os.path.join(assets_folder, "items")
+        if not os.path.isdir(items_folder):
+            # if this folder is gone the rest is probably screwed too
+            logging.warning("Missing " + items_folder)
+            return index
         # TODO: there is an ignore list in a config file we could use
         ignore_items = re.compile(".*\.(png|config|frames|coinitem|db|ds_store)", re.IGNORECASE)
         # regular items
@@ -433,6 +440,10 @@ class Species():
         """Return a list of all valid species files from a given folder."""
         index = []
         logging.info("Indexing " + folder)
+        if not os.path.isdir(folder):
+            # if this folder is gone the rest is probably screwed too
+            logging.warning("Missing " + folder)
+            return index
         for root, dirs, files in os.walk(folder):
             for f in files:
                 if f.endswith(".species"):
