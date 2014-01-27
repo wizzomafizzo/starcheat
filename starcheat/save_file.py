@@ -21,6 +21,12 @@ data_version = range(424, 429)
 # and this is extremely helpful: https://github.com/McSimp/starbound-research
 # (name, format, offset)
 data_format = (
+    ("header", "6c", 6),
+    ("starsave", "__furious__", None),
+    ("the_rest", "__the_rest__", None)
+)
+
+data_format_old = (
     ("header", "8c", 8),
     ("version", ">i", 4),
     ("global_vlq", "__global_vlq__", None),
@@ -247,6 +253,25 @@ def pack_variant(var):
     packed_variant = variant_types[variant_type][1](var[1])
     return pack_vlq(variant_type) + packed_variant
 
+def unpack_variant1(data):
+    return None, 0
+
+def unpack_furious(data):
+    save = {}
+    entity_name = unpack_vlq_str(data)
+    save["entity"] = entity_name[0]
+    offset = entity_name[1]
+    variant_ver = unpack_from("<i", data, offset)
+    save["variant_ver"] = variant_ver[0]
+    offset += 4
+    save_data = unpack_variant6(data[offset:])
+    save["save_data"] = save_data[0]
+    offset += save_data[1]
+    return save, offset
+
+def pack_furious(var):
+    return pack_variant(var)
+
 # <vlq str len><str item name><vlq no. items><variant>
 # not sure why the count is always +1?
 def unpack_item_desc(data):
@@ -365,6 +390,7 @@ def pack_var(var, data):
 # all the special save file types
 # name: (unpack func, pack func)
 save_file_types = {
+    "__furious__": (unpack_furious, pack_furious),
     "__vlq__": (unpack_vlq, pack_vlq),
     "__vlq_str__": (unpack_vlq_str, pack_vlq_str),
     "__global_vlq__": (unpack_vlq, pack_vlq), # this isn't used normally
@@ -383,7 +409,7 @@ variant_types = (
     # unknown
     (None, None),
     # unknown
-    (None, None),
+    (unpack_variant1, None),
     # big endian double
     (unpack_variant2, pack_variant2),
     # boolean
@@ -412,11 +438,11 @@ class PlayerSave():
         save_data = save_file.read()
 
         # do a version check first
-        version = unpack_from(data_format[1][1],
-                              save_data,
-                              data_format[0][2])
-        if (version[0] in data_version) == False:
-            raise WrongSaveVer("Wrong save format version detected")
+        #version = unpack_from(data_format[1][1],
+        #                      save_data,
+        #                      data_format[0][2])
+        #if (version[0] in data_version) == False:
+        #    raise WrongSaveVer("Wrong save format version detected")
 
         offset = 0
         for var in data_format:
