@@ -83,10 +83,4 @@ class Config():
         return ""
 
     def detect_player_folder(self, starbound_folder):
-        # TODO: not 100% sure on the Windows and Mac ones
-        if platform.system() == "Linux":
-            folder = "linux" + platform.architecture()[0].replace("bit", "")
-            player_folder = os.path.join(starbound_folder, folder, "player")
-        else:
-            player_folder = os.path.join(starbound_folder, "player")
-        return player_folder
+        return os.path.join(starbound_folder, "player")
