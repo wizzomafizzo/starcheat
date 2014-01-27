@@ -8,11 +8,9 @@ It can also be run from the command line to dump the contents, like this:
 $ python ./save_file.py <.player file>
 """
 
-import sys
+import sys, logging
 from pprint import pprint
 from struct import pack, unpack_from
-
-# TODO: it turns out logging is okay without setup, probably add it here
 
 # compatible save version
 data_version = "SBVJ01"
@@ -53,6 +51,7 @@ def unpack_vlq(data):
 # source: https://github.com/metachris/binary-serializer/blob/master/python/bincalc.py
 def pack_vlq(n):
     """Convert an integer to a VLQ and return a list of bytes."""
+    logging.debug("Packing VLQ")
     value = int(n)
     if value == 0:
         return bytearray([0x00])
@@ -73,7 +72,8 @@ def unpack_vlqi(data):
     return (vlq[0] - 1), vlq[1]
 
 def pack_vlqi(var):
-    pass
+    logging.debug("Packing VLQI")
+    return pack_vlq(var - 1)
 
 # <vlq len of str><str>
 def unpack_vlq_str(data):
@@ -85,6 +85,7 @@ def unpack_vlq_str(data):
     return unpack_str(string[0]), string[1]
 
 def pack_vlq_str(var):
+    logging.debug("Packing string")
     if var == "":
         return b"\x00"
     vlq = pack_vlq(len(var))
@@ -103,6 +104,7 @@ def unpack_str_list(data):
     return str_list, offset
 
 def pack_str_list(var):
+    logging.debug("Packing string list")
     list_total = len(var)
     str_list = b""
     for string in var:
@@ -114,6 +116,7 @@ def unpack_variant1(data):
     return None, 0
 
 def pack_variant1(var):
+    logging.debug("Packing variant1")
     return b'\x01'
 
 # big endian double
@@ -122,7 +125,8 @@ def unpack_variant2(data):
     return unpack_from(">d", data, 0)[0], 8
 
 def pack_variant2(var):
-    return pack(">d", *var)
+    logging.debug("Packing variant2")
+    return pack(">d", var)
 
 # boolean
 def unpack_variant3(data):
@@ -133,7 +137,8 @@ def unpack_variant3(data):
         return False, 1
 
 def pack_variant3(var):
-    return pack("b", *var)
+    logging.debug("Packing variant3")
+    return pack("b", var)
 
 # variant list
 # <vlq total><variant>...
@@ -148,6 +153,7 @@ def unpack_variant6(data):
     return variants, offset
 
 def pack_variant6(var):
+    logging.debug("Packing variant6")
     total = len(var)
     variant_list = b""
     for variant in var:
@@ -170,11 +176,13 @@ def unpack_variant7(data):
     return dict_items, offset
 
 def pack_variant7(var):
+    logging.debug("Packing variant7")
     total = len(var)
     dict_items = b""
-    for k, v in var:
+    for k in var.keys():
+        logging.debug(k)
         key = pack_vlq_str(k)
-        value = pack_variant(v)
+        value = pack_variant(var[k])
         dict_items += key + value
     return pack_vlq(total) + dict_items
 
@@ -186,27 +194,55 @@ def unpack_variant(data):
     return unpacked[0], offset
 
 def pack_variant(var):
-    variant_type = var[0]
-    packed_variant = variant_types[variant_type][1](var[1])
-    return pack_vlq(variant_type) + packed_variant
+    if var == None:
+        return variant_types[1][1](var)
+    elif type(var) is float:
+        return b'\x02' + variant_types[2][1](var)
+    elif type(var) is bool:
+        return b'\x03' + variant_types[3][1](var)
+    elif type(var) is int:
+        return b'\x04' + variant_types[4][1](var)
+    elif type(var) is str:
+        return b'\x05' + variant_types[5][1](var)
+    elif type(var) is list:
+        return b'\x06' + variant_types[6][1](var)
+    elif type(var) is dict:
+        return b'\x07' + variant_types[7][1](var)
+    else:
+        raise WrongSaveVer("Unsupported variant type")
 
 def unpack_starsave(data):
     save = {}
+
     entity_name = unpack_vlq_str(data)
     save["entity_name"] = entity_name[0]
     offset = entity_name[1]
+
     variant_ver = unpack_from("<i", data, offset)
     save["variant_version"] = variant_ver[0]
     offset += 4
+
     save_data = unpack_variant6(data[offset:])
     # TODO: this will work but might break
-    # need a way to figure the right list item on the fly
+    # need a way to figure the right list item on the fly?
     save["data"] = save_data[0][0]
     offset += save_data[1]
+
     return save, offset
 
 def pack_starsave(var):
-    return pack_variant(var)
+    data = b''
+    logging.debug("Packing entity name")
+    entity_name = pack_vlq_str(var["entity_name"])
+    data += entity_name
+    logging.debug("Packing variant version")
+    variant_ver = pack("<i", var["variant_version"])
+    data += variant_ver
+    logging.debug("Packing save data")
+    data += b'\x01\x07'
+    save_data = pack_variant7(var["data"])
+    data += save_data
+    return data
 
 # just grabs any remaining bytes
 def unpack_the_rest(data):
@@ -265,6 +301,14 @@ variant_types = (
     (unpack_variant7, pack_variant7)
 )
 
+def new_item(name, count, data):
+    item = {
+        "name": name,
+        "count": count,
+        "data": data
+    }
+    return item
+
 class WrongSaveVer(Exception):
     pass
 
@@ -277,34 +321,50 @@ class PlayerSave():
         self.entity = self.data["save"]["data"]
 
     def import_save(self, filename=None):
+        logging.debug("Init save import: " + filename)
         save_file = open(filename, mode="rb")
         save_data = save_file.read()
 
         # do a version check first
-        save_ver = unpack_str(unpack_var(data_format[0], save_data)[0])
+        try:
+            save_ver = unpack_str(unpack_var(data_format[0], save_data)[0])
+        except struct.error:
+                msg = "Save file is corrupt"
+                logging.exception(msg)
+                raise WrongSaveVer(msg)
         if save_ver != data_version:
-            raise WrongSaveVer("Wrong save format version detected")
+            msg = "Wrong save format version"
+            logging.exception(msg)
+            raise WrongSaveVer(msg)
 
         # populate self.data with save data
         offset = 0
         for var in data_format:
-            unpacked = unpack_var(var, save_data[offset:])
+            logging.debug("Unpacking " + var[0])
+            try:
+                unpacked = unpack_var(var, save_data[offset:])
+            except:
+                msg = "Save file is corrupt"
+                logging.exception(msg)
+                raise WrongSaveVer(msg)
+
             self.data[var[0]] = unpacked[0]
             offset += unpacked[1]
 
         save_file.close()
 
     def export_save(self, filename=None):
+        logging.debug("Init save export: " + self.filename)
         self.data["save"]["data"] = self.entity
         player_data = b""
 
         for var in data_format:
+            logging.debug("Packing " + var[0])
             player_data += pack_var(var, self.data[var[0]])
 
         if filename != None:
             save_file = open(filename, "wb")
-            self.dump()
-            #save_file.write(player_data)
+            save_file.write(player_data)
             save_file.close()
             return filename
         else:
@@ -457,8 +517,6 @@ class PlayerSave():
     def set_wieldable(self, bag):
         self.entity["inventory"]["wieldable"] = bag
 
-    # equipment gets set in two places, there is an individual slot and then
-    # a bag for each equpment group. unusual behaviour if you don't set both
     def set_head(self, main, glamor):
         self.entity["inventory"]["equipment"][0] = main
         self.entity["inventory"]["equipment"][4] = glamor
@@ -476,5 +534,7 @@ class PlayerSave():
         self.entity["inventory"]["equipment"][7] = glamor
 
 if __name__ == '__main__':
+    logging.basicConfig(filename="save_file.log", level=logging.DEBUG)
     player = PlayerSave(sys.argv[1])
     player.dump()
+    print(player.export_save())

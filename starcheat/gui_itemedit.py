@@ -38,7 +38,7 @@ class ItemEdit():
         if type(item) is QTableWidgetItem or item == None:
             self.item = empty_slot()
         else:
-            self.item = item
+            self.item = item.item
 
         # set up signals
         self.ui.load_button.clicked.connect(self.new_item_browser)
@@ -46,20 +46,19 @@ class ItemEdit():
 
         try:
             # set name text box
-            self.ui.item_type.setText(self.item.name)
+            self.ui.item_type.setText(self.item["name"])
             # set item count spinbox
-            self.ui.count.setValue(int(self.item.item_count))
+            self.ui.count.setValue(int(self.item["count"]))
 
             # set up variant table
-            self.ui.variant.setRowCount(len(self.item.variant))
+            self.ui.variant.setRowCount(len(self.item["data"]))
             self.ui.variant.setHorizontalHeaderLabels(["Options"])
             row = 0
-            print(self.item.variant)
-            for k in self.item.variant.keys():
-                variant = ItemVariant(k, self.item.variant[k])
+            for k in self.item["data"].keys():
+                variant = ItemVariant(k, self.item["data"][k])
                 self.ui.variant.setItem(row, 0, variant)
                 row += 1
-        except AttributeError:
+        except TypeError:
             # empty slot
             self.new_item_browser()
 
@@ -106,23 +105,17 @@ class ItemEdit():
 
     def get_item(self):
         """Return an ItemWidget of the currently open item."""
-        type_name = self.ui.item_type.text()
+        name = self.ui.item_type.text()
         count = self.ui.count.value()
 
         variant_rows = self.ui.variant.rowCount()
         variant = {}
-        logging.debug(variant_rows)
         for i in range(variant_rows):
             cell = self.ui.variant.item(i, 0).variant
             variant[cell[0]] = cell[1]
 
         # TODO: move to save_file.py
-        item = {
-            "name": type_name,
-            "count": count,
-            "data": variant
-        }
-
+        item = save_file.new_item(name, count, variant)
         return ItemWidget(item)
 
     def new_item_browser(self):

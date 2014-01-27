@@ -42,26 +42,20 @@ class ItemWidget(QTableWidgetItem):
     def __init__(self, item):
         if item is None:
             # empty slot
+            self.item = None
             QTableWidgetItem.__init__(self)
             return
 
-        self.name = item["name"]
-        self.item_count = item["count"]
-        self.variant = item["data"]
-        QTableWidgetItem.__init__(self, self.name)
+        self.item = item
+        QTableWidgetItem.__init__(self, self.item["name"])
         self.setTextAlignment(QtCore.Qt.AlignCenter)
+        self.setToolTip(self.item["name"] + " (" + str(self.item["count"]) + ")")
 
-        if self.name != "":
-            self.setToolTip(self.name + " (" + str(self.item_count) + ")")
-        else:
-            return
-
-        icon = inv_icon(self.name)
+        icon = inv_icon(self.item["name"])
         try:
             self.setIcon(QtGui.QIcon(icon))
         except TypeError:
             pass
 
         if type(icon) is QPixmap:
-            #self.setText(str(self.item_count))
             self.setText("")

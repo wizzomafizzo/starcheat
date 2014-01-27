@@ -149,7 +149,7 @@ class MainWindow():
         try:
             self.ui.pixels.setValue(self.player.get_pixels())
         except TypeError:
-            logging.exception("Unable to set pixels")
+            logging.exception("Unable to set pixels widget")
         # description
         self.ui.description.setPlainText(self.player.get_description())
         # gender
@@ -223,17 +223,18 @@ class MainWindow():
             self.player.set_gender("female")
 
         # stats
-        stats = "health", "energy", "food", "breath"
+        stats = "health", "energy", "food"
         for s in stats:
             current = getattr(self.ui, s).value()
             maximum = getattr(self.ui, "max_" + s).value()
-            getattr(self.player, "set_" + s)(current, maximum)
+            getattr(self.player, "set_" + s)(current)
             getattr(self.player, "set_max_" + s)(maximum)
         # energy regen rate
         self.player.set_energy_regen(self.ui.energy_regen.value())
         # warmth
-        self.player.set_warmth(self.ui.warmth.value())
         self.player.set_max_warmth(self.ui.max_warmth.value())
+        # breath
+        self.player.set_max_breath(self.ui.max_breath.value())
 
         # equipment
         equip_bags = "head", "chest", "legs", "back"
@@ -379,12 +380,11 @@ class MainWindow():
         for i in range(len(bag)):
             item = getattr(self.ui, name).item(row, column)
             if type(item) is QTableWidgetItem or item == None:
-                item = empty_slot()
+                item = None
+            else:
+                item = item.item
 
-            count = item.item_count
-            item_type = item.name
-            variant = item.variant
-            bag[i] = (item_type, int(count), variant)
+            bag[i] = item
 
             # so far all non-equip bags are 10 cols long
             column += 1
@@ -404,14 +404,14 @@ class MainWindow():
         # when you drag itemwidgets around the cell will become empty so just
         # pretend it had an empty slot value
         if main_cell == None or type(main_cell) is QTableWidgetItem:
-            main = save_file.empty_slot()
+            main = None
         else:
-            main = (main_cell.name, main_cell.item_count, main_cell.variant)
+            main = main_cell.item
 
         if glamor_cell == None or type(glamor_cell) is QTableWidgetItem:
-            glamor = save_file.empty_slot()
+            glamor = None
         else:
-            glamor = (glamor_cell.name, glamor_cell.item_count, glamor_cell.variant)
+            glamor = glamor_cell.item
 
         return main, glamor
 
