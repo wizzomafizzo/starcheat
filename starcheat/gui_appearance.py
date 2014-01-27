@@ -15,13 +15,13 @@ class Appearance():
         self.species = assets.Species()
         self.player = player
 
-        race = self.player.data["race"]
+        race = self.player.get_race()
         gender = self.player.get_gender()
-        # TODO: so there are actually 2 of these but so far they're always the same
-        idle = self.player.data["idle1"]
-        hair_type = self.player.data["hair_type"]
-        facial_hair = self.player.data["beard_type"]
-        facial_mask = self.player.data["face_type"]
+        # TODO: should be functions to access these
+        idle = self.player.entity["identity"]["personalityIdle"]
+        hair_type = self.player.entity["identity"]["hairType"]
+        facial_hair = self.player.entity["identity"]["facialHairGroup"]
+        facial_mask = self.player.entity["identity"]["facialMaskType"]
 
         for option in self.species.get_hair(race, gender):
             self.ui.hair_type.addItem(option)
