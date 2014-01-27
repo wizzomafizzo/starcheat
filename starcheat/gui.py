@@ -139,6 +139,8 @@ class MainWindow():
         except IndexError:
             # race was empty (or 1 char log)
             # TODO: this seems messy
+            # last ditch
+            self.ui.race.setCurrentText("Apex")
             logging.exception("Invalid race value")
         # BUG: okay so there is this bug where sometimes on windows pyqt will chuck
         # a fit and not set values on some stuff. this seems to work itself out
@@ -209,7 +211,12 @@ class MainWindow():
         # name
         self.player.set_name(self.ui.name.text())
         # race
-        self.player.set_race(self.ui.race.currentText())
+        race = self.ui.race.currentText()
+        if race != "":
+            self.player.set_race(race)
+        else:
+            # TODO: remove this stuff eventually, just here for upgrade
+            self.player.set_race("apex")
         # pixels
         self.player.set_pixels(self.ui.pixels.value())
         # description
