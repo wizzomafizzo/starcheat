@@ -38,6 +38,7 @@ def pack_str(var):
 # source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
 def unpack_vlq(data):
     """Return the first VLQ number and byte offset from a list of bytes."""
+    logging.debug("Unpacking VLQ")
     offset = 0
     value = 0
     while True:
@@ -67,16 +68,18 @@ def pack_vlq(n):
     return result
 
 def unpack_vlqi(data):
+    logging.debug("Unpacking VLQI")
     # TODO: not correct
     vlq = unpack_vlq(data)
     return (vlq[0] - 1), vlq[1]
 
 def pack_vlqi(var):
     logging.debug("Packing VLQI")
-    return pack_vlq(var - 1)
+    return pack_vlq(var + 1)
 
 # <vlq len of str><str>
 def unpack_vlq_str(data):
+    logging.debug("Unpacking string")
     if data[0] == "\x00":
         return "", 0
     vlq = unpack_vlq(data)
@@ -94,6 +97,7 @@ def pack_vlq_str(var):
 
 # <vlq total items><vlq str len><str>...
 def unpack_str_list(data):
+    logging.debug("Unpacking string list")
     list_total = unpack_vlq(data)
     offset = list_total[1]
     str_list = []
@@ -113,14 +117,16 @@ def pack_str_list(var):
 
 # unset value, 0 bytes
 def unpack_variant1(data):
+    logging.debug("Unpacking variant1")
     return None, 0
 
 def pack_variant1(var):
     logging.debug("Packing variant1")
-    return b'\x01'
+    return b''
 
 # big endian double
 def unpack_variant2(data):
+    logging.debug("Unpacking varian2")
     # TODO: can these be plain unpack()?
     return unpack_from(">d", data, 0)[0], 8
 
@@ -130,6 +136,7 @@ def pack_variant2(var):
 
 # boolean
 def unpack_variant3(data):
+    logging.debug("Unpacking variant3")
     variant = unpack_from("b", data, 0)
     if variant[0] == 1:
         return True, 1
@@ -143,6 +150,7 @@ def pack_variant3(var):
 # variant list
 # <vlq total><variant>...
 def unpack_variant6(data):
+    logging.debug("Unpacking variant6")
     total = unpack_vlq(data)
     offset = total[1]
     variants = []
@@ -163,6 +171,7 @@ def pack_variant6(var):
 # variant dict
 # <vlq total><vlq key str len><str key><variant>...
 def unpack_variant7(data):
+    logging.debug("Unpacking variant7")
     total = unpack_vlq(data)
     offset = total[1]
     dict_items = {}
@@ -195,7 +204,7 @@ def unpack_variant(data):
 
 def pack_variant(var):
     if var == None:
-        return variant_types[1][1](var)
+        return b'\x01' + variant_types[1][1](var)
     elif type(var) is float:
         return b'\x02' + variant_types[2][1](var)
     elif type(var) is bool:
@@ -239,8 +248,7 @@ def pack_starsave(var):
     variant_ver = pack("<i", var["variant_version"])
     data += variant_ver
     logging.debug("Packing save data")
-    data += b'\x01\x07'
-    save_data = pack_variant7(var["data"])
+    save_data = pack_variant6([var["data"]])
     data += save_data
     return data
 
