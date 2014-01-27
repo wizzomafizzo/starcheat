@@ -29,7 +29,7 @@ These are builds of the latest development version. They should work fine, but m
 ### Windows
 [Download](http://mcsi.mp/starcheat/) (get the newest file)
 
-**NOTE:** If Windows complains about a system error (re: missing msvcr100.dll), you probably need to install the [Microsoft Visual C++ 2010 Redistributable Package](http://www.microsoft.com/en-au/download/details.aspx?id=14632).
+**NOTE:** If Windows complains about a system error (re: missing msvcr100.dll), you probably need to install the [Microsoft Visual C++ 2010 Redistributable Package](http://www.microsoft.com/en-au/download/details.aspx?id=5555).
 
 #### How to run
 * Download starcheat
