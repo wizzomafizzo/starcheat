@@ -130,11 +130,13 @@ starcheat will try its best to unpack the vanilla assets for you during setup. I
   - "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\win32\asset_unpacker.exe" "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\assets\packed.pak" "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\assets"
 
 #### Linux
-**NOTE:** If you're on 32 bit, change the path to Starbound.
+**NOTE:** If you're on 32 bit, change the path to asset_unpacker.
 
 In a terminal:
-- $ "~/.steam/root/SteamApps/common/Starbound/linux64/asset_unpacker" "~/.steam/root/SteamApps/common/Starbound/assets/packed.pak" "~/.steam/root/SteamApps/common/Starbound/assets"
+- ```$ cd ~/.steam/root/SteamApps/common/Starbound```
+- ```$ linux64/asset_unpacker assets/packed.pak assets/```
 
 #### Mac
 In a terminal:
-- $ cd ~/Library/Application\ Support/Steam/SteamApps/common/Starbound; Starbound.app/Contents/MacOS/asset_unpacker assets/packed.pak assets
+- ```$ cd ~/Library/Application\ Support/Steam/SteamApps/common/Starbound```
+- ```$ Starbound.app/Contents/MacOS/asset_unpacker assets/packed.pak assets```
