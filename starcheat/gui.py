@@ -79,7 +79,7 @@ class MainWindow():
         self.player = None
         # we *need* at least an initial save file
         logging.debug("Open file dialog")
-        open_player = self.open_file()
+        open_player = self.open_file(skip_update=True)
         if not open_player:
             logging.warning("No player file selected")
             return
@@ -120,6 +120,8 @@ class MainWindow():
 
         self.ui.description.textChanged.connect(self.set_edited)
 
+        self.update()
+
         self.window.setWindowModified(False)
 
         logging.debug("Showing main window")
@@ -135,7 +137,7 @@ class MainWindow():
         # name
         self.ui.name.setText(self.player.get_name())
         # race
-        self.ui.race.setCurrentText(self.player.get_race())
+        self.ui.race.setCurrentText(self.player.get_race(pretty=True))
         # BUG: okay so there is this bug where sometimes on windows pyqt will chuck
         # a fit and not set values on some stuff. this seems to work itself out
         # when you overwrite the values and reopen the file. i'm going to just
@@ -338,7 +340,7 @@ class MainWindow():
         self.ui.statusbar.showMessage("Reloaded " + self.player.filename, 3000)
         self.window.setWindowModified(False)
 
-    def open_file(self):
+    def open_file(self, skip_update=False):
         """Display open file dialog and load selected save."""
         if self.window.isWindowModified():
             button = save_modified_dialog()
@@ -356,7 +358,9 @@ class MainWindow():
         else:
             self.player = character_select.selected
 
-        self.update()
+        if not skip_update:
+            self.update()
+
         self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
         self.window.setWindowModified(False)
