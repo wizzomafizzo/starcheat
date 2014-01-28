@@ -152,7 +152,6 @@ def new_setup_dialog():
         unpack_cmd = '"{0}" "{1}" "{2}"'.format(asset_unpacker,
                                              os.path.join(starbound_folder, "assets", "packed.pak"),
                                              os.path.join(starbound_folder, "assets"))
-        print(unpack_cmd)
         os.system(unpack_cmd)
 
     # looks okay enough, let's go
