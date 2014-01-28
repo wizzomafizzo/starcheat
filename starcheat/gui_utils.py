@@ -98,9 +98,17 @@ def select_starbound_folder_dialog():
 
 def new_setup_dialog():
     """Run through an initial setup dialog for starcheat if it's required."""
-    # TODO: could do a check here for a specific key
     if os.path.isfile(Config().ini_file):
-        return
+        if Config().has_key("config_version") and int(Config().read("config_version")) == Config().CONFIG_VERSION:
+            return
+        logging.info("rebuild config and assets_db (config_version mismatch)")
+        dialog = QMessageBox()
+        dialog.setText("Detected outdated starcheat config")
+        dialog.setInformativeText("recreating config now...")
+        dialog.setIcon(QMessageBox.Warning)
+        dialog.exec()
+        os.remove(Config().read("assets_db"))
+        os.remove(Config().ini_file)
 
     logging.info("First setup dialog")
 
@@ -191,7 +199,7 @@ class OptionsDialog():
         self.config.set("starbound_folder", starbound_folder)
         # TODO: remove these settings completely at some point
         self.config.set("assets_folder", os.path.join(starbound_folder, "assets"))
-        self.config.set("player_folder", self.config.detect_player_folder(starbound_folder))
+        self.config.set("player_folder", os.path.join(starbound_folder, "player"))
 
     def open_starbound(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,

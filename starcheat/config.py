@@ -16,6 +16,7 @@ else:
 if os.path.isdir(config_folder) == False:
     os.mkdir(config_folder)
 
+CONFIG_VERSION = 1
 ini_file = os.path.join(config_folder, "starcheat.ini")
 # make a special case for this since it is referenced before the main window
 log_folder = os.path.join(config_folder, "logs")
@@ -25,10 +26,15 @@ class Config():
         self.config = configparser.ConfigParser()
         self.config_folder = config_folder
         self.ini_file = ini_file
+        self.CONFIG_VERSION = CONFIG_VERSION
 
     def read(self, option):
         self.config.read(self.ini_file)
         return self.config["starcheat"][option]
+        
+    def has_key(self, option):
+        self.config.read(self.ini_file)
+        return option in self.config["starcheat"]
 
     def set(self, option, value):
         self.config.read(ini_file)
@@ -42,7 +48,7 @@ class Config():
             starbound_folder = self.detect_starbound_folder()
 
         assets_folder = os.path.join(starbound_folder, "assets")
-        player_folder = self.detect_player_folder(starbound_folder)
+        player_folder = os.path.join(starbound_folder, "player")
         backup_folder = os.path.join(config_folder, "backups")
         make_backups = "no"
         update_timestamps = "no"
@@ -56,6 +62,7 @@ class Config():
             "assets_db": assets_db,
             "make_backups": make_backups,
             "update_timestamps": update_timestamps,
+            "config_version": CONFIG_VERSION
         }
 
         self.config["starcheat"] = defaults
@@ -81,6 +88,3 @@ class Config():
             if os.path.isdir(filename):
                 return filename
         return ""
-
-    def detect_player_folder(self, starbound_folder):
-        return os.path.join(starbound_folder, "player")
