@@ -2,7 +2,7 @@
 Utility dialogs for starcheat itself
 """
 
-import os, sys
+import os, sys, platform
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QListWidgetItem
 from PyQt5 import QtGui
 
@@ -21,6 +21,25 @@ def save_modified_dialog():
     dialog.setIcon(QMessageBox.Question)
     return dialog.exec()
 
+def selet_starbound_folder_dialog():
+    folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
+    while not os.path.isfile(os.path.join(folder, "starbound.config")):
+        dialog = QMessageBox()
+        dialog.setText("This is not your Starbound folder!")
+        dialog.setInformativeText("Please try it again and select your Starbound folder, which should contain the starbound.config.")
+        dialog.setIcon(QMessageBox.Warning)
+        dialog.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        answer = dialog.exec()
+        if answer == QMessageBox.Cancel:
+            dialog = QMessageBox()
+            dialog.setIcon(QMessageBox.Critical)
+            dialog.setText("starcheat needs Starbound installed to work.")
+            dialog.exec()
+            Config().remove_config()
+            sys.exit()
+        folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
+    return folder
+
 def new_setup_dialog():
     """Run through an initial setup dialog for starcheat if it's required."""
     if os.path.isfile(Config().ini_file):
@@ -35,7 +54,7 @@ def new_setup_dialog():
         dialog.setInformativeText("Please select it in the next dialog.")
         dialog.setIcon(QMessageBox.Warning)
         dialog.exec()
-        starbound_folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
+        starbound_folder = selet_starbound_folder_dialog()
     else:
         dialog = QMessageBox()
         dialog.setText("Detected the following folder as the location of Starbound. Is this correct?")
@@ -44,14 +63,28 @@ def new_setup_dialog():
         dialog.setIcon(QMessageBox.Question)
         answer = dialog.exec()
         if answer == QMessageBox.No:
-            starbound_folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
-    if starbound_folder == "":
+            starbound_folder = selet_starbound_folder_dialog()
+
+    if not os.path.exists(os.path.join(starbound_folder, "assets", "species")):
         dialog = QMessageBox()
-        dialog.setIcon(QMessageBox.Critical)
-        dialog.setText("starcheat needs Starbound installed to work.")
-        dialog.exec()
-        Config().remove_config()
-        sys.exit()
+        dialog.setText("No unpacked assets found!")
+        dialog.setInformativeText("""<html><body><p>You need to unpack the Starcheat assets to be able to use starcheat</p>
+                                     <p>Do you want to extract the asserts now? <i>(requires ~410MB of disk space and takes up to ~30sec)</i></p></body></html>""")
+        dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
+        dialog.setIcon(QMessageBox.Question)
+        answer = dialog.exec()
+        if answer == QMessageBox.No:
+            sys.exit()
+        asset_unpacker = ""
+        if platform.system() == "Windows":
+            asset_unpacker = os.path.join(starbound_folder, "win32", "asset_unpacker.exe")
+        elif platform.system() == "Darwin":
+            asset_unpacker = os.path.join(starbound_folder, "Starbound.app", "Contents", "MacOS", "asset_unpacker")
+        elif sys.maxsize > 2**32: # 64-bit Linux 
+            asset_unpacker = os.path.join(starbound_folder, "linux64", "asset_unpacker")
+        else: # 32-bit Linux
+            asset_unpacker = os.path.join(starbound_folder, "linux32", "asset_unpacker")
+        os.system("\"" + asset_unpacker + "\" \"" + os.path.join(starbound_folder, "assets", "packed.pak") + "\" \"" + os.path.join(starbound_folder, "assets") + "\"")
 
     Config().create_config(starbound_folder)
 
@@ -62,7 +95,7 @@ def new_setup_dialog():
     dialog.setIcon(QMessageBox.Information)
     dialog.exec()
 
-    missing_assets_text = """<html><head/><body>
+    missing_assets_text = """<html><body>
 <p>starcheat couldn't find any Starbound assets. You should double check:</p>
 <ol>
     <li>You selected the right Starbound folder.</li>
@@ -77,10 +110,10 @@ def new_setup_dialog():
     assets_db = assets.AssetsDb()
     try:
         assets_db.init_db()
-    except FileNotFoundError:
-        logging.exception("Asset folder not found")
+    except FileNotFoundError: # This does not work in most cases, because most FileNotFoundError are handled in assert.py
+        logging.exception("Asset folder not complete")
         dialog = QMessageBox()
-        dialog.setText("Unable to index assets.")
+        dialog.setText("Unable to index assets. Try to unpack the assets again.")
         dialog.setInformativeText(missing_assets_text)
         dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
