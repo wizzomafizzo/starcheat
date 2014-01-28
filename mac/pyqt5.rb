@@ -11,11 +11,6 @@ class Pyqt5 < Formula
   depends_on 'qt5' => :build
   depends_on 'https://raw.github.com/wizzomafizzo/starcheat/master/mac/sip.rb'
 
-  bottle do
-    root_url 'https://github.com/chrmoritz/starcheat/releases/download/67d39a4'
-    sha1 'e2e61a1b052cd19e6809b6fbd5b6b7a92df15bf7' => :lion_or_later
-  end
-
   def install
     args = [ "--confirm-license",
              "--bindir=#{bin}",

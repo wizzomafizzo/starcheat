@@ -1,14 +1,12 @@
 language: objective-c
 before_install:
-  - brew update
+  - wget https://github.com/chrmoritz/starcheat/releases/download/67d39a4/local_cache.tar.gz
 env:
   secure: "TRQYNASiBc+mf49oNxfL+DIADIgmOk41JGCZ0xFS0YdjMxF1FHz3mLJgjGCqxnaPZ7Xv2POg8zBdlRKPwnqueJT2QtK/PXI8I90/AkLmK2LAbxcAW4enyhNGqREW5ir+avMdq831iGHNsL25JhdIjyVTh3wD1fLybwKXkIav7lc="
 install:
-  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then brew install python3 qt5; fi
-  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then brew install https://raw.github.com/wizzomafizzo/starcheat/master/mac/pyqt5.rb; fi
+  - sudo tar xf local_cache.tar.gz -C /usr
 script:
-  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then brew install -v https://raw.github.com/wizzomafizzo/starcheat/master/mac/starcheat.rb --with-dist; fi
-  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then brew test -v https://raw.github.com/wizzomafizzo/starcheat/master/mac/starcheat.rb; fi
+  - mac/travis.rb
 branches:
   only:
     - master
