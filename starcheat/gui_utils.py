@@ -14,6 +14,59 @@ import qt_options, qt_openplayer, qt_about
 # TODO: there are way too many html templates and message text in here now
 # it should all be moved to a templates file or something
 
+# TODO: we can use this for rebuild db but have to skip the sys.exit and
+# file remove calls
+def build_assets_db():
+    assets_db_file = Config().read("assets_db")
+    assets_db = assets.AssetsDb()
+
+    logging.info("Indexing assets")
+    dialog = QMessageBox()
+    dialog.setText("starcheat will now build a database of Starbound assets.")
+    dialog.setInformativeText("This can take a little while, please be patient.")
+    dialog.setIcon(QMessageBox.Information)
+    dialog.exec()
+
+    missing_assets_text = """<html><body>
+    <p>starcheat couldn't find any Starbound %s. You should double check:</p>
+    <ol>
+    <li>You selected the right Starbound folder.</li>
+    <li>The assets you want to use have been unpacked. Instructions are
+    <a href="https://github.com/wizzomafizzo/starcheat#unpacking-starbound-assets">here</a>
+    and this includes vanilla Starbound assets.</li>
+    </ol>
+    <p>Once that's done, try restart starcheat to run the setup again.</p>
+    </body></html>"""
+
+    def bad_asset_dialog(asset_type=None):
+        dialog = QMessageBox()
+        dialog.setText("Unable to index assets.")
+        if asset_type != None:
+            dialog.setInformativeText(missing_assets_text.format(asset_type.lower()))
+        else:
+            dialog.setInformativeText(missing_assets_text.format("assets"))
+        dialog.setIcon(QMessageBox.Critical)
+        dialog.exec()
+        Config().remove_config()
+        assets_db.db.close()
+        os.remove(assets_db_file)
+        sys.exit()
+
+    assets_db.init_db()
+    asset_types = ("Items", "Blueprints", "Species")
+    for t in asset_types:
+        try:
+            asset_class = getattr(assets, t)()
+            getattr(asset_class, "add_all_" + t.lower())()
+        except FileNotFoundError:
+            # catch anything that couldn't be skipped during index
+            logging.exception("Asset folder not complete: %s", t)
+            bad_asset_dialog(t)
+
+        if getattr(asset_class, "get_" + t.lower() + "_total")() == 0:
+            logging.error("Could not find any assets for: %s", t)
+            bad_asset_dialog(t)
+
 def save_modified_dialog():
     """Display a prompt asking user what to do about a modified file. Return button clicked."""
     dialog = QMessageBox()
@@ -45,12 +98,14 @@ def select_starbound_folder_dialog():
 
 def new_setup_dialog():
     """Run through an initial setup dialog for starcheat if it's required."""
+    # TODO: could do a check here for a specific key
     if os.path.isfile(Config().ini_file):
         return
 
     logging.info("First setup dialog")
-    starbound_folder = Config().detect_starbound_folder()
 
+    # Starbound folder settings
+    starbound_folder = Config().detect_starbound_folder()
     if starbound_folder == "":
         dialog = QMessageBox()
         dialog.setText("Unable to detect the main Starbound folder.")
@@ -68,11 +123,16 @@ def new_setup_dialog():
         if answer == QMessageBox.No:
             starbound_folder = select_starbound_folder_dialog()
 
-    if not os.path.exists(os.path.join(starbound_folder, "assets", "species")):
+    # initial assets sanity check
+    # better to check for an actual file. this should be a pretty safe bet
+    unpack_test_file = os.path.join(starbound_folder, "assets", "species", "human.species")
+    if not os.path.exists(unpack_test_file):
         dialog = QMessageBox()
         dialog.setText("No unpacked assets found!")
-        dialog.setInformativeText("""<html><body><p>You need to unpack the Starcheat assets to be able to use starcheat</p>
-                                     <p>Do you want to extract the asserts now? <i>(requires ~410MB of disk space and takes up to ~30sec)</i></p></body></html>""")
+        dialog.setInformativeText("""<html><body>
+        <p>You need to unpack the Starcheat assets to be able to use starcheat</p>
+        <p>Do you want to extract the asserts now?
+        <i>(requires ~410MB of disk space and takes up to ~30sec)</i></p></body></html>""")
         dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         dialog.setIcon(QMessageBox.Question)
         answer = dialog.exec()
@@ -94,58 +154,13 @@ def new_setup_dialog():
                                              os.path.join(starbound_folder, "assets"))
         os.system(unpack_cmd)
 
+    # looks okay enough, let's go
     Config().create_config(starbound_folder)
-
-    logging.info("Indexing assets")
-    dialog = QMessageBox()
-    dialog.setText("starcheat will now build a database of Starbound assets.")
-    dialog.setInformativeText("This can take a little while, please be patient.")
-    dialog.setIcon(QMessageBox.Information)
-    dialog.exec()
-
-    missing_assets_text = """<html><body>
-<p>starcheat couldn't find any Starbound assets. You should double check:</p>
-<ol>
-    <li>You selected the right Starbound folder.</li>
-    <li>The assets you want to use have been unpacked. Instructions are <a href="https://github.com/wizzomafizzo/starcheat#unpacking-starbound-assets">here</a> and this includes vanilla Starbound assets.</li>
-</ol>
-<p>Once that's done, try restart starcheat to run the setup again.</p>
-</body></html>"""
-
     assets_db_file = Config().read("assets_db")
+    # just to make sure
     if os.path.isfile(assets_db_file):
         os.remove(assets_db_file)
-    assets_db = assets.AssetsDb()
-    try:
-        assets_db.init_db()
-    except FileNotFoundError:
-        # This does not work in most cases, because most FileNotFoundError are
-        # handled in assets.py
-        logging.exception("Asset folder not complete")
-        dialog = QMessageBox()
-        dialog.setText("Unable to index assets. Try to unpack the assets again.")
-        dialog.setInformativeText(missing_assets_text)
-        dialog.setIcon(QMessageBox.Critical)
-        dialog.exec()
-        Config().remove_config()
-        assets_db.db.close()
-        os.remove(assets_db_file)
-        sys.exit()
-
-    total_assets = assets.AssetsDb().get_total_indexed()
-    logging.debug(total_assets)
-
-    if total_assets == 0:
-        logging.error("No assets indexed")
-        dialog = QMessageBox()
-        dialog.setText("No assets were found.")
-        dialog.setInformativeText(missing_assets_text)
-        dialog.setIcon(QMessageBox.Critical)
-        dialog.exec()
-        Config().remove_config()
-        assets_db.db.close()
-        os.remove(assets_db_file)
-        sys.exit()
+    build_assets_db()
 
 class AboutDialog():
     def __init__(self, parent):

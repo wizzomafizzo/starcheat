@@ -50,7 +50,6 @@ def parse_json(filename):
         return json.loads(content)
 
 def load_asset_file(filename):
-    # TODO: probably need to put deflate here after patch
     return parse_json(filename)
 
 def mod_asset_folder(mod_folder):
@@ -93,15 +92,6 @@ class AssetsDb():
         db.commit()
         db.close()
 
-        logging.info("Adding items")
-        Items().add_all_items()
-
-        logging.info("Adding blueprints")
-        Blueprints().add_all_blueprints()
-
-        logging.info("Adding species")
-        Species().add_all_species()
-
     def get_total_indexed(self):
         c = self.db.cursor()
         tables = ("(select count(*) from items)",
@@ -123,6 +113,14 @@ class AssetsDb():
             c.execute("drop table %s" % t)
         self.db.commit()
         self.init_db()
+        # TODO: bit weird these are here but not in init_db
+        # this is only so the options dialog rebuild db works for now
+        logging.info("Adding items")
+        Items().add_all_items()
+        logging.info("Adding blueprints")
+        Blueprints().add_all_blueprints()
+        logging.info("Adding species")
+        Species().add_all_species()
 
 class Blueprints():
     def __init__(self):
@@ -211,7 +209,7 @@ class Blueprints():
         result = c.fetchall()
         return result
 
-    def get_blueprint_total(self):
+    def get_blueprints_total(self):
         c = self.db.cursor()
         c.execute("select count(*) from blueprints")
         return c.fetchone()[0]
@@ -418,7 +416,7 @@ class Items():
         result = c.fetchall()
         return result
 
-    def get_item_total(self):
+    def get_items_total(self):
         c = self.db.cursor()
         c.execute("select count(*) from items")
         return c.fetchone()[0]
