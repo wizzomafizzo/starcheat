@@ -11,6 +11,9 @@ from gui_common import preview_icon
 import save_file, assets, logging
 import qt_options, qt_openplayer, qt_about
 
+# TODO: there are way too many html templates and message text in here now
+# it should all be moved to a templates file or something
+
 def save_modified_dialog():
     """Display a prompt asking user what to do about a modified file. Return button clicked."""
     dialog = QMessageBox()
@@ -21,7 +24,7 @@ def save_modified_dialog():
     dialog.setIcon(QMessageBox.Question)
     return dialog.exec()
 
-def selet_starbound_folder_dialog():
+def select_starbound_folder_dialog():
     folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
     while not os.path.isfile(os.path.join(folder, "starbound.config")):
         dialog = QMessageBox()
@@ -54,7 +57,7 @@ def new_setup_dialog():
         dialog.setInformativeText("Please select it in the next dialog.")
         dialog.setIcon(QMessageBox.Warning)
         dialog.exec()
-        starbound_folder = selet_starbound_folder_dialog()
+        starbound_folder = select_starbound_folder_dialog()
     else:
         dialog = QMessageBox()
         dialog.setText("Detected the following folder as the location of Starbound. Is this correct?")
@@ -63,7 +66,7 @@ def new_setup_dialog():
         dialog.setIcon(QMessageBox.Question)
         answer = dialog.exec()
         if answer == QMessageBox.No:
-            starbound_folder = selet_starbound_folder_dialog()
+            starbound_folder = select_starbound_folder_dialog()
 
     if not os.path.exists(os.path.join(starbound_folder, "assets", "species")):
         dialog = QMessageBox()
@@ -75,16 +78,21 @@ def new_setup_dialog():
         answer = dialog.exec()
         if answer == QMessageBox.No:
             sys.exit()
-        asset_unpacker = ""
+
         if platform.system() == "Windows":
             asset_unpacker = os.path.join(starbound_folder, "win32", "asset_unpacker.exe")
         elif platform.system() == "Darwin":
-            asset_unpacker = os.path.join(starbound_folder, "Starbound.app", "Contents", "MacOS", "asset_unpacker")
-        elif sys.maxsize > 2**32: # 64-bit Linux 
+            asset_unpacker = os.path.join(starbound_folder, "Starbound.app", "Contents",
+                                          "MacOS", "asset_unpacker")
+        elif sys.maxsize > 2**32: # 64-bit Linux
             asset_unpacker = os.path.join(starbound_folder, "linux64", "asset_unpacker")
         else: # 32-bit Linux
             asset_unpacker = os.path.join(starbound_folder, "linux32", "asset_unpacker")
-        os.system("\"" + asset_unpacker + "\" \"" + os.path.join(starbound_folder, "assets", "packed.pak") + "\" \"" + os.path.join(starbound_folder, "assets") + "\"")
+
+        unpack_cmd = '"%s" "%s" "%s"'.format(asset_unpacker,
+                                             os.path.join(starbound_folder, "assets", "packed.pak"),
+                                             os.path.join(starbound_folder, "assets"))
+        os.system(unpack_cmd)
 
     Config().create_config(starbound_folder)
 
@@ -110,7 +118,9 @@ def new_setup_dialog():
     assets_db = assets.AssetsDb()
     try:
         assets_db.init_db()
-    except FileNotFoundError: # This does not work in most cases, because most FileNotFoundError are handled in assert.py
+    except FileNotFoundError:
+        # This does not work in most cases, because most FileNotFoundError are
+        # handled in assets.py
         logging.exception("Asset folder not complete")
         dialog = QMessageBox()
         dialog.setText("Unable to index assets. Try to unpack the assets again.")
