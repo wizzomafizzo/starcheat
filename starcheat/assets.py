@@ -500,7 +500,14 @@ class Species():
         c = self.db.cursor()
         c.execute("select distinct name from species order by name")
         names = [x[0] for x in c.fetchall()]
-        return [x[0].upper() + x[1:] for x in names]
+        formatted = []
+        for s in names:
+            try:
+                formatted.append(s[0].upper() + s[1:])
+            except IndexError:
+                formatted.append(s)
+                logging.exception("Unable to format species: %s", s)
+        return formatted
 
     def get_species(self, name):
         """Look up a species from the index and return contents of species files."""

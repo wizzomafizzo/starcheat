@@ -84,6 +84,12 @@ class MainWindow():
             logging.warning("No player file selected")
             return
 
+        # let's move this back here. i am wondering if there is a conflict
+        # between the textupdated signal and the combobox population? the only
+        # downside to this is rebuild db won't reflect changes til restart
+        for species in assets.Species().get_species_list():
+            self.ui.race.addItem(species)
+
         # set up sliders to update values together
         stats = "health", "energy", "food"
         for s in stats:
@@ -129,19 +135,7 @@ class MainWindow():
         # name
         self.ui.name.setText(self.player.get_name())
         # race
-        # populate race combo box
-        self.ui.race.clear()
-        for race in assets.Species().get_species_list():
-            self.ui.race.addItem(race)
-        raw_race = self.player.get_race()
-        try:
-            self.ui.race.setCurrentText(raw_race[0].upper() + raw_race[1:])
-        except IndexError:
-            # race was empty (or 1 char log)
-            # TODO: this seems messy
-            # last ditch
-            self.ui.race.setCurrentText("Apex")
-            logging.exception("Invalid race value")
+        self.ui.race.setCurrentText(self.player.get_race())
         # BUG: okay so there is this bug where sometimes on windows pyqt will chuck
         # a fit and not set values on some stuff. this seems to work itself out
         # when you overwrite the values and reopen the file. i'm going to just

@@ -466,8 +466,14 @@ class PlayerSave():
     def get_wieldable(self):
         return self.entity["inventory"]["wieldable"]
 
-    def get_race(self):
-        return self.entity["identity"]["species"]
+    def get_race(self, pretty=False):
+        race = self.entity["identity"]["species"]
+        if pretty:
+            try:
+                race = race[0].upper() + race[1:]
+            except IndexError:
+                logging.exception("Unable to format race: %s", race)
+        return race
 
     def get_pixels(self):
         return self.entity["inventory"]["money"]
@@ -488,6 +494,8 @@ class PlayerSave():
     def set_name(self, name):
         self.entity["identity"]["name"] = name
 
+    # TODO: at some point we need to run through and replace all "race"
+    # references to species
     def set_race(self, race):
         self.entity["identity"]["species"] = race.lower()
 
