@@ -122,9 +122,7 @@ In Finder:
 - Type ```~/Library/Application Support/starcheat/logs``` and press Enter
 
 ### Unpacking Starbound assets
-Furious Koala packs assets into a single file which we can't read yet. For now, you'll need to manually unpack the vanilla Starbound assets. You will have to do this for each mod you want starcheat to include as well.
-
-If these instructions don't work for you, check out [this post](http://community.playstarbound.com/index.php?threads/how-to-successfully-pack-and-unpack-pak-files.66649/) on the forums for more options.
+starcheat will try its best to unpack the vanilla assets for you during setup. If you need to include mods or if the vanilla unpack doesn't work, you can try these manual methods. If they don't work for you either, check out [this post](http://community.playstarbound.com/index.php?threads/how-to-successfully-pack-and-unpack-pak-files.66649/) on the forums for more options.
 
 #### Windows
 - Press the Windows key and R (```Win+R```) to bring up the Run... dialog
@@ -132,7 +130,7 @@ If these instructions don't work for you, check out [this post](http://community
   - "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\win32\asset_unpacker.exe" "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\assets\packed.pak" "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\assets"
 
 #### Linux
-**NOTE: If you're on 32 bit, change the path to Starbound.**
+**NOTE:** If you're on 32 bit, change the path to Starbound.
 
 In a terminal:
 - $ "~/.steam/root/SteamApps/common/Starbound/linux64/asset_unpacker" "~/.steam/root/SteamApps/common/Starbound/assets/packed.pak" "~/.steam/root/SteamApps/common/Starbound/assets"
