@@ -42,9 +42,9 @@ def build_assets_db():
         dialog = QMessageBox()
         dialog.setText("Unable to index assets.")
         if asset_type != None:
-            dialog.setInformativeText(missing_assets_text.format(asset_type.lower()))
+            dialog.setInformativeText(missing_assets_text % asset_type.lower())
         else:
-            dialog.setInformativeText(missing_assets_text.format("assets"))
+            dialog.setInformativeText(missing_assets_text % "assets")
         dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
         Config().remove_config()
@@ -130,9 +130,9 @@ def new_setup_dialog():
         dialog = QMessageBox()
         dialog.setText("No unpacked assets found!")
         dialog.setInformativeText("""<html><body>
-        <p>You need to unpack the Starcheat assets to be able to use starcheat</p>
-        <p>Do you want to extract the asserts now?
-        <i>(requires ~410MB of disk space and takes up to ~30sec)</i></p></body></html>""")
+        <p>You need to unpack the Starcheat assets to use starcheat</p>
+        <p>Do you want to extract the assets now?
+        <i>(this requires ~410MB of disk space and takes up to 30 seconds)</i></p></body></html>""")
         dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         dialog.setIcon(QMessageBox.Question)
         answer = dialog.exec()
@@ -152,6 +152,7 @@ def new_setup_dialog():
         unpack_cmd = '"{0}" "{1}" "{2}"'.format(asset_unpacker,
                                              os.path.join(starbound_folder, "assets", "packed.pak"),
                                              os.path.join(starbound_folder, "assets"))
+
         os.system(unpack_cmd)
 
     # looks okay enough, let's go
