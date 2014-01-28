@@ -1097,7 +1097,7 @@
    </widget>
    <widget class="QPushButton" name="appearance_button">
     <property name="enabled">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="geometry">
      <rect>
