@@ -126,7 +126,7 @@ def new_setup_dialog():
     # initial assets sanity check
     # better to check for an actual file. this should be a pretty safe bet
     unpack_test_file = os.path.join(starbound_folder, "assets", "species", "human.species")
-    if not os.path.exists(unpack_test_file):
+    if not os.path.isfile(unpack_test_file):
         dialog = QMessageBox()
         dialog.setText("No unpacked assets found!")
         dialog.setInformativeText("""<html><body>
@@ -149,9 +149,10 @@ def new_setup_dialog():
         else: # 32-bit Linux
             asset_unpacker = os.path.join(starbound_folder, "linux32", "asset_unpacker")
 
-        unpack_cmd = '"%s" "%s" "%s"'.format(asset_unpacker,
+        unpack_cmd = '"{0}" "{1}" "{2}"'.format(asset_unpacker,
                                              os.path.join(starbound_folder, "assets", "packed.pak"),
                                              os.path.join(starbound_folder, "assets"))
+        print(unpack_cmd)
         os.system(unpack_cmd)
 
     # looks okay enough, let's go
