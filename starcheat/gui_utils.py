@@ -82,7 +82,7 @@ def select_starbound_folder_dialog():
     while not os.path.isfile(os.path.join(folder, "starbound.config")):
         dialog = QMessageBox()
         dialog.setText("This is not your Starbound folder!")
-        dialog.setInformativeText("Please try it again and select your Starbound folder, which should contain the starbound.config.")
+        dialog.setInformativeText("Please try again and select your Starbound folder, which should contain the starbound.config file.")
         dialog.setIcon(QMessageBox.Warning)
         dialog.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
         answer = dialog.exec()
@@ -103,8 +103,8 @@ def new_setup_dialog():
             return
         logging.info("rebuild config and assets_db (config_version mismatch)")
         dialog = QMessageBox()
-        dialog.setText("Detected outdated starcheat config")
-        dialog.setInformativeText("recreating config now...")
+        dialog.setText("Your starcheat settings are outdated.")
+        dialog.setInformativeText("A new config file and assets index will be created...")
         dialog.setIcon(QMessageBox.Warning)
         dialog.exec()
         os.remove(Config().read("assets_db"))
