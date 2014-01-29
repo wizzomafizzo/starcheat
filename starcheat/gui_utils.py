@@ -163,6 +163,17 @@ def new_setup_dialog():
 
         os.system(unpack_cmd)
 
+        if not os.path.isfile(unpack_test_file):
+            print(unpack_cmd)
+            dialog = QMessageBox()
+            dialog.setText("Unable to unpack the Starbound assets.")
+            dialog.setInformativeText("""<html><body>Please follow 
+            <a href="https://github.com/wizzomafizzo/starcheat#unpacking-starbound-assets">this guide</a> 
+            to do it yourself.</body></html>""")
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec()
+            sys.exit()
+
     # looks okay enough, let's go
     Config().create_config(starbound_folder)
     assets_db_file = Config().read("assets_db")
