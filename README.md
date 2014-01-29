@@ -128,6 +128,7 @@ starcheat will try its best to unpack the vanilla assets for you during setup. I
 - Press the Windows key and R (```Win+R```) to bring up the Run... dialog
 - Enter the following text into the prompt and press Enter:
   - "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\win32\asset_unpacker.exe" "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\assets\packed.pak" "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\assets"
+  - If Steam is not installed to the default location, change the paths above to match your Steam/Starbound location
 
 #### Linux
 **NOTE:** If you're on 32 bit, change the path to asset_unpacker.
