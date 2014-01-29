@@ -94,7 +94,7 @@ def select_starbound_folder_dialog():
             Config().remove_config()
             sys.exit()
         folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
-    return folder
+    return os.path.normpath(folder)
 
 def new_setup_dialog():
     """Run through an initial setup dialog for starcheat if it's required."""
@@ -164,7 +164,6 @@ def new_setup_dialog():
         os.system(unpack_cmd)
 
         if not os.path.isfile(unpack_test_file):
-            print(unpack_cmd)
             dialog = QMessageBox()
             dialog.setText("Unable to unpack the Starbound assets.")
             dialog.setInformativeText("""<html><body>Please follow 
