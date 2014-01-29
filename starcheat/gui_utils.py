@@ -131,6 +131,7 @@ def new_setup_dialog():
         if answer == QMessageBox.No:
             starbound_folder = select_starbound_folder_dialog()
 
+    print(starbound_folder)
     # initial assets sanity check
     # better to check for an actual file. this should be a pretty safe bet
     unpack_test_file = os.path.join(starbound_folder, "assets", "species", "human.species")
@@ -160,7 +161,7 @@ def new_setup_dialog():
         unpack_cmd = '"{0}" "{1}" "{2}"'.format(asset_unpacker,
                                              os.path.join(starbound_folder, "assets", "packed.pak"),
                                              os.path.join(starbound_folder, "assets"))
-
+        print(unpack_cmd)
         os.system(unpack_cmd)
 
         if not os.path.isfile(unpack_test_file):
