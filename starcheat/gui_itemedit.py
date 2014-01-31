@@ -9,12 +9,42 @@ Qt item edit dialog
 # once that's complete, work can be started on proper item generation. to begin,
 # we just wanna pull in all the default values of an item
 
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 from PyQt5.QtGui import QPixmap
 
-import assets, qt_itemedit, save_file
+import json
+import assets, qt_itemedit, qt_itemeditoptions, save_file
 from gui_common import inv_icon, ItemWidget, empty_slot
 from gui_itembrowser import ItemBrowser
+
+class ItemEditOptions():
+    def __init__(self, parent, options):
+        self.dialog = QDialog(parent)
+        self.ui = qt_itemeditoptions.Ui_Dialog()
+        self.ui.setupUi(self.dialog)
+
+        self.item_options = options
+
+        pretty_data = json.dumps(options, sort_keys=True,
+                                 indent=4, separators=(',', ': '))
+        self.ui.options.setPlainText(pretty_data)
+
+        self.ui.options.textChanged.connect(self.validate_options)
+        self.validate_options()
+
+    def validate_options(self):
+        valid = "Item option is valid."
+        invalid = "Item option invalid: %s"
+        try:
+            json.loads(self.ui.options.toPlainText())
+            self.ui.valid_label.setStyleSheet("color: green")
+            self.ui.valid_label.setText(valid)
+            self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
+        except ValueError as err:
+            self.ui.valid_label.setStyleSheet("color: red")
+            self.ui.valid_label.setText(invalid % err)
+            # this would be nicer if it just disabled the save button
+            self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Cancel)
 
 class ItemVariant(QTableWidgetItem):
     def __init__(self, key, value):
@@ -42,21 +72,15 @@ class ItemEdit():
         # set up signals
         self.ui.load_button.clicked.connect(self.new_item_browser)
         self.ui.item_type.textChanged.connect(self.update_item)
+        self.ui.variant.itemDoubleClicked.connect(self.new_item_edit_options)
 
         try:
             # set name text box
             self.ui.item_type.setText(self.item["name"])
             # set item count spinbox
             self.ui.count.setValue(int(self.item["count"]))
-
             # set up variant table
-            self.ui.variant.setRowCount(len(self.item["data"]))
-            self.ui.variant.setHorizontalHeaderLabels(["Options"])
-            row = 0
-            for k in self.item["data"].keys():
-                variant = ItemVariant(k, self.item["data"][k])
-                self.ui.variant.setItem(row, 0, variant)
-                row += 1
+            self.populate_options()
         except TypeError:
             # empty slot
             self.new_item_browser()
@@ -117,10 +141,28 @@ class ItemEdit():
         item = save_file.new_item(name, count, variant)
         return ItemWidget(item)
 
+    def new_item_edit_options(self):
+        item_edit_options = ItemEditOptions(self.dialog, self.item["data"])
+        def save():
+            new_options = json.loads(item_edit_options.ui.options.toPlainText())
+            self.item["data"] = new_options
+            self.populate_options()
+        item_edit_options.dialog.accepted.connect(save)
+        item_edit_options.dialog.exec()
+
     def new_item_browser(self):
         self.item_browser = ItemBrowser(self.dialog)
         self.item_browser.dialog.accepted.connect(self.set_item_browser_selection)
         self.item_browser.dialog.exec()
+
+    def populate_options(self):
+        self.ui.variant.setRowCount(len(self.item["data"]))
+        self.ui.variant.setHorizontalHeaderLabels(["Options"])
+        row = 0
+        for k in self.item["data"].keys():
+            variant = ItemVariant(k, self.item["data"][k])
+            self.ui.variant.setItem(row, 0, variant)
+            row += 1
 
     def set_item_browser_selection(self):
         self.ui.item_type.setText(self.item_browser.get_selection())
