@@ -70,7 +70,7 @@ The standalone build makes an executable which includes all Python and Qt depend
 ### Linux
 ```
 $ cd <starcheat top folder>
-$ ./build.sh
+$ ./build.py
 $ ./build/starcheat.py
 ```
 

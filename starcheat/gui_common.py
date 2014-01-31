@@ -31,6 +31,10 @@ def empty_slot():
     """Return an empty bag slot widget."""
     return ItemWidget(None)
 
+def ItemOptionWidget(QTableWidgetItem):
+    def __init__(self, option):
+        pass
+
 # TODO: a decision needs to be made here whether to continue with the custom
 #       widget item or an entirely new custom table view. if the features below
 #       are easy enough to add then we'll just stick with the current method
