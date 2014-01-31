@@ -2,7 +2,7 @@
 Utility dialogs for starcheat itself
 """
 
-import os, sys, platform
+import os, sys, platform, subprocess
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QListWidgetItem
 from PyQt5 import QtGui
 
@@ -162,8 +162,9 @@ def new_setup_dialog():
                                              os.path.join(starbound_folder, "assets", "packed.pak"),
                                              os.path.join(starbound_folder, "assets"))
         print(unpack_cmd)
-        os.system(unpack_cmd)
-
+#        os.system(unpack_cmd)
+        subprocess.call(unpack_cmd,shell=True)
+        
         if not os.path.isfile(unpack_test_file):
             dialog = QMessageBox()
             dialog.setText("Unable to unpack the Starbound assets.")
