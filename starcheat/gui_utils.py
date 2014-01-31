@@ -162,14 +162,13 @@ def new_setup_dialog():
                                              os.path.join(starbound_folder, "assets", "packed.pak"),
                                              os.path.join(starbound_folder, "assets"))
         print(unpack_cmd)
-#        os.system(unpack_cmd)
         subprocess.call(unpack_cmd,shell=True)
-        
+
         if not os.path.isfile(unpack_test_file):
             dialog = QMessageBox()
             dialog.setText("Unable to unpack the Starbound assets.")
-            dialog.setInformativeText("""<html><body>Please follow 
-            <a href="https://github.com/wizzomafizzo/starcheat#unpacking-starbound-assets">this guide</a> 
+            dialog.setInformativeText("""<html><body>Please follow
+            <a href="https://github.com/wizzomafizzo/starcheat#unpacking-starbound-assets">this guide</a>
             to do it yourself.</body></html>""")
             dialog.setIcon(QMessageBox.Warning)
             dialog.exec()
