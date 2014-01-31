@@ -99,14 +99,23 @@ def select_starbound_folder_dialog():
 def new_setup_dialog():
     """Run through an initial setup dialog for starcheat if it's required."""
     if os.path.isfile(Config().ini_file):
-        if Config().has_key("config_version") and int(Config().read("config_version")) == Config().CONFIG_VERSION:
+        if not (Config().has_key("config_version") and int(Config().read("config_version")) == Config().CONFIG_VERSION):
+            logging.info("rebuild config and assets_db (config_version mismatch)")
+            dialog = QMessageBox()
+            dialog.setText("Your starcheat settings are outdated.")
+            dialog.setInformativeText("A new config file and assets index will be created...")
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec()
+        elif not (Config().has_key("starbound_folder") and os.path.isfile(os.path.join(Config().read("starbound_folder"), "assets", "species", "human.species"))):
+            # assets could be removed since initial setup
+            logging.info("unpacking removed assets again")
+            dialog = QMessageBox()
+            dialog.setText("Unable to find unpackes Starbound assets")
+            dialog.setInformativeText("Unpacking removed assets again...")
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec()
+        else:
             return
-        logging.info("rebuild config and assets_db (config_version mismatch)")
-        dialog = QMessageBox()
-        dialog.setText("Your starcheat settings are outdated.")
-        dialog.setInformativeText("A new config file and assets index will be created...")
-        dialog.setIcon(QMessageBox.Warning)
-        dialog.exec()
         os.remove(Config().read("assets_db"))
         os.remove(Config().ini_file)
 
@@ -131,7 +140,6 @@ def new_setup_dialog():
         if answer == QMessageBox.No:
             starbound_folder = select_starbound_folder_dialog()
 
-    print(starbound_folder)
     # initial assets sanity check
     # better to check for an actual file. this should be a pretty safe bet
     unpack_test_file = os.path.join(starbound_folder, "assets", "species", "human.species")
@@ -161,8 +169,7 @@ def new_setup_dialog():
         unpack_cmd = '"{0}" "{1}" "{2}"'.format(asset_unpacker,
                                              os.path.join(starbound_folder, "assets", "packed.pak"),
                                              os.path.join(starbound_folder, "assets"))
-        print(unpack_cmd)
-        subprocess.call(unpack_cmd,shell=True)
+        subprocess.call(unpack_cmd, shell=True)
 
         if not os.path.isfile(unpack_test_file):
             dialog = QMessageBox()
