@@ -45,8 +45,9 @@
        <property name="text">
         <string>&lt;&lt;</string>
        </property>
-       <property name="arrowType">
-        <enum>Qt::LeftArrow</enum>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/starcheat/images/icons/glyphicons_210_left_arrow.png</normaloff>:/starcheat/images/icons/glyphicons_210_left_arrow.png</iconset>
        </property>
       </widget>
      </item>
@@ -55,8 +56,9 @@
        <property name="text">
         <string>&gt;&gt;</string>
        </property>
-       <property name="arrowType">
-        <enum>Qt::RightArrow</enum>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/starcheat/images/icons/glyphicons_211_right_arrow.png</normaloff>:/starcheat/images/icons/glyphicons_211_right_arrow.png</iconset>
        </property>
       </widget>
      </item>
@@ -121,6 +123,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

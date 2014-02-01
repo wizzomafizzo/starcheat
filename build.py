@@ -35,7 +35,8 @@ def main():
 
     if options.verbose:
         print("Copying starcheat python scripts")
-    shutil.copytree(os.path.join(src_dir,"starcheat"), prefix, ignore=shutil.ignore_patterns("templates", "*.ui"))
+    shutil.copytree(os.path.join(src_dir,"starcheat"), prefix, ignore=shutil.ignore_patterns("templates", "*.ui",
+                                                                                             "images", "*.qrc"))
 
     if options.verbose:
         print("Generating python Qt templates...")
@@ -48,6 +49,17 @@ def main():
             os.system("pyuic5 " + temp + " > " + os.path.join(prefix, pyname))
         if options.verbose:
             print("Generated " + pyname)
+
+    if options.verbose:
+        print("Generating python Qt resource...")
+    res_file = os.path.join(src_dir,"starcheat", "resources.qrc")
+    pyname = "resources_rc.py"
+    if platform.system() == "Windows":
+        os.system(os.path.join(pyqt5_dir,"pyrcc5.bat") + " " + res_file + " > " + os.path.join(prefix, pyname))
+    else:
+        os.system("pyrcc5 " + res_file + " > " + os.path.join(prefix, pyname))
+    if options.verbose:
+        print("Generated " + pyname)
 
     if options.verbose:
         print("Script build is complete!")
