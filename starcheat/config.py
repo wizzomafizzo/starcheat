@@ -16,7 +16,7 @@ else:
 if os.path.isdir(config_folder) == False:
     os.mkdir(config_folder)
 
-CONFIG_VERSION = 1
+CONFIG_VERSION = 2
 ini_file = os.path.join(config_folder, "starcheat.ini")
 # make a special case for this since it is referenced before the main window
 log_folder = os.path.join(config_folder, "logs")
@@ -31,7 +31,7 @@ class Config():
     def read(self, option):
         self.config.read(self.ini_file)
         return self.config["starcheat"][option]
-        
+
     def has_key(self, option):
         self.config.read(self.ini_file)
         return option in self.config["starcheat"]
@@ -83,7 +83,7 @@ class Config():
             os.path.expanduser("~/Library/Application Support/Steam/SteamApps/common/Starbound"),
             os.path.expanduser("~/.steam/root/SteamApps/common/Starbound")
         ]
-        
+
         if platform.system() == "Windows":
             import winreg
             steam = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Valve\Steam")
