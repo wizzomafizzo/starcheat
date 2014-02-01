@@ -401,42 +401,41 @@ class PlayerSave():
         return self.entity["uuid"]
 
     # stats
-    # until we can calculate item active effects we just use base max as current max
     def get_food(self):
-        return self.entity["status"]["foodSchema"]["value"]
+        return self.entity["status"]["foodSchema"]["value"], self.entity["status"]["foodSchema"]["max"]
 
     def get_max_food(self):
-        return self.entity["status"]["foodSchema"]["max"]
+        return self.entity["statusParameters"]["baseMaxFood"]
 
     def get_health(self):
-        return self.entity["status"]["healthSchema"]["value"]
+        return self.entity["status"]["healthSchema"]["value"], self.entity["status"]["healthSchema"]["max"]
 
     def get_max_health(self):
-        return self.entity["status"]["healthSchema"]["max"]
-
-    def get_max_warmth(self):
-        return self.entity["status"]["warmthSchema"]["max"]
+        return self.entity["statusParameters"]["baseMaxHealth"]
 
     def get_warmth(self):
-        return self.entity["status"]["warmthSchema"]["value"]
+        return self.entity["status"]["warmthSchema"]["value"], self.entity["status"]["warmthSchema"]["max"]
+
+    def get_max_warmth(self):
+        return self.entity["statusParameters"]["baseMaxWarmth"]
 
     def get_energy(self):
-        return self.entity["status"]["energySchema"]["value"]
+        return self.entity["status"]["energySchema"]["value"], self.entity["status"]["energySchema"]["max"]
 
     def get_max_energy(self):
-        return self.entity["status"]["energySchema"]["max"]
+        return self.entity["statusParameters"]["baseMaxEnergy"]
+
+    def get_breath(self):
+        return self.entity["status"]["breathSchema"]["value"], self.entity["status"]["breathSchema"]["max"]
+
+    def get_max_breath(self):
+        return self.entity["statusParameters"]["baseMaxBreath"]
 
     def get_energy_regen(self):
         return self.entity["statusParameters"]["energyReplenishmentRate"]
 
     def get_gender(self):
         return self.entity["identity"]["gender"]
-
-    def get_breath(self):
-        return self.entity["status"]["breathSchema"]["value"]
-
-    def get_max_breath(self):
-        return self.entity["status"]["breathSchema"]["max"]
 
     def get_head(self):
         equip = self.entity["inventory"]["equipment"]
@@ -509,34 +508,34 @@ class PlayerSave():
         self.entity["identity"]["gender"] = gender.lower()
 
     # stats
-    def set_health(self, current):
+    def set_health(self, current, max):
         self.entity["status"]["healthSchema"]["value"] = float(current)
+        self.entity["status"]["healthSchema"]["max"] = float(max)
 
-    def set_max_health(self, maximum):
-        self.entity["status"]["healthSchema"]["max"] =  float(maximum)
-        self.entity["statusParameters"]["baseMaxHealth"] = float(maximum)
+    def set_max_health(self, max):
+        self.entity["statusParameters"]["baseMaxHealth"] = float(max)
 
-    def set_energy(self, current):
+    def set_energy(self, current, max):
+        self.entity["status"]["energySchema"]["max"] = float(max)
         self.entity["status"]["energySchema"]["value"] = float(current)
 
-    def set_max_energy(self, maximum):
-        self.entity["status"]["energySchema"]["max"] = float(maximum)
-        self.entity["statusParameters"]["baseMaxEnergy"] = float(maximum)
+    def set_max_energy(self, max):
+        self.entity["statusParameters"]["baseMaxEnergy"] = float(max)
 
-    def set_food(self, current):
+    def set_food(self, current, max):
+        self.entity["status"]["foodSchema"]["max"] = float(max)
         self.entity["status"]["foodSchema"]["value"] = float(current)
 
-    def set_max_food(self, maximum):
-        self.entity["status"]["foodSchema"]["max"] = float(maximum)
-        self.entity["statusParameters"]["baseMaxFood"] = float(maximum)
+    def set_max_food(self, max):
+        self.entity["statusParameters"]["baseMaxFood"] = float(max)
 
-    def set_max_warmth(self, maximum):
-        self.entity["status"]["warmthSchema"]["max"] = float(maximum)
-        self.entity["statusParameters"]["baseMaxWarmth"] = float(maximum)
+    def set_max_warmth(self, max):
+        self.entity["status"]["warmthSchema"]["max"] = float(max)
+        self.entity["statusParameters"]["baseMaxWarmth"] = float(max)
 
-    def set_max_breath(self, maximum):
-        self.entity["status"]["breathSchema"]["max"] = float(maximum)
-        self.entity["statusParameters"]["baseMaxBreath"] = float(maximum)
+    def set_max_breath(self, max):
+        self.entity["status"]["breathSchema"]["max"] = float(max)
+        self.entity["statusParameters"]["baseMaxBreath"] = float(max)
 
     def set_energy_regen(self, rate):
         self.entity["statusParameters"]["energyReplenishmentRate"] = float(rate)

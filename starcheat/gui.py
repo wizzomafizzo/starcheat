@@ -160,7 +160,7 @@ class MainWindow():
                 getattr(self.ui, "max_" + stat).setValue(max_stat)
                 cur_stat = getattr(self.player, "get_" + stat)()
                 getattr(self.ui, stat).setMaximum(max_stat)
-                getattr(self.ui, stat).setValue(cur_stat)
+                getattr(self.ui, stat).setValue(cur_stat[0])
                 getattr(self, "update_" + stat)()
             except TypeError:
                 logging.exception("Unable to set %s", stat)
@@ -229,7 +229,7 @@ class MainWindow():
         for s in stats:
             current = getattr(self.ui, s).value()
             maximum = getattr(self.ui, "max_" + s).value()
-            getattr(self.player, "set_" + s)(current)
+            getattr(self.player, "set_" + s)(current, maximum)
             getattr(self.player, "set_max_" + s)(maximum)
         # energy regen rate
         self.player.set_energy_regen(self.ui.energy_regen.value())
