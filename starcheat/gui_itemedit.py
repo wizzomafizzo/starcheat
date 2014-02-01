@@ -46,13 +46,12 @@ class ItemEditOptions():
             # this would be nicer if it just disabled the save button
             self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Cancel)
 
-class ItemVariant(QTableWidgetItem):
+class ItemOptionWidget(QTableWidgetItem):
     def __init__(self, key, value):
-        self.variant = key, value
-
+        self.option = key, value
         item_text = key + ": " + str(value)
         QTableWidgetItem.__init__(self, item_text)
-        self.setToolTip(item_text)
+        self.setToolTip(str(value))
 
 class ItemEdit():
     def __init__(self, parent, item=None):
@@ -102,21 +101,25 @@ class ItemEdit():
         try:
             item = assets.Items().get_item(name)
         except TypeError:
-            self.ui.short_desc.setText("")
-            self.ui.desc.setText("")
+            self.ui.desc.setText("<html><body><strong>Empty Slot</strong></body></html>")
             self.ui.icon.setPixmap(QPixmap())
             clear_variants()
             return
 
-        try:
-            self.ui.short_desc.setText(item[0]["shortdescription"])
-        except KeyError:
-            self.ui.short_desc.setText("Missing short description")
+        item_info = "<html><body>"
 
         try:
-            self.ui.desc.setText(item[0]["description"])
+            item_info += "<strong>" + item[0]["shortdescription"] + "</strong>"
         except KeyError:
-            self.ui.desc.setText("Missing description")
+            pass
+
+        try:
+            item_info += "<p>" + item[0]["description"] + "</p>"
+        except KeyError:
+            pass
+
+        item_info += "</body></html>"
+        self.ui.desc.setText(item_info)
 
         try:
             self.ui.icon.setPixmap(inv_icon(name))
@@ -137,11 +140,11 @@ class ItemEdit():
             cell = self.ui.variant.item(i, 0).variant
             variant[cell[0]] = cell[1]
 
-        # TODO: move to save_file.py
         item = save_file.new_item(name, count, variant)
         return ItemWidget(item)
 
     def new_item_edit_options(self):
+        selected = self.ui
         item_edit_options = ItemEditOptions(self.dialog, self.item["data"])
         def save():
             new_options = json.loads(item_edit_options.ui.options.toPlainText())
@@ -159,8 +162,8 @@ class ItemEdit():
         self.ui.variant.setRowCount(len(self.item["data"]))
         self.ui.variant.setHorizontalHeaderLabels(["Options"])
         row = 0
-        for k in self.item["data"].keys():
-            variant = ItemVariant(k, self.item["data"][k])
+        for k in sorted(self.item["data"].keys()):
+            variant = ItemOptionWidget(k, self.item["data"][k])
             self.ui.variant.setItem(row, 0, variant)
             row += 1
 
