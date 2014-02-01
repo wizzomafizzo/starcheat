@@ -61,8 +61,6 @@ class ItemBrowser():
         except TypeError:
             self.ui.item_icon.setPixmap(QPixmap(self.items.missing_icon()))
 
-        self.item_browse_select = selected
-
         # TODO: update qt objectnames, already not making sense
         try:
             self.ui.item_name.setText(item[0]["shortdescription"])
@@ -86,6 +84,8 @@ class ItemBrowser():
             except TypeError:
                 pass
             row += 1
+
+        self.item_browse_select = selected
 
     def update_item_list(self):
         """Populate item list based on current filter details."""

@@ -18,14 +18,16 @@ from gui_common import inv_icon, ItemWidget, empty_slot
 from gui_itembrowser import ItemBrowser
 
 class ItemEditOptions():
-    def __init__(self, parent, options):
+    def __init__(self, parent, key, value):
         self.dialog = QDialog(parent)
         self.ui = qt_itemeditoptions.Ui_Dialog()
         self.ui.setupUi(self.dialog)
 
-        self.item_options = options
+        self.option = key, value
 
-        pretty_data = json.dumps(options, sort_keys=True,
+        self.ui.name_label.setText(key)
+
+        pretty_data = json.dumps(value, sort_keys=True,
                                  indent=4, separators=(',', ': '))
         self.ui.options.setPlainText(pretty_data)
 
@@ -68,11 +70,6 @@ class ItemEdit():
         else:
             self.item = item.item
 
-        # set up signals
-        self.ui.load_button.clicked.connect(self.new_item_browser)
-        self.ui.item_type.textChanged.connect(self.update_item)
-        self.ui.variant.itemDoubleClicked.connect(self.new_item_edit_options)
-
         try:
             # set name text box
             self.ui.item_type.setText(self.item["name"])
@@ -80,41 +77,30 @@ class ItemEdit():
             self.ui.count.setValue(int(self.item["count"]))
             # set up variant table
             self.populate_options()
+            self.update_item_info(self.item["name"], self.item["data"])
         except TypeError:
             # empty slot
             self.new_item_browser()
+            self.update_item()
+
+        # set up signals
+        self.ui.load_button.clicked.connect(self.new_item_browser)
+        self.ui.item_type.textChanged.connect(self.update_item)
+        self.ui.variant.itemDoubleClicked.connect(self.new_item_edit_options)
 
         self.ui.item_type.setFocus()
         self.dialog.show()
 
-    def update_item(self):
-        """Update main item view with current item browser data."""
-        name = self.ui.item_type.text()
-
-        def clear_variants():
-            # TODO: we don't support importing variants from assets yet
-            self.ui.variant.clear()
-            # not sure why i need to do this too
-            self.ui.variant.setRowCount(0)
-            self.ui.variant.setHorizontalHeaderLabels(["Options"])
-
-        try:
-            item = assets.Items().get_item(name)
-        except TypeError:
-            self.ui.desc.setText("<html><body><strong>Empty Slot</strong></body></html>")
-            self.ui.icon.setPixmap(QPixmap())
-            clear_variants()
-            return
-
+    def update_item_info(self, name, data):
         item_info = "<html><body>"
 
         try:
-            item_info += "<strong>" + item[0]["shortdescription"] + "</strong>"
+            item_info += "<strong>" + data["shortdescription"] + "</strong>"
         except KeyError:
             pass
 
         try:
-            item_info += "<p>" + item[0]["description"] + "</p>"
+            item_info += "<p>" + data["description"] + "</p>"
         except KeyError:
             pass
 
@@ -127,28 +113,40 @@ class ItemEdit():
             # TODO: change this to the x.png?
             self.ui.icon.setPixmap(QPixmap())
 
-        clear_variants()
+    def update_item(self):
+        """Update main item view with current item browser data."""
+        name = self.ui.item_type.text()
+
+        try:
+            item = assets.Items().get_item(name)
+        except TypeError:
+            self.item = empty_slot().item
+            self.ui.desc.setText("<html><body><strong>Empty Slot</strong></body></html>")
+            self.ui.icon.setPixmap(QPixmap())
+            self.ui.variant.clear()
+            self.ui.variant.setHorizontalHeaderLabels(["Options"])
+            return
+
+        self.item = save_file.new_item(name, 1, item[0])
+        self.ui.count.setValue(1)
+        self.update_item_info(name, item[0])
+        self.populate_options()
 
     def get_item(self):
         """Return an ItemWidget of the currently open item."""
         name = self.ui.item_type.text()
         count = self.ui.count.value()
-
-        variant_rows = self.ui.variant.rowCount()
-        variant = {}
-        for i in range(variant_rows):
-            cell = self.ui.variant.item(i, 0).variant
-            variant[cell[0]] = cell[1]
-
-        item = save_file.new_item(name, count, variant)
+        item = save_file.new_item(name, count, self.item["data"])
         return ItemWidget(item)
 
     def new_item_edit_options(self):
-        selected = self.ui
-        item_edit_options = ItemEditOptions(self.dialog, self.item["data"])
+        selected = self.ui.variant.currentItem()
+        item_edit_options = ItemEditOptions(self.dialog, selected.option[0], selected.option[1])
         def save():
-            new_options = json.loads(item_edit_options.ui.options.toPlainText())
-            self.item["data"] = new_options
+            new_option = json.loads(item_edit_options.ui.options.toPlainText())
+            name = item_edit_options.option[0]
+            self.item["data"][name] = new_option
+            # TODO: update the item info. not working for some reason
             self.populate_options()
         item_edit_options.dialog.accepted.connect(save)
         item_edit_options.dialog.exec()
@@ -168,6 +166,5 @@ class ItemEdit():
             row += 1
 
     def set_item_browser_selection(self):
-        self.ui.item_type.setText(self.item_browser.get_selection())
-        # TODO: stuff like setting value max to maxstack
-        self.ui.count.setValue(1)
+        name = self.item_browser.get_selection()
+        self.ui.item_type.setText(name)
