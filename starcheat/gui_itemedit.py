@@ -97,7 +97,10 @@ class ItemEdit():
         try:
             item_info += "<strong>" + data["shortdescription"] + "</strong>"
         except KeyError:
-            pass
+            try:
+                item_info += "<strong>" + assets.Items().get_item(name)[0]["shortdescription"] + "</strong>"
+            except:
+                pass
 
         try:
             item_info += "<p>" + data["description"] + "</p>"
