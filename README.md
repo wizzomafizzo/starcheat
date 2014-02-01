@@ -4,7 +4,7 @@ starcheat is a Starbound player save editor, you can get free pixels with this! 
 
 **Downloads for starcheat are [here](#downloads).**
 
-![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/screen.png)
+![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/starcheat/images/screenshot.png)
 
 ## Table of Contents
 
