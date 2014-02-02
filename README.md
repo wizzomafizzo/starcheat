@@ -51,11 +51,11 @@ Here is how to build starcheat from source. Make sure everything in the dependen
 - [PyQt5](http://www.riverbankcomputing.com/software/pyqt/download5)
 
 ### Windows
-Lines starting with ```PS>``` are to be run in PowerShell. Don't forget to [set your execution policy](http://technet.microsoft.com/en-us/library/ee176961.aspx) if it's the first time you're using PowerShell.
+Lines starting with ```PS>``` are to be run in PowerShell.
 
 - ```PS> cd <starcheat top folder>```
-- ```PS> ./build.ps1```
-- Browse to newly created ```build/``` folder
+- ```PS> python.exe .\build.py```
+- Browse to newly created ```build\``` folder
 - Double click ```starcheat.py```
 
 #### Standalone Build
@@ -63,8 +63,8 @@ The standalone build makes an executable which includes all Python and Qt depend
 
 - Install [cx_freeze](http://cx-freeze.sourceforge.net/)
 - ```PS> cd <starcheat top folder>```
-- ```PS> ./build.ps1 -Standalone```
-- Browse to newly created ```dist/``` folder
+- ```PS> python.exe .\build.py -e```
+- Browse to newly created ```dist\``` folder
 - Double click ```starcheat.exe```
 
 ### Linux
