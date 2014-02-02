@@ -20,6 +20,7 @@ comment_re = re.compile(
     '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
     re.DOTALL | re.MULTILINE
 )
+ignore_items = re.compile(".*\.(png|config|frames|coinitem|db|DS_Store)")
 
 # source: http://www.lifl.fr/~riquetd/parse-a-json-file-with-comments.html
 def parse_json(filename):
@@ -54,6 +55,11 @@ def parse_json(filename):
 def load_asset_file(filename):
     return parse_json(filename)
 
+# TODO: there is some bug where assets w/ a 55 character path will generate their
+# hash keys incorrectly. workaround needs to be put in place for it
+# NOTE: because we need to be backwards compatible with the old assets and the stored
+# paths are all relative i'm going to make up a prefix for all asset paths in pak
+# files. thinking like: __pak_starbound__/items/foo/bar.sword
 class StarAssets():
     def __init__(self, starbound_folder):
         self.starbound_folder = starbound_folder
@@ -82,7 +88,7 @@ class StarAssets():
         match = comment_re.search(asset)
         while match:
             # single line comment
-            content = asset[:match.start()] + asset[match.end():]
+            asset = asset[:match.start()] + asset[match.end():]
             match = comment_re.search(asset)
 
         # Return json data
@@ -90,8 +96,11 @@ class StarAssets():
 
     def check_all_assets(self):
         self.blueprints()
+        self.blueprints().index_data()
         self.items()
+        self.items().index_data()
         self.species()
+        self.species().index_data()
 
     def blueprints(self):
         return StarBlueprints(self)
@@ -117,8 +126,21 @@ class StarBlueprints():
         return keys
 
     def index_data(self):
+        index = []
         for blueprint in self.blueprints:
-            info = assets.load_asset(blueprint)
+            info = self.assets.load_asset(blueprint)
+            if info == None:
+                continue
+            name = os.path.basename(blueprint).split(".")[0]
+            filename = os.path.basename(blueprint)
+            folder = os.path.dirname(blueprint)
+            try:
+                category = info["groups"][1]
+            except IndexError:
+                category = "other"
+            index.append((name, filename, folder, category))
+        print(len(index), index[0])
+        return index
 
 class StarItems():
     def __init__(self, assets):
@@ -129,7 +151,6 @@ class StarItems():
 
     def all(self):
         keys = []
-        ignore_items = re.compile(".*\.(png|config|frames|coinitem|db|DS_Store)")
         for asset in self.assets.index:
             if asset.startswith("/items") and re.match(ignore_items, asset) == None:
                 keys.append(asset)
@@ -138,6 +159,43 @@ class StarItems():
             elif asset.endswith(".techitem"):
                 keys.append(asset)
         return keys
+
+    def index_data(self):
+        index = []
+
+        for item in self.items:
+            info = self.assets.load_asset(item)
+            if info == None:
+                continue
+
+            # figure out the item's name. it can be a few things
+            name = False
+            item_name_keys = ["itemName", "name", "objectName"]
+            for key in item_name_keys:
+                try:
+                    name = info[key]
+                    continue
+                except KeyError:
+                    pass
+            # don't import items without names
+            if not name:
+                logging.warning("No item name for %s" % item)
+                continue
+
+            filename = os.path.basename(item)
+            folder = os.path.dirname(item)
+            category = os.path.basename(item).split(".")[1]
+
+            try:
+                icon = info["inventoryIcon"]
+            except KeyError:
+                logging.warning("Missing icon for %s" % item)
+                icon = "/interface/inventory/x.png"
+
+            index.append((name, filename, folder, icon, category))
+
+        print(len(index), index[0])
+        return index
 
 class StarSpecies():
     def __init__(self, assets):
@@ -152,6 +210,27 @@ class StarSpecies():
             if asset.startswith("/species") and asset.endswith(".species"):
                 keys.append(asset)
         return keys
+
+    def index_data(self):
+        index = []
+        for species in self.species:
+            info = self.assets.load_asset(species)
+            if info == None:
+                continue
+
+            filename = os.path.basename(species)
+            folder = os.path.dirname(species)
+
+            try:
+                name = info["kind"]
+            except KeyError:
+                logging.warning("No kind key for species %s" % species)
+                continue
+
+            index.append((name, filename, folder))
+
+        print(len(index), index[0])
+        return index
 
 def mod_asset_folder(mod_folder):
     """Read mod assets folder from modinfo file."""
@@ -396,6 +475,7 @@ class Items():
             # don't import items without names
             # i think technically we can without problems but idk how safe exactly
             if not name:
+                logging.warning("No item name for %s" % full_path)
                 continue
 
             filename = f[0]
