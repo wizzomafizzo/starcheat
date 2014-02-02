@@ -1610,7 +1610,7 @@ border-radius: 4px;
      <item>
       <widget class="QPushButton" name="appearance_button">
        <property name="enabled">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
