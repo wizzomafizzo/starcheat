@@ -11,12 +11,12 @@ starcheat is a Starbound player save editor, you can get free pixels with this! 
 - [Downloads](#downloads)
 	- [Windows](#windows)
 	- [Mac](#mac)
-- [Build Instructions](#build-instructions)
+- [Building from source](#building-from-source)
 	- [Dependencies](#dependencies)
 	- [Windows](#windows-1)
 	- [Linux](#linux)
 	- [Mac](#mac-1)
-- [Troubleshooting](#troubleshooting)
+- [Help](#help)
 	- [Reset all settings](#reset-all-settings)
 	- [How to get logs](#how-to-get-logs)
 	- [Unpacking Starbound assets](#unpacking-starbound-assets)
@@ -40,8 +40,8 @@ These are builds of the latest development version. They should work fine, but m
 ### Mac
 [Download here](https://github.com/wizzomafizzo/starcheat/releases) (get the newest release)
 
-## Build Instructions
-Here is how to build starcheat from source. Make sure everything in the dependencies section is installed before you do a build
+## Building from source
+Here is how to build starcheat from source. Make sure everything in the dependencies section is installed before you do a build. **You don't need to build from source if you're on Windows or Mac.**
 
 ### Dependencies
 - [Python 3](http://www.python.org/getit/)
@@ -81,7 +81,7 @@ Install [starcheat](https://aur.archlinux.org/packages/starcheat/) from AUR.
 - ```$ brew install https://raw.github.com/wizzomafizzo/starcheat/master/mac/starcheat.rb``` (optionally pass ```--without-app``` (create no .app) or ```--without-binary``` (creates no binary linked into your prefix) )
 - ```brew linkapps```(symlinks the .app into your Applications folder)
 
-## Troubleshooting
+## Help
 Stuff you can do when starcheat stops working. Clearing local settings and checking you did the setup correctly is always a good first step.
 
 ### Reset all settings
