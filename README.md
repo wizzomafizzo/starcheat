@@ -22,8 +22,6 @@ starcheat is a Starbound player save editor, you can get free pixels with this! 
 	- [Unpacking Starbound assets](#unpacking-starbound-assets)
 
 ## Downloads
-**Upgraded to Furious Koala? Don't forget to [clear your settings](#reset-all-settings) and [unpack your Starbound assets](#unpacking-starbound-assets) before trying to run starcheat.**
-
 These are builds of the latest development version. They should work fine, but may be unstable. **Don't forget to back up your save files before using them.**
 
 ### Windows
@@ -54,7 +52,7 @@ Here is how to build starcheat from source. Make sure everything in the dependen
 Lines starting with ```PS>``` are to be run in PowerShell.
 
 - ```PS> cd <starcheat top folder>```
-- ```PS> python.exe .\build.py```
+- ```PS> C:\Python33\python.exe .\build.py```
 - Browse to newly created ```build\``` folder
 - Double click ```starcheat.py```
 
@@ -63,7 +61,7 @@ The standalone build makes an executable which includes all Python and Qt depend
 
 - Install [cx_freeze](http://cx-freeze.sourceforge.net/)
 - ```PS> cd <starcheat top folder>```
-- ```PS> python.exe .\build.py -e```
+- ```PS> C:\Python33\python.exe .\build.py -e```
 - Browse to newly created ```dist\``` folder
 - Double click ```starcheat.exe```
 
