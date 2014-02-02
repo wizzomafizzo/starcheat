@@ -1,5 +1,5 @@
 build
 dist
 __pycache__
-stardb
+.DS_Store
 .projectile
