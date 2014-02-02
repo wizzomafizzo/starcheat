@@ -13,6 +13,13 @@ from platform import system
 
 from config import Config
 
+# Regular expression for comments
+comment_re = re.compile(
+    '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
+    re.DOTALL | re.MULTILINE
+)
+ignore_items = re.compile(".*\.(png|config|frames|coinitem|db|ds_store)", re.IGNORECASE)
+
 # source: http://www.lifl.fr/~riquetd/parse-a-json-file-with-comments.html
 def parse_json(filename):
     """
@@ -25,12 +32,6 @@ def parse_json(filename):
     ...
     */
     """
-
-    # Regular expression for comments
-    comment_re = re.compile(
-        '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
-        re.DOTALL | re.MULTILINE
-    )
 
     with open(filename) as f:
         content = ''.join(f.readlines())
@@ -137,7 +138,7 @@ class Blueprints():
             return index
         for root, dirs, files in os.walk(folder):
             for f in files:
-                if re.match(".*\.recipe", f) != None:
+                if f.endswith(".recipe") != None:
                     index.append((f, root))
         logging.info("Found " + str(len(index)) + " blueprint files")
         return index
@@ -230,8 +231,7 @@ class Items():
             # if this folder is gone the rest is probably screwed too
             logging.warning("Missing " + items_folder)
             return index
-        # TODO: there is an ignore list in a config file we could use
-        ignore_items = re.compile(".*\.(png|config|frames|coinitem|db|ds_store)", re.IGNORECASE)
+
         # regular items
         for root, dirs, files in os.walk(items_folder):
             for f in files:
@@ -243,14 +243,14 @@ class Items():
         # objects
         for root, dirs, files in os.walk(objects_folder):
             for f in files:
-                if re.match(".*\.object$", f) != None:
+                if f.endswith(".object") != None:
                     index.append((f, root))
 
         tech_folder = os.path.join(assets_folder, "tech")
         # techs
         for root, dirs, files in os.walk(tech_folder):
             for f in files:
-                if re.match(".*\.techitem$", f) != None:
+                if f.endswith(".techitem") != None:
                     index.append((f, root))
 
         logging.info("Found " + str(len(index)) + " item files")
@@ -305,18 +305,15 @@ class Items():
             # get full path to an inventory icon
             try:
                 asset_icon = info["inventoryIcon"]
-                if re.match(".*\.techitem$", f[0]) != None:
+                if f[0].endswith(".techitem"):
                     icon = os.path.join(self.starbound_folder, "assets", asset_icon[1:])
-                    # index dynamic tech chip items too
-                    # TODO: do we keep the non-chip items in or not? i don't
-                    #       think you're meant to have them outside tech slots
-                    chip_name = name + "-chip"
-                    items.append((chip_name, filename, path, icon, category))
+                    # index dynamic tech chip items
+                    name = name + "-chip"
                 else:
                     icon = os.path.join(f[1], info["inventoryIcon"])
             except KeyError:
                 inv_assets = os.path.join(self.starbound_folder, "assets", "interface", "inventory")
-                if re.search("(sword|shield)", category) != None:
+                if category.endswith("shield") or category.endswith("sword"):
                     cat = category.replace("generated", "")
                     icon = os.path.join(inv_assets, cat + ".png")
                 else:
@@ -358,7 +355,6 @@ class Items():
         c.execute("select icon from items where name = ?", (name,))
         try:
             icon_file = c.fetchone()[0]
-            # TODO: just double check the split usage, may be deprecated
             if system() != 'Windows':
                 icon = icon_file.split(':')
             else:
