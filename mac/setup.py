@@ -2,7 +2,7 @@ from setuptools import setup
 
 APP = ['starcheat.py']
 DATA_FILES = []
-OPTIONS = {'argv_emulation': True, 'includes': ['sip']}
+OPTIONS = {'argv_emulation': True, 'includes': ['sip'], 'iconfile': '../mac/icon.icns'}
 
 setup(
     app=APP,
