@@ -5,6 +5,11 @@ class Starcheat < Formula
   url 'https://github.com/wizzomafizzo/starcheat.git'
   version 'beta'
 
+  devel do
+    url 'https://github.com/wizzomafizzo/starcheat.git', :branch => 'dev'
+    version 'beta'
+  end
+
   depends_on 'python3'
   depends_on 'https://raw.github.com/wizzomafizzo/starcheat/master/mac/pyqt5.rb'
   depends_on :hg
@@ -14,7 +19,7 @@ class Starcheat < Formula
 
   resource 'setup.py' do
     url 'https://raw.github.com/wizzomafizzo/starcheat/master/mac/setup.py'
-    sha1 'eb0f1f8a99917ab447d9fc39496469b58b07632c'
+    sha1 '1ff254b23cfea06fe3fef83a8ada5da53aaa31b6'
     version '0.1'
   end
 
@@ -70,7 +75,7 @@ class Starcheat < Formula
       bin.install_symlink libexec+'starcheat.py' => 'starcheat'
     end
   end
-  
+
   test do
     system bin/'starcheat', '-v' if build.with? 'binary'
     system prefix/'StarCheat.app/Contents/MacOS/starcheat', '-v' if build.with? 'app'
