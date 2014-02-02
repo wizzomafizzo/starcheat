@@ -11,7 +11,15 @@ Module for reading and indexing Starbound assets
 import os, json, re, sqlite3, logging
 from platform import system
 
+from stardb.storage import BlockFile
+from stardb.databases import AssetDatabase
+
 from config import Config
+
+comment_re = re.compile(
+    '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
+    re.DOTALL | re.MULTILINE
+)
 
 # source: http://www.lifl.fr/~riquetd/parse-a-json-file-with-comments.html
 def parse_json(filename):
@@ -25,12 +33,6 @@ def parse_json(filename):
     ...
     */
     """
-
-    # Regular expression for comments
-    comment_re = re.compile(
-        '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
-        re.DOTALL | re.MULTILINE
-    )
 
     with open(filename) as f:
         content = ''.join(f.readlines())
@@ -51,6 +53,105 @@ def parse_json(filename):
 
 def load_asset_file(filename):
     return parse_json(filename)
+
+class StarAssets():
+    def __init__(self, starbound_folder):
+        self.starbound_folder = starbound_folder
+        pak_filename = os.path.join(starbound_folder, "assets", "packed.pak")
+        pak_file = open(pak_filename, 'rb')
+        bf = BlockFile(pak_file)
+
+        self.db = AssetDatabase(bf)
+        self.db.open()
+        self.index = self.db.getFileList()
+        logging.info("%i total assets" % len(self.index))
+
+    def load_asset(self, asset_key):
+        """Parse and return Starbound asset JSON data."""
+        try:
+            asset = self.db[asset_key].decode("utf-8")
+        except KeyError:
+            logging.warning("Asset key %s does not exist" % asset_key)
+            return None
+
+        # TODO: really annoying.. hopefully this is fixed after the patch
+        if asset_key.endswith(".grapplinghook"):
+            asset = asset.replace("[-.", "[-0.")
+
+        # Looking for comments
+        match = comment_re.search(asset)
+        while match:
+            # single line comment
+            content = asset[:match.start()] + asset[match.end():]
+            match = comment_re.search(asset)
+
+        # Return json data
+        return json.loads(asset)
+
+    def check_all_assets(self):
+        self.blueprints()
+        self.items()
+        self.species()
+
+    def blueprints(self):
+        return StarBlueprints(self)
+
+    def items(self):
+        return StarItems(self)
+
+    def species(self):
+        return StarSpecies(self)
+
+class StarBlueprints():
+    def __init__(self, assets):
+        self.assets = assets
+        self.blueprints = self.all()
+
+        print(len(self.blueprints))
+
+    def all(self):
+        keys = []
+        for asset in self.assets.index:
+            if asset.startswith("/recipes") and asset.endswith(".recipe"):
+                keys.append(asset)
+        return keys
+
+    def index_data(self):
+        for blueprint in self.blueprints:
+            info = assets.load_asset(blueprint)
+
+class StarItems():
+    def __init__(self, assets):
+        self.assets = assets
+        self.items = self.all()
+
+        print(len(self.items))
+
+    def all(self):
+        keys = []
+        ignore_items = re.compile(".*\.(png|config|frames|coinitem|db|DS_Store)")
+        for asset in self.assets.index:
+            if asset.startswith("/items") and re.match(ignore_items, asset) == None:
+                keys.append(asset)
+            elif asset.endswith(".object"):
+                keys.append(asset)
+            elif asset.endswith(".techitem"):
+                keys.append(asset)
+        return keys
+
+class StarSpecies():
+    def __init__(self, assets):
+        self.assets = assets
+        self.species = self.all()
+
+        print(len(self.species))
+
+    def all(self):
+        keys = []
+        for asset in self.assets.index:
+            if asset.startswith("/species") and asset.endswith(".species"):
+                keys.append(asset)
+        return keys
 
 def mod_asset_folder(mod_folder):
     """Read mod assets folder from modinfo file."""
@@ -563,3 +664,7 @@ class Species():
         c = self.db.cursor()
         c.execute("select count(*) from species")
         return c.fetchone()[0]
+
+if __name__ == "__main__":
+    assets = StarAssets("/opt/starbound")
+    assets.check_all_assets()
