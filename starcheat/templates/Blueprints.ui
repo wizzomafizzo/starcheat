@@ -41,16 +41,24 @@
    <item row="0" column="1">
     <layout class="QGridLayout" name="gridLayout_3">
      <item row="0" column="0">
-      <widget class="QPushButton" name="add_button">
+      <widget class="QToolButton" name="add_button">
        <property name="text">
         <string>&lt;&lt;</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/starcheat/images/icons/glyphicons_210_left_arrow.png</normaloff>:/starcheat/images/icons/glyphicons_210_left_arrow.png</iconset>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QPushButton" name="remove_button">
+      <widget class="QToolButton" name="remove_button">
        <property name="text">
         <string>&gt;&gt;</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/starcheat/images/icons/glyphicons_211_right_arrow.png</normaloff>:/starcheat/images/icons/glyphicons_211_right_arrow.png</iconset>
        </property>
       </widget>
      </item>
@@ -58,26 +66,17 @@
    </item>
    <item row="0" column="2">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="category_label">
-       <property name="text">
-        <string>Category</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="category">
-       <item>
-        <property name="text">
-         <string>&lt;all&gt;</string>
-        </property>
-       </item>
-      </widget>
-     </item>
      <item row="1" column="0">
       <widget class="QLabel" name="filter_label">
        <property name="text">
         <string>Filter</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="category_label">
+       <property name="text">
+        <string>Category</string>
        </property>
       </widget>
      </item>
@@ -89,6 +88,15 @@
        <property name="text">
         <string/>
        </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="category">
+       <item>
+        <property name="text">
+         <string>&lt;all&gt;</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="2" column="0" colspan="2">
@@ -115,6 +123,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

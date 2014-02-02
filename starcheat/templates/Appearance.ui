@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>415</width>
-    <height>235</height>
+    <width>450</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,13 +22,13 @@
   <property name="minimumSize">
    <size>
     <width>0</width>
-    <height>235</height>
+    <height>300</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>235</height>
+    <height>350</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -42,157 +42,81 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
+    <widget class="QLabel" name="player_preview">
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>160</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>100</width>
+       <height>160</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: white;</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" rowspan="2">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
-      <widget class="QLabel" name="player_preview">
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>160</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>160</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: white;</string>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
+      <widget class="QLabel" name="hair_label">
        <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <string>Hair</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <layout class="QFormLayout" name="formLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="hair_label">
-         <property name="text">
-          <string>Hair Type</string>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QComboBox" name="hair_type">
+         <property name="minimumSize">
+          <size>
+           <width>175</width>
+           <height>25</height>
+          </size>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QComboBox" name="hair_type">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>25</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="hair_color">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>18</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: white</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="facial_hair_label">
+       <item>
+        <widget class="QToolButton" name="hair_color">
+         <property name="styleSheet">
+          <string notr="true">background-color: red;</string>
+         </property>
          <property name="text">
-          <string>Facial Hair Type</string>
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</iconset>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QComboBox" name="facial_hair_type">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>25</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="facial_hair_color">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>18</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: white</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="facial_mask_label">
-         <property name="text">
-          <string>Facial Mask Type</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QComboBox" name="facial_mask_type">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>25</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="facial_mask_color">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>18</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: white</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="personality_label">
-         <property name="text">
-          <string>Personality</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QComboBox" name="personality">
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="facial_hair_label">
+       <property name="text">
+        <string>Facial Hair</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QComboBox" name="facial_hair_type">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -201,69 +125,146 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="body_label">
-         <property name="text">
-          <string>Body Color</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QToolButton" name="body_color">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>18</height>
-          </size>
-         </property>
+       <item>
+        <widget class="QToolButton" name="hair_type_color">
          <property name="styleSheet">
-          <string notr="true">background-color: white</string>
+          <string notr="true">background-color: red;</string>
          </property>
          <property name="text">
-          <string/>
+          <string>...</string>
          </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="favorite_label">
-         <property name="text">
-          <string>Favorite Color</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QToolButton" name="favorite_color">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: white</string>
-         </property>
-         <property name="text">
-          <string/>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</iconset>
          </property>
         </widget>
        </item>
       </layout>
      </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+     <item row="2" column="0">
+      <widget class="QLabel" name="facial_mask_label">
+       <property name="text">
+        <string>Facial Mask</string>
        </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel</set>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QComboBox" name="facial_mask_type">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="facial_mask_color">
+         <property name="styleSheet">
+          <string notr="true">background-color: red;</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="personality_label">
+       <property name="text">
+        <string>Personality</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="personality">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="body_label">
+       <property name="text">
+        <string>Body Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QToolButton" name="body_color">
+       <property name="styleSheet">
+        <string notr="true">background-color: red;</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="favorite_label">
+       <property name="text">
+        <string>Favorite Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QToolButton" name="favorite_color">
+       <property name="styleSheet">
+        <string notr="true">background-color: red;</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</iconset>
        </property>
       </widget>
      </item>
     </layout>
    </item>
+   <item row="1" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>80</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

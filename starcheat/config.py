@@ -86,9 +86,13 @@ class Config():
 
         if platform.system() == "Windows":
             import winreg
-            steam = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Valve\Steam")
-            steam_path = os.path.normpath(winreg.QueryValueEx(steam, "SteamPath")[0])
-            known_locations.append(os.path.join(steam_path, "SteamApps", "common", "Starbound"))
+            try:
+                steam = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Valve\Steam")
+                steam_path = os.path.normpath(winreg.QueryValueEx(steam, "SteamPath")[0])
+                known_locations.append(os.path.join(steam_path, "SteamApps", "common", "Starbound"))
+                steam.Close()
+            except OSError:
+                pass
 
         for filename in known_locations:
             if os.path.isdir(filename):
