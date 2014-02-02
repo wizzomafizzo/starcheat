@@ -18,10 +18,12 @@ class Appearance():
         race = self.player.get_race()
         gender = self.player.get_gender()
         # TODO: should be functions to access these
-        idle = self.player.entity["identity"]["personalityIdle"]
-        hair_type = self.player.entity["identity"]["hairType"]
-        facial_hair = self.player.entity["identity"]["facialHairGroup"]
-        facial_mask = self.player.entity["identity"]["facialMaskType"]
+        idle = self.player.get_personality()
+        hair_type = self.player.get_hair()
+        facial_hair = self.player.get_facial_hair()
+        facial_mask = self.player.get_facial_mask()
+
+        self.ui.hair_color.clicked.connect(self.color_picker)
 
         for option in self.species.get_hair(race, gender):
             self.ui.hair_type.addItem(option)
@@ -38,3 +40,9 @@ class Appearance():
         for option in self.species.get_personality():
             self.ui.personality.addItem(option[0])
         self.ui.personality.setCurrentText(idle)
+
+        print(self.player.get_body_color())
+
+    def color_picker(self):
+        color = QColorDialog.getColor()
+        self.ui.hair_color.setStyleSheet("background-color: " + color.name())

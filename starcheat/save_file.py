@@ -329,6 +329,25 @@ def new_item(name, count, data):
     }
     return item
 
+def unpack_color_directives(data):
+    unpack_dir = data.split("?replace;")
+    directives = []
+    for directive in unpack_dir[1:]:
+        unpack_gr = directive.split(";")
+        groups = []
+        for group in unpack_gr:
+            groups.append(group.split("="))
+        directives.append(groups)
+    return directives
+
+def pack_color_directives(colors):
+    string = ""
+    for directive in colors:
+        string += "?replace"
+        for group in directive:
+            string += ";%s=%s" % (group[0], group[1])
+    return string
+
 class WrongSaveVer(Exception):
     pass
 
@@ -485,6 +504,27 @@ class PlayerSave():
 
     def get_blueprints(self):
         return self.entity["blueprints"]
+
+    def get_personality(self):
+        # self.entity["identity"]["personalityArmIdle"]
+        # self.entity["identity"]["personalityArmOffset"]
+        # self.entity["identity"]["personalityHeadOffset"]
+        return self.entity["identity"]["personalityIdle"]
+
+    def get_hair(self):
+        # TODO: hairgroup?
+        return self.entity["identity"]["hairType"]
+
+    def get_facial_hair(self):
+        # TODO: hairtype?
+        return self.entity["identity"]["facialHairGroup"]
+
+    def get_facial_mask(self):
+        # TODO: hairtype?
+        return self.entity["identity"]["facialMaskType"]
+
+    def get_body_color(self):
+        return unpack_color_directives(self.entity["identity"]["bodyDirectives"])
 
     # here be setters
     def set_blueprints(self, blueprints):
