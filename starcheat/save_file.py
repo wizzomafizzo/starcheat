@@ -511,17 +511,15 @@ class PlayerSave():
         # self.entity["identity"]["personalityHeadOffset"]
         return self.entity["identity"]["personalityIdle"]
 
+    # TODO: color directives
     def get_hair(self):
-        # TODO: hairgroup?
-        return self.entity["identity"]["hairType"]
+        return self.entity["identity"]["hairGroup"], self.entity["identity"]["hairType"]
 
     def get_facial_hair(self):
-        # TODO: hairtype?
-        return self.entity["identity"]["facialHairGroup"]
+        return self.entity["identity"]["facialHairGroup"], self.entity["identity"]["facialHairType"]
 
     def get_facial_mask(self):
-        # TODO: hairtype?
-        return self.entity["identity"]["facialMaskType"]
+        return self.entity["identity"]["facialMaskGroup"], self.entity["identity"]["facialMaskType"]
 
     def get_body_color(self):
         return unpack_color_directives(self.entity["identity"]["bodyDirectives"])

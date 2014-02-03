@@ -521,24 +521,37 @@ class Species():
         c.execute("select * from species")
         return c.fetchall()
 
-    def get_facial_hair(self, name, gender):
+    def get_appearance_data(self, name, gender, key):
         species = self.get_species(name)
-        return self.get_gender_data(species, gender)["facialHair"]
+        try:
+            results = self.get_gender_data(species, gender)[key]
+        except KeyError:
+            return []
+        if type(results) is str:
+            return (results,)
+        else:
+            return results
 
-    def get_facial_mask(self, name, gender):
-        species = self.get_species(name)
-        return self.get_gender_data(species, gender)["facialMask"]
+    def get_facial_hair_types(self, name, gender):
+        return self.get_appearance_data(name, gender, "facialHair")
 
-    def get_hair(self, name, gender):
-        species = self.get_species(name)
-        return self.get_gender_data(species, gender)["hair"]
+    def get_facial_hair_groups(self, name, gender):
+        return self.get_appearance_data(name, gender, "facialHairGroup")
+
+    def get_facial_mask_types(self, name, gender):
+        return self.get_appearance_data(name, gender, "facialMask")
+
+    def get_facial_mask_groups(self, name, gender):
+        return self.get_appearance_data(name, gender, "facialMaskGroup")
+
+    def get_hair_types(self, name, gender):
+        return self.get_appearance_data(name, gender, "hair")
+
+    def get_hair_groups(self, name, gender):
+        return self.get_appearance_data(name, gender, "hairGroup")
 
     def get_personality(self):
-        # BUG: remove this workaround. okay for now since appearance isn't working anyway
-        if self.humanoid_config == None:
-            return []
-        else:
-            return self.humanoid_config["charGen"]["personalities"]
+        return self.humanoid_config["charGen"]["personalities"]
 
     def get_gender_data(self, species_data, gender):
         if gender == "male":
