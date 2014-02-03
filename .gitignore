@@ -2,5 +2,4 @@ build/
 dist/
 starcheat/__pycache__/
 .projectile
-icon.iconset
 .DS_Store
