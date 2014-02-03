@@ -1,5 +1,14 @@
 <RCC>
   <qresource prefix="starcheat">
+    <file>images/starcheat_1024.png</file>
+    <file>images/starcheat_moddb.png</file>
+    <file>images/starcheat_512.png</file>
+    <file>images/starcheat_256.png</file>
+    <file>images/starcheat_128.png</file>
+    <file>images/starcheat_64.png</file>
+    <file>images/starcheat_64_single.png</file>
+    <file>images/starcheat_32.png</file>
+    <file>images/starcheat_16.png</file>
     <file>images/icons/glyphicons_002_dog.png</file>
     <file>images/icons/glyphicons_003_user.png</file>
     <file>images/icons/glyphicons_004_girl.png</file>

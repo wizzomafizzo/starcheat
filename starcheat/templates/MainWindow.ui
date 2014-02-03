@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>starcheat[*]</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../resources.qrc">
+    <normaloff>:/starcheat/images/starcheat_32.png</normaloff>:/starcheat/images/starcheat_32.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="backpack_label">
     <property name="geometry">
@@ -1610,7 +1614,7 @@ border-radius: 4px;
      <item>
       <widget class="QPushButton" name="appearance_button">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
