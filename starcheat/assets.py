@@ -523,6 +523,9 @@ class Species():
 
     def get_appearance_data(self, name, gender, key):
         species = self.get_species(name)
+        # there is another json extension here where strings that have a , on
+        # the end are treated as 1 item lists. there are also some species with
+        # missing keys
         try:
             results = self.get_gender_data(species, gender)[key]
         except KeyError:

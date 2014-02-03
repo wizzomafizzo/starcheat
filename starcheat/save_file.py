@@ -606,6 +606,25 @@ class PlayerSave():
         self.entity["inventory"]["equipment"][3] = main
         self.entity["inventory"]["equipment"][7] = glamor
 
+    def set_personality(self, idle):
+        # self.entity["identity"]["personalityArmIdle"]
+        # self.entity["identity"]["personalityArmOffset"]
+        # self.entity["identity"]["personalityHeadOffset"]
+        self.entity["identity"]["personalityIdle"] = idle
+
+    # TODO: color directives
+    def set_hair(self, group, type):
+        self.entity["identity"]["hairGroup"] = group
+        self.entity["identity"]["hairType"] = type
+
+    def set_facial_hair(self, group, type):
+        self.entity["identity"]["facialHairGroup"] = group
+        self.entity["identity"]["facialHairType"] = type
+
+    def set_facial_mask(self, group, type):
+        self.entity["identity"]["facialMaskGroup"] = group
+        self.entity["identity"]["facialMaskType"] = type
+
 if __name__ == '__main__':
     #logging.basicConfig(filename="save_file.log", level=logging.DEBUG)
     player = PlayerSave(sys.argv[1])

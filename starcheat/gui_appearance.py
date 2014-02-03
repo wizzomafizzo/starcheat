@@ -23,11 +23,11 @@ class Appearance():
         facial_hair = self.player.get_facial_hair()
         facial_mask = self.player.get_facial_mask()
 
+        # hair
         hair_groups = self.species.get_hair_groups(race, gender)
         for option in hair_groups:
             self.ui.hair_group.addItem(option)
         self.ui.hair_type.setCurrentText(hair[0])
-        print(len(hair_groups))
         if len(hair_groups) < 2: self.ui.hair_group.setEnabled(False)
 
         hair_types = self.species.get_hair_types(race, gender)
@@ -36,6 +36,7 @@ class Appearance():
         self.ui.hair_type.setCurrentText(hair[1])
         if len(hair_types) < 2: self.ui.hair_type.setEnabled(False)
 
+        # facial hair
         facial_hair_groups = self.species.get_facial_hair_groups(race, gender)
         for option in facial_hair_groups:
             self.ui.facial_hair_group.addItem(option)
@@ -48,6 +49,7 @@ class Appearance():
         self.ui.facial_hair_type.setCurrentText(facial_hair[1])
         if len(facial_hair_types) < 2: self.ui.facial_hair_type.setEnabled(False)
 
+        # face
         facial_mask_groups = self.species.get_facial_mask_groups(race, gender)
         for option in facial_mask_groups:
             self.ui.facial_mask_group.addItem(option)
@@ -60,6 +62,18 @@ class Appearance():
         self.ui.facial_mask_type.setCurrentText(facial_mask[1])
         if len(facial_mask_types) < 2: self.ui.facial_mask_type.setEnabled(False)
 
+        # personality
         for option in self.species.get_personality():
             self.ui.personality.addItem(option[0])
         self.ui.personality.setCurrentText(personality)
+
+    def write_appearance_values(self):
+        hair = self.ui.hair_group.currentText(), self.ui.hair_type.currentText()
+        facial_hair = self.ui.facial_hair_group.currentText(), self.ui.facial_hair_type.currentText()
+        facial_mask = self.ui.facial_mask_group.currentText(), self.ui.facial_mask_group.currentText()
+        personality = self.ui.personality.currentText()
+        self.player.set_hair(*hair)
+        self.player.set_facial_hair(*facial_hair)
+        self.player.set_facial_mask(*facial_mask)
+        self.player.set_personality(personality)
+        self.parent.setWindowModified(True)

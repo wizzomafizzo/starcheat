@@ -329,8 +329,9 @@ class MainWindow():
         race = self.ui.race.currentText()
         self.player.set_race(race)
 
-        self.appearance_dialog = Appearance(self.window, self.player)
-        self.appearance_dialog.dialog.exec()
+        appearance_dialog = Appearance(self.window, self.player)
+        appearance_dialog.dialog.accepted.connect(appearance_dialog.write_appearance_values)
+        appearance_dialog.dialog.exec()
 
     def reload(self):
         """Reload the currently open save file and update GUI values."""
