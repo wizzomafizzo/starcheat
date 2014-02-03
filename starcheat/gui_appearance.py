@@ -11,6 +11,7 @@ class Appearance():
         self.dialog = QDialog(parent)
         self.ui = qt_appearance.Ui_Dialog()
         self.ui.setupUi(self.dialog)
+        self.parent = parent
 
         self.species = assets.Species()
         self.player = player
@@ -27,7 +28,7 @@ class Appearance():
         hair_groups = self.species.get_hair_groups(race, gender)
         for option in hair_groups:
             self.ui.hair_group.addItem(option)
-        self.ui.hair_type.setCurrentText(hair[0])
+        self.ui.hair_group.setCurrentText(hair[0])
         if len(hair_groups) < 2: self.ui.hair_group.setEnabled(False)
 
         hair_types = self.species.get_hair_types(race, gender)
@@ -40,7 +41,7 @@ class Appearance():
         facial_hair_groups = self.species.get_facial_hair_groups(race, gender)
         for option in facial_hair_groups:
             self.ui.facial_hair_group.addItem(option)
-        self.ui.facial_hair_type.setCurrentText(facial_hair[0])
+        self.ui.facial_hair_group.setCurrentText(facial_hair[0])
         if len(facial_hair_groups) < 2: self.ui.facial_hair_group.setEnabled(False)
 
         facial_hair_types = self.species.get_facial_hair_types(race, gender)
@@ -53,7 +54,7 @@ class Appearance():
         facial_mask_groups = self.species.get_facial_mask_groups(race, gender)
         for option in facial_mask_groups:
             self.ui.facial_mask_group.addItem(option)
-        self.ui.facial_mask_type.setCurrentText(facial_mask[0])
+        self.ui.facial_mask_group.setCurrentText(facial_mask[0])
         if len(facial_mask_groups) < 2: self.ui.facial_mask_group.setEnabled(False)
 
         facial_mask_types = self.species.get_facial_mask_types(race, gender)
@@ -70,7 +71,7 @@ class Appearance():
     def write_appearance_values(self):
         hair = self.ui.hair_group.currentText(), self.ui.hair_type.currentText()
         facial_hair = self.ui.facial_hair_group.currentText(), self.ui.facial_hair_type.currentText()
-        facial_mask = self.ui.facial_mask_group.currentText(), self.ui.facial_mask_group.currentText()
+        facial_mask = self.ui.facial_mask_group.currentText(), self.ui.facial_mask_type.currentText()
         personality = self.ui.personality.currentText()
         self.player.set_hair(*hair)
         self.player.set_facial_hair(*facial_hair)

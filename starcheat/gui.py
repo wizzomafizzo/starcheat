@@ -16,8 +16,6 @@ from gui_blueprints import BlueprintLib
 from gui_itembrowser import ItemBrowser
 from gui_appearance import Appearance
 
-# TODO: had to make this so i could override closeEvent properly
-# not sure if i should move everything here or not
 class StarcheatMainWindow(QMainWindow):
     """Overrides closeEvent on the main window to allow "want to save changes?" dialog"""
     def __init__(self, parent):
@@ -55,14 +53,8 @@ class MainWindow():
         logging.debug("Loading items")
         self.items = assets.Items()
 
-        # atm we only support one of each dialog at a time, don't think this
-        # will be a problem tho
         self.item_browser = None
-        self.item_edit = None
-        self.blueprint_lib = None
         self.options_dialog = None
-        self.about_dialog = None
-        self.appearance_dialog = None
 
         # connect action menu
         self.ui.actionSave.triggered.connect(self.save)
@@ -75,7 +67,6 @@ class MainWindow():
         self.ui.actionAbout.triggered.connect(self.new_about_dialog)
 
         # launch open file dialog
-        # we want this after the races are populated but before the slider setup
         self.player = None
         # we *need* at least an initial save file
         logging.debug("Open file dialog")
@@ -84,9 +75,6 @@ class MainWindow():
             logging.warning("No player file selected")
             return
 
-        # let's move this back here. i am wondering if there is a conflict
-        # between the textupdated signal and the combobox population? the only
-        # downside to this is rebuild db won't reflect changes til restart
         for species in assets.Species().get_species_list():
             self.ui.race.addItem(species)
 
@@ -283,18 +271,17 @@ class MainWindow():
     def new_blueprint_edit(self):
         """Launch a new blueprint management dialog."""
         logging.debug("New blueprint dialog")
-        self.blueprint_lib = BlueprintLib(self.window, self.player.get_blueprints())
+        blueprint_lib = BlueprintLib(self.window, self.player.get_blueprints())
 
         def update_blueprints():
             logging.debug("Writing blueprints")
-            self.player.set_blueprints(self.blueprint_lib.get_known_list())
-            self.blueprint_lib.dialog.close()
+            self.player.set_blueprints(blueprint_lib.get_known_list())
+            blueprint_lib.dialog.close()
             self.set_edited()
 
-        # TODO: check the button roles on this. may not be set correctly
-        self.blueprint_lib.ui.buttonBox.accepted.connect(update_blueprints)
-        self.blueprint_lib.ui.buttonBox.rejected.connect(self.blueprint_lib.dialog.close)
-        self.blueprint_lib.dialog.show()
+        blueprint_lib.ui.buttonBox.accepted.connect(update_blueprints)
+        blueprint_lib.ui.buttonBox.rejected.connect(blueprint_lib.dialog.close)
+        blueprint_lib.dialog.exec()
 
     def new_item_browser(self):
         """Launch a standalone item browser dialog that does write any changes."""
@@ -316,18 +303,18 @@ class MainWindow():
 
     def new_about_dialog(self):
         """Launch a new about dialog."""
-        self.about_dialog = AboutDialog(self.window)
-        self.about_dialog.dialog.exec()
+        about_dialog = AboutDialog(self.window)
+        about_dialog.dialog.exec()
 
     def new_appearance_dialog(self):
+        race = self.ui.race.currentText()
+        self.player.set_race(race)
+
         if self.ui.male.isChecked():
             gender = "male"
         else:
             gender = "female"
         self.player.set_gender(gender)
-
-        race = self.ui.race.currentText()
-        self.player.set_race(race)
 
         appearance_dialog = Appearance(self.window, self.player)
         appearance_dialog.dialog.accepted.connect(appearance_dialog.write_appearance_values)
@@ -362,6 +349,7 @@ class MainWindow():
         if not skip_update:
             self.update()
 
+        # TODO: apparently there is a setWindow fundtion specifically for open files
         self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
         self.window.setWindowModified(False)
@@ -437,9 +425,6 @@ class MainWindow():
 
     def update_player_preview(self):
         race = self.ui.race.currentText()
-        if race == "":
-            # probably in the middle of an update/reload
-            return
 
         if self.ui.male.isChecked():
             gender = "male"

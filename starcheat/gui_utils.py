@@ -149,7 +149,7 @@ def new_setup_dialog():
         dialog.setInformativeText("""<html><body>
         <p>You need to unpack the Starcheat assets to use starcheat</p>
         <p>Do you want to extract the assets now?
-        <i>(this requires ~410MB of disk space and takes up to 30 seconds)</i></p></body></html>""")
+        <i>(this requires ~410MB of disk space and takes 1-5 mins)</i></p></body></html>""")
         dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         dialog.setIcon(QMessageBox.Question)
         answer = dialog.exec()
