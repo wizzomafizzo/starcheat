@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 from PyQt5.QtGui import QPixmap
 
 import assets, qt_itembrowser
-from gui_common import inv_icon
+from gui.common import inv_icon
 
 class ItemBrowser():
     def __init__(self, parent, just_browse=False):

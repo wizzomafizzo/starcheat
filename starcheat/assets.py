@@ -535,19 +535,19 @@ class Species():
         else:
             return results
 
-    def get_facial_hair_types(self, name, gender):
+    def get_facial_hair_types(self, name, gender, group):
         return self.get_appearance_data(name, gender, "facialHair")
 
     def get_facial_hair_groups(self, name, gender):
         return self.get_appearance_data(name, gender, "facialHairGroup")
 
-    def get_facial_mask_types(self, name, gender):
+    def get_facial_mask_types(self, name, gender, group):
         return self.get_appearance_data(name, gender, "facialMask")
 
     def get_facial_mask_groups(self, name, gender):
         return self.get_appearance_data(name, gender, "facialMaskGroup")
 
-    def get_hair_types(self, name, gender):
+    def get_hair_types(self, name, gender, group):
         return self.get_appearance_data(name, gender, "hair")
 
     def get_hair_groups(self, name, gender):

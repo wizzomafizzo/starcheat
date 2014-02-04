@@ -3,7 +3,7 @@
 import logging, os, datetime, sys, traceback
 from PyQt5.QtWidgets import QMessageBox
 
-import config, gui
+import config, gui.mainwindow
 
 log_file = os.path.join(config.log_folder,
                         "starcheat_" + datetime.date.today().isoformat() + ".log")
@@ -48,7 +48,7 @@ def main():
     sys.excepthook = exception_handler
 
     logging.info('starcheat init')
-    gui.MainWindow()
+    gui.mainwindow.MainWindow()
 
 if __name__ == "__main__":
     main()

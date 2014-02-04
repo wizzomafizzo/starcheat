@@ -13,9 +13,9 @@ from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 from PyQt5.QtGui import QPixmap
 
 import json
-import assets, qt_itemedit, qt_itemeditoptions, save_file
-from gui_common import inv_icon, ItemWidget, empty_slot
-from gui_itembrowser import ItemBrowser
+import assets, qt_itemedit, qt_itemeditoptions, saves
+from gui.common import inv_icon, ItemWidget, empty_slot
+from gui.itembrowser import ItemBrowser
 
 class ItemEditOptions():
     def __init__(self, parent, key, value):
@@ -130,7 +130,7 @@ class ItemEdit():
             self.ui.variant.setHorizontalHeaderLabels(["Options"])
             return
 
-        self.item = save_file.new_item(name, 1, item[0])
+        self.item = saves.new_item(name, 1, item[0])
         self.ui.count.setValue(1)
         self.update_item_info(name, item[0])
         self.populate_options()
@@ -139,7 +139,7 @@ class ItemEdit():
         """Return an ItemWidget of the currently open item."""
         name = self.ui.item_type.text()
         count = self.ui.count.value()
-        item = save_file.new_item(name, count, self.item["data"])
+        item = saves.new_item(name, count, self.item["data"])
         return ItemWidget(item)
 
     def new_item_edit_options(self):

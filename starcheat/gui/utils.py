@@ -7,8 +7,8 @@ from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QListWidgetItem
 from PyQt5 import QtGui
 
 from config import Config
-from gui_common import preview_icon
-import save_file, assets, logging
+from gui.common import preview_icon
+import saves, assets, logging
 import qt_options, qt_openplayer, qt_about
 
 # TODO: there are way too many html templates and message text in here now
@@ -281,9 +281,9 @@ class CharacterSelectDialog():
             for f in os.listdir(self.player_folder):
                 if f.endswith(".player"):
                     try:
-                        player = save_file.PlayerSave(os.path.join(self.player_folder, f))
+                        player = saves.PlayerSave(os.path.join(self.player_folder, f))
                         players_found[player.get_name()] = player
-                    except save_file.WrongSaveVer:
+                    except saves.WrongSaveVer:
                         logging.info("Save file %s is not compatible", f)
         except FileNotFoundError:
             logging.exception("Could not open %s", self.player_folder)
@@ -320,6 +320,6 @@ class CharacterSelectDialog():
             dialog.exec()
             manual_player = self.manual_select()
             if manual_player[0] != "":
-                self.selected = save_file.PlayerSave(manual_player[0])
+                self.selected = saves.PlayerSave(manual_player[0])
         else:
             self.dialog.exec()

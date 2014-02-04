@@ -7,14 +7,14 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
-import save_file, assets, qt_mainwindow
-from gui_common import ItemWidget, empty_slot, preview_icon
-from gui_utils import CharacterSelectDialog, OptionsDialog, AboutDialog
-from gui_utils import save_modified_dialog, new_setup_dialog
-from gui_itemedit import ItemEdit
-from gui_blueprints import BlueprintLib
-from gui_itembrowser import ItemBrowser
-from gui_appearance import Appearance
+import saves, assets, qt_mainwindow
+from gui.common import ItemWidget, empty_slot, preview_icon
+from gui.utils import CharacterSelectDialog, OptionsDialog, AboutDialog
+from gui.utils import save_modified_dialog, new_setup_dialog
+from gui.itemedit import ItemEdit
+from gui.blueprints import BlueprintLib
+from gui.itembrowser import ItemBrowser
+from gui.appearance import Appearance
 
 class StarcheatMainWindow(QMainWindow):
     """Overrides closeEvent on the main window to allow "want to save changes?" dialog"""
@@ -314,7 +314,7 @@ class MainWindow():
     def reload(self):
         """Reload the currently open save file and update GUI values."""
         logging.info("Reloading file %s", self.player.filename)
-        self.player = save_file.PlayerSave(self.player.filename)
+        self.player = saves.PlayerSave(self.player.filename)
         self.update()
         self.ui.statusbar.showMessage("Reloaded " + self.player.filename, 3000)
         self.window.setWindowModified(False)

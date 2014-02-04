@@ -26,24 +26,30 @@ class Appearance():
         personality = self.player.get_personality()
 
         current_appearance = {
-            "hair_group": self.player.get_hair()[0],
-            "hair_type": self.player.get_hair()[1],
-            "facial_hair_group": self.player.get_facial_hair()[0],
-            "facial_hair_type": self.player.get_facial_hair()[1],
-            "facial_mask_group": self.player.get_facial_mask()[0],
-            "facial_mask_type": self.player.get_facial_mask()[1]
+            "hair": self.player.get_hair(),
+            "facial_hair": self.player.get_facial_hair(),
+            "facial_mask": self.player.get_facial_mask()
         }
         appearance_values = ("hair_group", "hair_type",
                              "facial_hair_group", "facial_hair_type",
                              "facial_mask_group", "facial_mask_type")
+        appearance_values = ("hair", "facial_hair", "facial_mask")
 
         for value in appearance_values:
-            asset_data = getattr(self.species, "get_%ss" % value)(race, gender)
-            widget = getattr(self.ui, value)
-            for option in asset_data:
-                widget.addItem(option)
-            widget.setCurrentText(current_appearance[value])
-            if len(asset_data) < 2: widget.setEnabled(False)
+            group_data = getattr(self.species, "get_%s_groups" % value)(race, gender)
+            type_data = getattr(self.species, "get_%s_types" % value)(race, gender,
+                                                                      current_appearance[value][0])
+            group_widget = getattr(self.ui, value+"_group")
+            for option in group_data:
+                group_widget.addItem(option)
+            group_widget.setCurrentText(current_appearance[value][0])
+            if len(group_data) < 2: group_widget.setEnabled(False)
+
+            type_widget = getattr(self.ui, value+"_type")
+            for option in type_data:
+                type_widget.addItem(option)
+            type_widget.setCurrentText(current_appearance[value][1])
+            if len(type_data) < 2: type_widget.setEnabled(False)
 
         # personality
         for option in self.species.get_personality():
