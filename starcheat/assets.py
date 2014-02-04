@@ -551,7 +551,11 @@ class Species():
         return self.get_appearance_data(name, gender, "hair")
 
     def get_hair_groups(self, name, gender):
-        return self.get_appearance_data(name, gender, "hairGroup")
+        groups = self.get_appearance_data(name, gender, "hairGroup")
+        if len(groups) == 0:
+            return ("hair",)
+        else:
+            return groups
 
     def get_personality(self):
         return self.humanoid_config["charGen"]["personalities"]

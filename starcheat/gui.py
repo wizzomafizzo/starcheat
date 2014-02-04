@@ -307,16 +307,7 @@ class MainWindow():
         about_dialog.dialog.exec()
 
     def new_appearance_dialog(self):
-        race = self.ui.race.currentText()
-        self.player.set_race(race)
-
-        if self.ui.male.isChecked():
-            gender = "male"
-        else:
-            gender = "female"
-        self.player.set_gender(gender)
-
-        appearance_dialog = Appearance(self.window, self.player)
+        appearance_dialog = Appearance(self)
         appearance_dialog.dialog.accepted.connect(appearance_dialog.write_appearance_values)
         appearance_dialog.dialog.exec()
 
@@ -363,6 +354,12 @@ class MainWindow():
         if filename[0] != "":
             self.player.export_save(filename[0])
             self.ui.statusbar.showMessage("Exported save file to " + filename[0], 3000)
+
+    def get_gender(self):
+        if self.ui.male.isChecked():
+            return "male"
+        else:
+            return "female"
 
     def get_bag(self, name):
         """Return the entire contents of a given non-equipment bag as raw values."""
