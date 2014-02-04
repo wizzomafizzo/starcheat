@@ -330,6 +330,7 @@ def new_item(name, count, data):
     return item
 
 def unpack_color_directives(data):
+    print(data)
     unpack_dir = data.split("?replace;")
     directives = []
     for directive in unpack_dir[1:]:
@@ -346,6 +347,7 @@ def pack_color_directives(colors):
         string += "?replace"
         for group in directive:
             string += ";%s=%s" % (group[0], group[1])
+    print(string)
     return string
 
 class WrongSaveVer(Exception):
@@ -511,7 +513,6 @@ class PlayerSave():
         # self.entity["identity"]["personalityHeadOffset"]
         return self.entity["identity"]["personalityIdle"]
 
-    # TODO: color directives
     def get_hair(self):
         return self.entity["identity"]["hairGroup"], self.entity["identity"]["hairType"]
 
@@ -521,8 +522,20 @@ class PlayerSave():
     def get_facial_mask(self):
         return self.entity["identity"]["facialMaskGroup"], self.entity["identity"]["facialMaskType"]
 
-    def get_body_color(self):
+    def get_body_directives(self):
         return unpack_color_directives(self.entity["identity"]["bodyDirectives"])
+
+    def get_emote_directives(self):
+        return unpack_color_directives(self.entity["identity"]["emoteDirectives"])
+
+    def get_hair_directives(self):
+        return unpack_color_directives(self.entity["identity"]["hairDirectives"])
+
+    def get_facial_hair_directives(self):
+        return unpack_color_directives(self.entity["identity"]["facialHairDirectives"])
+
+    def get_facial_mask_directives(self):
+        return unpack_color_directives(self.entity["identity"]["facialMaskDirectives"])
 
     # here be setters
     def set_blueprints(self, blueprints):
@@ -624,6 +637,21 @@ class PlayerSave():
     def set_facial_mask(self, group, type):
         self.entity["identity"]["facialMaskGroup"] = group
         self.entity["identity"]["facialMaskType"] = type
+
+    def set_body_directives(self, colors):
+        self.entity["identity"]["bodyDirectives"] = pack_color_directives(colors)
+
+    def set_emote_directives(self, colors):
+        self.entity["identity"]["emoteDirectives"] = pack_color_directives(colors)
+
+    def set_hair_directives(self, colors):
+        self.entity["identity"]["hairDirectives"] = pack_color_directives(colors)
+
+    def set_facial_hair_directives(self, colors):
+        self.entity["identity"]["facialHairDirectives"] = pack_color_directives(colors)
+
+    def set_facial_mask_directives(self, colors):
+        self.entity["identity"]["facialMaskDirectives"] = pack_color_directives(colors)
 
 if __name__ == '__main__':
     #logging.basicConfig(filename="save_file.log", level=logging.DEBUG)

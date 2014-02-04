@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>390</width>
-    <height>370</height>
+    <height>410</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,13 +22,13 @@
   <property name="minimumSize">
    <size>
     <width>0</width>
-    <height>345</height>
+    <height>410</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>450</width>
-    <height>380</height>
+    <height>450</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -71,46 +71,22 @@
    </item>
    <item row="0" column="1" rowspan="2">
     <layout class="QGridLayout" name="gridLayout_4">
-     <item row="0" column="0">
-      <widget class="QLabel" name="hair_label">
-       <property name="text">
-        <string>Hair</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
+     <item row="3" column="0" colspan="2">
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QComboBox" name="hair_group">
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>25</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" rowspan="2">
-        <widget class="QToolButton" name="hair_color">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources.qrc">
-           <normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QComboBox" name="hair_type"/>
-       </item>
-      </layout>
+     <item row="6" column="1">
+      <widget class="QComboBox" name="personality">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0" colspan="2">
       <widget class="Line" name="line">
@@ -119,10 +95,17 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="facial_label_label">
+     <item row="5" column="0" colspan="2">
+      <widget class="Line" name="line_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="facial_hair_label">
        <property name="text">
-        <string>Face</string>
+        <string>Facial Hair</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -144,7 +127,7 @@
        <item row="0" column="1" rowspan="2">
         <widget class="QToolButton" name="facial_mask_color">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>...</string>
@@ -160,17 +143,109 @@
        </item>
       </layout>
      </item>
-     <item row="3" column="0" colspan="2">
-      <widget class="Line" name="line_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+     <item row="0" column="0">
+      <widget class="QLabel" name="hair_label">
+       <property name="text">
+        <string>Hair</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="facial_hair_label">
+     <item row="6" column="0">
+      <widget class="QLabel" name="personality_label">
        <property name="text">
-        <string>Facial Hair</string>
+        <string>Personality</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="facial_label_label">
+       <property name="text">
+        <string>Face</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QComboBox" name="hair_group">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>25</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" rowspan="2">
+        <widget class="QToolButton" name="hair_color">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QComboBox" name="hair_type"/>
+       </item>
+      </layout>
+     </item>
+     <item row="7" column="1">
+      <widget class="QToolButton" name="body_color">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QToolButton" name="favorite_color">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="favorite_label">
+       <property name="text">
+        <string>Undies</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="body_label">
+       <property name="text">
+        <string>Body</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -192,7 +267,7 @@
        <item row="0" column="1" rowspan="2">
         <widget class="QToolButton" name="facial_hair_color">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>...</string>
@@ -208,69 +283,18 @@
        </item>
       </layout>
      </item>
-     <item row="5" column="0" colspan="2">
-      <widget class="Line" name="line_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="personality_label">
+     <item row="9" column="0">
+      <widget class="QLabel" name="emote_label">
        <property name="text">
-        <string>Personality</string>
+        <string>Emotes</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
-      <widget class="QComboBox" name="personality">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>25</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="body_label">
-       <property name="text">
-        <string>Body Color</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QToolButton" name="body_color">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../resources.qrc">
-         <normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</normaloff>:/starcheat/images/icons/glyphicons_090_eyedropper.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="favorite_label">
-       <property name="text">
-        <string>Undy Color</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QToolButton" name="favorite_color">
+     <item row="9" column="1">
+      <widget class="QToolButton" name="emote_color">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -312,13 +336,6 @@
   <zorder>player_preview</zorder>
   <zorder>buttonBox</zorder>
   <zorder>verticalSpacer</zorder>
-  <zorder>facial_mask_group</zorder>
-  <zorder>hair_type</zorder>
-  <zorder>facial_mask_type</zorder>
-  <zorder>facial_hair_type</zorder>
-  <zorder>line</zorder>
-  <zorder>line_2</zorder>
-  <zorder>line_3</zorder>
  </widget>
  <resources>
   <include location="../resources.qrc"/>
