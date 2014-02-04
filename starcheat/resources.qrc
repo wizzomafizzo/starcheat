@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="starcheat">
+    <file>images/starcheat_64_single.png</file>
     <file>images/starcheat_moddb.png</file>
     <file>images/starcheat_64.png</file>
     <file>images/starcheat_32.png</file>

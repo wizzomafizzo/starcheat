@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../resources.qrc">
-    <normaloff>:/starcheat/images/starcheat_32.png</normaloff>:/starcheat/images/starcheat_32.png</iconset>
+    <normaloff>:/starcheat/images/starcheat_64_single.png</normaloff>:/starcheat/images/starcheat_64_single.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="backpack_label">
@@ -1601,7 +1601,7 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>603</x>
