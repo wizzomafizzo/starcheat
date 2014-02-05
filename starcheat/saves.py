@@ -547,6 +547,8 @@ class PlayerSave():
     # TODO: at some point we need to run through and replace all "race"
     # references to species
     def set_race(self, race):
+        if race == "":
+            race = "dummy"
         self.entity["identity"]["species"] = race.lower()
 
     def set_pixels(self, pixels):

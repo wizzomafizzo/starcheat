@@ -2,7 +2,7 @@
 Main application window for starcheat GUI
 """
 
-import sys, logging
+import sys, logging, json
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
@@ -65,6 +65,7 @@ class MainWindow():
         self.ui.actionItemBrowser.triggered.connect(self.new_item_browser)
         self.ui.actionExport.triggered.connect(self.export_save)
         self.ui.actionAbout.triggered.connect(self.new_about_dialog)
+        self.ui.actionExportJSON.triggered.connect(self.export_json)
 
         # launch open file dialog
         self.player = None
@@ -101,7 +102,7 @@ class MainWindow():
         self.ui.name.setFocus()
         self.ui.name.textChanged.connect(self.set_edited)
 
-        self.ui.race.currentTextChanged.connect(self.update_player_preview)
+        self.ui.race.currentTextChanged.connect(self.update_species)
 
         self.ui.male.clicked.connect(self.update_player_preview)
         self.ui.female.clicked.connect(self.update_player_preview)
@@ -191,27 +192,16 @@ class MainWindow():
     def save(self):
         """Update internal player dict with GUI values and export to file."""
         logging.info("Saving player file %s", self.player.filename)
-        logging.debug(self.player.data)
         # name
         self.player.set_name(self.ui.name.text())
-        # race
-        race = self.ui.race.currentText()
-        if race != "":
-            self.player.set_race(race)
-        else:
-            # TODO: remove this stuff eventually, just here for upgrade
-            self.player.set_race("apex")
+        # species
+        self.player.set_race(self.ui.race.currentText())
         # pixels
         self.player.set_pixels(self.ui.pixels.value())
         # description
         self.player.set_description(self.ui.description.toPlainText())
-
         # gender
-        if self.ui.male.isChecked():
-            self.player.set_gender("male")
-        else:
-            self.player.set_gender("female")
-
+        self.player.set_gender(self.get_gender())
         # stats
         stats = "health", "energy", "food"
         for s in stats:
@@ -225,20 +215,18 @@ class MainWindow():
         self.player.set_max_warmth(self.ui.max_warmth.value())
         # breath
         self.player.set_max_breath(self.ui.max_breath.value())
-
         # equipment
         equip_bags = "head", "chest", "legs", "back"
         for b in equip_bags:
             bag = self.get_equip(b)
             getattr(self.player, "set_" + b)(bag[0], bag[1])
-
         # bags
         bags = "wieldable", "main_bag", "tile_bag", "action_bar"
         for b in bags:
             getattr(self.player, "set_" + b)(self.get_bag(b))
-
         # save and show status
         logging.info("Writing file to disk")
+        logging.debug(self.player.data)
         self.player.export_save(self.player.filename)
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)
         self.window.setWindowModified(False)
@@ -355,6 +343,20 @@ class MainWindow():
             self.player.export_save(filename[0])
             self.ui.statusbar.showMessage("Exported save file to " + filename[0], 3000)
 
+    def export_json(self):
+        """Export player entity as json."""
+        entity = self.player.entity
+        json_data = json.dumps(entity, sort_keys=True,
+                               indent=4, separators=(',', ': '))
+        filename = QFileDialog.getSaveFileName(self.window,
+                                               "Export JSON File As")
+        if filename[0] != "":
+            self.player.export_save(filename[0])
+            json_file = open(filename[0], "w")
+            json_file.write(json_data)
+            json_file.close()
+            self.ui.statusbar.showMessage("Exported JSON file to " + filename[0], 3000)
+
     def get_gender(self):
         if self.ui.male.isChecked():
             return "male"
@@ -421,16 +423,19 @@ class MainWindow():
                 column = 0
 
     def update_player_preview(self):
-        race = self.ui.race.currentText()
-
-        if self.ui.male.isChecked():
-            gender = "male"
-        else:
-            gender = "female"
-
-        image = preview_icon(race, gender)
+        species = self.ui.race.currentText()
+        gender = self.get_gender()
+        image = preview_icon(species, gender)
         self.ui.player_preview.setPixmap(image.scaled(64, 64))
-        self.set_edited()
+
+    def update_species(self):
+        species = self.ui.race.currentText()
+        if self.player.get_race(pretty=True) == species:
+            # don't overwrite appearance values if it didn't really change
+            return
+        self.player.set_race(species)
+        self.update_player_preview()
+        self.window.setWindowModified(True)
 
     # these are used for connecting the item edit dialog to bag tables
     def new_main_bag_item_edit(self):

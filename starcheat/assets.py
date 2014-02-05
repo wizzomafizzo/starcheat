@@ -417,6 +417,13 @@ class Items():
         c.execute("select count(*) from items")
         return c.fetchone()[0]
 
+def read_default_color(species_data):
+    color = []
+    for group in species_data[0].keys():
+        color.append([group, species_data[0][group]])
+    print(color)
+    return color
+
 class Species():
     def __init__(self):
         """Everything dealing with indexing and parsing species asset files."""
@@ -565,6 +572,31 @@ class Species():
             return species_data[1]["genders"][0]
         else:
             return species_data[1]["genders"][1]
+
+    # TODO: this isn't working at all yet, there are options in the species file
+    # saying how these are applied
+    def get_default_colors(self, species):
+        # just use first option
+        species_data = self.get_species(species)[0]
+        def val(key):
+            if species_data.has_key(key):
+                return species_data[key]
+            else:
+                return ""
+
+        colors = {
+            "bodyColor": val(species_data["bodyColor"]),
+            "undyColor": val(species_data["undyColor"]),
+            "hairColor": val(species_data["hairColor"])
+        }
+        directives = {
+            "body_color": [colors["bodyColor"]],
+            "emote": [],
+            "hair": [],
+            "facial_hair": [],
+            "facial_mask": []
+        }
+
 
     def get_preview_image(self, name, gender):
         species = self.get_species(name.lower())
