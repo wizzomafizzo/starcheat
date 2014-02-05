@@ -55,7 +55,7 @@ def main():
     res_file = os.path.join(src_dir, "starcheat", "resources.qrc")
     pyname = "resources_rc.py"
     if platform.system() == "Windows":
-        os.system(os.path.join(pyqt5_dir, "pyrcc5.bat") + " " + res_file + " > " + os.path.join(prefix, pyname))
+        os.system(os.path.join(pyqt5_dir, "pyrcc5.exe") + " " + res_file + " > " + os.path.join(prefix, pyname))
     else:
         os.system("pyrcc5 " + res_file + " > " + os.path.join(prefix, pyname))
     if options.verbose:
@@ -75,7 +75,7 @@ def main():
 
         if options.verbose:
             print("Launching cx_freeze...")
-        icon_path = os.listdir(os.path.join(src_dir, "starcheat", "images", "starcheat.ico"))
+        icon_path = os.path.join(src_dir, "starcheat", "images", "starcheat.ico")
         os.system(cx_freeze_Path + " " + os.path.join(prefix, "starcheat.py") + " --target-dir=" + dist + " --icon=" + icon_path)
         shutil.copy(os.path.join(pyqt5_dir, "libEGL.dll"), dist)
 
