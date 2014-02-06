@@ -12,7 +12,7 @@ FileUtils.cd 'build'
 system './starcheat.py', '-v' 
 # run some other unit test here
 unless ENV['TRAVIS_BUILD_ID'].nil? || ENV['TRAVIS_SECURE_ENV_VARS'] == 'false'
-  system 'curl', '-O', 'https://raw.github.com/chrmoritz/starcheat/master/mac/setup.py'
+  system 'curl', '-O', 'https://raw.github.com/wizzomafizzo/starcheat/master/mac/setup.py'
   system 'python3', 'setup.py', 'py2app'
   system '/usr/local/Cellar/qt5/5.2.0/bin/macdeployqt', 'dist/starcheat.app', '-verbose=2'
   FileUtils.mv 'dist/starcheat.app', 'StarCheat.app'
