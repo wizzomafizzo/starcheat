@@ -13,9 +13,9 @@ from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 from PyQt5.QtGui import QPixmap
 
 import json
-import assets, qt_itemedit, qt_itemeditoptions, save_file
-from gui_common import inv_icon, ItemWidget, empty_slot
-from gui_itembrowser import ItemBrowser
+import assets, qt_itemedit, qt_itemeditoptions, saves
+from gui.common import inv_icon, ItemWidget, empty_slot
+from gui.itembrowser import ItemBrowser
 
 class ItemEditOptions():
     def __init__(self, parent, key, value):
@@ -87,9 +87,9 @@ class ItemEdit():
         self.ui.load_button.clicked.connect(self.new_item_browser)
         self.ui.item_type.textChanged.connect(self.update_item)
         self.ui.variant.itemDoubleClicked.connect(self.new_item_edit_options)
+        self.ui.clear_options_button.clicked.connect(self.clear_item_options)
 
         self.ui.item_type.setFocus()
-        self.dialog.show()
 
     def update_item_info(self, name, data):
         item_info = "<html><body>"
@@ -130,7 +130,7 @@ class ItemEdit():
             self.ui.variant.setHorizontalHeaderLabels(["Options"])
             return
 
-        self.item = save_file.new_item(name, 1, item[0])
+        self.item = saves.new_item(name, 1, item[0])
         self.ui.count.setValue(1)
         self.update_item_info(name, item[0])
         self.populate_options()
@@ -139,8 +139,17 @@ class ItemEdit():
         """Return an ItemWidget of the currently open item."""
         name = self.ui.item_type.text()
         count = self.ui.count.value()
-        item = save_file.new_item(name, count, self.item["data"])
+        data = {}
+        for i in range(self.ui.variant.rowCount()):
+            option = self.ui.variant.item(i, 0).option
+            data[option[0]] = option[1]
+        item = saves.new_item(name, count, data)
         return ItemWidget(item)
+
+    def clear_item_options(self):
+        self.ui.variant.clear()
+        self.ui.variant.setHorizontalHeaderLabels(["Options"])
+        self.ui.variant.setRowCount(0)
 
     def new_item_edit_options(self):
         selected = self.ui.variant.currentItem()

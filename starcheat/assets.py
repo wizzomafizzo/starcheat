@@ -417,6 +417,14 @@ class Items():
         c.execute("select count(*) from items")
         return c.fetchone()[0]
 
+def read_default_color(species_data):
+    color = []
+    if type(species_data[0]) is str:
+        return []
+    for group in species_data[0].keys():
+        color.append([group, species_data[0][group]])
+    return color
+
 class Species():
     def __init__(self):
         """Everything dealing with indexing and parsing species asset files."""
@@ -506,7 +514,7 @@ class Species():
     def get_species(self, name):
         """Look up a species from the index and return contents of species files."""
         c = self.db.cursor()
-        c.execute("select * from species where name = ?", (name,))
+        c.execute("select * from species where name = ?", (name.lower(),))
         species = c.fetchone()
         try:
             species_data = load_asset_file(os.path.join(species[2], "species", species[1]))
@@ -521,30 +529,78 @@ class Species():
         c.execute("select * from species")
         return c.fetchall()
 
-    def get_facial_hair(self, name, gender):
+    def get_appearance_data(self, name, gender, key):
         species = self.get_species(name)
-        return self.get_gender_data(species, gender)["facialHair"]
+        # there is another json extension here where strings that have a , on
+        # the end are treated as 1 item lists. there are also some species with
+        # missing keys
+        try:
+            results = self.get_gender_data(species, gender)[key]
+        except KeyError:
+            return []
+        if type(results) is str:
+            return (results,)
+        else:
+            return results
 
-    def get_facial_mask(self, name, gender):
-        species = self.get_species(name)
-        return self.get_gender_data(species, gender)["facialMask"]
+    def get_facial_hair_types(self, name, gender, group):
+        return self.get_appearance_data(name, gender, "facialHair")
 
-    def get_hair(self, name, gender):
-        species = self.get_species(name)
-        return self.get_gender_data(species, gender)["hair"]
+    def get_facial_hair_groups(self, name, gender):
+        return self.get_appearance_data(name, gender, "facialHairGroup")
+
+    def get_facial_mask_types(self, name, gender, group):
+        return self.get_appearance_data(name, gender, "facialMask")
+
+    def get_facial_mask_groups(self, name, gender):
+        return self.get_appearance_data(name, gender, "facialMaskGroup")
+
+    def get_hair_types(self, name, gender, group):
+        return self.get_appearance_data(name, gender, "hair")
+
+    def get_hair_groups(self, name, gender):
+        groups = self.get_appearance_data(name, gender, "hairGroup")
+        if len(groups) == 0:
+            return ("hair",)
+        else:
+            return groups
 
     def get_personality(self):
-        # BUG: remove this workaround. okay for now since appearance isn't working anyway
-        if self.humanoid_config == None:
-            return []
-        else:
-            return self.humanoid_config["charGen"]["personalities"]
+        return self.humanoid_config["charGen"]["personalities"]
 
     def get_gender_data(self, species_data, gender):
         if gender == "male":
             return species_data[1]["genders"][0]
         else:
             return species_data[1]["genders"][1]
+
+    def get_default_colors(self, species):
+        # just use first option
+        species_data = self.get_species(species)[1]
+        def val(key):
+            if key in species_data:
+                return read_default_color(species_data[key])
+            else:
+                return ""
+
+        colors = {
+            "bodyColor": val("bodyColor"),
+            "undyColor": val("undyColor"),
+            "hairColor": val("hairColor")
+        }
+        # TODO: there is an unbelievably complicated method for choosing default
+        # player colors. i'm not sure if it's worth going into too much considering
+        # it will only be used if a player switches species
+        # it might be easier to just leave this out entirely. let user add/remove
+        # their own directive colors
+        directives = {
+            "body": [colors["bodyColor"]],
+            "emote": [colors["bodyColor"], colors["undyColor"]],
+            "hair": [colors["hairColor"]],
+            "facial_hair": [colors["bodyColor"]],
+            "facial_mask": [colors["bodyColor"]]
+        }
+        return directives
 
     def get_preview_image(self, name, gender):
         species = self.get_species(name.lower())

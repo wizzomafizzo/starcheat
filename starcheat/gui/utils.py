@@ -7,8 +7,8 @@ from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QListWidgetItem
 from PyQt5 import QtGui
 
 from config import Config
-from gui_common import preview_icon
-import save_file, assets, logging
+from gui.common import preview_icon
+import saves, assets, logging
 import qt_options, qt_openplayer, qt_about
 
 # TODO: there are way too many html templates and message text in here now
@@ -23,7 +23,7 @@ def build_assets_db():
     logging.info("Indexing assets")
     dialog = QMessageBox()
     dialog.setText("starcheat will now build a database of Starbound assets.")
-    dialog.setInformativeText("This can take a little while, please be patient.")
+    dialog.setInformativeText("This shouldn't take long.")
     dialog.setIcon(QMessageBox.Information)
     dialog.exec()
 
@@ -57,6 +57,7 @@ def build_assets_db():
     for t in asset_types:
         try:
             asset_class = getattr(assets, t)()
+            print("Indexing "+t+"...")
             getattr(asset_class, "add_all_" + t.lower())()
         except FileNotFoundError:
             # catch anything that couldn't be skipped during index
@@ -110,7 +111,7 @@ def new_setup_dialog():
             # assets could be removed since initial setup
             logging.info("unpacking removed assets again")
             dialog = QMessageBox()
-            dialog.setText("Unable to find unpackes Starbound assets")
+            dialog.setText("Unable to find unpacked Starbound assets")
             dialog.setInformativeText("Unpacking removed assets again...")
             dialog.setIcon(QMessageBox.Warning)
             dialog.exec()
@@ -147,9 +148,9 @@ def new_setup_dialog():
         dialog = QMessageBox()
         dialog.setText("No unpacked assets found!")
         dialog.setInformativeText("""<html><body>
-        <p>You need to unpack the Starcheat assets to use starcheat</p>
-        <p>Do you want to extract the assets now?
-        <i>(this requires ~410MB of disk space and takes up to 30 seconds)</i></p></body></html>""")
+        <p>starcheat needs to unpack your Starbound assets to work. This only happens once.</p>
+        <p>Do you want to unpack the assets now?
+        <i>(this requires ~410MB of disk space and takes 1-5 mins)</i></p></body></html>""")
         dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         dialog.setIcon(QMessageBox.Question)
         answer = dialog.exec()
@@ -169,6 +170,8 @@ def new_setup_dialog():
         unpack_cmd = '"{0}" "{1}" "{2}"'.format(asset_unpacker,
                                              os.path.join(starbound_folder, "assets", "packed.pak"),
                                              os.path.join(starbound_folder, "assets"))
+        # just so the cmd window isn't totally empty
+        print("Unpacking Starbound vanilla assets...")
         subprocess.call(unpack_cmd, shell=True)
 
         if not os.path.isfile(unpack_test_file):
@@ -281,9 +284,9 @@ class CharacterSelectDialog():
             for f in os.listdir(self.player_folder):
                 if f.endswith(".player"):
                     try:
-                        player = save_file.PlayerSave(os.path.join(self.player_folder, f))
+                        player = saves.PlayerSave(os.path.join(self.player_folder, f))
                         players_found[player.get_name()] = player
-                    except save_file.WrongSaveVer:
+                    except saves.WrongSaveVer:
                         logging.info("Save file %s is not compatible", f)
         except FileNotFoundError:
             logging.exception("Could not open %s", self.player_folder)
@@ -320,6 +323,6 @@ class CharacterSelectDialog():
             dialog.exec()
             manual_player = self.manual_select()
             if manual_player[0] != "":
-                self.selected = save_file.PlayerSave(manual_player[0])
+                self.selected = saves.PlayerSave(manual_player[0])
         else:
             self.dialog.exec()

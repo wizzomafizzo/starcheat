@@ -2,22 +2,20 @@
 Main application window for starcheat GUI
 """
 
-import sys, logging
+import sys, logging, json
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
-import save_file, assets, qt_mainwindow
-from gui_common import ItemWidget, empty_slot, preview_icon
-from gui_utils import CharacterSelectDialog, OptionsDialog, AboutDialog
-from gui_utils import save_modified_dialog, new_setup_dialog
-from gui_itemedit import ItemEdit
-from gui_blueprints import BlueprintLib
-from gui_itembrowser import ItemBrowser
-from gui_appearance import Appearance
+import saves, assets, qt_mainwindow
+from gui.common import ItemWidget, empty_slot, preview_icon
+from gui.utils import CharacterSelectDialog, OptionsDialog, AboutDialog
+from gui.utils import save_modified_dialog, new_setup_dialog
+from gui.itemedit import ItemEdit
+from gui.blueprints import BlueprintLib
+from gui.itembrowser import ItemBrowser
+from gui.appearance import Appearance
 
-# TODO: had to make this so i could override closeEvent properly
-# not sure if i should move everything here or not
 class StarcheatMainWindow(QMainWindow):
     """Overrides closeEvent on the main window to allow "want to save changes?" dialog"""
     def __init__(self, parent):
@@ -55,14 +53,8 @@ class MainWindow():
         logging.debug("Loading items")
         self.items = assets.Items()
 
-        # atm we only support one of each dialog at a time, don't think this
-        # will be a problem tho
         self.item_browser = None
-        self.item_edit = None
-        self.blueprint_lib = None
         self.options_dialog = None
-        self.about_dialog = None
-        self.appearance_dialog = None
 
         # connect action menu
         self.ui.actionSave.triggered.connect(self.save)
@@ -73,9 +65,9 @@ class MainWindow():
         self.ui.actionItemBrowser.triggered.connect(self.new_item_browser)
         self.ui.actionExport.triggered.connect(self.export_save)
         self.ui.actionAbout.triggered.connect(self.new_about_dialog)
+        self.ui.actionExportJSON.triggered.connect(self.export_json)
 
         # launch open file dialog
-        # we want this after the races are populated but before the slider setup
         self.player = None
         # we *need* at least an initial save file
         logging.debug("Open file dialog")
@@ -84,9 +76,6 @@ class MainWindow():
             logging.warning("No player file selected")
             return
 
-        # let's move this back here. i am wondering if there is a conflict
-        # between the textupdated signal and the combobox population? the only
-        # downside to this is rebuild db won't reflect changes til restart
         for species in assets.Species().get_species_list():
             self.ui.race.addItem(species)
 
@@ -113,7 +102,7 @@ class MainWindow():
         self.ui.name.setFocus()
         self.ui.name.textChanged.connect(self.set_edited)
 
-        self.ui.race.currentTextChanged.connect(self.update_player_preview)
+        self.ui.race.currentTextChanged.connect(self.update_species)
 
         self.ui.male.clicked.connect(self.update_player_preview)
         self.ui.female.clicked.connect(self.update_player_preview)
@@ -203,27 +192,16 @@ class MainWindow():
     def save(self):
         """Update internal player dict with GUI values and export to file."""
         logging.info("Saving player file %s", self.player.filename)
-        logging.debug(self.player.data)
         # name
         self.player.set_name(self.ui.name.text())
-        # race
-        race = self.ui.race.currentText()
-        if race != "":
-            self.player.set_race(race)
-        else:
-            # TODO: remove this stuff eventually, just here for upgrade
-            self.player.set_race("apex")
+        # species
+        self.player.set_race(self.ui.race.currentText())
         # pixels
         self.player.set_pixels(self.ui.pixels.value())
         # description
         self.player.set_description(self.ui.description.toPlainText())
-
         # gender
-        if self.ui.male.isChecked():
-            self.player.set_gender("male")
-        else:
-            self.player.set_gender("female")
-
+        self.player.set_gender(self.get_gender())
         # stats
         stats = "health", "energy", "food"
         for s in stats:
@@ -237,20 +215,18 @@ class MainWindow():
         self.player.set_max_warmth(self.ui.max_warmth.value())
         # breath
         self.player.set_max_breath(self.ui.max_breath.value())
-
         # equipment
         equip_bags = "head", "chest", "legs", "back"
         for b in equip_bags:
             bag = self.get_equip(b)
             getattr(self.player, "set_" + b)(bag[0], bag[1])
-
         # bags
         bags = "wieldable", "main_bag", "tile_bag", "action_bar"
         for b in bags:
             getattr(self.player, "set_" + b)(self.get_bag(b))
-
         # save and show status
         logging.info("Writing file to disk")
+        logging.debug(self.player.data)
         self.player.export_save(self.player.filename)
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)
         self.window.setWindowModified(False)
@@ -276,6 +252,7 @@ class MainWindow():
 
         item_edit.dialog.accepted.connect(update_slot)
         item_edit.ui.trash_button.clicked.connect(trash_slot)
+        item_edit.dialog.exec()
 
     def set_edited(self):
         self.window.setWindowModified(True)
@@ -283,18 +260,17 @@ class MainWindow():
     def new_blueprint_edit(self):
         """Launch a new blueprint management dialog."""
         logging.debug("New blueprint dialog")
-        self.blueprint_lib = BlueprintLib(self.window, self.player.get_blueprints())
+        blueprint_lib = BlueprintLib(self.window, self.player.get_blueprints())
 
         def update_blueprints():
             logging.debug("Writing blueprints")
-            self.player.set_blueprints(self.blueprint_lib.get_known_list())
-            self.blueprint_lib.dialog.close()
+            self.player.set_blueprints(blueprint_lib.get_known_list())
+            blueprint_lib.dialog.close()
             self.set_edited()
 
-        # TODO: check the button roles on this. may not be set correctly
-        self.blueprint_lib.ui.buttonBox.accepted.connect(update_blueprints)
-        self.blueprint_lib.ui.buttonBox.rejected.connect(self.blueprint_lib.dialog.close)
-        self.blueprint_lib.dialog.show()
+        blueprint_lib.ui.buttonBox.accepted.connect(update_blueprints)
+        blueprint_lib.ui.buttonBox.rejected.connect(blueprint_lib.dialog.close)
+        blueprint_lib.dialog.exec()
 
     def new_item_browser(self):
         """Launch a standalone item browser dialog that does write any changes."""
@@ -316,26 +292,18 @@ class MainWindow():
 
     def new_about_dialog(self):
         """Launch a new about dialog."""
-        self.about_dialog = AboutDialog(self.window)
-        self.about_dialog.dialog.exec()
+        about_dialog = AboutDialog(self.window)
+        about_dialog.dialog.exec()
 
     def new_appearance_dialog(self):
-        if self.ui.male.isChecked():
-            gender = "male"
-        else:
-            gender = "female"
-        self.player.set_gender(gender)
-
-        race = self.ui.race.currentText()
-        self.player.set_race(race)
-
-        self.appearance_dialog = Appearance(self.window, self.player)
-        self.appearance_dialog.dialog.exec()
+        appearance_dialog = Appearance(self)
+        appearance_dialog.dialog.accepted.connect(appearance_dialog.write_appearance_values)
+        appearance_dialog.dialog.exec()
 
     def reload(self):
         """Reload the currently open save file and update GUI values."""
         logging.info("Reloading file %s", self.player.filename)
-        self.player = save_file.PlayerSave(self.player.filename)
+        self.player = saves.PlayerSave(self.player.filename)
         self.update()
         self.ui.statusbar.showMessage("Reloaded " + self.player.filename, 3000)
         self.window.setWindowModified(False)
@@ -361,6 +329,7 @@ class MainWindow():
         if not skip_update:
             self.update()
 
+        # TODO: apparently there is a setWindow fundtion specifically for open files
         self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
         self.window.setWindowModified(False)
@@ -374,6 +343,26 @@ class MainWindow():
         if filename[0] != "":
             self.player.export_save(filename[0])
             self.ui.statusbar.showMessage("Exported save file to " + filename[0], 3000)
+
+    def export_json(self):
+        """Export player entity as json."""
+        entity = self.player.entity
+        json_data = json.dumps(entity, sort_keys=True,
+                               indent=4, separators=(',', ': '))
+        filename = QFileDialog.getSaveFileName(self.window,
+                                               "Export JSON File As")
+        if filename[0] != "":
+            self.player.export_save(filename[0])
+            json_file = open(filename[0], "w")
+            json_file.write(json_data)
+            json_file.close()
+            self.ui.statusbar.showMessage("Exported JSON file to " + filename[0], 3000)
+
+    def get_gender(self):
+        if self.ui.male.isChecked():
+            return "male"
+        else:
+            return "female"
 
     def get_bag(self, name):
         """Return the entire contents of a given non-equipment bag as raw values."""
@@ -435,19 +424,22 @@ class MainWindow():
                 column = 0
 
     def update_player_preview(self):
-        race = self.ui.race.currentText()
-        if race == "":
-            # probably in the middle of an update/reload
-            return
-
-        if self.ui.male.isChecked():
-            gender = "male"
-        else:
-            gender = "female"
-
-        image = preview_icon(race, gender)
+        species = self.ui.race.currentText()
+        gender = self.get_gender()
+        image = preview_icon(species, gender)
         self.ui.player_preview.setPixmap(image.scaled(64, 64))
-        self.set_edited()
+
+    def update_species(self):
+        species = self.ui.race.currentText()
+        if self.player.get_race(pretty=True) == species:
+            # don't overwrite appearance values if it didn't really change
+            return
+        self.player.set_race(species)
+        defaults = assets.Species().get_default_colors(species)
+        for key in defaults:
+            getattr(self.player, "set_%s_directives" % key)(defaults[key])
+        self.update_player_preview()
+        self.window.setWindowModified(True)
 
     # these are used for connecting the item edit dialog to bag tables
     def new_main_bag_item_edit(self):

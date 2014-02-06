@@ -2,41 +2,43 @@
 Qt blueprint/recipe management dialog
 """
 
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QListWidgetItem
 
 import assets, qt_blueprints
 
 # TODO: rework whole dialog with pretty icons and stuff like that
 
-def new_blueprint(name):
+def new_blueprint(name, data):
     bp = {
         "name": name,
         "count": 1,
-        "data": {}
+        "data": data
     }
     return bp
+
+class BlueprintItem(QListWidgetItem):
+    def __init__(self, blueprint):
+        QListWidgetItem.__init__(self, blueprint["name"])
+        self.blueprint = blueprint
 
 class BlueprintLib():
     def __init__(self, parent, known_blueprints):
         """Blueprint library management dialog."""
-        # BUG: somewhere in here is a bug that stops you from adding blueprints,
-        # on windows, on only some save files
         # BUG: some of the tier weapons are not importing correctly and showing
         # as duplicates in the available list
-        # TODO: is there something new in the crafting system? the dude in the
-        # review is correct, there is no iron back lantern in the browser or in
-        # the assets folder. is it generated on the fly like tech chips?
+        # UPDATE: okay i think that's just caused by stripping the data?
         self.dialog = QDialog(parent)
         self.ui = qt_blueprints.Ui_Dialog()
         self.ui.setupUi(self.dialog)
 
         self.blueprints = assets.Blueprints()
-        self.known_blueprints = [x["name"] for x in known_blueprints]
+        self.known_blueprints = known_blueprints
 
         # populate known list
         self.ui.known_blueprints.clear()
         for blueprint in self.known_blueprints:
-            self.ui.known_blueprints.addItem(blueprint)
+            self.ui.known_blueprints.addItem(BlueprintItem(blueprint))
+        self.ui.known_blueprints.sortItems(0)
 
         # populate initial available list
         self.ui.available_blueprints.clear()
@@ -73,17 +75,19 @@ class BlueprintLib():
             # nothing selected
             return
 
+        known = [x["name"] for x in self.known_blueprints]
         for blueprint in selected:
             # don't add more than one of each blueprint
-            if blueprint.text() in self.known_blueprints:
+            if blueprint.text() in known:
                 continue
-            self.known_blueprints.append(blueprint.text())
+            # TODO: we don't support data from asset blueprints yet'
+            self.known_blueprints.append(new_blueprint(blueprint.text(), {}))
 
         # regenerate the list
-        self.known_blueprints.sort()
         self.ui.known_blueprints.clear()
-        for i in range(len(self.known_blueprints)):
-            self.ui.known_blueprints.addItem(self.known_blueprints[i])
+        for blueprint in self.known_blueprints:
+            self.ui.known_blueprints.addItem(BlueprintItem(blueprint))
+        self.ui.known_blueprints.sortItems(0)
         self.ui.known_blueprints.setCurrentRow(0)
 
     def remove_blueprint(self):
@@ -93,13 +97,12 @@ class BlueprintLib():
         except AttributeError:
             return
 
-        for blueprint in selected:
-            self.known_blueprints.remove(blueprint.text())
+        for item in selected:
+            self.known_blueprints.remove(item.blueprint)
 
-        self.known_blueprints.sort()
         self.ui.known_blueprints.clear()
         for blueprint in self.known_blueprints:
-            self.ui.known_blueprints.addItem(blueprint)
+            self.ui.known_blueprints.addItem(BlueprintItem(blueprint))
 
     def get_known_list(self):
-        return [new_blueprint(x) for x in self.known_blueprints]
+        return self.known_blueprints
