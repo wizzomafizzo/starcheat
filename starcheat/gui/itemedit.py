@@ -90,7 +90,6 @@ class ItemEdit():
         self.ui.clear_options_button.clicked.connect(self.clear_item_options)
 
         self.ui.item_type.setFocus()
-        self.dialog.show()
 
     def update_item_info(self, name, data):
         item_info = "<html><body>"
@@ -140,14 +139,17 @@ class ItemEdit():
         """Return an ItemWidget of the currently open item."""
         name = self.ui.item_type.text()
         count = self.ui.count.value()
-        item = saves.new_item(name, count, self.item["data"])
+        data = {}
+        for i in range(self.ui.variant.rowCount()):
+            option = self.ui.variant.item(i, 0).option
+            data[option[0]] = option[1]
+        item = saves.new_item(name, count, data)
         return ItemWidget(item)
 
     def clear_item_options(self):
         self.ui.variant.clear()
         self.ui.variant.setHorizontalHeaderLabels(["Options"])
         self.ui.variant.setRowCount(0)
-        self.item["data"] = {}
 
     def new_item_edit_options(self):
         selected = self.ui.variant.currentItem()

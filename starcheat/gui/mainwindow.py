@@ -252,6 +252,7 @@ class MainWindow():
 
         item_edit.dialog.accepted.connect(update_slot)
         item_edit.ui.trash_button.clicked.connect(trash_slot)
+        item_edit.dialog.exec()
 
     def set_edited(self):
         self.window.setWindowModified(True)
