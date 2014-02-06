@@ -87,6 +87,7 @@ class ItemEdit():
         self.ui.load_button.clicked.connect(self.new_item_browser)
         self.ui.item_type.textChanged.connect(self.update_item)
         self.ui.variant.itemDoubleClicked.connect(self.new_item_edit_options)
+        self.ui.clear_options_button.clicked.connect(self.clear_item_options)
 
         self.ui.item_type.setFocus()
         self.dialog.show()
@@ -141,6 +142,12 @@ class ItemEdit():
         count = self.ui.count.value()
         item = saves.new_item(name, count, self.item["data"])
         return ItemWidget(item)
+
+    def clear_item_options(self):
+        self.ui.variant.clear()
+        self.ui.variant.setHorizontalHeaderLabels(["Options"])
+        self.ui.variant.setRowCount(0)
+        self.item["data"] = {}
 
     def new_item_edit_options(self):
         selected = self.ui.variant.currentItem()
