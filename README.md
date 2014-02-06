@@ -24,15 +24,17 @@ starcheat is a Starbound player save editor, you can get free pixels with this! 
 ## Downloads
 These are builds of the latest development version. They should work fine, but may be unstable. **Don't forget to back up your save files before using them.**
 
+**NOTE:** starcheat is not a normal mod, it's a separate program. You don't need to put it in the Starbound mods folder.
+
 ### Windows
 [Download here](http://callan.io/builds/starcheat-win32-271d64e2b2d751e353634deb0a2710d54565ae53.zip) ([mirror](http://mcsi.mp/starcheat/))
 
 **NOTE:** If Windows complains about a system error (re: missing msvcr100.dll), you probably need to install the [Microsoft Visual C++ 2010 Redistributable Package](http://www.microsoft.com/en-au/download/details.aspx?id=5555).
 
 #### How to run
-* Download starcheat
-* Extract all files somewhere
-* Go into the ```dist/``` folder
+* Download the starcheat .zip file above
+* Extract all files into a folder somewhere (not the mods folder)
+* Go into the newly created folder
 * Run ```starcheat.exe```
 * Follow the prompts to configure starcheat (only happens once)
 * Open a player

@@ -23,7 +23,7 @@ def build_assets_db():
     logging.info("Indexing assets")
     dialog = QMessageBox()
     dialog.setText("starcheat will now build a database of Starbound assets.")
-    dialog.setInformativeText("This can take a little while, please be patient.")
+    dialog.setInformativeText("This shouldn't take long.")
     dialog.setIcon(QMessageBox.Information)
     dialog.exec()
 
@@ -110,7 +110,7 @@ def new_setup_dialog():
             # assets could be removed since initial setup
             logging.info("unpacking removed assets again")
             dialog = QMessageBox()
-            dialog.setText("Unable to find unpackes Starbound assets")
+            dialog.setText("Unable to find unpacked Starbound assets")
             dialog.setInformativeText("Unpacking removed assets again...")
             dialog.setIcon(QMessageBox.Warning)
             dialog.exec()
@@ -147,8 +147,8 @@ def new_setup_dialog():
         dialog = QMessageBox()
         dialog.setText("No unpacked assets found!")
         dialog.setInformativeText("""<html><body>
-        <p>You need to unpack the Starcheat assets to use starcheat</p>
-        <p>Do you want to extract the assets now?
+        <p>starcheat needs to unpack your Starbound assets to work. This only happens once.</p>
+        <p>Do you want to unpack the assets now?
         <i>(this requires ~410MB of disk space and takes 1-5 mins)</i></p></body></html>""")
         dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         dialog.setIcon(QMessageBox.Question)

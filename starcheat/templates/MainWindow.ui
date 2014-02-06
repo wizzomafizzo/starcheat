@@ -924,6 +924,12 @@ border-radius: 4px;
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>Manage Appearance</string>
+       </property>
+       <property name="statusTip">
+        <string>Change how you look</string>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -940,6 +946,12 @@ border-radius: 4px;
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Manage Blueprints</string>
+       </property>
+       <property name="statusTip">
+        <string>Manage known crafting recipes/blueprints</string>
        </property>
        <property name="text">
         <string/>
