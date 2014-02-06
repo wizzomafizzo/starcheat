@@ -57,6 +57,7 @@ def build_assets_db():
     for t in asset_types:
         try:
             asset_class = getattr(assets, t)()
+            print("Indexing "+t+"...")
             getattr(asset_class, "add_all_" + t.lower())()
         except FileNotFoundError:
             # catch anything that couldn't be skipped during index
@@ -169,6 +170,8 @@ def new_setup_dialog():
         unpack_cmd = '"{0}" "{1}" "{2}"'.format(asset_unpacker,
                                              os.path.join(starbound_folder, "assets", "packed.pak"),
                                              os.path.join(starbound_folder, "assets"))
+        # just so the cmd window isn't totally empty
+        print("Unpacking Starbound vanilla assets...")
         subprocess.call(unpack_cmd, shell=True)
 
         if not os.path.isfile(unpack_test_file):
