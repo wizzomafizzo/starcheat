@@ -330,7 +330,6 @@ def new_item(name, count, data):
     return item
 
 def unpack_color_directives(data):
-    print(data)
     unpack_dir = data.split("?replace;")
     directives = []
     for directive in unpack_dir[1:]:
@@ -344,10 +343,11 @@ def unpack_color_directives(data):
 def pack_color_directives(colors):
     string = ""
     for directive in colors:
+        if len(directive) == 0:
+            continue
         string += "?replace"
         for group in directive:
             string += ";%s=%s" % (group[0], group[1])
-    print(string)
     return string
 
 class WrongSaveVer(Exception):
@@ -526,7 +526,11 @@ class PlayerSave():
         return unpack_color_directives(self.entity["identity"]["bodyDirectives"])
 
     def get_emote_directives(self):
-        return unpack_color_directives(self.entity["identity"]["emoteDirectives"])
+        if "emoteDirectives" in self.entity["identity"]:
+            return unpack_color_directives(self.entity["identity"]["emoteDirectives"])
+        else:
+            # this key is kinda new
+            return ""
 
     def get_hair_directives(self):
         return unpack_color_directives(self.entity["identity"]["hairDirectives"])
@@ -622,12 +626,11 @@ class PlayerSave():
         self.entity["inventory"]["equipment"][7] = glamor
 
     def set_personality(self, idle):
-        # self.entity["identity"]["personalityArmIdle"]
+        self.entity["identity"]["personalityArmIdle"] = idle
         # self.entity["identity"]["personalityArmOffset"]
         # self.entity["identity"]["personalityHeadOffset"]
         self.entity["identity"]["personalityIdle"] = idle
 
-    # TODO: color directives
     def set_hair(self, group, type):
         self.entity["identity"]["hairGroup"] = group
         self.entity["identity"]["hairType"] = type

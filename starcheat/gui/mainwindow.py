@@ -434,6 +434,9 @@ class MainWindow():
             # don't overwrite appearance values if it didn't really change
             return
         self.player.set_race(species)
+        defaults = assets.Species().get_default_colors(species)
+        for key in defaults:
+            getattr(self.player, "set_%s_directives" % key)(defaults[key])
         self.update_player_preview()
         self.window.setWindowModified(True)
 

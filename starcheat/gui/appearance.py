@@ -123,8 +123,6 @@ class ColorEdit():
 
         self.ui.colors.cellDoubleClicked.connect(self.edit_color)
 
-        print(directives)
-
         self.directives = directives
         self.splits = []
         total_rows = 0
@@ -141,7 +139,6 @@ class ColorEdit():
                 self.ui.colors.setItem(row, 1, replace)
                 row += 1
             self.splits.append(row)
-        print(self.splits)
 
     def get_colors(self):
         new_colors = []

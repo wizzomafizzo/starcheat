@@ -419,9 +419,10 @@ class Items():
 
 def read_default_color(species_data):
     color = []
+    if type(species_data[0]) is str:
+        return []
     for group in species_data[0].keys():
         color.append([group, species_data[0][group]])
-    print(color)
     return color
 
 class Species():
@@ -513,7 +514,7 @@ class Species():
     def get_species(self, name):
         """Look up a species from the index and return contents of species files."""
         c = self.db.cursor()
-        c.execute("select * from species where name = ?", (name,))
+        c.execute("select * from species where name = ?", (name.lower(),))
         species = c.fetchone()
         try:
             species_data = load_asset_file(os.path.join(species[2], "species", species[1]))
@@ -573,30 +574,33 @@ class Species():
         else:
             return species_data[1]["genders"][1]
 
-    # TODO: this isn't working at all yet, there are options in the species file
-    # saying how these are applied
     def get_default_colors(self, species):
         # just use first option
-        species_data = self.get_species(species)[0]
+        species_data = self.get_species(species)[1]
         def val(key):
-            if species_data.has_key(key):
-                return species_data[key]
+            if key in species_data:
+                return read_default_color(species_data[key])
             else:
                 return ""
 
         colors = {
-            "bodyColor": val(species_data["bodyColor"]),
-            "undyColor": val(species_data["undyColor"]),
-            "hairColor": val(species_data["hairColor"])
+            "bodyColor": val("bodyColor"),
+            "undyColor": val("undyColor"),
+            "hairColor": val("hairColor")
         }
+        # TODO: there is an unbelievably complicated method for choosing default
+        # player colors. i'm not sure if it's worth going into too much considering
+        # it will only be used if a player switches species
+        # it might be easier to just leave this out entirely. let user add/remove
+        # their own directive colors
         directives = {
-            "body_color": [colors["bodyColor"]],
-            "emote": [],
-            "hair": [],
-            "facial_hair": [],
-            "facial_mask": []
+            "body": [colors["bodyColor"]],
+            "emote": [colors["bodyColor"], colors["undyColor"]],
+            "hair": [colors["hairColor"]],
+            "facial_hair": [colors["bodyColor"]],
+            "facial_mask": [colors["bodyColor"]]
         }
-
+        return directives
 
     def get_preview_image(self, name, gender):
         species = self.get_species(name.lower())
