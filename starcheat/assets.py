@@ -405,6 +405,87 @@ class Items():
         """Return the image data for the default inventory placeholder icon."""
         return self.assets.read("/interface/inventory/x.png", self.assets.vanilla_assets, image=True)
 
+    def generate_gun(self, name):
+        #asset = self.get_item(name)
+        generated_gun = {
+            "classMultiplier": 1.0,
+            "drawables": [
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/butt/8.png",
+                    "position": [
+                        -9.899999618530273,
+                        0.0
+                    ]
+                },
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/middle/6.png",
+                    "position": [
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/barrel/13.png",
+                    "position": [
+                        15.899999618530273,
+                        0.0
+                    ]
+                }
+            ],
+            "firePosition": [24.0, 0.0],
+            "fireTime": 0.5,
+            "generated": True,
+            "handPosition": [-5.0, -2.0],
+            "inspectionKind": "gun",
+            "inventoryIcon": [
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/butt/8.png",
+                    "position": [
+                        -9.899999618530273,
+                        0.0
+                    ]
+                },
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/middle/6.png",
+                    "position": [
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/barrel/13.png",
+                    "position": [
+                        15.899999618530273,
+                        0.0
+                    ]
+                }
+            ],
+            "itemName": "generatedgun",
+            "level": 1.0,
+            "levelScale": 2.0,
+            "muzzleEffect": {
+                "animation": "/animations/muzzleflash/bulletmuzzle3/bulletmuzzle3.animation",
+                "fireSound": [
+                    {
+                        "file": "/sfx/gun/sniper3.wav"
+                    }
+                ]
+            },
+            "projectile": {
+                "level": 1.0,
+                "power": 2.0,
+            },
+            "projectileType": "piercingbullet",
+            "rarity": "common",
+            "recoilTime": 0.1,
+            "shortdescription": "Cheater's Remorse",
+            "spread": 2,
+            "twoHanded": True,
+            "weaponType": "Sniper Rifle"
+        }
+
+        return generated_gun
+
 class Species():
     def __init__(self, assets):
         self.assets = assets

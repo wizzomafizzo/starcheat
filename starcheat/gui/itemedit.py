@@ -93,6 +93,7 @@ class ItemEdit():
         self.ui.item_type.textChanged.connect(self.update_item)
         self.ui.variant.itemDoubleClicked.connect(self.new_item_edit_options)
         self.ui.clear_options_button.clicked.connect(self.clear_item_options)
+        self.ui.max_button.clicked.connect(self.max_count)
 
         self.ui.item_type.setFocus()
 
@@ -125,19 +126,23 @@ class ItemEdit():
         """Update main item view with current item browser data."""
         name = self.ui.item_type.text()
 
-        try:
-            item = self.assets.items().get_item(name)
-        except TypeError:
-            self.item = empty_slot().item
-            self.ui.desc.setText("<html><body><strong>Empty Slot</strong></body></html>")
-            self.ui.icon.setPixmap(QPixmap())
-            self.ui.variant.clear()
-            self.ui.variant.setHorizontalHeaderLabels(["Options"])
-            return
+        if name == "generatedgun":
+            options = self.assets.items().generate_gun(name)
+        else:
+            try:
+                item = self.assets.items().get_item(name)
+                options = item[0]
+            except TypeError:
+                self.item = empty_slot().item
+                self.ui.desc.setText("<html><body><strong>Empty Slot</strong></body></html>")
+                self.ui.icon.setPixmap(QPixmap())
+                self.ui.variant.clear()
+                self.ui.variant.setHorizontalHeaderLabels(["Options"])
+                return
 
-        self.item = saves.new_item(name, 1, item[0])
+        self.item = saves.new_item(name, 1, options)
         self.ui.count.setValue(1)
-        self.update_item_info(name, item[0])
+        self.update_item_info(name, options)
         self.populate_options()
 
     def get_item(self):
@@ -185,3 +190,10 @@ class ItemEdit():
     def set_item_browser_selection(self):
         name = self.item_browser.get_selection()
         self.ui.item_type.setText(name)
+
+    def max_count(self):
+        if "maxStack" in self.item["data"]:
+            max = int(self.item["data"]["maxStack"])
+        else:
+            max = 999
+        self.ui.count.setValue(max)
