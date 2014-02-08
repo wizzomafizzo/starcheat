@@ -5,6 +5,7 @@ Qt blueprint/recipe management dialog
 from PyQt5.QtWidgets import QDialog, QListWidgetItem
 
 import assets, qt_blueprints
+from config import Config
 
 # TODO: rework whole dialog with pretty icons and stuff like that
 
@@ -31,7 +32,11 @@ class BlueprintLib():
         self.ui = qt_blueprints.Ui_Dialog()
         self.ui.setupUi(self.dialog)
 
-        self.blueprints = assets.Blueprints()
+        assets_db_file = Config().read("assets_db")
+        starbound_folder = Config().read("starbound_folder")
+        self.assets = assets.Assets(assets_db_file, starbound_folder)
+
+        self.blueprints = self.assets.blueprints()
         self.known_blueprints = known_blueprints
 
         # populate known list
@@ -43,11 +48,11 @@ class BlueprintLib():
         # populate initial available list
         self.ui.available_blueprints.clear()
         for blueprint in self.blueprints.get_all_blueprints():
-            self.ui.available_blueprints.addItem(blueprint[0])
+            self.ui.available_blueprints.addItem(blueprint[4])
 
         # populate category combobox
         for cat in self.blueprints.get_categories():
-            self.ui.category.addItem(cat[0])
+            self.ui.category.addItem(cat)
 
         self.ui.add_button.clicked.connect(self.add_blueprint)
         self.ui.remove_button.clicked.connect(self.remove_blueprint)
@@ -64,7 +69,7 @@ class BlueprintLib():
         result = self.blueprints.filter_blueprints(category, name)
         self.ui.available_blueprints.clear()
         for blueprint in result:
-            self.ui.available_blueprints.addItem(blueprint[0])
+            self.ui.available_blueprints.addItem(blueprint[4])
         self.ui.available_blueprints.setCurrentRow(0)
 
     def add_blueprint(self):

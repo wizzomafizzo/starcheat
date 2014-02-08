@@ -16,6 +16,7 @@ import json
 import assets, qt_itemedit, qt_itemeditoptions, saves
 from gui.common import inv_icon, ItemWidget, empty_slot
 from gui.itembrowser import ItemBrowser
+from config import Config
 
 class ItemEditOptions():
     def __init__(self, parent, key, value):
@@ -62,6 +63,10 @@ class ItemEdit():
         self.ui = qt_itemedit.Ui_Dialog()
         self.ui.setupUi(self.dialog)
 
+        assets_db_file = Config().read("assets_db")
+        starbound_folder = Config().read("starbound_folder")
+        self.assets = assets.Assets(assets_db_file, starbound_folder)
+
         self.item_browser = None
 
         # cells don't retain ItemSlot widget when they've been dragged away
@@ -98,7 +103,7 @@ class ItemEdit():
             item_info += "<strong>" + data["shortdescription"] + "</strong>"
         except KeyError:
             try:
-                item_info += "<strong>" + assets.Items().get_item(name)[0]["shortdescription"] + "</strong>"
+                item_info += "<strong>" + self.assets.items().get_item(name)[0]["shortdescription"] + "</strong>"
             except:
                 pass
 
@@ -121,7 +126,7 @@ class ItemEdit():
         name = self.ui.item_type.text()
 
         try:
-            item = assets.Items().get_item(name)
+            item = self.assets.items().get_item(name)
         except TypeError:
             self.item = empty_slot().item
             self.ui.desc.setText("<html><body><strong>Empty Slot</strong></body></html>")

@@ -8,6 +8,7 @@ from PyQt5.QtGui import QColor, QBrush
 
 import assets, qt_appearance, qt_coloredit
 from gui.common import preview_icon
+from config import Config
 
 class Appearance():
     def __init__(self, main_window):
@@ -16,7 +17,10 @@ class Appearance():
         self.ui.setupUi(self.dialog)
         self.main_window = main_window
 
-        self.species = assets.Species()
+        assets_db_file = Config().read("assets_db")
+        starbound_folder = Config().read("starbound_folder")
+        self.assets = assets.Assets(assets_db_file, starbound_folder)
+        self.species = self.assets.species()
         self.player = main_window.player
 
         race = main_window.ui.race.currentText()

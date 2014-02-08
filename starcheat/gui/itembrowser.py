@@ -2,11 +2,13 @@
 Qt item browser dialog
 """
 
+import logging
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QImage
 
 import assets, qt_itembrowser
 from gui.common import inv_icon
+from config import Config
 
 class ItemBrowser():
     def __init__(self, parent, just_browse=False):
@@ -15,11 +17,15 @@ class ItemBrowser():
         self.ui = qt_itembrowser.Ui_Dialog()
         self.ui.setupUi(self.dialog)
 
+        assets_db_file = Config().read("assets_db")
+        starbound_folder = Config().read("starbound_folder")
+        self.assets = assets.Assets(assets_db_file, starbound_folder)
+
         if just_browse:
             self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Close)
 
         self.item_browse_select = None
-        self.items = assets.Items()
+        self.items = self.assets.items()
 
         # populate category combobox
         for cat in self.items.get_categories():
@@ -28,7 +34,7 @@ class ItemBrowser():
         # populate initial items list
         self.ui.items.clear()
         for item in self.items.get_all_items():
-            self.ui.items.addItem(item[0])
+            self.ui.items.addItem(item[4])
 
         self.ui.items.itemSelectionChanged.connect(self.update_item_view)
         if not just_browse:
@@ -46,20 +52,28 @@ class ItemBrowser():
         except IndexError:
             return
 
-        item = self.items.get_item(selected)
-        # don't like so many queries but should be ok for the browser
-        icon_file = self.items.get_item_image(selected)
-        # fallback on inventory icon
-        if icon_file == None:
-            icon = inv_icon(selected)
-        else:
-            icon = QPixmap(icon_file).scaledToHeight(64)
+        try:
+            item = self.items.get_item(selected)
+        except TypeError:
+            logging.warning("Unable to load asset "+selected)
+            return
 
-        # last ditch, just use x.png
+        image_file = self.items.get_item_image(selected)
+        if image_file == None:
+            inv_icon_file = self.items.get_item_icon(selected)
+            if inv_icon_file != None:
+                icon = QPixmap.fromImage(QImage.fromData(inv_icon_file[0])).scaled(32, 32)
+            else:
+                icon = QPixmap.fromImage(QImage.fromData(self.items.missing_icon())).scaled(32, 32)
+        else:
+            icon = QPixmap.fromImage(QImage.fromData(image_file)).scaledToHeight(64)
+
+        # last ditch
         try:
             self.ui.item_icon.setPixmap(icon)
         except TypeError:
-            self.ui.item_icon.setPixmap(QPixmap(self.items.missing_icon()))
+            logging.warning("Unable to load item image: "+selected)
+            self.ui.item_icon.setPixmap(QPixmap())
 
         # TODO: update qt objectnames, already not making sense
         try:
@@ -97,7 +111,7 @@ class ItemBrowser():
         #       but not when the edit box is changed (split this function)
         self.ui.items.clear()
         for item in result:
-            self.ui.items.addItem(item[0])
+            self.ui.items.addItem(item[4])
         self.ui.items.setCurrentRow(0)
 
     def get_selection(self):

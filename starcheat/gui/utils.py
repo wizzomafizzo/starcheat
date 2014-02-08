@@ -55,7 +55,8 @@ def build_assets_db():
 
     assets_db.init_db()
     assets_db.create_index()
-    # TODO: check total indexed
+    if assets_db.total_indexed() == 0:
+        bad_asset_dialog()
 
 def save_modified_dialog():
     """Display a prompt asking user what to do about a modified file. Return button clicked."""
@@ -96,14 +97,8 @@ def new_setup_dialog():
             dialog.setInformativeText("A new config file and assets index will be created...")
             dialog.setIcon(QMessageBox.Warning)
             dialog.exec()
-        elif not (Config().has_key("starbound_folder") and os.path.isfile(os.path.join(Config().read("starbound_folder"), "assets", "species", "human.species"))):
-            # assets could be removed since initial setup
-            logging.info("unpacking removed assets again")
-            dialog = QMessageBox()
-            dialog.setText("Unable to find unpacked Starbound assets")
-            dialog.setInformativeText("Unpacking removed assets again...")
-            dialog.setIcon(QMessageBox.Warning)
-            dialog.exec()
+        elif not Config().has_key("starbound_folder"):
+            pass
         else:
             return
         os.remove(Config().read("assets_db"))
@@ -133,7 +128,9 @@ def new_setup_dialog():
     # initial assets sanity check
     # better to check for an actual file. this should be a pretty safe bet
     unpack_test_file = os.path.join(starbound_folder, "assets", "species", "human.species")
-    if not os.path.isfile(unpack_test_file):
+    # TODO: feels a waste to get rid of this. can we make a separate util?
+    #if not os.path.isfile(unpack_test_file):
+    if False:
         dialog = QMessageBox()
         dialog.setText("No unpacked assets found!")
         dialog.setInformativeText("""<html><body>
@@ -193,11 +190,15 @@ class OptionsDialog():
         self.ui = qt_options.Ui_Dialog()
         self.ui.setupUi(self.dialog)
 
+        assets_db_file = Config().read("assets_db")
+        starbound_folder = Config().read("starbound_folder")
+        self.db = assets.Assets(assets_db_file, starbound_folder)
+
         self.config = Config()
 
         # read the current config and prefill everything
         self.ui.starbound_folder.setText(self.config.read("starbound_folder"))
-        self.ui.total_indexed.setText(str(assets.AssetsDb().get_total_indexed()) + " indexed")
+        self.ui.total_indexed.setText(str(self.db.total_indexed()) + " indexed")
 
         self.ui.starbound_folder_button.clicked.connect(self.open_starbound)
         self.ui.rebuild_button.clicked.connect(self.rebuild_db)
@@ -221,17 +222,21 @@ class OptionsDialog():
     def rebuild_db(self):
         self.write()
 
+        assets_db_file = Config().read("assets_db")
+        starbound_folder = Config().read("starbound_folder")
+        self.db = assets.Assets(assets_db_file, starbound_folder)
+
+        self.db.init_db()
         try:
-            assets.AssetsDb().rebuild_db()
+            self.db.create_index()
         except FileNotFoundError:
             dialog = QMessageBox()
-            dialog.setText("No assets found.")
-            dialog.setInformativeText("Check the Starbound folder is set correctly.")
+            dialog.setText("No Starbound assets could be found.")
+            dialog.setInformativeText("The Starbound folder option might be set wrong.")
             dialog.setIcon(QMessageBox.Critical)
             dialog.exec()
-            return
 
-        total = str(assets.AssetsDb().get_total_indexed())
+        total = str(self.db.total_indexed())
 
         dialog = QMessageBox()
         dialog.setText("Finished indexing Starbound assets.")

@@ -17,11 +17,16 @@ def inv_icon(item_name):
     icon_file = db.items().get_item_icon(item_name)
 
     if icon_file == None:
-        return QPixmap()
+        try:
+            image_file = db.items().get_item_image(item_name)
+            return QPixmap.fromImage(QImage.fromData(image_file)).scaledToHeight(32)
+        except TypeError:
+            return QPixmap.fromImage(QImage.fromData(db.items().missing_icon())).scaled(32, 32)
 
-    reader = QImageReader().read(QImage().loadFromData(icon_file[0]))
-    reader.setClipRect(QtCore.QRect(icon_file[1], 0, 16, 16))
-    return QPixmap.fromImageReader(reader).scaled(32, 32)
+    #reader = QImageReader.read(QImage.fromData(icon_file[0]))
+    #reader.setClipRect(QtCore.QRect(icon_file[1], 0, 16, 16))
+    #return QPixmap.fromImageReader(reader).scaled(32, 32)
+    return QPixmap.fromImage(QImage.fromData(icon_file[0])).scaled(32, 32)
 
 def preview_icon(race, gender):
     """Return an icon image for player race/gender previews."""
@@ -30,7 +35,7 @@ def preview_icon(race, gender):
     db = assets.Assets(assets_db_file, starbound_folder)
     icon_file = db.species().get_preview_image(race, gender)
 
-    return QPixmap().loadFromData(icon_file)
+    return QPixmap.fromImage(QImage.fromData(icon_file))
 
 def empty_slot():
     """Return an empty bag slot widget."""

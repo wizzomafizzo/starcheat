@@ -361,15 +361,15 @@ class Items():
             icon = icon_file.split(':')
             if len(icon) < 2:
                 icon = [icon[0], 0]
-        except KeyError:
-            return self.missing_icon(), 0
+        except (TypeError, KeyError):
+            return None
 
         if icon[0] != "/":
             icon[0] = os.path.dirname(item[1]) + "/" + icon[0]
 
         icon_data = self.assets.read(icon[0], item[2], image=True)
         if icon_data == None:
-            return self.missing_icon(), 0
+            return None
 
         if icon[1] == "chest":
             return icon_data, 16
@@ -386,17 +386,18 @@ class Items():
             item = self.get_item(name)
             icon_file = item[0]["image"]
             icon = icon_file.split(':')
-            if len(icon) < 2:
-                icon = icon[0]
+            icon = icon[0]
         except KeyError:
-            return self.missing_icon()
+            logging.warning("No image key for "+name)
+            return None
 
         if icon[0] != "/":
-            icon[0] = os.path.dirname(item[1]) + "/" + icon[0]
+            icon = os.path.dirname(item[1]) + "/" + icon
 
-        icon_data = self.assets.read(icon[0], item[2], image=True)
+        icon_data = self.assets.read(icon, item[2], image=True)
         if icon_data == None:
-            return self.missing_icon()
+            logging.warning("Unable to read %s from %s" % (icon, item[2]))
+            return None
         else:
             return icon_data
 
