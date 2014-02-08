@@ -4,418 +4,40 @@ Module for reading and indexing Starbound assets
 
 # TODO: this file should end up similar to save_file in that it has no external
 # deps. need to:
-# - remove all use of the config module, make them arguments to the classes
-# - move all logging/exception handling to gui files
 # - custom exception classes
 
 import os, json, re, sqlite3, logging
-from platform import system
 
-from config import Config
+from stardb.storage import BlockFile
+from stardb.databases import AssetDatabase
 
 # Regular expression for comments
 comment_re = re.compile(
     '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
     re.DOTALL | re.MULTILINE
 )
-ignore_items = re.compile(".*\.(png|config|frames|coinitem|db|ds_store)", re.IGNORECASE)
 
-# source: http://www.lifl.fr/~riquetd/parse-a-json-file-with-comments.html
-def parse_json(filename):
-    """
-    Parse a JSON file
-    First remove comments and then use the json module package
-    Comments look like :
-    // ...
-    or
-    /*
-    ...
-    */
-    """
+ignore_assets = re.compile(".*\.(db|ds_store)", re.IGNORECASE)
+ignore_items = re.compile(".*\.(png|config|frames|coinitem)", re.IGNORECASE)
 
-    with open(filename) as f:
-        content = ''.join(f.readlines())
+def parse_json(content, key):
+    if key.endswith(".grapplinghook"):
+        content = content.replace("[-.", "[-0.")
 
-        # TODO: really annoying.. hopefully this is fixed after the patch
-        if filename.endswith(".grapplinghook"):
-            content = content.replace("[-.", "[-0.")
-
-        # Looking for comments
+    # Looking for comments
+    match = comment_re.search(content)
+    while match:
+        # single line comment
+        content = content[:match.start()] + content[match.end():]
         match = comment_re.search(content)
-        while match:
-            # single line comment
-            content = content[:match.start()] + content[match.end():]
-            match = comment_re.search(content)
 
-        # Return json file
-        return json.loads(content)
+    # Return json file
+    return json.loads(content)
 
 def load_asset_file(filename):
-    return parse_json(filename)
-
-def mod_asset_folder(mod_folder):
-    """Read mod assets folder from modinfo file."""
-    # TODO: this still doesn't work if mod contains multiple modinfo files
-    # like tabula rasa
-    path = "."
-    for file in os.listdir(mod_folder):
-        if file.endswith(".modinfo"):
-            modinfo = os.path.join(mod_folder, file)
-            try:
-                path = parse_json(modinfo)["path"]
-            except ValueError:
-                # gosh this is hard...
-                last_ditch = os.path.join(mod_folder, "assets")
-                if os.path.isdir(last_ditch):
-                    path = last_ditch
-
-    return os.path.realpath(os.path.join(mod_folder, path))
-
-class AssetsDb():
-    def __init__(self):
-        """Master assets database."""
-        self.mods_folder = os.path.normpath(os.path.join(Config().read("starbound_folder"), "mods"))
-        self.assets_db = Config().read("assets_db")
-        self.db = sqlite3.connect(self.assets_db)
-
-    def init_db(self):
-        """Create and populate a brand new assets database."""
-        logging.info("Creating new assets db")
-
-        tables = ("create table items (name text, filename text, folder text, icon text, category text)",
-                  "create table blueprints (name text, filename text, folder text, category text)",
-                  "create table species (name text, filename text, folder text)")
-        db = sqlite3.connect(self.assets_db)
-        c = db.cursor()
-
-        for q in tables:
-            c.execute(q)
-        db.commit()
-        db.close()
-
-    def get_total_indexed(self):
-        c = self.db.cursor()
-        tables = ("(select count(*) from items)",
-                  "(select count(*) from blueprints)",
-                  "(select count(*) from species)")
-        q = "select " + " + ".join([x for x in tables])
-        try:
-            c.execute(q)
-        except sqlite3.OperationalError:
-            # database probably corrupt
-            return 0
-        return c.fetchone()[0]
-
-    def rebuild_db(self):
-        logging.info("Rebuilding assets db")
-        tables = ("items", "blueprints", "species")
-        c = self.db.cursor()
-        for t in tables:
-            c.execute("drop table %s" % t)
-        self.db.commit()
-        self.init_db()
-        # TODO: bit weird these are here but not in init_db
-        # this is only so the options dialog rebuild db works for now
-        logging.info("Adding items")
-        Items().add_all_items()
-        logging.info("Adding blueprints")
-        Blueprints().add_all_blueprints()
-        logging.info("Adding species")
-        Species().add_all_species()
-
-class Blueprints():
-    def __init__(self):
-        """Everything dealing with indexing and parsing blueprint asset files."""
-        # override folder
-        self.db = AssetsDb().db
-
-    def file_index(self, folder):
-        """Return a list of all valid blueprints files."""
-        index = []
-        logging.info("Indexing " + folder)
-        if not os.path.isdir(folder):
-            logging.warning("Missing " + folder)
-            return index
-        for root, dirs, files in os.walk(folder):
-            for f in files:
-                if f.endswith(".recipe") != None:
-                    index.append((f, root))
-        logging.info("Found " + str(len(index)) + " blueprint files")
-        return index
-
-    def add_all_blueprints(self):
-        """Parse and insert every indexable blueprint asset."""
-        mods_folder = os.path.join(Config().read("starbound_folder"), "mods")
-        assets_folder = Config().read("assets_folder")
-
-        index = self.file_index(os.path.join(assets_folder, "recipes"))
-
-        if os.path.isdir(mods_folder):
-            for mod in os.listdir(mods_folder):
-                path = os.path.join(mods_folder, mod)
-                if not os.path.isdir(path): continue
-                assets = mod_asset_folder(path)
-                if os.path.isdir(os.path.join(assets, "recipes")):
-                    index += self.file_index(os.path.join(assets, "recipes"))
-                else:
-                    logging.debug("No blueprints in " + mod)
-
-        blueprints = []
-        logging.info("Started indexing blueprints")
-        for f in index:
-            full_path = os.path.join(f[1], f[0])
-
-            try:
-                info = load_asset_file(full_path)
-            except ValueError:
-                continue
-
-            name = f[0].partition(".")[0]
-            filename = f[0]
-            folder = f[1]
-
-            try:
-                category = info["groups"][1]
-            except (KeyError, IndexError):
-                category = "other"
-
-            blueprints.append((name, filename, folder, category))
-
-        c = self.db.cursor()
-        q = "insert into blueprints values (?, ?, ?, ?)"
-        c.executemany(q, blueprints)
-        self.db.commit()
-        logging.info("Finished indexing blueprints")
-
-    def get_all_blueprints(self):
-        """Return a list of every indexed blueprints."""
-        c = self.db.cursor()
-        c.execute("select * from blueprints order by name collate nocase")
-        return c.fetchall()
-
-    def get_categories(self):
-        """Return a list of all unique blueprint categories."""
-        c = self.db.cursor()
-        c.execute("select distinct category from blueprints order by category")
-        return c.fetchall()
-
-    def filter_blueprints(self, category, name):
-        """Filter blueprints based on category and name."""
-        if category == "<all>":
-            category = "%"
-        name = "%" + name + "%"
-        c = self.db.cursor()
-        q = "select * from blueprints where category like ? and name like ? order by name collate nocase"
-        c.execute(q, (category, name))
-        result = c.fetchall()
-        return result
-
-    def get_blueprints_total(self):
-        c = self.db.cursor()
-        c.execute("select count(*) from blueprints")
-        return c.fetchone()[0]
-
-class Items():
-    def __init__(self):
-        """Everything dealing with indexing and parsing item asset files."""
-        self.db = AssetsDb().db
-        self.starbound_folder = Config().read("starbound_folder")
-
-    def file_index(self, assets_folder):
-        """Return a list of every indexable Starbound item asset."""
-        index = []
-        logging.info("Indexing " + assets_folder)
-
-        items_folder = os.path.join(assets_folder, "items")
-        if not os.path.isdir(items_folder):
-            # if this folder is gone the rest is probably screwed too
-            logging.warning("Missing " + items_folder)
-            return index
-
-        # regular items
-        for root, dirs, files in os.walk(items_folder):
-            for f in files:
-                # don't care about png and config and all that
-                if re.match(ignore_items, f) == None:
-                    index.append((f, root))
-
-        objects_folder = os.path.join(assets_folder, "objects")
-        # objects
-        for root, dirs, files in os.walk(objects_folder):
-            for f in files:
-                if f.endswith(".object") != None:
-                    index.append((f, root))
-
-        tech_folder = os.path.join(assets_folder, "tech")
-        # techs
-        for root, dirs, files in os.walk(tech_folder):
-            for f in files:
-                if f.endswith(".techitem") != None:
-                    index.append((f, root))
-
-        logging.info("Found " + str(len(index)) + " item files")
-        return index
-
-    def add_all_items(self):
-        """Insert metadata for every possible item into the database."""
-        mods_folder = os.path.join(self.starbound_folder, "mods")
-        index = self.file_index(Config().read("assets_folder"))
-
-        # Index mods
-        if os.path.isdir(mods_folder):
-            for mod in os.listdir(mods_folder):
-                path = os.path.join(mods_folder, mod)
-                if not os.path.isdir(path): continue
-                assets = mod_asset_folder(path)
-                if os.path.isdir(os.path.join(assets)):
-                    index += self.file_index(os.path.join(assets))
-                else:
-                    logging.debug("No assets in " + mod)
-
-        items = []
-        logging.info("Started indexing items")
-        for f in index:
-            # load the asset's json file
-            full_path = os.path.join(f[1], f[0])
-            try:
-                info = load_asset_file(full_path)
-            except ValueError:
-                logging.exception("Unable to index asset: " + full_path)
-                continue
-
-            # figure out the item's name. it can be a few things
-            name = False
-            item_name_keys = ["itemName", "name", "objectName"]
-            for key in item_name_keys:
-                try:
-                    name = info[key]
-                    continue
-                except KeyError:
-                    pass
-            # don't import items without names
-            # i think technically we can without problems but idk how safe exactly
-            if not name:
-                continue
-
-            filename = f[0]
-            path = f[1]
-            # just use the file extension as category
-            category = f[0].partition(".")[2]
-
-            # get full path to an inventory icon
-            try:
-                asset_icon = info["inventoryIcon"]
-                if f[0].endswith(".techitem"):
-                    icon = os.path.join(self.starbound_folder, "assets", asset_icon[1:])
-                    # index dynamic tech chip items
-                    name = name + "-chip"
-                else:
-                    icon = os.path.join(f[1], info["inventoryIcon"])
-            except KeyError:
-                inv_assets = os.path.join(self.starbound_folder, "assets", "interface", "inventory")
-                if category.endswith("shield") or category.endswith("sword"):
-                    cat = category.replace("generated", "")
-                    icon = os.path.join(inv_assets, cat + ".png")
-                else:
-                    icon = self.missing_icon()
-            items.append((name, filename, path, icon, category))
-
-        c = self.db.cursor()
-        q = "insert into items values (?, ?, ?, ?, ?)"
-        c.executemany(q, items)
-        self.db.commit()
-        logging.info("Finished indexing items")
-
-    def get_all_items(self):
-        """Return a list of every indexed item."""
-        c = self.db.cursor()
-        c.execute("select * from items order by name collate nocase")
-        return c.fetchall()
-
-    def get_item(self, name):
-        """
-        Find the first hit in the DB for a given item name, return the
-        parsed asset file and location.
-        """
-        c = self.db.cursor()
-        c.execute("select folder, filename from items where name = ?", (name,))
-        meta = c.fetchone()
-        item = load_asset_file(os.path.join(meta[0], meta[1]))
-        return item, meta[0], meta[1]
-
-    def get_categories(self):
-        """Return a list of all unique indexed item categories."""
-        c = self.db.cursor()
-        c.execute("select distinct category from items order by category")
-        return c.fetchall()
-
-    def get_item_icon(self, name):
-        """Return the path and spritesheet offset of a given item name."""
-        c = self.db.cursor()
-        c.execute("select icon from items where name = ?", (name,))
-        try:
-            icon_file = c.fetchone()[0]
-            if system() != 'Windows':
-                icon = icon_file.split(':')
-            else:
-                icon = icon_file.rsplit(':', icon_file.count(':') - 1)
-            if len(icon) < 2:
-                icon = icon[0], 0
-        except TypeError:
-            return self.missing_icon(), 0
-
-        try:
-            open(icon[0])
-        except FileNotFoundError:
-            return None
-
-        if icon[1] == "chest":
-            return icon[0], 16
-        elif icon[1] == "pants":
-            return icon[0], 32
-
-        return icon[0], 0
-
-    def get_item_image(self, name):
-        """Return a vaild item image path for given item name."""
-        item = self.get_item(name)
-
-        # TODO: support for frame selectors
-        # TODO: support for generated item images
-        if "image" in item[0]:
-            if re.search(":", item[0]["image"]):
-                image = item[0]["image"].partition(":")[0]
-            else:
-                image = item[0]["image"]
-
-            try:
-                path = os.path.join(item[1], image)
-                open(path)
-                return path
-            except FileNotFoundError:
-                logging.exception("Unable to open icon file")
-        else:
-            return None
-
-    def missing_icon(self):
-        """Return the path to the default inventory placeholder icon."""
-        return os.path.join(self.starbound_folder, "assets", "interface", "inventory", "x.png")
-
-    def filter_items(self, category, name):
-        """Search for indexed items based on name and category."""
-        if category == "<all>":
-            category = "%"
-        name = "%" + name + "%"
-        c = self.db.cursor()
-        c.execute("select * from items where category like ? and name like ? order by name collate nocase",
-                  (category, name))
-        result = c.fetchall()
-        return result
-
-    def get_items_total(self):
-        c = self.db.cursor()
-        c.execute("select count(*) from items")
-        return c.fetchone()[0]
+    with open(filename) as f:
+        content = ''.join(f.readlines())
+        return parse_json(content, filename)
 
 def read_default_color(species_data):
     color = []
@@ -425,82 +47,391 @@ def read_default_color(species_data):
         color.append([group, species_data[0][group]])
     return color
 
-class Species():
-    def __init__(self):
-        """Everything dealing with indexing and parsing species asset files."""
-        self.starbound_folder = Config().read("starbound_folder")
-        # TODO: this feels too hacky. remove it
-        try:
-            self.humanoid_config = load_asset_file(os.path.join(self.starbound_folder,
-                                                                "assets", "humanoid.config"))
-        except FileNotFoundError:
-            logging.exception("Missing humanoid.config")
-            self.humanoid_config = None
-        self.db = AssetsDb().db
+class Assets():
+    def __init__(self, db_file, starbound_folder):
+        self.starbound_folder = starbound_folder
+        self.db = sqlite3.connect(db_file)
+        self.vanilla_assets = os.path.join(self.starbound_folder, "assets", "packed.pak")
 
-    def file_index(self, folder):
-        """Return a list of all valid species files from a given folder."""
+    def init_db(self):
+        c = self.db.cursor()
+        c.execute("drop table if exists assets")
+        c.execute("""create table assets
+        (key text, path text, type text, category text, name text, desc text)""")
+        self.db.commit()
+
+    def total_indexed(self):
+        c = self.db.cursor()
+        try:
+            c.execute("select count(*) from assets")
+        except sqlite3.OperationalError:
+            # database may be corrupt
+            return 0
+        return c.fetchone()[0]
+
+    def create_index(self):
+        asset_files = self.find_assets()
+        blueprints = Blueprints(self)
+        items = Items(self)
+        species = Species(self)
+
+        new_index_query = "insert into assets values (?, ?, ?, ?, ?, ?)"
+        index_data = []
+
+        for asset in asset_files:
+            tmp_data = None
+            if blueprints.is_blueprint(asset[0]):
+                tmp_data = blueprints.index_data(asset)
+            elif species.is_species(asset[0]):
+                tmp_data = species.index_data(asset)
+            elif items.is_item(asset[0]):
+                tmp_data = items.index_data(asset)
+            if tmp_data != None:
+                index_data.append(tmp_data)
+
+        c = self.db.cursor()
+        c.executemany(new_index_query, index_data)
+        self.db.commit()
+
+    def find_assets(self):
+        """Scan all Starbound assets and return key/file list.
+
+        Includes mod files, .pak files.
+
+        """
         index = []
-        logging.info("Indexing " + folder)
-        if not os.path.isdir(folder):
-            # if this folder is gone the rest is probably screwed too
-            logging.warning("Missing " + folder)
-            return index
-        for root, dirs, files in os.walk(folder):
-            for f in files:
-                if f.endswith(".species"):
-                    index.append((f, root))
-        logging.info("Found " + str(len(index)) + " species files")
+        vanilla_path = os.path.join(self.starbound_folder, "assets")
+        vanilla_assets = self.scan_asset_folder(vanilla_path)
+        [index.append(x) for x in vanilla_assets]
+
+        mods_path = os.path.join(self.starbound_folder, "mods")
+        for mod in os.listdir(mods_path):
+            mod_folder = os.path.join(mods_path, mod)
+            if os.path.isdir(mod_folder):
+                mod_assets = self.scan_asset_folder(mod_folder)
+                [index.append(x) for x in mod_assets]
 
         return index
 
-    def add_all_species(self):
-        """Parse and insert every indexable species asset."""
-        mods_folder = os.path.join(self.starbound_folder, "mods")
-        assets_folder = os.path.join(self.starbound_folder, "assets")
+    def scan_asset_folder(self, folder):
+        pak_path = os.path.join(folder, "packed.pak")
 
-        index = self.file_index(os.path.join(assets_folder, "species"))
+        if os.path.isfile(pak_path):
+            pak_file = open(pak_path, 'rb')
+            bf = BlockFile(pak_file)
+            db = AssetDatabase(bf)
+            db.open()
+            index = [(x, pak_path) for x in db.getFileList()]
+            return index
+        else:
+            # old style, probably a mod
+            # TODO: do packed mods still use the path key?
+            index = []
+            mod_assets = None
+            files = os.listdir(folder)
+            logging.debug(files)
+            for f in files:
+                if f.endswith(".modinfo"):
+                    modinfo = os.path.join(folder, f)
+                    try:
+                        modinfo_data = load_asset_file(modinfo)
+                        path = modinfo_data["path"]
+                        mod_assets = os.path.join(folder, path)
+                    except ValueError:
+                        # really old mods
+                        folder = os.path.join(folder, "assets")
+                        if os.path.isdir(folder):
+                            mod_assets = folder
+            logging.debug(mod_assets)
 
-        if os.path.isdir(mods_folder):
-            for mod in os.listdir(mods_folder):
-                path = os.path.join(mods_folder, mod)
-                if not os.path.isdir(path): continue
-                assets = mod_asset_folder(path)
-                if os.path.isdir(os.path.join(assets, "species")):
-                    index += self.file_index(os.path.join(assets, "species"))
+            if mod_assets == None:
+                return index
+            elif not os.path.isdir(mod_assets):
+                return index
+
+            # now we can scan!
+            for root, dirs, files in os.walk(mod_assets):
+                for f in files:
+                    if re.match(ignore_assets, f) == None:
+                        asset_root = os.path.normpath(os.path.join(root.replace(folder, ""), f))
+                        index.append((asset_root, folder))
+            return index
+
+    def read(self, key, path, image=False):
+        if path.endswith(".pak"):
+            pak_file = open(path, 'rb')
+            bf = BlockFile(pak_file)
+            db = AssetDatabase(bf)
+            db.open()
+
+            try:
+                data = db[key]
+            except KeyError:
+                logging.warning("Unable to read db asset '%s' from '%s'" % (key, path))
+                return None
+
+            if image:
+                return data
+            else:
+                asset = parse_json(data.decode("utf-8"), key)
+                return asset
+        else:
+            asset_file = os.path.join(path, key[1:])
+            try:
+                if image:
+                    return open(asset_file).read()
                 else:
-                    logging.debug("No species in " + mod)
+                    asset = load_asset_file(asset_file)
+                    return asset
+            except FileNotFoundError:
+                logging.warning("Unable to read asset file '%s' from '%s'" % (key, path))
+                return None
 
-        species = []
-        logging.info("Started indexing species")
-        for f in index:
-            full_path = os.path.join(f[1], f[0])
-            filename = f[0]
-            # top assets folder
-            path = os.path.realpath(os.path.join(f[1], ".."))
+    def blueprints(self):
+        return Blueprints(self)
 
+    def items(self):
+        return Items(self)
+
+    def species(self):
+        return Species(self)
+
+    def get_all(self, asset_type):
+        c = self.assets.db.cursor()
+        c.execute("select * from assets where type = ? order by name collate nocase", (asset_type,))
+        return c.fetchall()
+
+    def get_categories(self, asset_type):
+        c = self.assets.db.cursor()
+        c.execute("select distinct category from assets where type = ? order by category", (asset_type,))
+        return [x[0] for x in c.fetchall()]
+
+    def filter(self, asset_type, category, name):
+        if category == "<all>":
+            category = "%"
+        name = "%" + name + "%"
+        c = self.assets.db.cursor()
+        q = """select * from assets where type = ? and category like ?
+        and name like ? order by name collate nocase"""
+        c.execute(q, (asset_type, category, name))
+        result = c.fetchall()
+        return result
+
+class Blueprints():
+    def __init__(self, assets):
+        self.assets = assets
+        self.starbound_folder = assets.starbound_folder
+
+    def is_blueprint(self, key):
+        if key.endswith(".recipe"):
+            return True
+        else:
+            return False
+
+    def index_data(self, asset):
+        key = asset[0]
+        path = asset[1]
+        name = os.path.basename(asset[0]).split(".")[0]
+        asset_type = "blueprint"
+        asset_data = self.assets.read(key, path)
+
+        if asset_data == None: return
+
+        try:
+            category = asset_data["groups"][1]
+        except (KeyError, IndexError):
+            category = "other"
+
+        return (key, path, asset_type, category, name, "")
+
+    def get_all_blueprints(self):
+        """Return a list of every indexed blueprints."""
+        c = self.assets.db.cursor()
+        c.execute("select * from assets where type = 'blueprint' order by name collate nocase")
+        return c.fetchall()
+
+    def get_categories(self):
+        """Return a list of all unique blueprint categories."""
+        c = self.assets.db.cursor()
+        c.execute("select distinct category from assets where type = 'blueprint' order by category")
+        return [x[0] for x in c.fetchall()]
+
+    def filter_blueprints(self, category, name):
+        """Filter blueprints based on category and name."""
+        if category == "<all>":
+            category = "%"
+        name = "%" + name + "%"
+        c = self.assets.db.cursor()
+        q = """select * from assets where type = 'blueprint' and category like ?
+        and name like ? order by name collate nocase"""
+        c.execute(q, (category, name))
+        result = c.fetchall()
+        return result
+
+    def get_blueprints_total(self):
+        c = self.assets.db.cursor()
+        c.execute("select count(*) from assets where type = 'blueprint'")
+        return c.fetchone()[0]
+
+class Items():
+    def __init__(self, assets):
+        self.assets = assets
+        self.starbound_folder = assets.starbound_folder
+
+    def is_item(self, key):
+        if key.startswith("/items") and re.match(ignore_items, key) == None:
+            return True
+        elif key.endswith(".object"):
+            return True
+        elif key.endswith(".techitem"):
+            return True
+        else:
+            return False
+
+    def index_data(self, asset):
+        key = asset[0]
+        path = asset[1]
+        asset_type = "item"
+        category = os.path.basename(asset[0]).split(".")[1]
+        asset_data = self.assets.read(key, path)
+
+        if asset_data == None: return
+
+        name = False
+        item_name_keys = ["itemName", "name", "objectName"]
+        for item_name in item_name_keys:
             try:
-                info = load_asset_file(full_path)
-            except ValueError:
-                continue
+                name = asset_data[item_name]
+            except KeyError:
+                pass
 
-            try:
-                name = info["kind"]
-            except (KeyError, IndexError):
-                logging.warning("Could not read species file %s" % (f[0]))
+        if not name:
+            logging.warning("Invalid item: %s" % key)
+            return
+        else:
+            if key.endswith(".techitem"):
+                name = name + "-chip"
+            return (key, path, asset_type, category, name, "")
 
-            species.append((name, filename, path))
+    def filter_items(self, category, name):
+        """Search for indexed items based on name and category."""
+        if category == "<all>":
+            category = "%"
+        name = "%" + name + "%"
+        c = self.assets.db.cursor()
+        q = """select * from assets where type = 'item' and category like ?
+        and name like ? order by name collate nocase"""
+        c.execute(q, (category, name))
+        result = c.fetchall()
+        return result
 
-        c = self.db.cursor()
-        q = "insert into species values (?, ?, ?)"
-        c.executemany(q, species)
-        self.db.commit()
-        logging.info("Finished indexing species")
+    def get_items_total(self):
+        c = self.assets.db.cursor()
+        c.execute("select count(*) from assets where type = 'item'")
+        return c.fetchone()[0]
+
+    def get_all_items(self):
+        """Return a list of every indexed item."""
+        c = self.assets.db.cursor()
+        c.execute("select * from assets where type = 'item' order by name collate nocase")
+        return c.fetchall()
+
+    def get_item(self, name):
+        """
+        Find the first hit in the DB for a given item name, return the
+        parsed asset file and location.
+        """
+        c = self.assets.db.cursor()
+        c.execute("select key, path from assets where type = 'item' and name = ?", (name,))
+        meta = c.fetchone()
+        item = self.assets.read(meta[0], meta[1])
+        return item, meta[0], meta[1]
+
+    def get_categories(self):
+        """Return a list of all unique indexed item categories."""
+        c = self.assets.db.cursor()
+        c.execute("select distinct category from assets where type = 'item' order by category")
+        return c.fetchall()
+
+    def get_item_icon(self, name):
+        """Return the path and spritesheet offset of a given item name."""
+        try:
+            item = self.get_item(name)
+            icon_file = item[0]["inventoryIcon"]
+            icon = icon_file.split(':')
+            if len(icon) < 2:
+                icon = [icon[0], 0]
+        except KeyError:
+            return self.missing_icon(), 0
+
+        if icon[0] != "/":
+            icon[0] = os.path.dirname(item[1]) + "/" + icon[0]
+
+        icon_data = self.assets.read(icon[0], item[2], image=True)
+        if icon_data == None:
+            return self.missing_icon(), 0
+
+        if icon[1] == "chest":
+            return icon_data, 16
+        elif icon[1] == "pants":
+            return icon_data, 32
+        else:
+            return icon_data, 0
+
+    def get_item_image(self, name):
+        """Return a vaild item image path for given item name."""
+        # TODO: support for frame selectors
+        # TODO: support for generated item images
+        try:
+            item = self.get_item(name)
+            icon_file = item[0]["image"]
+            icon = icon_file.split(':')
+            if len(icon) < 2:
+                icon = icon[0]
+        except KeyError:
+            return self.missing_icon()
+
+        if icon[0] != "/":
+            icon[0] = os.path.dirname(item[1]) + "/" + icon[0]
+
+        icon_data = self.assets.read(icon[0], item[2], image=True)
+        if icon_data == None:
+            return self.missing_icon()
+        else:
+            return icon_data
+
+    def missing_icon(self):
+        """Return the image data for the default inventory placeholder icon."""
+        return self.assets.read("/interface/inventory/x.png", self.assets.vanilla_assets, image=True)
+
+class Species():
+    def __init__(self, assets):
+        self.assets = assets
+        self.starbound_folder = assets.starbound_folder
+        self.humanoid_config = self.assets.read("/humanoid.config", self.assets.vanilla_assets)
+
+    def is_species(self, key):
+        if key.endswith(".species"):
+            return True
+        else:
+            return False
+
+    def index_data(self, asset):
+        key = asset[0]
+        path = asset[1]
+        asset_data = self.assets.read(key, path)
+
+        if asset_data == None: return
+
+        if "kind" in asset_data:
+            return (key, path, "species", "", asset_data["kind"], "")
+        else:
+            logging.warning("Invalid species: %s" % key)
 
     def get_species_list(self):
         """Return a formatted list of all species."""
-        c = self.db.cursor()
-        c.execute("select distinct name from species order by name")
+        c = self.assets.db.cursor()
+        c.execute("select distinct name from assets where type = 'species' order by name")
         names = [x[0] for x in c.fetchall()]
         formatted = []
         for s in names:
@@ -513,21 +444,19 @@ class Species():
 
     def get_species(self, name):
         """Look up a species from the index and return contents of species files."""
-        c = self.db.cursor()
-        c.execute("select * from species where name = ?", (name.lower(),))
+        c = self.assets.db.cursor()
+        c.execute("select * from assets where type = 'species' and name = ?", (name.lower(),))
         species = c.fetchone()
-        try:
-            species_data = load_asset_file(os.path.join(species[2], "species", species[1]))
-        except TypeError:
+        species_data = self.assets.read(species[0], species[1])
+        if species_data == None:
             # corrupt save, no race set
             logging.warning("No race set on player")
             return "", ""
-        return species, species_data
+        else:
+            return species, species_data
 
     def get_all_species(self):
-        c = self.db.cursor()
-        c.execute("select * from species")
-        return c.fetchall()
+        return self.assets.get_all("species")
 
     def get_appearance_data(self, name, gender, key):
         species = self.get_species(name)
@@ -605,13 +534,22 @@ class Species():
     def get_preview_image(self, name, gender):
         species = self.get_species(name.lower())
         try:
-            return os.path.join(species[0][2], self.get_gender_data(species, gender)["characterImage"][1:])
-        except IndexError:
+            key = self.get_gender_data(species, gender)["characterImage"]
+            return self.assets.read(key, species[0][1], image=True)
+        except FileNotFoundError:
             # corrupt save, no race set
             logging.warning("No race set on player")
-            return os.path.join(self.starbound_folder, "assets", "interface", "inventory", "x.png")
+            return self.assets.read("/interface/inventory/x.png", self.assets.vanilla_assets, image=True)
 
     def get_species_total(self):
-        c = self.db.cursor()
-        c.execute("select count(*) from species")
+        c = self.assets.db.cursor()
+        c.execute("select count(*) from assets where type = 'species'")
         return c.fetchone()[0]
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+    assets = Assets("assets.db", "/opt/starbound")
+    assets.init_db()
+    assets.create_index()
+    print(assets.blueprints().get_categories())
+    print(assets.total_indexed())

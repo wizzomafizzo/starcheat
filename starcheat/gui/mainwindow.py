@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 import saves, assets, qt_mainwindow
+from config import Config
 from gui.common import ItemWidget, empty_slot, preview_icon
 from gui.utils import CharacterSelectDialog, OptionsDialog, AboutDialog
 from gui.utils import save_modified_dialog, new_setup_dialog
@@ -50,8 +51,10 @@ class MainWindow():
         new_setup_dialog()
 
         self.filename = None
+
+        self.assets = assets.Assets(Config().read("assets_db"), Config().read("starbound_folder"))
         logging.debug("Loading items")
-        self.items = assets.Items()
+        self.items = self.assets.items()
 
         self.item_browser = None
         self.options_dialog = None
@@ -76,7 +79,7 @@ class MainWindow():
             logging.warning("No player file selected")
             return
 
-        for species in assets.Species().get_species_list():
+        for species in self.assets.species().get_species_list():
             self.ui.race.addItem(species)
 
         # set up sliders to update values together
@@ -435,7 +438,7 @@ class MainWindow():
             # don't overwrite appearance values if it didn't really change
             return
         self.player.set_race(species)
-        defaults = assets.Species().get_default_colors(species)
+        defaults = self.assets.species().get_default_colors(species)
         for key in defaults:
             getattr(self.player, "set_%s_directives" % key)(defaults[key])
         self.update_player_preview()

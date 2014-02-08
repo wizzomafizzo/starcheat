@@ -4,28 +4,33 @@ Functions shared between GUI dialogs
 
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QTableWidgetItem
-from PyQt5.QtGui import QPixmap, QImageReader
+from PyQt5.QtGui import QPixmap, QImageReader, QImage
 
 import assets
+from config import Config
 
 def inv_icon(item_name):
     """Return a QPixmap object of the inventory icon of a given item (if possible)."""
-    icon_file = assets.Items().get_item_icon(item_name)
+    assets_db_file = Config().read("assets_db")
+    starbound_folder = Config().read("starbound_folder")
+    db = assets.Assets(assets_db_file, starbound_folder)
+    icon_file = db.items().get_item_icon(item_name)
 
     if icon_file == None:
         return QPixmap()
 
-    reader = QImageReader(icon_file[0])
+    reader = QImageReader().read(QImage().loadFromData(icon_file[0]))
     reader.setClipRect(QtCore.QRect(icon_file[1], 0, 16, 16))
     return QPixmap.fromImageReader(reader).scaled(32, 32)
 
 def preview_icon(race, gender):
     """Return an icon image for player race/gender previews."""
-    icon_file = assets.Species().get_preview_image(race, gender)
+    assets_db_file = Config().read("assets_db")
+    starbound_folder = Config().read("starbound_folder")
+    db = assets.Assets(assets_db_file, starbound_folder)
+    icon_file = db.species().get_preview_image(race, gender)
 
-    reader = QImageReader(icon_file)
-    reader.setClipRect(QtCore.QRect(0, 0, 32, 32))
-    return QPixmap.fromImageReader(reader)
+    return QPixmap().loadFromData(icon_file)
 
 def empty_slot():
     """Return an empty bag slot widget."""

@@ -18,7 +18,8 @@ import qt_options, qt_openplayer, qt_about
 # file remove calls
 def build_assets_db():
     assets_db_file = Config().read("assets_db")
-    assets_db = assets.AssetsDb()
+    starbound_folder = Config().read("starbound_folder")
+    assets_db = assets.Assets(assets_db_file, starbound_folder)
 
     logging.info("Indexing assets")
     dialog = QMessageBox()
@@ -53,20 +54,8 @@ def build_assets_db():
         sys.exit()
 
     assets_db.init_db()
-    asset_types = ("Items", "Blueprints", "Species")
-    for t in asset_types:
-        try:
-            asset_class = getattr(assets, t)()
-            print("Indexing "+t+"...")
-            getattr(asset_class, "add_all_" + t.lower())()
-        except FileNotFoundError:
-            # catch anything that couldn't be skipped during index
-            logging.exception("Asset folder not complete: %s", t)
-            bad_asset_dialog(t)
-
-        if getattr(asset_class, "get_" + t.lower() + "_total")() == 0:
-            logging.error("Could not find any assets for: %s", t)
-            bad_asset_dialog(t)
+    assets_db.create_index()
+    # TODO: check total indexed
 
 def save_modified_dialog():
     """Display a prompt asking user what to do about a modified file. Return button clicked."""
