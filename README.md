@@ -79,7 +79,7 @@ Install [starcheat](https://aur.archlinux.org/packages/starcheat/) from AUR.
 
 ### Mac
 - Install [homebrew](http://brew.sh/)
-- ```$ brew install python3```
+- ```$ brew update```
 - ```$ brew install https://raw.github.com/wizzomafizzo/starcheat/master/mac/starcheat.rb``` (optionally pass ```--without-app``` (create no .app) or ```--without-binary``` (creates no binary linked into your prefix) )
 - ```brew linkapps```(symlinks the .app into your Applications folder)
 
