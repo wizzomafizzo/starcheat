@@ -38,6 +38,7 @@ class ItemBrowser():
         # populate initial items list
         self.ui.items.clear()
         self.update_item_list()
+        self.update_item_view()
 
         self.ui.items.itemSelectionChanged.connect(self.update_item_view)
         if not just_browse:
@@ -69,7 +70,7 @@ class ItemBrowser():
             else:
                 icon = QPixmap.fromImage(QImage.fromData(self.items.missing_icon())).scaled(32, 32)
         else:
-            icon = QPixmap.fromImage(QImage.fromData(image_file)).scaledToHeight(64)
+            icon = QPixmap.fromImage(ImageQt(image_file)).scaledToHeight(64)
 
         # last ditch
         try:

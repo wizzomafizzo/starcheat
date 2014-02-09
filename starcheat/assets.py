@@ -384,7 +384,7 @@ class Items():
             item_icon = item_icon.crop((0, 0, 16, 16))
 
         inv_icon = Image.new("RGBA", (16,16))
-        inv_icon.paste(item_icon, (0, 0, 16, 16))
+        inv_icon.paste(item_icon)
         return inv_icon
 
     def get_item_image(self, name):
@@ -407,8 +407,9 @@ class Items():
         if icon_data == None:
             logging.warning("Unable to read %s from %s" % (icon, item[2]))
             return None
-        else:
-            return icon_data
+
+        item_image = Image.open(BytesIO(icon_data)).convert("RGBA")
+        return item_image
 
     def missing_icon(self):
         """Return the image data for the default inventory placeholder icon."""

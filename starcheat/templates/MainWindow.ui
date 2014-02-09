@@ -964,7 +964,7 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>600</x>
@@ -1005,7 +1005,7 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -1129,7 +1129,7 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -1253,7 +1253,7 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>511</x>
@@ -1377,7 +1377,7 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>511</x>
@@ -1501,7 +1501,7 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>511</x>
@@ -1625,7 +1625,7 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>319</x>
@@ -1789,26 +1789,17 @@ border-radius: 4px;
      </item>
     </layout>
    </widget>
-   <zorder>backpack_label</zorder>
-   <zorder>chest_label</zorder>
-   <zorder>legs_label</zorder>
-   <zorder>head_label</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
    <zorder>inv_tabs</zorder>
-   <zorder>action_bar</zorder>
-   <zorder>back</zorder>
-   <zorder>pixels_label</zorder>
-   <zorder>pixels</zorder>
-   <zorder>left_hand_label_2</zorder>
-   <zorder>wieldable</zorder>
-   <zorder>head</zorder>
-   <zorder>legs</zorder>
-   <zorder>chest</zorder>
-   <zorder>action_bar_label</zorder>
    <zorder>player_preview</zorder>
    <zorder>layoutWidget</zorder>
    <zorder>layoutWidget</zorder>
-   <zorder>gender_group</zorder>
-   <zorder></zorder>
+   <zorder>layoutWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -2051,7 +2042,7 @@ border-radius: 4px;
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Export JSON...</string>
+    <string>Export As JSON...</string>
    </property>
    <property name="statusTip">
     <string>Export a copy of the current save as a JSON text file</string>

@@ -129,7 +129,6 @@ class ItemEdit():
 
         try:
             item = self.assets.items().get_item(name)
-            print(item)
             if item[1].endswith("generatedgun"):
                 options = self.assets.items().generate_gun(item)
                 print(options)
@@ -142,12 +141,10 @@ class ItemEdit():
             else:
                 options = item[0]
         except TypeError:
-            logging.exception("Couldn't load item: "+name)
             self.item = empty_slot().item
             self.ui.desc.setText("<html><body><strong>Empty Slot</strong></body></html>")
             self.ui.icon.setPixmap(QPixmap())
-            self.ui.variant.clear()
-            self.ui.variant.setHorizontalHeaderLabels(["Options"])
+            self.clear_item_options()
             return
 
         self.item = saves.new_item(name, 1, options)

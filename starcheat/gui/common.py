@@ -21,14 +21,14 @@ def inv_icon(item_name):
     if icon_file == None:
         try:
             image_file = db.items().get_item_image(item_name)
-            return QPixmap.fromImage(QImage.fromData(image_file)).scaledToHeight(32)
-        except TypeError:
+            return QPixmap.fromImage(ImageQt(image_file)).scaledToHeight(64)
+        except (TypeError, AttributeError):
             return QPixmap.fromImage(QImage.fromData(db.items().missing_icon())).scaled(32, 32)
 
-    #reader = QImageReader.read(QImage.fromData(icon_file[0]))
-    #reader.setClipRect(QtCore.QRect(icon_file[1], 0, 16, 16))
-    #return QPixmap.fromImageReader(reader).scaled(32, 32)
-    return QPixmap.fromImage(ImageQt(icon_file)).scaled(32, 32)
+    try:
+        return QPixmap.fromImage(ImageQt(icon_file)).scaled(32, 32)
+    except AttributeError:
+        return QPixmap.fromImage(QImage.fromData(db.items().missing_icon())).scaled(32, 32)
 
 def preview_icon(race, gender):
     """Return an icon image for player race/gender previews."""

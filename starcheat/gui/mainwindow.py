@@ -247,9 +247,10 @@ class MainWindow():
         def update_slot():
             logging.debug("Writing changes to slot")
             new_slot = item_edit.get_item()
-            bag.setItem(row, column, new_slot)
-            self.remember_browser = item_edit.remember_browser
-            self.set_edited()
+            if new_slot.item["name"] != "":
+                bag.setItem(row, column, new_slot)
+                self.remember_browser = item_edit.remember_browser
+                self.set_edited()
 
         def trash_slot():
             logging.debug("Trashed item")
