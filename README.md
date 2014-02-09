@@ -46,10 +46,11 @@ These are builds of the latest development version. They should work fine, but m
 Here is how to build starcheat from source. Make sure everything in the dependencies section is installed before you do a build. **You don't need to build from source if you're on Windows or Mac.**
 
 ### Dependencies
-- [Python 3](http://www.python.org/getit/)
+- [Python 3.3](http://www.python.org/getit/)
 - [Qt 5](http://qt-project.org/downloads) (Windows users don't need this)
 - [PyQt5](http://www.riverbankcomputing.com/software/pyqt/download5)
 - [Pillow](https://pypi.python.org/pypi/Pillow/)
+- [StarDB](https://github.com/McSimp/StarDB)
 
 ### Windows
 Lines starting with ```PS>``` are to be run in PowerShell.
