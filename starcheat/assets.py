@@ -18,7 +18,7 @@ comment_re = re.compile(
 )
 
 ignore_assets = re.compile(".*\.(db|ds_store)", re.IGNORECASE)
-ignore_items = re.compile(".*\.(png|config|frames|coinitem)", re.IGNORECASE)
+ignore_items = re.compile(".*\.(png|config|frames)", re.IGNORECASE)
 
 def parse_json(content, key):
     if key.endswith(".grapplinghook"):
@@ -86,6 +86,8 @@ class Assets():
                 tmp_data = species.index_data(asset)
             elif items.is_item(asset[0]):
                 tmp_data = items.index_data(asset)
+            elif asset[0].endswith(".png"):
+                tmp_data = (asset[0], asset[1], "image", "", "", "")
             if tmp_data != None:
                 index_data.append(tmp_data)
 
@@ -405,86 +407,180 @@ class Items():
         """Return the image data for the default inventory placeholder icon."""
         return self.assets.read("/interface/inventory/x.png", self.assets.vanilla_assets, image=True)
 
-    def generate_gun(self, name):
-        #asset = self.get_item(name)
+    def generate_gun(self, item):
         generated_gun = {
-            "classMultiplier": 1.0,
-            "drawables": [
-                {
-                    "image": "/items/guns/randomgenerated/sniperrifle/butt/8.png",
-                    "position": [
-                        -9.899999618530273,
-                        0.0
-                    ]
-                },
-                {
-                    "image": "/items/guns/randomgenerated/sniperrifle/middle/6.png",
-                    "position": [
-                        0.0,
-                        0.0
-                    ]
-                },
-                {
-                    "image": "/items/guns/randomgenerated/sniperrifle/barrel/13.png",
-                    "position": [
-                        15.899999618530273,
-                        0.0
-                    ]
-                }
-            ],
-            "firePosition": [24.0, 0.0],
-            "fireTime": 0.5,
-            "generated": True,
-            "handPosition": [-5.0, -2.0],
-            "inspectionKind": "gun",
-            "inventoryIcon": [
-                {
-                    "image": "/items/guns/randomgenerated/sniperrifle/butt/8.png",
-                    "position": [
-                        -9.899999618530273,
-                        0.0
-                    ]
-                },
-                {
-                    "image": "/items/guns/randomgenerated/sniperrifle/middle/6.png",
-                    "position": [
-                        0.0,
-                        0.0
-                    ]
-                },
-                {
-                    "image": "/items/guns/randomgenerated/sniperrifle/barrel/13.png",
-                    "position": [
-                        15.899999618530273,
-                        0.0
-                    ]
-                }
-            ],
             "itemName": "generatedgun",
             "level": 1.0,
             "levelScale": 2.0,
-            "muzzleEffect": {
-                "animation": "/animations/muzzleflash/bulletmuzzle3/bulletmuzzle3.animation",
-                "fireSound": [
-                    {
-                        "file": "/sfx/gun/sniper3.wav"
-                    }
-                ]
-            },
-            "projectile": {
-                "level": 1.0,
-                "power": 2.0,
-            },
             "projectileType": "piercingbullet",
             "rarity": "common",
             "recoilTime": 0.1,
             "shortdescription": "Cheater's Remorse",
             "spread": 2,
             "twoHanded": True,
-            "weaponType": "Sniper Rifle"
+            "weaponType": "Sniper Rifle",
+            "classMultiplier": 1.0,
+            "projectile": { "level": 1.0, "power": 2.0 },
+            "firePosition": [24.0, 0.0],
+            "fireTime": 0.5,
+            "generated": True,
+            "handPosition": [-5.0, -2.0],
+            "inspectionKind": "gun",
+            "muzzleEffect": {
+                "animation": "/animations/muzzleflash/bulletmuzzle3/bulletmuzzle3.animation",
+                "fireSound": [ { "file": "/sfx/gun/sniper3.wav" } ]
+            },
+            "drawables": [
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/butt/8.png",
+                    "position": [ -9.899999618530273, 0.0 ]
+                },
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/middle/6.png",
+                    "position": [ 0.0, 0.0 ]
+                },
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/barrel/13.png",
+                    "position": [ 15.899999618530273, 0.0 ]
+                }
+            ],
+            "inventoryIcon": [
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/butt/8.png",
+                    "position": [ -9.899999618530273, 0.0 ]
+                },
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/middle/6.png",
+                    "position": [ 0.0, 0.0 ]
+                },
+                {
+                    "image": "/items/guns/randomgenerated/sniperrifle/barrel/13.png",
+                    "position": [ 15.899999618530273, 0.0 ]
+                }
+            ]
         }
 
+        if "rarity" in item[0]:
+            generated_gun["rarity"] = item[0]["rarity"]
+
+        if "inspectionKind" in item[0]:
+            generated_gun["inspectionKind"] = item[0]["inspectionKind"]
+
+        if "handPosition" in item[0]:
+            generated_gun["handPosition"] = [float(item[0]["handPosition"][0]),
+                                             float(item[0]["handPosition"][1])]
+
+        if "firePosition" in item[0]:
+            generated_gun["firePosition"] = [float(item[0]["firePosition"][0]),
+                                             float(item[0]["firePosition"][1])]
+
+        if "rateOfFire" in item[0]:
+            generated_gun["fireTime"] = float(item[0]["rateOfFire"][0])
+
+        if "recoilTime" in item[0]:
+            generated_gun["fireTime"] = float(item[0]["recoilTime"])
+
+        if "weaponType" in item[0]:
+            generated_gun["weaponType"] = item[0]["weaponType"]
+            generated_gun["shortdescription"] = "Cheater's " + item[0]["weaponType"]
+
+        if "spread" in item[0]:
+            generated_gun["spread"] = float(item[0]["spread"][0])
+
+        if "muzzleFlashes" in item[0] and "fireSound" in item[0]:
+            generated_gun["muzzleEffect"] = {
+                "animation": item[0]["muzzleFlashes"][0],
+                "fireSound": [ { "file": item[0]["fireSound"][0] } ]
+            }
+
+        if "projectileTypes" in item[0]:
+            generated_gun["projectileType"] = item[0]["projectileTypes"][0]
+
         return generated_gun
+
+    def generate_sword(self, item):
+        generated_sword = {
+            "generated": True,
+            "inspectionKind": "sword",
+            "itemName": "generatedsword",
+            "shortdescription": "Immersion Ruiner",
+            "fireAfterWindup": True,
+            "fireTime": 0.5,
+            "level": 1.0,
+            "levelScale": 2.0,
+            "rarity": "common",
+            "firePosition": [ 12.5, 3.0 ],
+            "soundEffect": { "fireSound": [ { "file": "/sfx/melee/swing_hammer.wav" } ] },
+            "weaponType": "uncommontier2hammer",
+            "drawables": [ { "image": "/items/swords/randomgenerated/hammer/handle/19.png" },
+                           { "image": "/items/swords/randomgenerated/hammer/blade/20.png" } ],
+            "inventoryIcon": [ { "image": "/items/swords/randomgenerated/hammer/handle/19.png" },
+                               { "image": "/items/swords/randomgenerated/hammer/blade/20.png" } ],
+            "primaryStances": {
+                "cooldown": {
+                    "armAngle": -45,
+                    "duration": 0.4,
+                    "handPosition": [ -2.7, -27 ],
+                    "statusEffects": [ { "duration": 0.1, "kind": "shieldsuppressed" } ],
+                    "swordAngle": -90,
+                    "twoHanded": True
+                },
+                "idle": {
+                    "armAngle": -90,
+                    "armFrameOverride": "idleMelee",
+                    "duration": 0.1,
+                    "handPosition": [ -2.7, -14.5 ],
+                    "swordAngle": -90,
+                    "twoHanded": False
+                },
+                "projectile": {
+                    "level": 1.0,
+                    "power": 1.0,
+                    "speed": 0.1
+                },
+                "projectileType": "firehammer",
+                "projectileTypes": [ "poisonhammer", "electrichammer", "firehammer" ],
+                "windup": {
+                    "armAngle": 90,
+                    "duration": 0.07,
+                    "handPosition": [ -2.7, -14.5 ],
+                    "statusEffects": [ { "duration": 0.1, "kind": "shieldsuppressed" } ],
+                    "swordAngle": 90,
+                    "twoHanded": True
+                }
+            },
+            "altStances": {
+                "cooldown": {
+                    "armAngle": -45,
+                    "duration": 0.4,
+                    "handPosition": [ -2.7, -27 ],
+                    "statusEffects": [ { "duration": 0.1, "kind": "shieldsuppressed" } ],
+                    "swordAngle": -90,
+                    "twoHanded": True
+                },
+                "idle": {
+                    "armAngle": -90,
+                    "armFrameOverride": "idleMelee",
+                    "duration": 0.1,
+                    "handPosition": [ -2.7, -14.5 ],
+                    "swordAngle": -90,
+                    "twoHanded": False
+                },
+                "projectile": { "level": 1.0, "power": 1.0, "speed": 0.1 },
+                "projectileType": "electrichammer",
+                "projectileTypes": [ "poisonhammer", "electrichammer", "firehammer" ],
+                "windup": {
+                    "armAngle": 90,
+                    "duration": 0.07,
+                    "handPosition": [ -2.7, -14.5 ],
+                    "statusEffects": [ { "duration": 0.1, "kind": "shieldsuppressed" } ],
+                    "swordAngle": 90,
+                    "twoHanded": True
+                }
+            }
+        }
+
+        return generated_sword
 
 class Species():
     def __init__(self, assets):

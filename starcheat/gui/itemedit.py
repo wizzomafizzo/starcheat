@@ -126,19 +126,28 @@ class ItemEdit():
         """Update main item view with current item browser data."""
         name = self.ui.item_type.text()
 
-        if name == "generatedgun":
-            options = self.assets.items().generate_gun(name)
-        else:
-            try:
-                item = self.assets.items().get_item(name)
+        try:
+            item = self.assets.items().get_item(name)
+            print(item)
+            if item[1].endswith("generatedgun"):
+                options = self.assets.items().generate_gun(item)
+                print(options)
+                name = options["itemName"]
+                self.ui.item_type.setText(name)
+            elif item[1].endswith("generatedsword"):
+                options = self.assets.items().generate_sword(item)
+                name = options["itemName"]
+                self.ui.item_type.setText(name)
+            else:
                 options = item[0]
-            except TypeError:
-                self.item = empty_slot().item
-                self.ui.desc.setText("<html><body><strong>Empty Slot</strong></body></html>")
-                self.ui.icon.setPixmap(QPixmap())
-                self.ui.variant.clear()
-                self.ui.variant.setHorizontalHeaderLabels(["Options"])
-                return
+        except TypeError:
+            logging.exception("Couldn't load item: "+name)
+            self.item = empty_slot().item
+            self.ui.desc.setText("<html><body><strong>Empty Slot</strong></body></html>")
+            self.ui.icon.setPixmap(QPixmap())
+            self.ui.variant.clear()
+            self.ui.variant.setHorizontalHeaderLabels(["Options"])
+            return
 
         self.item = saves.new_item(name, 1, options)
         self.ui.count.setValue(1)
