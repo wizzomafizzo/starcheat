@@ -35,8 +35,11 @@ def main():
 
     if options.verbose:
         print("Copying starcheat python scripts")
-    shutil.copytree(os.path.join(src_dir, "starcheat"), prefix, ignore=shutil.ignore_patterns("templates", "*.ui",
-                                                                                              "images", "*.qrc"))
+    shutil.copytree(os.path.join(src_dir, "starcheat"), prefix, ignore=shutil.ignore_patterns("templates", "stardb", "images", "*.qrc"))
+
+    if options.verbose:
+        print("Copying StarDB python module")
+    shutil.copytree(os.path.join(src_dir, "starcheat", "stardb", "stardb"), os.path.join(prefix, "stardb"))
 
     if options.verbose:
         print("Generating python Qt templates...")

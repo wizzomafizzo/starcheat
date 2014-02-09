@@ -1,0 +1,3 @@
+[submodule "starcheat/stardb"]
+	path = starcheat/stardb
+	url = git@github.com:McSimp/StarDB.git
