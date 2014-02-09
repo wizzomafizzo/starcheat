@@ -5,13 +5,14 @@ Qt item browser dialog
 import logging
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 from PyQt5.QtGui import QPixmap, QImage
+from PIL.ImageQt import ImageQt
 
 import assets, qt_itembrowser
 from gui.common import inv_icon
 from config import Config
 
 class ItemBrowser():
-    def __init__(self, parent, just_browse=False):
+    def __init__(self, parent, just_browse=False, category="<all>"):
         """Dialog for viewing/searching indexed items and returning selection."""
         self.dialog = QDialog(parent)
         self.ui = qt_itembrowser.Ui_Dialog()
@@ -20,6 +21,8 @@ class ItemBrowser():
         assets_db_file = Config().read("assets_db")
         starbound_folder = Config().read("starbound_folder")
         self.assets = assets.Assets(assets_db_file, starbound_folder)
+
+        self.remember_category = category
 
         if just_browse:
             self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Close)
@@ -30,11 +33,11 @@ class ItemBrowser():
         # populate category combobox
         for cat in self.items.get_categories():
             self.ui.category.addItem(cat[0])
+        self.ui.category.setCurrentText(self.remember_category)
 
         # populate initial items list
         self.ui.items.clear()
-        for item in self.items.get_all_items():
-            self.ui.items.addItem(item[4])
+        self.update_item_list()
 
         self.ui.items.itemSelectionChanged.connect(self.update_item_view)
         if not just_browse:
@@ -62,7 +65,7 @@ class ItemBrowser():
         if image_file == None:
             inv_icon_file = self.items.get_item_icon(selected)
             if inv_icon_file != None:
-                icon = QPixmap.fromImage(QImage.fromData(inv_icon_file[0])).scaled(32, 32)
+                icon = QPixmap.fromImage(ImageQt(inv_icon_file)).scaled(32, 32)
             else:
                 icon = QPixmap.fromImage(QImage.fromData(self.items.missing_icon())).scaled(32, 32)
         else:
@@ -104,6 +107,7 @@ class ItemBrowser():
     def update_item_list(self):
         """Populate item list based on current filter details."""
         category = self.ui.category.currentText()
+        self.remember_category = category
         name = self.ui.filter.text()
         result = self.items.filter_items(category, name)
 

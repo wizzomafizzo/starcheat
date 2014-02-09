@@ -12,7 +12,7 @@ Qt item edit dialog
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 from PyQt5.QtGui import QPixmap
 
-import json
+import json, logging
 import assets, qt_itemedit, qt_itemeditoptions, saves
 from gui.common import inv_icon, ItemWidget, empty_slot
 from gui.itembrowser import ItemBrowser
@@ -57,7 +57,7 @@ class ItemOptionWidget(QTableWidgetItem):
         self.setToolTip(str(value))
 
 class ItemEdit():
-    def __init__(self, parent, item=None):
+    def __init__(self, parent, item=None, browser_category="<all>"):
         """Takes an item widget and displays an edit dialog for it."""
         self.dialog = QDialog(parent)
         self.ui = qt_itemedit.Ui_Dialog()
@@ -68,6 +68,7 @@ class ItemEdit():
         self.assets = assets.Assets(assets_db_file, starbound_folder)
 
         self.item_browser = None
+        self.remember_browser = browser_category
 
         # cells don't retain ItemSlot widget when they've been dragged away
         if type(item) is QTableWidgetItem or item == None:
@@ -183,7 +184,7 @@ class ItemEdit():
         item_edit_options.dialog.exec()
 
     def new_item_browser(self):
-        self.item_browser = ItemBrowser(self.dialog)
+        self.item_browser = ItemBrowser(self.dialog, category=self.remember_browser)
         self.item_browser.dialog.accepted.connect(self.set_item_browser_selection)
         self.item_browser.dialog.exec()
 
@@ -198,6 +199,7 @@ class ItemEdit():
 
     def set_item_browser_selection(self):
         name = self.item_browser.get_selection()
+        self.remember_browser = self.item_browser.remember_category
         self.ui.item_type.setText(name)
 
     def max_count(self):

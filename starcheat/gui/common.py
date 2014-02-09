@@ -6,6 +6,8 @@ from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtGui import QPixmap, QImageReader, QImage
 
+from PIL.ImageQt import ImageQt
+
 import assets
 from config import Config
 
@@ -26,7 +28,7 @@ def inv_icon(item_name):
     #reader = QImageReader.read(QImage.fromData(icon_file[0]))
     #reader.setClipRect(QtCore.QRect(icon_file[1], 0, 16, 16))
     #return QPixmap.fromImageReader(reader).scaled(32, 32)
-    return QPixmap.fromImage(QImage.fromData(icon_file[0])).scaled(32, 32)
+    return QPixmap.fromImage(ImageQt(icon_file)).scaled(32, 32)
 
 def preview_icon(race, gender):
     """Return an icon image for player race/gender previews."""

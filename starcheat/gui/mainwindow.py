@@ -57,6 +57,8 @@ class MainWindow():
         self.items = self.assets.items()
 
         self.item_browser = None
+        # remember the last selected item browser category
+        self.remember_browser = "<all>"
         self.options_dialog = None
 
         # connect action menu
@@ -239,12 +241,14 @@ class MainWindow():
         logging.debug("New item edit dialog")
         row = bag.currentRow()
         column = bag.currentColumn()
-        item_edit = ItemEdit(self.window, bag.currentItem())
+        item_edit = ItemEdit(self.window, bag.currentItem(),
+                             browser_category=self.remember_browser)
 
         def update_slot():
             logging.debug("Writing changes to slot")
             new_slot = item_edit.get_item()
             bag.setItem(row, column, new_slot)
+            self.remember_browser = item_edit.remember_browser
             self.set_edited()
 
         def trash_slot():
