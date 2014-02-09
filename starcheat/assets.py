@@ -108,6 +108,9 @@ class Assets():
         [index.append(x) for x in vanilla_assets]
 
         mods_path = os.path.join(self.starbound_folder, "mods")
+        if not os.path.isdir(mods_path):
+            return index
+
         for mod in os.listdir(mods_path):
             mod_folder = os.path.join(mods_path, mod)
             if os.path.isdir(mod_folder):

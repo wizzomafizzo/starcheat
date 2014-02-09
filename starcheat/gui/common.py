@@ -5,6 +5,7 @@ Functions shared between GUI dialogs
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtGui import QPixmap, QImageReader, QImage
+from sqlite3 import OperationalError
 
 from PIL.ImageQt import ImageQt
 
@@ -35,8 +36,13 @@ def preview_icon(race, gender):
     assets_db_file = Config().read("assets_db")
     starbound_folder = Config().read("starbound_folder")
     db = assets.Assets(assets_db_file, starbound_folder)
-    icon_file = db.species().get_preview_image(race, gender)
-
+    try:
+        icon_file = db.species().get_preview_image(race, gender)
+    except (OperationalError, TypeError):
+        # the assets db was probably deleted or corrupt
+        db.init_db()
+        db.create_index()
+        icon_file = db.species().get_preview_image(race, gender)
     return QPixmap.fromImage(QImage.fromData(icon_file))
 
 def empty_slot():

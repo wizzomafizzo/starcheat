@@ -23,8 +23,8 @@ def build_assets_db():
 
     logging.info("Indexing assets")
     dialog = QMessageBox()
-    dialog.setText("starcheat will now build a database of Starbound assets.")
-    dialog.setInformativeText("This shouldn't take long.")
+    dialog.setText("starcheat will now build an index of all Starbound assets.")
+    dialog.setInformativeText("This only takes a minute.")
     dialog.setIcon(QMessageBox.Information)
     dialog.exec()
 
