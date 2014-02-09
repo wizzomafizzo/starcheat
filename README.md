@@ -49,6 +49,7 @@ Here is how to build starcheat from source. Make sure everything in the dependen
 - [Python 3](http://www.python.org/getit/)
 - [Qt 5](http://qt-project.org/downloads) (Windows users don't need this)
 - [PyQt5](http://www.riverbankcomputing.com/software/pyqt/download5)
+- [Pillow](https://pypi.python.org/pypi/Pillow/)
 
 ### Windows
 Lines starting with ```PS>``` are to be run in PowerShell.
