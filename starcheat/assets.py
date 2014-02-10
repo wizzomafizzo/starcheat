@@ -81,14 +81,14 @@ class Assets():
 
         for asset in asset_files:
             tmp_data = None
-            if blueprints.is_blueprint(asset[0]):
+            if asset[0].endswith(".png"):
+                tmp_data = (asset[0], asset[1], "image", "", "", "")
+            elif blueprints.is_blueprint(asset[0]):
                 tmp_data = blueprints.index_data(asset)
             elif species.is_species(asset[0]):
                 tmp_data = species.index_data(asset)
             elif items.is_item(asset[0]):
                 tmp_data = items.index_data(asset)
-            elif asset[0].endswith(".png"):
-                tmp_data = (asset[0], asset[1], "image", "", "", "")
             if tmp_data != None:
                 index_data.append(tmp_data)
 
@@ -216,12 +216,17 @@ class Assets():
         if category == "<all>":
             category = "%"
         name = "%" + name + "%"
-        c = self.assets.db.cursor()
+        c = self.db.cursor()
         q = """select * from assets where type = ? and category like ?
         and name like ? order by name collate nocase"""
         c.execute(q, (asset_type, category, name))
         result = c.fetchall()
         return result
+
+    def get_total(self, asset_type):
+        c = self.assets.db.cursor()
+        c.execute("select count(*) from assets where type = ?", (asset_type))
+        return c.fetchone()[0]
 
 class Blueprints():
     def __init__(self, assets):
@@ -264,20 +269,7 @@ class Blueprints():
 
     def filter_blueprints(self, category, name):
         """Filter blueprints based on category and name."""
-        if category == "<all>":
-            category = "%"
-        name = "%" + name + "%"
-        c = self.assets.db.cursor()
-        q = """select * from assets where type = 'blueprint' and category like ?
-        and name like ? order by name collate nocase"""
-        c.execute(q, (category, name))
-        result = c.fetchall()
-        return result
-
-    def get_blueprints_total(self):
-        c = self.assets.db.cursor()
-        c.execute("select count(*) from assets where type = 'blueprint'")
-        return c.fetchone()[0]
+        return self.assets.filter("blueprint", category, name)
 
 class Items():
     def __init__(self, assets):
@@ -285,11 +277,11 @@ class Items():
         self.starbound_folder = assets.starbound_folder
 
     def is_item(self, key):
-        if key.startswith("/items") and re.match(ignore_items, key) == None:
-            return True
-        elif key.endswith(".object"):
+        if key.endswith(".object"):
             return True
         elif key.endswith(".techitem"):
+            return True
+        elif key.startswith("/items") and re.match(ignore_items, key) == None:
             return True
         else:
             return False
@@ -321,20 +313,7 @@ class Items():
 
     def filter_items(self, category, name):
         """Search for indexed items based on name and category."""
-        if category == "<all>":
-            category = "%"
-        name = "%" + name + "%"
-        c = self.assets.db.cursor()
-        q = """select * from assets where type = 'item' and category like ?
-        and name like ? order by name collate nocase"""
-        c.execute(q, (category, name))
-        result = c.fetchall()
-        return result
-
-    def get_items_total(self):
-        c = self.assets.db.cursor()
-        c.execute("select count(*) from assets where type = 'item'")
-        return c.fetchone()[0]
+        return self.assets.filter("item", category, name)
 
     def get_all_items(self):
         """Return a list of every indexed item."""
@@ -609,9 +588,6 @@ class Species():
         else:
             return species, species_data
 
-    def get_all_species(self):
-        return self.assets.get_all("species")
-
     def get_appearance_data(self, name, gender, key):
         species = self.get_species(name)
         # there is another json extension here where strings that have a , on
@@ -695,15 +671,11 @@ class Species():
             logging.warning("No race set on player")
             return self.assets.read("/interface/inventory/x.png", self.assets.vanilla_assets, image=True)
 
-    def get_species_total(self):
-        c = self.assets.db.cursor()
-        c.execute("select count(*) from assets where type = 'species'")
-        return c.fetchone()[0]
-
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     assets = Assets("assets.db", "/opt/starbound")
     assets.init_db()
+    logging.info("Started indexing...")
     assets.create_index()
-    print(assets.blueprints().get_categories())
+    logging.info("Finished!")
     print(assets.total_indexed())
