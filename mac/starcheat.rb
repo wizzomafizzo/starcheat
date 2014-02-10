@@ -16,6 +16,12 @@ class Starcheat < Formula
   option 'without-app', 'Build without the .app (started via starcheat terminal command)'
   option 'without-binary', 'Only builds the .app, no binary install to your prefix'
 
+  resource 'setup.py' do
+    url 'https://raw.github.com/wizzomafizzo/starcheat/master/mac/setup.py'
+    sha1 '1ff254b23cfea06fe3fef83a8ada5da53aaa31b6'
+    version '0.2'
+  end
+
   skip_clean 'StarCheat.app' if build.with? 'app'
 
   def install
@@ -27,7 +33,7 @@ class Starcheat < Formula
     cd 'build' do
       system 'pip3', 'install', 'py2app'
 
-      mv '../mac/setup.py', '.'
+      (buildpath/'build').install resource('setup.py')
       # give write access to Qt's frameworks (fixes py2app permission errors)
       system 'chmod', '-R', 'u+w', Formula.factory('qt5').lib
 
