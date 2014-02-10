@@ -1,6 +1,6 @@
 language: objective-c
 before_install:
-  - wget https://github.com/chrmoritz/starcheat/releases/download/67d39a4/local_cache.tar.gz
+  - wget https://github.com/chrmoritz/starcheat/releases/download/4f7bd31/local_cache.tar.gz
 env:
   secure: "TRQYNASiBc+mf49oNxfL+DIADIgmOk41JGCZ0xFS0YdjMxF1FHz3mLJgjGCqxnaPZ7Xv2POg8zBdlRKPwnqueJT2QtK/PXI8I90/AkLmK2LAbxcAW4enyhNGqREW5ir+avMdq831iGHNsL25JhdIjyVTh3wD1fLybwKXkIav7lc="
 install:
