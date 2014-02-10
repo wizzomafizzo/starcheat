@@ -3,12 +3,19 @@ Qt item browser dialog
 """
 
 import logging
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox, QListWidgetItem
 from PyQt5.QtGui import QPixmap, QImage
 from PIL.ImageQt import ImageQt
 
 import assets, qt_itembrowser
 from config import Config
+
+class BrowserItem(QListWidgetItem):
+    def __init__(self, name, desc):
+        if desc == "":
+            desc = name
+        QListWidgetItem.__init__(self, desc)
+        self.name = name
 
 class ItemBrowser():
     def __init__(self, parent, just_browse=False, category="<all>"):
@@ -51,7 +58,7 @@ class ItemBrowser():
     def update_item_view(self):
         """Update item details view with data from currently selected item."""
         try:
-            selected = self.ui.items.selectedItems()[0].text()
+            selected = self.ui.items.selectedItems()[0].name
         except IndexError:
             return
 
@@ -115,7 +122,7 @@ class ItemBrowser():
         #       but not when the edit box is changed (split this function)
         self.ui.items.clear()
         for item in result:
-            self.ui.items.addItem(item[4])
+            self.ui.items.addItem(BrowserItem(item[4], item[5]))
         self.ui.items.setCurrentRow(0)
 
     def get_selection(self):

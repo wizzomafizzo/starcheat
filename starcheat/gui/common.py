@@ -51,8 +51,8 @@ def empty_slot():
 # TODO: some sort of icon painter so we can show a frame, rarity and count overlay
 class ItemWidget(QTableWidgetItem):
     """Custom table wiget item with icon support and extra item variables."""
-    def __init__(self, item):
-        if item is None:
+    def __init__(self, item, assets=None):
+        if item is None or assets is None:
             # empty slot
             self.item = None
             QTableWidgetItem.__init__(self)
@@ -61,7 +61,19 @@ class ItemWidget(QTableWidgetItem):
         self.item = item
         QTableWidgetItem.__init__(self, self.item["name"])
         self.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.setToolTip(self.item["name"] + " (" + str(self.item["count"]) + ")")
+
+        name = self.item["name"]
+        if "shortdescription" in self.item["data"]:
+            name = self.item["data"]["shortdescription"]
+        else:
+            try:
+                asset_name = assets.items().get_item(name)[3]
+                if asset_name != "":
+                    name = asset_name
+            except TypeError:
+                pass
+
+        self.setToolTip(name + " (" + str(self.item["count"]) + ")")
 
         icon = inv_icon(self.item["name"])
         try:

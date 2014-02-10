@@ -182,7 +182,7 @@ class MainWindow():
         equip_bags = "head", "chest", "legs", "back"
         for bag in equip_bags:
             logging.debug("Updating %s", bag)
-            items = [ItemWidget(x) for x in getattr(self.player, "get_" + bag)()]
+            items = [ItemWidget(x, self.assets) for x in getattr(self.player, "get_" + bag)()]
             getattr(self.ui, bag).setItem(0, 0, items[0])
             getattr(self.ui, bag).setItem(0, 1, items[1])
 
@@ -424,7 +424,7 @@ class MainWindow():
         bag = getattr(self.player, "get_" + bag_name)()
 
         for slot in range(len(bag)):
-            widget = ItemWidget(bag[slot])
+            widget = ItemWidget(bag[slot], self.assets)
             getattr(self.ui, bag_name).setItem(row, column, widget)
 
             column += 1

@@ -223,8 +223,8 @@ class Assets():
         name = "%" + name + "%"
         c = self.db.cursor()
         q = """select * from assets where type = ? and category like ?
-        and name like ? order by name collate nocase"""
-        c.execute(q, (asset_type, category, name))
+        and (name like ? or desc like ?) order by desc, name collate nocase"""
+        c.execute(q, (asset_type, category, name, name))
         result = c.fetchall()
         return result
 
@@ -308,13 +308,17 @@ class Items():
             except KeyError:
                 pass
 
+        desc = ""
+        if "shortdescription" in asset_data:
+            desc = asset_data["shortdescription"]
+
         if not name:
             logging.warning("Invalid item: %s" % key)
             return
         else:
             if key.endswith(".techitem"):
                 name = name + "-chip"
-            return (key, path, asset_type, category, name, "")
+            return (key, path, asset_type, category, name, desc)
 
     def filter_items(self, category, name):
         """Search for indexed items based on name and category."""
@@ -332,10 +336,10 @@ class Items():
         parsed asset file and location.
         """
         c = self.assets.db.cursor()
-        c.execute("select key, path from assets where type = 'item' and name = ?", (name,))
+        c.execute("select key, path, desc from assets where type = 'item' and name = ?", (name,))
         meta = c.fetchone()
         item = self.assets.read(meta[0], meta[1])
-        return item, meta[0], meta[1]
+        return item, meta[0], meta[1], meta[2]
 
     def get_categories(self):
         """Return a list of all unique indexed item categories."""
@@ -379,6 +383,13 @@ class Items():
         """Return a vaild item image path for given item name."""
         # TODO: support for frame selectors
         # TODO: support for generated item images
+        if name == "generatedsword":
+            return Image.open(BytesIO(self.sword_icon())).convert("RGBA")
+        elif name == "generatedshield":
+            return Image.open(BytesIO(self.shield_icon())).convert("RGBA")
+        elif name == "generatedgun":
+            return Image.open(BytesIO(self.sword_icon())).convert("RGBA")
+
         try:
             item = self.get_item(name)
             icon_file = item[0]["image"]
@@ -392,6 +403,7 @@ class Items():
             icon = os.path.dirname(item[1]) + "/" + icon
 
         icon_data = self.assets.read(icon, item[2], image=True)
+
         if icon_data == None:
             logging.warning("Unable to read %s from %s" % (icon, item[2]))
             return None
@@ -402,6 +414,12 @@ class Items():
     def missing_icon(self):
         """Return the image data for the default inventory placeholder icon."""
         return self.assets.read("/interface/inventory/x.png", self.assets.vanilla_assets, image=True)
+
+    def sword_icon(self):
+        return self.assets.read("/interface/inventory/sword.png", self.assets.vanilla_assets, image=True)
+
+    def shield_icon(self):
+        return self.assets.read("/interface/inventory/shield.png", self.assets.vanilla_assets, image=True)
 
     def generate_gun(self, item):
         image_folder = item[0]["name"].replace(item[0]["rarity"].lower(), "")
