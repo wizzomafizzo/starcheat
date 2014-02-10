@@ -339,7 +339,6 @@ class MainWindow():
         if not skip_update:
             self.update()
 
-        # TODO: apparently there is a setWindow fundtion specifically for open files
         self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
         self.window.setWindowModified(False)
@@ -438,6 +437,7 @@ class MainWindow():
         gender = self.get_gender()
         image = preview_icon(species, gender)
         self.ui.player_preview.setPixmap(image.scaled(64, 64))
+        self.window.setWindowModified(True)
 
     def update_species(self):
         species = self.ui.race.currentText()
