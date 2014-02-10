@@ -4,7 +4,7 @@ Functions shared between GUI dialogs
 
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QTableWidgetItem
-from PyQt5.QtGui import QPixmap, QImageReader, QImage
+from PyQt5.QtGui import QPixmap, QImage
 from sqlite3 import OperationalError
 
 from PIL.ImageQt import ImageQt

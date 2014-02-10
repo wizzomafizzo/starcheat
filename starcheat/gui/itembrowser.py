@@ -8,7 +8,6 @@ from PyQt5.QtGui import QPixmap, QImage
 from PIL.ImageQt import ImageQt
 
 import assets, qt_itembrowser
-from gui.common import inv_icon
 from config import Config
 
 class ItemBrowser():

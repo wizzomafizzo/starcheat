@@ -38,7 +38,6 @@ def pack_str(var):
 # source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
 def unpack_vlq(data):
     """Return the first VLQ number and byte offset from a list of bytes."""
-    logging.debug("Unpacking VLQ")
     offset = 0
     value = 0
     while True:
@@ -52,7 +51,6 @@ def unpack_vlq(data):
 # source: https://github.com/metachris/binary-serializer/blob/master/python/bincalc.py
 def pack_vlq(n):
     """Convert an integer to a VLQ and return a list of bytes."""
-    logging.debug("Packing VLQ")
     value = int(n)
     if value == 0:
         return bytearray([0x00])
@@ -71,7 +69,6 @@ def pack_vlq(n):
 # source: https://github.com/CarrotsAreMediocre/StarryPy/blob/master/packets/data_types.py
 # funny license
 def unpack_vlqs(data):
-    logging.debug("Unpacking VLQS")
     value = 0
     offset = 0
     while True:
@@ -86,7 +83,6 @@ def unpack_vlqs(data):
         return -((value >> 1)+1), offset
 
 def pack_vlqs(var):
-    logging.debug("Packing VLQS")
     value = abs(var * 2)
     if var < 0:
         value -= 1
@@ -94,7 +90,6 @@ def pack_vlqs(var):
 
 # <vlq len of str><str>
 def unpack_vlq_str(data):
-    logging.debug("Unpacking string")
     if data[0] == "\x00":
         return "", 0
     vlq = unpack_vlq(data)
@@ -103,7 +98,6 @@ def unpack_vlq_str(data):
     return unpack_str(string[0]), string[1]
 
 def pack_vlq_str(var):
-    logging.debug("Packing string")
     if var == "":
         return b"\x00"
     vlq = pack_vlq(len(var))
@@ -112,7 +106,6 @@ def pack_vlq_str(var):
 
 # <vlq total items><vlq str len><str>...
 def unpack_str_list(data):
-    logging.debug("Unpacking string list")
     list_total = unpack_vlq(data)
     offset = list_total[1]
     str_list = []
@@ -123,7 +116,6 @@ def unpack_str_list(data):
     return str_list, offset
 
 def pack_str_list(var):
-    logging.debug("Packing string list")
     list_total = len(var)
     str_list = b""
     for string in var:
@@ -132,26 +124,21 @@ def pack_str_list(var):
 
 # unset value, 0 bytes
 def unpack_variant1(data):
-    logging.debug("Unpacking variant1")
     return None, 0
 
 def pack_variant1(var):
-    logging.debug("Packing variant1")
     return b''
 
 # big endian double
 def unpack_variant2(data):
-    logging.debug("Unpacking varian2")
     # TODO: can these be plain unpack()?
     return unpack_from(">d", data, 0)[0], 8
 
 def pack_variant2(var):
-    logging.debug("Packing variant2")
     return pack(">d", var)
 
 # boolean
 def unpack_variant3(data):
-    logging.debug("Unpacking variant3")
     variant = unpack_from("b", data, 0)
     if variant[0] == 1:
         return True, 1
@@ -159,13 +146,11 @@ def unpack_variant3(data):
         return False, 1
 
 def pack_variant3(var):
-    logging.debug("Packing variant3")
     return pack("b", var)
 
 # variant list
 # <vlq total><variant>...
 def unpack_variant6(data):
-    logging.debug("Unpacking variant6")
     total = unpack_vlq(data)
     offset = total[1]
     variants = []
@@ -176,7 +161,6 @@ def unpack_variant6(data):
     return variants, offset
 
 def pack_variant6(var):
-    logging.debug("Packing variant6")
     total = len(var)
     variant_list = b""
     for variant in var:
@@ -186,7 +170,6 @@ def pack_variant6(var):
 # variant dict
 # <vlq total><vlq key str len><str key><variant>...
 def unpack_variant7(data):
-    logging.debug("Unpacking variant7")
     total = unpack_vlq(data)
     offset = total[1]
     dict_items = {}
@@ -200,7 +183,6 @@ def unpack_variant7(data):
     return dict_items, offset
 
 def pack_variant7(var):
-    logging.debug("Packing variant7")
     total = len(var)
     dict_items = b""
     for k in var.keys():

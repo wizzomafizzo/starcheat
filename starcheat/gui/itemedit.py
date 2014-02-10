@@ -11,8 +11,8 @@ Qt item edit dialog
 
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 from PyQt5.QtGui import QPixmap
+import json
 
-import json, logging
 import assets, qt_itemedit, qt_itemeditoptions, saves
 from gui.common import inv_icon, ItemWidget, empty_slot
 from gui.itembrowser import ItemBrowser

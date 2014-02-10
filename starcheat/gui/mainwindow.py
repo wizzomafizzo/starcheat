@@ -49,6 +49,7 @@ class MainWindow():
 
         # launch first setup if we need to
         new_setup_dialog(self)
+        logging.info("Starbound folder: %s", Config().read("starbound_folder"))
 
         self.filename = None
 

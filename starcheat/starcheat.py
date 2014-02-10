@@ -1,19 +1,25 @@
 #!/usr/bin/env python3
 
-import logging, logging.handlers, os, sys, traceback
+import logging, logging.handlers, os, sys, traceback, platform
 from PyQt5.QtWidgets import QMessageBox
 
 import config, gui.mainwindow
 
+# set up starcheat internal logging
 log_file = os.path.join(config.config_folder, "starcheat.log")
-logger = logging.getLogger('starcheat')
-logger.setLevel(logging.INFO)
-handler = logging.handlers.RotatingFileHandler(log_file,
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+rotate = logging.handlers.RotatingFileHandler(log_file,
                                                maxBytes=1024*2000,
                                                backupCount=5)
-logger.addHandler(handler)
+rotate.setFormatter(logging.Formatter("%(asctime)s %(levelname)-8s %(message)s"))
+logger.addHandler(rotate)
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+console.setFormatter(logging.Formatter("%(levelname)-8s %(message)s"))
+logger.addHandler(console)
 
-# add hooks for GUI crash dialog
+# set up Qt crash dialog
 def crash_gui(error):
     dialog = QMessageBox()
     dialog.setIcon(QMessageBox.Critical)
@@ -48,7 +54,9 @@ def main():
         sys.stdout.write("starcheat %s\n" % config.STARCHEAT_VERSION)
         sys.exit(0)
 
-    logging.info('starcheat init')
+    logging.info("starcheat init")
+    logging.info("Version: %s", config.STARCHEAT_VERSION)
+    logging.info("Platform: %s", platform.system())
     gui.mainwindow.MainWindow()
 
 if __name__ == "__main__":

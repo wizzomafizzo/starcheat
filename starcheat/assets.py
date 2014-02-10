@@ -8,7 +8,9 @@ Module for reading and indexing Starbound assets
 
 import os, json, re, sqlite3, logging
 from io import BytesIO
+
 from PIL import Image
+
 from stardb.storage import BlockFile
 from stardb.databases import AssetDatabase
 
