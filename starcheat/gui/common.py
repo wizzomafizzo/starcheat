@@ -36,13 +36,7 @@ def preview_icon(race, gender):
     assets_db_file = Config().read("assets_db")
     starbound_folder = Config().read("starbound_folder")
     db = assets.Assets(assets_db_file, starbound_folder)
-    try:
-        icon_file = db.species().get_preview_image(race, gender)
-    except (OperationalError, TypeError):
-        # the assets db was probably deleted or corrupt
-        db.init_db()
-        db.create_index()
-        icon_file = db.species().get_preview_image(race, gender)
+    icon_file = db.species().get_preview_image(race, gender)
     return QPixmap.fromImage(QImage.fromData(icon_file))
 
 def empty_slot():

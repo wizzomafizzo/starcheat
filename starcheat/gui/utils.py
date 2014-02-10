@@ -3,8 +3,9 @@ Utility dialogs for starcheat itself
 """
 
 import os, sys, platform, subprocess
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QListWidgetItem
-from PyQt5 import QtGui
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QListWidgetItem, QProgressDialog
+from PyQt5 import QtGui, QtCore
 
 import saves, assets, logging, config
 import qt_options, qt_openplayer, qt_about
@@ -21,15 +22,8 @@ def build_assets_db(parent):
     starbound_folder = Config().read("starbound_folder")
     assets_db = assets.Assets(assets_db_file, starbound_folder)
 
-    logging.info("Indexing assets")
-    dialog = QMessageBox()
-    dialog.setText("starcheat will now build an index of all Starbound assets.")
-    dialog.setInformativeText("This only takes a minute.")
-    dialog.setIcon(QMessageBox.Information)
-    dialog.show()
-
     missing_assets_text = """<html><body>
-    <p>starcheat couldn't find any Starbound %s. You should double check:</p>
+    <p>starcheat couldn't find any Starbound assets. You should double check:</p>
     <ol>
     <li>You selected the right Starbound folder.</li>
     <li>The assets you want to use have been unpacked. Instructions are
@@ -39,27 +33,38 @@ def build_assets_db(parent):
     <p>Once that's done, try restart starcheat to run the setup again.</p>
     </body></html>"""
 
-    def bad_asset_dialog(asset_type=None):
+    def bad_asset_dialog():
         dialog = QMessageBox()
         dialog.setText("Unable to index assets.")
-        if asset_type != None:
-            dialog.setInformativeText(missing_assets_text % asset_type.lower())
-        else:
-            dialog.setInformativeText(missing_assets_text % "assets")
+        dialog.setInformativeText(missing_assets_text)
         dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
-        Config().remove_config()
         assets_db.db.close()
         os.remove(assets_db_file)
-        sys.exit()
 
     assets_db.init_db()
+    asset_files = assets_db.find_assets()
     total = 0
+    progress = QProgressDialog("Indexing Starbound assets...",
+                               "Cancel", 0, len(asset_files),
+                               parent)
+    progress.setWindowModality(QtCore.Qt.WindowModal)
+    progress.forceShow()
+
     for i in assets_db.create_index():
         total += 1
-    dialog.close()
+        progress.setValue(total)
+        if progress.wasCanceled():
+            assets_db.db.close()
+            os.remove(assets_db_file)
+            return False
+
+    progress.hide()
     if total == 0:
         bad_asset_dialog()
+        return False
+    else:
+        return True
 
 def save_modified_dialog():
     """Display a prompt asking user what to do about a modified file. Return button clicked."""
@@ -92,6 +97,9 @@ def select_starbound_folder_dialog():
 
 def new_setup_dialog(parent):
     """Run through an initial setup dialog for starcheat if it's required."""
+
+    logging.info("First setup dialog")
+
     if os.path.isfile(Config().ini_file):
         if not (Config().has_key("config_version") and int(Config().read("config_version")) == Config().CONFIG_VERSION):
             logging.info("rebuild config and assets_db (config_version mismatch)")
@@ -100,14 +108,10 @@ def new_setup_dialog(parent):
             dialog.setInformativeText("A new config file and assets index will be created...")
             dialog.setIcon(QMessageBox.Warning)
             dialog.exec()
-        elif not Config().has_key("starbound_folder"):
-            pass
         else:
-            return
+            return True
         os.remove(Config().read("assets_db"))
         os.remove(Config().ini_file)
-
-    logging.info("First setup dialog")
 
     # Starbound folder settings
     starbound_folder = Config().detect_starbound_folder()
@@ -128,58 +132,56 @@ def new_setup_dialog(parent):
         if answer == QMessageBox.No:
             starbound_folder = select_starbound_folder_dialog()
 
-    # initial assets sanity check
-    # better to check for an actual file. this should be a pretty safe bet
-    unpack_test_file = os.path.join(starbound_folder, "assets", "species", "human.species")
-    # TODO: feels a waste to get rid of this. can we make a separate util?
-    #if not os.path.isfile(unpack_test_file):
-    if False:
-        dialog = QMessageBox()
-        dialog.setText("No unpacked assets found!")
-        dialog.setInformativeText("""<html><body>
-        <p>starcheat needs to unpack your Starbound assets to work. This only happens once.</p>
-        <p>Do you want to unpack the assets now?
-        <i>(this requires ~410MB of disk space and takes 1-5 mins)</i></p></body></html>""")
-        dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
-        dialog.setIcon(QMessageBox.Question)
-        answer = dialog.exec()
-        if answer == QMessageBox.No:
-            sys.exit()
-
-        if platform.system() == "Windows":
-            asset_unpacker = os.path.join(starbound_folder, "win32", "asset_unpacker.exe")
-        elif platform.system() == "Darwin":
-            asset_unpacker = os.path.join(starbound_folder, "Starbound.app", "Contents",
-                                          "MacOS", "asset_unpacker")
-        elif sys.maxsize > 2**32: # 64-bit Linux
-            asset_unpacker = os.path.join(starbound_folder, "linux64", "asset_unpacker")
-        else: # 32-bit Linux
-            asset_unpacker = os.path.join(starbound_folder, "linux32", "asset_unpacker")
-
-        unpack_cmd = '"{0}" "{1}" "{2}"'.format(asset_unpacker,
-                                             os.path.join(starbound_folder, "assets", "packed.pak"),
-                                             os.path.join(starbound_folder, "assets"))
-        # just so the cmd window isn't totally empty
-        print("Unpacking Starbound vanilla assets...")
-        subprocess.call(unpack_cmd, shell=True)
-
-        if not os.path.isfile(unpack_test_file):
-            dialog = QMessageBox()
-            dialog.setText("Unable to unpack the Starbound assets.")
-            dialog.setInformativeText("""<html><body>Please follow
-            <a href="https://github.com/wizzomafizzo/starcheat#unpacking-starbound-assets">this guide</a>
-            to do it yourself.</body></html>""")
-            dialog.setIcon(QMessageBox.Warning)
-            dialog.exec()
-            sys.exit()
-
     # looks okay enough, let's go
     Config().create_config(starbound_folder)
     assets_db_file = Config().read("assets_db")
-    # just to make sure
-    if os.path.isfile(assets_db_file):
-        os.remove(assets_db_file)
-    build_assets_db(parent)
+
+    if not build_assets_db(parent):
+        os.remove(Config().ini_file)
+        return False
+    else:
+        return True
+
+def unpack_assets():
+    unpack_test_file = os.path.join(starbound_folder, "assets", "species", "human.species")
+    dialog = QMessageBox()
+    dialog.setText("No unpacked assets found!")
+    dialog.setInformativeText("""<html><body>
+    <p>starcheat needs to unpack your Starbound assets to work. This only happens once.</p>
+    <p>Do you want to unpack the assets now?
+    <i>(this requires ~410MB of disk space and takes 1-5 mins)</i></p></body></html>""")
+    dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
+    dialog.setIcon(QMessageBox.Question)
+    answer = dialog.exec()
+    if answer == QMessageBox.No:
+        sys.exit()
+
+    if platform.system() == "Windows":
+        asset_unpacker = os.path.join(starbound_folder, "win32", "asset_unpacker.exe")
+    elif platform.system() == "Darwin":
+        asset_unpacker = os.path.join(starbound_folder, "Starbound.app", "Contents",
+                                      "MacOS", "asset_unpacker")
+    elif sys.maxsize > 2**32: # 64-bit Linux
+        asset_unpacker = os.path.join(starbound_folder, "linux64", "asset_unpacker")
+    else: # 32-bit Linux
+        asset_unpacker = os.path.join(starbound_folder, "linux32", "asset_unpacker")
+
+    unpack_cmd = '"{0}" "{1}" "{2}"'.format(asset_unpacker,
+                                            os.path.join(starbound_folder, "assets", "packed.pak"),
+                                            os.path.join(starbound_folder, "assets"))
+    # just so the cmd window isn't totally empty
+    print("Unpacking Starbound vanilla assets...")
+    subprocess.call(unpack_cmd, shell=True)
+
+    if not os.path.isfile(unpack_test_file):
+        dialog = QMessageBox()
+        dialog.setText("Unable to unpack the Starbound assets.")
+        dialog.setInformativeText("""<html><body>Please follow
+        <a href="https://github.com/wizzomafizzo/starcheat#unpacking-starbound-assets">this guide</a>
+        to do it yourself.</body></html>""")
+        dialog.setIcon(QMessageBox.Warning)
+        dialog.exec()
+        sys.exit()
 
 class AboutDialog():
     def __init__(self, parent):
@@ -228,27 +230,31 @@ class OptionsDialog():
     def rebuild_db(self):
         self.write()
 
-        assets_db_file = Config().read("assets_db")
-        starbound_folder = Config().read("starbound_folder")
-        self.db = assets.Assets(assets_db_file, starbound_folder)
-
-        self.db.init_db()
-        try:
-            self.db.create_index()
-        except FileNotFoundError:
+        def bad_asset_dialog():
             dialog = QMessageBox()
             dialog.setText("No Starbound assets could be found.")
             dialog.setInformativeText("The Starbound folder option might be set wrong.")
             dialog.setIcon(QMessageBox.Critical)
             dialog.exec()
 
+        try:
+            rebuild = build_assets_db(self.dialog)
+        except FileNotFoundError:
+            bad_asset_dialog()
+
+        assets_db_file = Config().read("assets_db")
+        starbound_folder = Config().read("starbound_folder")
+        self.db = assets.Assets(assets_db_file, starbound_folder)
         total = str(self.db.total_indexed())
 
-        dialog = QMessageBox()
-        dialog.setText("Finished indexing Starbound assets.")
-        dialog.setInformativeText("Found %s assets." % total)
-        dialog.setIcon(QMessageBox.Information)
-        dialog.exec()
+        if not rebuild or total == 0:
+            bad_asset_dialog()
+        else:
+            dialog = QMessageBox()
+            dialog.setText("Finished indexing Starbound assets.")
+            dialog.setInformativeText("Found %s assets." % total)
+            dialog.setIcon(QMessageBox.Information)
+            dialog.exec()
 
         self.ui.total_indexed.setText(total + " indexed")
 

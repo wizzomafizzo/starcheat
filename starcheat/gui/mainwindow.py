@@ -48,7 +48,9 @@ class MainWindow():
         logging.info("Main window init")
 
         # launch first setup if we need to
-        new_setup_dialog(self)
+        if not new_setup_dialog(self.window):
+            logging.warning("Config/index creation failed")
+            return
         logging.info("Starbound folder: %s", Config().read("starbound_folder"))
 
         self.filename = None
@@ -56,6 +58,7 @@ class MainWindow():
         logging.debug("Loading assets database")
         self.assets = assets.Assets(Config().read("assets_db"),
                                     Config().read("starbound_folder"))
+
         self.items = self.assets.items()
 
         self.item_browser = None

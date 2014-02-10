@@ -84,6 +84,8 @@ class Assets():
         c = self.db.cursor()
 
         for asset in asset_files:
+            yield (asset[0], asset[1])
+
             tmp_data = None
             if asset[0].endswith(".png"):
                 tmp_data = (asset[0], asset[1], "image", "", "", "")
@@ -96,7 +98,6 @@ class Assets():
 
             if tmp_data != None:
                 c.execute(new_index_query, tmp_data)
-                yield (tmp_data[0], tmp_data[1])
 
         self.db.commit()
 
