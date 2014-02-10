@@ -70,14 +70,17 @@ class Assets():
             return 0
         return c.fetchone()[0]
 
-    def create_index(self):
-        asset_files = self.find_assets()
+    def create_index(self, asset_files=False):
+        if not asset_files:
+            asset_files = self.find_assets()
+
         blueprints = Blueprints(self)
         items = Items(self)
         species = Species(self)
 
         new_index_query = "insert into assets values (?, ?, ?, ?, ?, ?)"
-        index_data = []
+        #index_data = []
+        c = self.db.cursor()
 
         for asset in asset_files:
             tmp_data = None
@@ -89,11 +92,11 @@ class Assets():
                 tmp_data = species.index_data(asset)
             elif items.is_item(asset[0]):
                 tmp_data = items.index_data(asset)
-            if tmp_data != None:
-                index_data.append(tmp_data)
 
-        c = self.db.cursor()
-        c.executemany(new_index_query, index_data)
+            if tmp_data != None:
+                c.execute(new_index_query, tmp_data)
+                yield (tmp_data[0], tmp_data[1])
+
         self.db.commit()
 
     def find_assets(self):
@@ -676,6 +679,8 @@ if __name__ == "__main__":
     assets = Assets("assets.db", "/opt/starbound")
     assets.init_db()
     logging.info("Started indexing...")
-    assets.create_index()
+    count = 0
+    for i in assets.create_index():
+        count += 1
+    print(count)
     logging.info("Finished!")
-    print(assets.total_indexed())

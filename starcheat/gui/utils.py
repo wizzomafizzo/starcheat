@@ -26,7 +26,7 @@ def build_assets_db():
     dialog.setText("starcheat will now build an index of all Starbound assets.")
     dialog.setInformativeText("This only takes a minute.")
     dialog.setIcon(QMessageBox.Information)
-    dialog.exec()
+    dialog.show()
 
     missing_assets_text = """<html><body>
     <p>starcheat couldn't find any Starbound %s. You should double check:</p>
@@ -54,8 +54,11 @@ def build_assets_db():
         sys.exit()
 
     assets_db.init_db()
-    assets_db.create_index()
-    if assets_db.total_indexed() == 0:
+    total = 0
+    for i in assets_db.create_index():
+        total += 1
+    dialog.close()
+    if total == 0:
         bad_asset_dialog()
 
 def save_modified_dialog():

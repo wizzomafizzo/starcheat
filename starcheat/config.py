@@ -18,8 +18,6 @@ if os.path.isdir(config_folder) == False:
 
 CONFIG_VERSION = 3
 ini_file = os.path.join(config_folder, "starcheat.ini")
-# make a special case for this since it is referenced before the main window
-log_folder = os.path.join(config_folder, "logs")
 
 class Config():
     def __init__(self):
