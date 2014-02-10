@@ -138,6 +138,10 @@ class ItemEdit():
                 options = self.assets.items().generate_sword(item)
                 name = options["itemName"]
                 self.ui.item_type.setText(name)
+            elif item[1].endswith("generatedshield"):
+                options = self.assets.items().generate_shield(item)
+                name = options["itemName"]
+                self.ui.item_type.setText(name)
             else:
                 options = item[0]
         except TypeError:

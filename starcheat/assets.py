@@ -363,9 +363,10 @@ class Items():
 
         item_icon = Image.open(BytesIO(icon_data))
 
-        if icon[1] == "chest":
+        icon_type = str(icon[1])
+        if icon_type.startswith("chest"):
             item_icon = item_icon.crop((16, 0, 16+16, 16))
-        elif icon[1] == "pants":
+        elif icon_type.startswith("pants"):
             item_icon = item_icon.crop((32, 0, 32+16, 16))
         else:
             item_icon = item_icon.crop((0, 0, 16, 16))
@@ -541,6 +542,63 @@ class Items():
         generated_sword["shortdescription"] = "Cheater's " + item[0]["name"]
 
         return generated_sword
+
+    def generate_shield(self, item):
+        generated_shield = {
+            "generated": True,
+            "itemName": "generatedshield",
+            "rarity": "common",
+            "shortdescription": "Cheater's Shield",
+            "level": 1.0,
+            "levelScale": 2.0,
+            "maxStack": 1,
+            "hitSound": "/sfx/melee/shield_block_metal2.wav",
+            "inspectionKind": "",
+            "knockbackDamageKind": "",
+            "knockbackPower": 10,
+            "recoil": 0.2,
+            "damagePoly": [[-8,0], [8,18], [8,-18]],
+            "shieldPoly": [[-8,0], [-8,12], [8,20], [8,-24], [-8,-12]],
+            "statusEffects": [ { "amount": 30, "kind": "Shield" } ],
+            "drawables": [
+                { "image": "/items/shields/randomgenerated/tieredshields/tier1/images/1.png" }
+            ],
+            "inventoryIcon": [
+                { "image": "/items/shields/randomgenerated/tieredshields/tier1/images/1.png:icon" }
+            ]
+        }
+
+        #if "kind" in item[0]:
+        #    generated_shield["inspectionKind"] = item[0]["kind"]
+
+        if "shortdescription" in item[0]:
+            generated_shield["shortdescription"] = item[0]["shortdescription"]
+
+        if "rarity" in item[0]:
+            generated_shield["rarity"] = item[0]["rarity"]
+
+        if "hitSound" in item[0]:
+            generated_shield["hitSound"] = item[0]["hitSound"]
+
+        if "recoil" in item[0]["baseline"]:
+            generated_shield["recoil"] = item[0]["baseline"]["recoil"]
+
+        if "knockbackPower" in item[0]["baseline"]:
+            generated_shield["knockbackPower"] = item[0]["baseline"]["knockbackPower"]
+
+        if "knockbackDamageKind" in item[0]["baseline"]:
+            generated_shield["knockbackDamageKind"] = item[0]["baseline"]["knockbackDamageKind"]
+
+        if "statusEffects" in item[0]["baseline"]:
+            generated_shield["statusEffects"] = item[0]["baseline"]["statusEffects"]
+
+        if "shieldPoly" in item[0]["baseline"]:
+            generated_shield["shieldPoly"] = item[0]["baseline"]["shieldPoly"]
+
+        if "damagePoly" in item[0]["baseline"]:
+            generated_shield["damagePoly"] = item[0]["baseline"]["damagePoly"]
+
+        return generated_shield
 
 class Species():
     def __init__(self, assets):
