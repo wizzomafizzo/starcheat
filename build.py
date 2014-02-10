@@ -79,7 +79,7 @@ def main():
         if options.verbose:
             print("Launching cx_freeze...")
         icon_path = os.path.join(src_dir, "starcheat", "images", "starcheat.ico")
-        os.system(cx_freeze_Path + " " + os.path.join(prefix, "starcheat.py") + " --target-dir=" + dist + " --icon=" + icon_path)
+        os.system(cx_freeze_Path + " " + os.path.join(prefix, "starcheat.py") + " --target-dir=" + dist + " --base-name=Win32GUI --icon=" + icon_path)
         shutil.copy(os.path.join(pyqt5_dir, "libEGL.dll"), dist)
 
         if options.verbose:
