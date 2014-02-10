@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import logging, logging.handlers, os, datetime, sys, traceback
+import logging, logging.handlers, os, sys, traceback
 from PyQt5.QtWidgets import QMessageBox
 
 import config, gui.mainwindow
@@ -45,7 +45,7 @@ sys.excepthook = exception_handler
 # go starcheat!
 def main():
     if ("--version" in sys.argv or "-v" in sys.argv):
-        sys.stdout.write("starcheat alpha (Furious Koala)\n")
+        sys.stdout.write("starcheat %s\n" % config.STARCHEAT_VERSION)
         sys.exit(0)
 
     logging.info('starcheat init')

@@ -79,7 +79,6 @@ class Assets():
         species = Species(self)
 
         new_index_query = "insert into assets values (?, ?, ?, ?, ?, ?)"
-        #index_data = []
         c = self.db.cursor()
 
         for asset in asset_files:

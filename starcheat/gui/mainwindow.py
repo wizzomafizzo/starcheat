@@ -48,12 +48,13 @@ class MainWindow():
         logging.info("Main window init")
 
         # launch first setup if we need to
-        new_setup_dialog()
+        new_setup_dialog(self)
 
         self.filename = None
 
-        self.assets = assets.Assets(Config().read("assets_db"), Config().read("starbound_folder"))
-        logging.debug("Loading items")
+        logging.debug("Loading assets database")
+        self.assets = assets.Assets(Config().read("assets_db"),
+                                    Config().read("starbound_folder"))
         self.items = self.assets.items()
 
         self.item_browser = None
@@ -68,8 +69,10 @@ class MainWindow():
         self.ui.actionQuit.triggered.connect(self.app.closeAllWindows)
         self.ui.actionOptions.triggered.connect(self.new_options_dialog)
         self.ui.actionItemBrowser.triggered.connect(self.new_item_browser)
-        self.ui.actionExport.triggered.connect(self.export_save)
         self.ui.actionAbout.triggered.connect(self.new_about_dialog)
+        # BUG: these export the current values in self.player but a lot of that
+        # won't be populated until the file is actually saved
+        self.ui.actionExport.triggered.connect(self.export_save)
         self.ui.actionExportJSON.triggered.connect(self.export_json)
 
         # launch open file dialog
@@ -103,19 +106,14 @@ class MainWindow():
 
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.appearance_button.clicked.connect(self.new_appearance_dialog)
-
-        self.ui.name.setFocus()
         self.ui.name.textChanged.connect(self.set_edited)
-
         self.ui.race.currentTextChanged.connect(self.update_species)
-
         self.ui.male.clicked.connect(self.update_player_preview)
         self.ui.female.clicked.connect(self.update_player_preview)
-
         self.ui.description.textChanged.connect(self.set_edited)
 
         self.update()
-
+        self.ui.name.setFocus()
         self.window.setWindowModified(False)
 
         logging.debug("Showing main window")

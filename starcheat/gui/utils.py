@@ -6,17 +6,17 @@ import os, sys, platform, subprocess
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QListWidgetItem
 from PyQt5 import QtGui
 
+import saves, assets, logging, config
+import qt_options, qt_openplayer, qt_about
 from config import Config
 from gui.common import preview_icon
-import saves, assets, logging
-import qt_options, qt_openplayer, qt_about
 
 # TODO: there are way too many html templates and message text in here now
 # it should all be moved to a templates file or something
 
 # TODO: we can use this for rebuild db but have to skip the sys.exit and
 # file remove calls
-def build_assets_db():
+def build_assets_db(parent):
     assets_db_file = Config().read("assets_db")
     starbound_folder = Config().read("starbound_folder")
     assets_db = assets.Assets(assets_db_file, starbound_folder)
@@ -90,7 +90,7 @@ def select_starbound_folder_dialog():
         folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
     return os.path.normpath(folder)
 
-def new_setup_dialog():
+def new_setup_dialog(parent):
     """Run through an initial setup dialog for starcheat if it's required."""
     if os.path.isfile(Config().ini_file):
         if not (Config().has_key("config_version") and int(Config().read("config_version")) == Config().CONFIG_VERSION):
@@ -179,13 +179,16 @@ def new_setup_dialog():
     # just to make sure
     if os.path.isfile(assets_db_file):
         os.remove(assets_db_file)
-    build_assets_db()
+    build_assets_db(parent)
 
 class AboutDialog():
     def __init__(self, parent):
         self.dialog = QDialog(parent)
         self.ui = qt_about.Ui_Dialog()
         self.ui.setupUi(self.dialog)
+        set_ver = self.ui.header_info.text().replace("STARCHEAT_VERSION",
+                                                     config.STARCHEAT_VERSION)
+        self.ui.header_info.setText(set_ver)
 
 class OptionsDialog():
     def __init__(self, parent):
