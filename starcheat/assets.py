@@ -164,8 +164,10 @@ class Assets():
             for root, dirs, files in os.walk(mod_assets):
                 for f in files:
                     if re.match(ignore_assets, f) == None:
-                        asset_root = os.path.normpath(os.path.join(root.replace(folder, ""), f))
-                        index.append((asset_root, folder))
+                        asset_folder = os.path.normpath(mod_assets)
+                        asset_file = os.path.normpath(os.path.join(root.replace(folder, ""), f))
+                        logging.info(asset_file)
+                        index.append((asset_file, asset_folder))
             return index
 
     def read(self, key, path, image=False):
@@ -190,7 +192,7 @@ class Assets():
             asset_file = os.path.join(path, key[1:])
             try:
                 if image:
-                    return open(asset_file).read()
+                    return open(asset_file, "rb").read()
                 else:
                     asset = load_asset_file(asset_file)
                     return asset
