@@ -232,6 +232,9 @@
            </item>
            <item>
             <widget class="QToolButton" name="max_button">
+             <property name="toolTip">
+              <string>Max Count</string>
+             </property>
              <property name="text">
               <string>...</string>
              </property>
