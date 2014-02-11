@@ -166,7 +166,6 @@ class Assets():
                     if re.match(ignore_assets, f) == None:
                         asset_folder = os.path.normpath(mod_assets)
                         asset_file = os.path.normpath(os.path.join(root.replace(folder, ""), f))
-                        logging.info(asset_file)
                         index.append((asset_file, asset_folder))
             return index
 
