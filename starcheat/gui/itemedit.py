@@ -165,7 +165,7 @@ class ItemEdit():
             option = self.ui.variant.item(i, 0).option
             data[option[0]] = option[1]
         item = saves.new_item(name, count, data)
-        return ItemWidget(item)
+        return ItemWidget(item, self.assets)
 
     def clear_item_options(self):
         self.ui.variant.clear()

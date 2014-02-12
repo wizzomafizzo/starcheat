@@ -52,7 +52,7 @@ def empty_slot():
 class ItemWidget(QTableWidgetItem):
     """Custom table wiget item with icon support and extra item variables."""
     def __init__(self, item, assets=None):
-        if item is None or assets is None:
+        if item is None or assets is None or "name" not in item:
             # empty slot
             self.item = None
             QTableWidgetItem.__init__(self)
