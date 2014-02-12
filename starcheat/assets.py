@@ -234,6 +234,9 @@ class Assets():
         c.execute("select count(*) from assets where type = ?", (asset_type))
         return c.fetchone()[0]
 
+    def missing_icon(self):
+        return self.read("/interface/inventory/x.png", self.vanilla_assets, image=True)
+
 class Blueprints():
     def __init__(self, assets):
         self.assets = assets
@@ -662,11 +665,15 @@ class Species():
         c = self.assets.db.cursor()
         c.execute("select * from assets where type = 'species' and name = ?", (name.lower(),))
         species = c.fetchone()
+        if species is None:
+            # species is not indexed
+            logging.warning("Unable to load species: %s", name)
+            return None
         species_data = self.assets.read(species[0], species[1])
-        if species_data == None:
+        if species_data is None:
             # corrupt save, no race set
             logging.warning("No race set on player")
-            return "", ""
+            return None
         else:
             return species, species_data
 
@@ -746,12 +753,15 @@ class Species():
     def get_preview_image(self, name, gender):
         species = self.get_species(name.lower())
         try:
-            key = self.get_gender_data(species, gender)["characterImage"]
+            try:
+                key = self.get_gender_data(species, gender)["characterImage"]
+            except TypeError:
+                return None
             return self.assets.read(key, species[0][1], image=True)
         except FileNotFoundError:
             # corrupt save, no race set
             logging.warning("No race set on player")
-            return self.assets.read("/interface/inventory/x.png", self.assets.vanilla_assets, image=True)
+            return None
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

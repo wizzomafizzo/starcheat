@@ -37,8 +37,10 @@ def preview_icon(race, gender):
     starbound_folder = Config().read("starbound_folder")
     db = assets.Assets(assets_db_file, starbound_folder)
     icon_file = db.species().get_preview_image(race, gender)
-    return QPixmap.fromImage(QImage.fromData(icon_file))
-
+    if icon_file is None:
+        return QPixmap.fromImage(QImage.fromData(db.missing_icon())).scaledToHeight(48)
+    else:
+        return QPixmap.fromImage(QImage.fromData(icon_file)).scaledToHeight(48)
 def empty_slot():
     """Return an empty bag slot widget."""
     return ItemWidget(None)
