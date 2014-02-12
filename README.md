@@ -27,7 +27,9 @@ These are builds of the latest development version. They should work fine, but m
 **NOTE:** starcheat is not a normal mod, it's a separate program. You don't need to put it in the Starbound mods folder.
 
 ### Windows
-[Download here](http://callan.io/builds/starcheat-win32-89cc2b92b419950fda068210a513cd5cd9faf129.zip) ([mirror](http://mcsi.mp/starcheat/))
+[Download here](http://callan.io/builds/starcheat-latest.zip) ([mirror](http://mcsi.mp/starcheat/))
+
+If the latest version isn't working for you, you can try [this older version](http://callan.io/builds/starcheat-win32-89cc2b92b419950fda068210a513cd5cd9faf129.zip) of starcheat. Please report in the discussion thread if you end up needing to use it!
 
 **NOTE:** If Windows complains about a system error (re: missing msvcr100.dll), you probably need to install the [Microsoft Visual C++ 2010 Redistributable Package](http://www.microsoft.com/en-au/download/details.aspx?id=5555).
 
@@ -112,18 +114,20 @@ This will point you to where the starcheat logs are stored. If you're trying to 
 
 #### Windows
 - Press the Windows key and R (```Win+R```) to bring up the Run... dialog
-- Type ```%APPDATA%\starcheat\logs``` and press Enter
+- Type ```%APPDATA%\starcheat``` and press Enter
 
 #### Linux
 In a terminal:
-- ```$ cd ~/.starcheat/logs```
+- ```$ cd ~/.starcheat```
 
 #### Mac
 In Finder:
 - Open the ```Go``` menu and click ```Go to Folder``` (or press ```Cmd+Shift+G```)
-- Type ```~/Library/Application Support/starcheat/logs``` and press Enter
+- Type ```~/Library/Application Support/starcheat``` and press Enter
 
 ### Unpacking Starbound assets
+**NOTE:** You shouldn't have to do this at all in the latest versions of starcheat.
+
 starcheat will try its best to unpack the vanilla assets for you during setup. If you need to include mods or if the vanilla unpack doesn't work, you can try these manual methods. If they don't work for you either, check out [this post](http://community.playstarbound.com/index.php?threads/how-to-successfully-pack-and-unpack-pak-files.66649/) on the forums for more options.
 
 #### Windows
