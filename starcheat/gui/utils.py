@@ -48,7 +48,7 @@ def build_assets_db(parent):
     progress = QProgressDialog("Indexing Starbound assets...",
                                "Cancel", 0, len(asset_files),
                                parent)
-    progress.setWindowModality(QtCore.Qt.WindowModal)
+    progress.setWindowModality(QtCore.Qt.ApplicationModal)
     progress.forceShow()
 
     for i in assets_db.create_index():
