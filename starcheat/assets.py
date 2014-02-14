@@ -192,8 +192,12 @@ class Assets():
             if image:
                 return data
             else:
-                asset = parse_json(data.decode("utf-8"), key)
-                return asset
+                try:
+                    asset = parse_json(data.decode("utf-8"), key)
+                    return asset
+                except ValueError:
+                    logging.warning("Unable to read db asset '%s' from '%s'" % (key, path))
+                    return None
         else:
             asset_file = os.path.join(path, key[1:])
             try:
