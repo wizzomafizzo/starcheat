@@ -10,7 +10,7 @@ log_file = os.path.join(config.config_folder, "starcheat.log")
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 rotate = logging.handlers.RotatingFileHandler(log_file,
-                                               maxBytes=1024*2000,
+                                               maxBytes=1024*1000,
                                                backupCount=5)
 rotate.setFormatter(logging.Formatter("%(asctime)s %(levelname)-8s %(message)s"))
 logger.addHandler(rotate)
@@ -37,8 +37,15 @@ def crash_gui(error):
 def exception_handler(type, value, tb):
     for err in traceback.format_exception(type, value, tb):
         logging.debug(err)
-    logging.debug(config.Config().read("assets_folder"))
-    logging.debug(config.Config().read("player_folder"))
+
+    starbound_folder = config.Config().read("starbound_folder")
+    if starbound_folder is None:
+        logging.debug("No Starbound folder is set!")
+    else:
+        logging.debug("Starbound folder: %s", )
+        logging.debug("Assets folder: %s", config.Config().read("assets_folder"))
+        logging.debug("Player folder: %s", config.Config().read("player_folder"))
+
     traceback.print_exception(type, value, tb)
     # simple dialog for now, need at least some feedback
     msg = ""
