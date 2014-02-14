@@ -290,7 +290,7 @@ class Items():
             return True
         elif key.endswith(".techitem"):
             return True
-        elif key.startswith("/items") and re.match(ignore_items, key) == None:
+        elif key.startswith("items", 1) and re.match(ignore_items, key) == None:
             return True
         else:
             return False
