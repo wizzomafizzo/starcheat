@@ -154,6 +154,16 @@ class Assets():
 
             if mod_assets == None:
                 return index
+            elif mod_assets.endswith(".pak"): #TODO: make a .pak scanner function that works for vanilla and mods
+                pak_path = os.path.normpath(mod_assets)
+                pak_file = open(pak_path, 'rb')
+                bf = BlockFile(pak_file)
+                db = AssetDatabase(bf)
+                db.open()
+                for x in db.getFileList():
+                    if re.match(ignore_assets, x) == None: #removes thumbs.db etc from user pak files
+                        index.append((x, pak_path)) 
+                return index
             elif not os.path.isdir(mod_assets):
                 return index
 
