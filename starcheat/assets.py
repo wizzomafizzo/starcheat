@@ -16,7 +16,7 @@ from stardb.databases import AssetDatabase
 
 # Regular expression for comments
 comment_re = re.compile(
-    '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
+    '("(\\[\s\S]|[^"])*")|((^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?)',
     re.DOTALL | re.MULTILINE
 )
 
@@ -28,11 +28,8 @@ def parse_json(content, key):
         content = content.replace("[-.", "[-0.")
 
     # Looking for comments
-    match = comment_re.search(content)
-    while match:
-        # single line comment
-        content = content[:match.start()] + content[match.end():]
-        match = comment_re.search(content)
+    # Allows for // inside of the " " JSON data
+    content = comment_re.sub(lambda m: m.group(1) or '', content)
 
     # Return json file
     return json.loads(content)
