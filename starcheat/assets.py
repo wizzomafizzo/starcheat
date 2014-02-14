@@ -369,7 +369,7 @@ class Items():
         except (TypeError, KeyError):
             return None
 
-        if icon[0] != "/":
+        if icon[0][0] != "/":
             icon[0] = os.path.dirname(item[1]) + "/" + icon[0]
 
         icon_data = self.assets.read(icon[0], item[2], image=True)
