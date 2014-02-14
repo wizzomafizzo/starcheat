@@ -162,7 +162,7 @@ class Assets():
                 db.open()
                 for x in db.getFileList():
                     if re.match(ignore_assets, x) == None: #removes thumbs.db etc from user pak files
-                        index.append((x, pak_path)) 
+                        index.append((x, pak_path))
                 return index
             elif not os.path.isdir(mod_assets):
                 return index
@@ -202,7 +202,7 @@ class Assets():
                 else:
                     asset = load_asset_file(asset_file)
                     return asset
-            except FileNotFoundError:
+            except (FileNotFoundError, ValueError):
                 logging.warning("Unable to read asset file '%s' from '%s'" % (key, path))
                 return None
 

@@ -110,7 +110,6 @@ def new_setup_dialog(parent):
             dialog.exec()
         else:
             return True
-        os.remove(Config().read("assets_db"))
         os.remove(Config().ini_file)
 
     # Starbound folder settings
