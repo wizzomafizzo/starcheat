@@ -16,7 +16,7 @@ from stardb.databases import AssetDatabase
 
 # Regular expression for comments
 comment_re = re.compile(
-    '(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
+    '("(\\[\s\S]|[^"])*")|((^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?)',
     re.DOTALL | re.MULTILINE
 )
 
@@ -28,11 +28,8 @@ def parse_json(content, key):
         content = content.replace("[-.", "[-0.")
 
     # Looking for comments
-    match = comment_re.search(content)
-    while match:
-        # single line comment
-        content = content[:match.start()] + content[match.end():]
-        match = comment_re.search(content)
+    # Allows for // inside of the " " JSON data
+    content = comment_re.sub(lambda m: m.group(1) or '', content)
 
     # Return json file
     return json.loads(content)
@@ -156,6 +153,16 @@ class Assets():
             logging.debug(mod_assets)
 
             if mod_assets == None:
+                return index
+            elif mod_assets.endswith(".pak"): #TODO: make a .pak scanner function that works for vanilla and mods
+                pak_path = os.path.normpath(mod_assets)
+                pak_file = open(pak_path, 'rb')
+                bf = BlockFile(pak_file)
+                db = AssetDatabase(bf)
+                db.open()
+                for x in db.getFileList():
+                    if re.match(ignore_assets, x) == None: #removes thumbs.db etc from user pak files
+                        index.append((x, pak_path)) 
                 return index
             elif not os.path.isdir(mod_assets):
                 return index
@@ -642,7 +649,7 @@ class Species():
         if asset_data == None: return
 
         if "kind" in asset_data:
-            return (key, path, "species", "", asset_data["kind"], "")
+            return (key, path, "species", "", asset_data["kind"].lower(), "")
         else:
             logging.warning("Invalid species: %s" % key)
 
