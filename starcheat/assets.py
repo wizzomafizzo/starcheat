@@ -639,7 +639,7 @@ class Species():
         if asset_data == None: return
 
         if "kind" in asset_data:
-            return (key, path, "species", "", asset_data["kind"], "")
+            return (key, path, "species", "", asset_data["kind"].lower(), "")
         else:
             logging.warning("Invalid species: %s" % key)
 
