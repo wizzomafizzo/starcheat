@@ -99,6 +99,10 @@ class MainWindow():
             getattr(self.ui, s).valueChanged.connect(update)
             getattr(self.ui, "max_" + s).valueChanged.connect(update)
 
+        self.ui.max_food.valueChanged.connect(self.set_edited)
+        self.ui.max_breath.valueChanged.connect(self.set_edited)
+        self.ui.max_warmth.valueChanged.connect(self.set_edited)
+
         # set up bag tables
         bags = "wieldable", "head", "chest", "legs", "back", "main_bag", "action_bar", "tile_bag"
         for b in bags:
@@ -144,7 +148,7 @@ class MainWindow():
         except TypeError:
             logging.exception("Unable to set pixels widget")
         # description
-        self.ui.description.setText(self.player.get_description())
+        self.ui.description.setPlainText(self.player.get_description())
         # gender
         getattr(self.ui, self.player.get_gender()).toggle()
 
@@ -165,16 +169,25 @@ class MainWindow():
             self.ui.energy_regen.setValue(self.player.get_energy_regen())
         except TypeError:
             logging.exception("Unable to set energy regen rate")
+        # breath
+        try:
+            max_food = self.player.get_max_food()
+            self.ui.max_food.setValue(max_food)
+            self.ui.food_val.setText(str(int(self.player.get_food()[0])) + " /")
+        except TypeError:
+            logging.exception("Unable to set food")
         # warmth
         try:
             max_warmth = self.player.get_max_warmth()
             self.ui.max_warmth.setValue(max_warmth)
+            self.ui.warmth_val.setText(str(int(self.player.get_warmth()[1])) + " /")
         except TypeError:
             logging.exception("Unable to set warmth")
         # breath
         try:
             max_breath = self.player.get_max_breath()
             self.ui.max_breath.setValue(max_breath)
+            self.ui.breath_val.setText(str(int(self.player.get_breath()[0])) + " /")
         except TypeError:
             logging.exception("Unable to set warmth")
 
@@ -206,7 +219,7 @@ class MainWindow():
         # pixels
         self.player.set_pixels(self.ui.pixels.value())
         # description
-        self.player.set_description(self.ui.description.text())
+        self.player.set_description(self.ui.description.toPlainText())
         # gender
         self.player.set_gender(self.get_gender())
         # stats
@@ -216,7 +229,8 @@ class MainWindow():
             maximum = getattr(self.ui, "max_" + s).value()
             getattr(self.player, "set_" + s)(current, maximum)
             getattr(self.player, "set_max_" + s)(maximum)
-        # TODO: food
+        # food
+        self.player.set_max_food(self.ui.max_food.value())
         # energy regen rate
         self.player.set_energy_regen(self.ui.energy_regen.value())
         # warmth
@@ -478,8 +492,4 @@ class MainWindow():
     def update_health(self):
         self.ui.health.setMaximum(self.ui.max_health.value())
         self.ui.health_val.setText(str(self.ui.health.value()) + " /")
-        self.set_edited()
-    def update_food(self):
-        self.ui.food.setMaximum(self.ui.max_food.value())
-        self.ui.food_val.setText(str(self.ui.food.value()) + " /")
         self.set_edited()
