@@ -92,7 +92,7 @@ class MainWindow():
             self.ui.race.addItem(species)
 
         # set up sliders to update values together
-        stats = "health", "energy", "food"
+        stats = "health", "energy"
         for s in stats:
             logging.debug("Setting up %s stat", s)
             update = getattr(self, "update_" + s)
@@ -144,12 +144,12 @@ class MainWindow():
         except TypeError:
             logging.exception("Unable to set pixels widget")
         # description
-        self.ui.description.setPlainText(self.player.get_description())
+        self.ui.description.setText(self.player.get_description())
         # gender
         getattr(self.ui, self.player.get_gender()).toggle()
 
         # stats
-        stats = "health", "energy", "food"
+        stats = "health", "energy"
         for stat in stats:
             try:
                 max_stat = getattr(self.player, "get_max_" + stat)()
@@ -206,16 +206,17 @@ class MainWindow():
         # pixels
         self.player.set_pixels(self.ui.pixels.value())
         # description
-        self.player.set_description(self.ui.description.toPlainText())
+        self.player.set_description(self.ui.description.text())
         # gender
         self.player.set_gender(self.get_gender())
         # stats
-        stats = "health", "energy", "food"
+        stats = "health", "energy"
         for s in stats:
             current = getattr(self.ui, s).value()
             maximum = getattr(self.ui, "max_" + s).value()
             getattr(self.player, "set_" + s)(current, maximum)
             getattr(self.player, "set_max_" + s)(maximum)
+        # TODO: food
         # energy regen rate
         self.player.set_energy_regen(self.ui.energy_regen.value())
         # warmth
