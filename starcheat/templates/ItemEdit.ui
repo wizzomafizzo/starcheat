@@ -115,7 +115,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <layout class="QGridLayout" name="gridLayout">
@@ -296,7 +296,7 @@
             <number>0</number>
            </property>
            <attribute name="horizontalHeaderVisible">
-            <bool>true</bool>
+            <bool>false</bool>
            </attribute>
            <attribute name="horizontalHeaderStretchLastSection">
             <bool>true</bool>
@@ -306,7 +306,7 @@
            </attribute>
            <column>
             <property name="text">
-             <string>Options</string>
+             <string>Value</string>
             </property>
            </column>
           </widget>
@@ -341,9 +341,23 @@
             </spacer>
            </item>
            <item>
+            <widget class="QToolButton" name="edit_option_button">
+             <property name="toolTip">
+              <string>Edit Selected Option</string>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/starcheat/images/icons/glyphicons_halflings_060_pencil.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_060_pencil.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QToolButton" name="add_option_button">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="toolTip">
               <string>Add New Option</string>
@@ -360,10 +374,10 @@
            <item>
             <widget class="QToolButton" name="remove_option_button">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="toolTip">
-              <string>Clear Selected Option</string>
+              <string>Remove Selected Option</string>
              </property>
              <property name="text">
               <string>...</string>
@@ -451,9 +465,6 @@
   </layout>
   <zorder></zorder>
   <zorder>splitter</zorder>
-  <zorder>verticalSpacer_2</zorder>
-  <zorder>max_button</zorder>
-  <zorder>horizontalSpacer</zorder>
  </widget>
  <resources>
   <include location="../resources.qrc"/>

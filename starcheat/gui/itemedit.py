@@ -26,18 +26,26 @@ class ItemEditOptions():
 
         self.option = key, value
 
-        self.ui.name_label.setText(key)
+        self.ui.name.setText(key)
 
         pretty_data = json.dumps(value, sort_keys=True,
                                  indent=4, separators=(',', ': '))
         self.ui.options.setPlainText(pretty_data)
 
         self.ui.options.textChanged.connect(self.validate_options)
+        self.ui.name.textChanged.connect(self.validate_options)
         self.validate_options()
 
     def validate_options(self):
         valid = "Item option is valid."
         invalid = "Item option invalid: %s"
+
+        if self.ui.name.text() == "":
+            self.ui.valid_label.setStyleSheet("color: red")
+            self.ui.valid_label.setText(invalid % "Option name is empty")
+            self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Cancel)
+            return
+
         try:
             json.loads(self.ui.options.toPlainText())
             self.ui.valid_label.setStyleSheet("color: green")
@@ -92,9 +100,12 @@ class ItemEdit():
         # set up signals
         self.ui.load_button.clicked.connect(self.new_item_browser)
         self.ui.item_type.textChanged.connect(self.update_item)
-        self.ui.variant.itemDoubleClicked.connect(self.new_item_edit_options)
+        self.ui.variant.itemDoubleClicked.connect(lambda: self.new_item_edit_options(False))
         self.ui.clear_options_button.clicked.connect(self.clear_item_options)
         self.ui.max_button.clicked.connect(self.max_count)
+        self.ui.add_option_button.clicked.connect(lambda: self.new_item_edit_options(True))
+        self.ui.remove_option_button.clicked.connect(self.remove_option)
+        self.ui.edit_option_button.clicked.connect(self.edit_option)
 
         self.ui.item_type.setFocus()
 
@@ -172,17 +183,37 @@ class ItemEdit():
         self.ui.variant.setHorizontalHeaderLabels(["Options"])
         self.ui.variant.setRowCount(0)
 
-    def new_item_edit_options(self):
-        selected = self.ui.variant.currentItem()
+    def new_item_edit_options(self, new):
+        if new:
+            selected = ItemOptionWidget("", None)
+        else:
+            selected = self.ui.variant.currentItem()
         item_edit_options = ItemEditOptions(self.dialog, selected.option[0], selected.option[1])
         def save():
             new_option = json.loads(item_edit_options.ui.options.toPlainText())
-            name = item_edit_options.option[0]
+            name = item_edit_options.ui.name.text()
             self.item["data"][name] = new_option
             # TODO: update the item info. not working for some reason
             self.populate_options()
         item_edit_options.dialog.accepted.connect(save)
         item_edit_options.dialog.exec()
+
+    def remove_option(self):
+        """Remove the currently selected item option."""
+        try:
+            option_name = self.ui.variant.currentItem().option[0]
+        except AttributeError:
+            return
+        self.item["data"].pop(option_name)
+        self.populate_options()
+
+    def edit_option(self):
+        """Edit currently selected item option."""
+        try:
+            option_name = self.ui.variant.currentItem().option[0]
+        except AttributeError:
+            return
+        self.new_item_edit_options(False)
 
     def new_item_browser(self):
         self.item_browser = ItemBrowser(self.dialog, category=self.remember_browser)
