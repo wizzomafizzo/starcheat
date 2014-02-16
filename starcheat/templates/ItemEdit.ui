@@ -417,7 +417,7 @@
        <item>
         <widget class="QToolButton" name="export_button">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="toolTip">
           <string>Export Item To A File</string>

@@ -276,7 +276,15 @@ class MainWindow():
         logging.debug("New item edit dialog")
         row = bag.currentRow()
         column = bag.currentColumn()
-        item_edit = ItemEdit(self.window, bag.currentItem(),
+        current = bag.currentItem()
+        item = saves.new_item("", 0, {})
+        # cells don't retain ItemSlot widget when they've been dragged away
+        if type(current) is QTableWidgetItem or bag.currentItem().item is None:
+            pass
+        elif current.item is not None:
+            item.update(bag.currentItem().item)
+
+        item_edit = ItemEdit(self.window, item,
                              browser_category=self.remember_browser)
 
         def update_slot():
@@ -394,7 +402,6 @@ class MainWindow():
         filename = QFileDialog.getSaveFileName(self.window,
                                                "Export JSON File As")
         if filename[0] != "":
-            self.player.export_save(filename[0])
             json_file = open(filename[0], "w")
             json_file.write(json_data)
             json_file.close()

@@ -9,7 +9,7 @@ Qt item edit dialog
 # once that's complete, work can be started on proper item generation. to begin,
 # we just wanna pull in all the default values of an item
 
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox, QFileDialog
 from PyQt5.QtGui import QPixmap
 import json
 
@@ -35,6 +35,8 @@ class ItemEditOptions():
         self.ui.options.textChanged.connect(self.validate_options)
         self.ui.name.textChanged.connect(self.validate_options)
         self.validate_options()
+
+        self.ui.name.setFocus()
 
     def validate_options(self):
         valid = "Item option is valid."
@@ -65,7 +67,7 @@ class ItemOptionWidget(QTableWidgetItem):
         self.setToolTip(str(value))
 
 class ItemEdit():
-    def __init__(self, parent, item=None, browser_category="<all>"):
+    def __init__(self, parent, item, browser_category="<all>"):
         """Takes an item widget and displays an edit dialog for it."""
         self.dialog = QDialog(parent)
         self.ui = qt_itemedit.Ui_Dialog()
@@ -77,14 +79,9 @@ class ItemEdit():
 
         self.item_browser = None
         self.remember_browser = browser_category
+        self.item = item
 
-        # cells don't retain ItemSlot widget when they've been dragged away
-        if type(item) is QTableWidgetItem or item == None:
-            self.item = empty_slot()
-        else:
-            self.item = item.item
-
-        try:
+        if self.item["name"] != "":
             # set name text box
             self.ui.item_type.setText(self.item["name"])
             # set item count spinbox
@@ -92,7 +89,7 @@ class ItemEdit():
             # set up variant table
             self.populate_options()
             self.update_item_info(self.item["name"], self.item["data"])
-        except TypeError:
+        else:
             # empty slot
             self.new_item_browser()
             self.update_item()
@@ -106,6 +103,7 @@ class ItemEdit():
         self.ui.add_option_button.clicked.connect(lambda: self.new_item_edit_options(True))
         self.ui.remove_option_button.clicked.connect(self.remove_option)
         self.ui.edit_option_button.clicked.connect(self.edit_option)
+        self.ui.export_button.clicked.connect(self.export_item)
 
         self.ui.item_type.setFocus()
 
@@ -171,10 +169,7 @@ class ItemEdit():
         """Return an ItemWidget of the currently open item."""
         name = self.ui.item_type.text()
         count = self.ui.count.value()
-        data = {}
-        for i in range(self.ui.variant.rowCount()):
-            option = self.ui.variant.item(i, 0).option
-            data[option[0]] = option[1]
+        data = self.item["data"]
         item = saves.new_item(name, count, data)
         return ItemWidget(item, self.assets)
 
@@ -240,3 +235,13 @@ class ItemEdit():
         else:
             max = 999
         self.ui.count.setValue(max)
+
+    def export_item(self):
+        json_data = json.dumps(self.item, sort_keys=True,
+                               indent=4, separators=(',', ': '))
+        filename = QFileDialog.getSaveFileName(self.dialog,
+                                               "Export Item As")
+        if filename[0] != "":
+            json_file = open(filename[0], "w")
+            json_file.write(json_data)
+            json_file.close()
