@@ -523,6 +523,12 @@ class PlayerSave():
     def get_facial_mask_directives(self):
         return unpack_color_directives(self.entity["identity"]["facialMaskDirectives"])
 
+    def get_game_mode(self):
+        return self.entity["modeType"]
+
+    def get_play_time(self):
+        return self.entity["playTime"]
+
     # here be setters
     def set_blueprints(self, blueprints):
         self.entity["blueprints"] = blueprints
@@ -640,8 +646,13 @@ class PlayerSave():
     def set_facial_mask_directives(self, colors):
         self.entity["identity"]["facialMaskDirectives"] = pack_color_directives(colors)
 
+    def set_game_mode(self, mode):
+        self.entity["modeType"] = mode
+
+    def set_play_time(self, time):
+        self.entity["playTime"] = float(time)
+
 if __name__ == '__main__':
-    #logging.basicConfig(filename="save_file.log", level=logging.DEBUG)
     player = PlayerSave(sys.argv[1])
     player.dump()
     print(player.export_save())

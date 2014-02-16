@@ -327,16 +327,16 @@
       <item row="6" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QDoubleSpinBox" name="play_time">
-          <property name="enabled">
-           <bool>false</bool>
+         <widget class="QLabel" name="play_time">
+          <property name="text">
+           <string>0 mins</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="play_time_button">
+         <widget class="QToolButton" name="play_time_button1">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="maximumSize">
            <size>
@@ -350,6 +350,20 @@
           <property name="icon">
            <iconset resource="../resources.qrc">
             <normaloff>:/starcheat/images/icons/glyphicons_halflings_074_forward.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_074_forward.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="play_time_button2">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/starcheat/images/icons/glyphicons_halflings_075_fast-forward.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_075_fast-forward.png</iconset>
           </property>
          </widget>
         </item>
@@ -697,7 +711,7 @@ border-radius: 4px;
       <item row="5" column="1">
        <widget class="QComboBox" name="game_mode">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -1505,6 +1519,12 @@ border-radius: 4px;
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
+              </property>
               <property name="toolTip">
                <string>Manage Appearance</string>
               </property>
@@ -1518,6 +1538,12 @@ border-radius: 4px;
                <iconset resource="../resources.qrc">
                 <normaloff>:/starcheat/images/icons/glyphicons_051_eye_open.png</normaloff>:/starcheat/images/icons/glyphicons_051_eye_open.png</iconset>
               </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
              </widget>
             </item>
             <item row="0" column="1">
@@ -1527,6 +1553,12 @@ border-radius: 4px;
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
               </property>
               <property name="toolTip">
                <string>Manage Blueprints</string>
@@ -1541,6 +1573,12 @@ border-radius: 4px;
                <iconset resource="../resources.qrc">
                 <normaloff>:/starcheat/images/icons/glyphicons_460_blacksmith.png</normaloff>:/starcheat/images/icons/glyphicons_460_blacksmith.png</iconset>
               </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
              </widget>
             </item>
             <item row="1" column="0">
@@ -1553,6 +1591,12 @@ border-radius: 4px;
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
               </property>
               <property name="toolTip">
                <string>Manage Status Effects</string>
@@ -1567,6 +1611,12 @@ border-radius: 4px;
                <iconset resource="../resources.qrc">
                 <normaloff>:/starcheat/images/icons/glyphicons_282_cardio.png</normaloff>:/starcheat/images/icons/glyphicons_282_cardio.png</iconset>
               </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
              </widget>
             </item>
             <item row="1" column="1">
@@ -1580,6 +1630,12 @@ border-radius: 4px;
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
+              </property>
               <property name="toolTip">
                <string>Manage Techs</string>
               </property>
@@ -1592,6 +1648,12 @@ border-radius: 4px;
               <property name="icon">
                <iconset resource="../resources.qrc">
                 <normaloff>:/starcheat/images/icons/glyphicons_137_cogwheels.png</normaloff>:/starcheat/images/icons/glyphicons_137_cogwheels.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -2173,7 +2235,7 @@ border-radius: 4px;
      <x>0</x>
      <y>0</y>
      <width>731</width>
-     <height>24</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

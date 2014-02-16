@@ -219,6 +219,9 @@ class Assets():
     def species(self):
         return Species(self)
 
+    def player(self):
+        return Player(self)
+
     def get_all(self, asset_type):
         c = self.assets.db.cursor()
         c.execute("select * from assets where type = ? order by name collate nocase", (asset_type,))
@@ -773,6 +776,25 @@ class Species():
             # corrupt save, no race set
             logging.warning("No race set on player")
             return None
+
+class Player():
+    def __init__(self, assets):
+        self.assets = assets
+        self.starbound_folder = assets.starbound_folder
+
+        # haven't found any definitions for these in the assets
+        self.mode_types = {
+             "supernova": "Normal",
+             "blackHole": "Hardcore",
+             "bigCrunch": "Permadeath"
+        }
+
+    def get_mode_type(self, name):
+        """Return a mode type key name from its pretty name."""
+        # TODO: is there a better way to do this kinda thing?
+        for key in self.mode_types.keys():
+            if name == self.mode_types[key]:
+                return key
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

@@ -88,8 +88,13 @@ class MainWindow():
             logging.warning("No player file selected")
             return
 
+        # populate species combobox
         for species in self.assets.species().get_species_list():
             self.ui.race.addItem(species)
+
+        # populate game mode combobox
+        for mode in self.assets.player().mode_types.values():
+            self.ui.game_mode.addItem(mode)
 
         # set up sliders to update values together
         stats = "health", "energy"
@@ -119,6 +124,9 @@ class MainWindow():
         self.ui.male.clicked.connect(self.update_player_preview)
         self.ui.female.clicked.connect(self.update_player_preview)
         self.ui.description.textChanged.connect(self.set_edited)
+
+        self.ui.play_time_button1.clicked.connect(lambda: self.inc_play_time(10*60))
+        self.ui.play_time_button2.clicked.connect(lambda: self.inc_play_time(60*60))
 
         self.update()
         self.ui.name.setFocus()
@@ -151,6 +159,14 @@ class MainWindow():
         self.ui.description.setPlainText(self.player.get_description())
         # gender
         getattr(self.ui, self.player.get_gender()).toggle()
+        # game mode
+        game_mode = self.player.get_game_mode()
+        if game_mode in self.assets.player().mode_types:
+            self.ui.game_mode.setCurrentText(self.assets.player().mode_types[game_mode])
+        # play time
+        # TODO: there must be a datetime function for doing this stuff
+        play_time = str(int(self.player.get_play_time()/60)) + " mins"
+        self.ui.play_time.setText(play_time)
 
         # stats
         stats = "health", "energy"
@@ -222,6 +238,8 @@ class MainWindow():
         self.player.set_description(self.ui.description.toPlainText())
         # gender
         self.player.set_gender(self.get_gender())
+        # game mode
+        self.player.set_game_mode(self.assets.player().get_mode_type(self.ui.game_mode.currentText()))
         # stats
         stats = "health", "energy"
         for s in stats:
@@ -483,6 +501,12 @@ class MainWindow():
         self.new_item_edit(self.ui.back)
     def new_wieldable_item_edit(self):
         self.new_item_edit(self.ui.wieldable)
+
+    def inc_play_time(self, amount):
+        play_time = self.player.get_play_time() + float(amount)
+        self.player.set_play_time(play_time)
+        formatted = str(int(play_time/60)) + " mins"
+        self.ui.play_time.setText(formatted)
 
     # these update all values in a stat group at once
     def update_energy(self):
