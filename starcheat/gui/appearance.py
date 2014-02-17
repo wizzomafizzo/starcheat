@@ -4,7 +4,8 @@ Qt appearance management dialog
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QDialog, QColorDialog, QTableWidgetItem
-from PyQt5.QtGui import QColor, QBrush
+from PyQt5.QtGui import QColor, QBrush, QPixmap, QImage, QIcon
+from PIL.ImageQt import ImageQt
 
 import assets, qt_appearance, qt_coloredit
 from gui.common import preview_icon
@@ -100,6 +101,10 @@ class Appearance():
         color_edit.dialog.exec()
         new_colors = color_edit.get_colors()
         return new_colors
+
+    def hair_icon(self, species, hair_type, hair_group):
+        image_data = self.assets.species().get_hair_image(species, hair_type, hair_group)
+        return QPixmap.fromImage(ImageQt(image_data))
 
     # for color button signals
     def new_body_color_edit(self):

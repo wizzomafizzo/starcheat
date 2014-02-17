@@ -777,6 +777,14 @@ class Species():
             logging.warning("No race set on player")
             return None
 
+    def get_hair_image(self, name, hair_type, hair_group):
+        species = self.get_species(name.lower())
+        # BUG: this will break for species mods on windows maybe?
+        image_path = "/humanoid/%s/%s/%s.png" % (name, hair_type, hair_group)
+        image = self.assets.read(image_path, species[0][1], image=True)
+        # TODO: bbox is from .frame file, need a way to read them still
+        return Image.open(BytesIO(image)).crop((43, 0, 86, 43))
+
 class Player():
     def __init__(self, assets):
         self.assets = assets
@@ -791,10 +799,8 @@ class Player():
 
     def get_mode_type(self, name):
         """Return a mode type key name from its pretty name."""
-        # TODO: is there a better way to do this kinda thing?
-        for key in self.mode_types.keys():
-            if name == self.mode_types[key]:
-                return key
+        if name in self.mode_types.keys():
+            return self.mode_types[name]
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

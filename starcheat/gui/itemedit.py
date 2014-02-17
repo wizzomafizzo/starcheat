@@ -98,7 +98,6 @@ class ItemEdit():
         self.ui.load_button.clicked.connect(self.new_item_browser)
         self.ui.item_type.textChanged.connect(self.update_item)
         self.ui.variant.itemDoubleClicked.connect(lambda: self.new_item_edit_options(False))
-        self.ui.clear_options_button.clicked.connect(self.clear_item_options)
         self.ui.max_button.clicked.connect(self.max_count)
         self.ui.add_option_button.clicked.connect(lambda: self.new_item_edit_options(True))
         self.ui.remove_option_button.clicked.connect(self.remove_option)
@@ -170,13 +169,15 @@ class ItemEdit():
         name = self.ui.item_type.text()
         count = self.ui.count.value()
         data = self.item["data"]
-        item = saves.new_item(name, count, data)
-        return ItemWidget(item, self.assets)
+        return saves.new_item(name, count, data)
 
     def clear_item_options(self):
         self.ui.variant.clear()
         self.ui.variant.setHorizontalHeaderLabels(["Options"])
         self.ui.variant.setRowCount(0)
+        # don't understand why i need to do this check either...
+        if self.item is not None:
+            self.item["data"] = {}
 
     def new_item_edit_options(self, new):
         if new:
@@ -226,6 +227,8 @@ class ItemEdit():
 
     def set_item_browser_selection(self):
         name = self.item_browser.get_selection()
+        if name is None:
+            return
         self.remember_browser = self.item_browser.remember_category
         self.ui.item_type.setText(name)
 

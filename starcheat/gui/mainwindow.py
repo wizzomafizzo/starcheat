@@ -279,17 +279,17 @@ class MainWindow():
         current = bag.currentItem()
         item = saves.new_item("", 0, {})
         # cells don't retain ItemSlot widget when they've been dragged away
-        if type(current) is QTableWidgetItem or bag.currentItem().item is None:
+        if type(current) is QTableWidgetItem or current.item is None:
             pass
-        elif current.item is not None:
-            item.update(bag.currentItem().item)
+        else:
+            item.update(current.item)
 
         item_edit = ItemEdit(self.window, item,
                              browser_category=self.remember_browser)
 
         def update_slot():
             logging.debug("Writing changes to slot")
-            new_slot = item_edit.get_item()
+            new_slot = ItemWidget(item_edit.get_item(), self.assets)
             if new_slot.item["name"] != "":
                 bag.setItem(row, column, new_slot)
                 self.remember_browser = item_edit.remember_browser
@@ -514,6 +514,7 @@ class MainWindow():
         self.player.set_play_time(play_time)
         formatted = str(int(play_time/60)) + " mins"
         self.ui.play_time.setText(formatted)
+        self.set_edited()
 
     # these update all values in a stat group at once
     def update_energy(self):

@@ -314,16 +314,16 @@
          <item>
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QToolButton" name="clear_options_button">
+            <widget class="QToolButton" name="edit_option_button">
              <property name="toolTip">
-              <string>Clear All Options</string>
+              <string>Edit Selected Option</string>
              </property>
              <property name="text">
               <string>...</string>
              </property>
              <property name="icon">
               <iconset resource="../resources.qrc">
-               <normaloff>:/starcheat/images/icons/glyphicons_halflings_082_remove-sign.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_082_remove-sign.png</iconset>
+               <normaloff>:/starcheat/images/icons/glyphicons_halflings_060_pencil.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_060_pencil.png</iconset>
              </property>
             </widget>
            </item>
@@ -339,20 +339,6 @@
               </size>
              </property>
             </spacer>
-           </item>
-           <item>
-            <widget class="QToolButton" name="edit_option_button">
-             <property name="toolTip">
-              <string>Edit Selected Option</string>
-             </property>
-             <property name="text">
-              <string>...</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../resources.qrc">
-               <normaloff>:/starcheat/images/icons/glyphicons_halflings_060_pencil.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_060_pencil.png</iconset>
-             </property>
-            </widget>
            </item>
            <item>
             <widget class="QToolButton" name="add_option_button">
