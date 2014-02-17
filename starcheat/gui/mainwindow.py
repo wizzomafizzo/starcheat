@@ -124,6 +124,7 @@ class MainWindow():
         self.ui.male.clicked.connect(self.update_player_preview)
         self.ui.female.clicked.connect(self.update_player_preview)
         self.ui.description.textChanged.connect(self.set_edited)
+        self.ui.pixels.valueChanged.connect(self.set_pixels)
 
         self.ui.play_time_button1.clicked.connect(lambda: self.inc_play_time(10*60))
         self.ui.play_time_button2.clicked.connect(lambda: self.inc_play_time(60*60))
@@ -232,8 +233,6 @@ class MainWindow():
         self.player.set_name(self.ui.name.text())
         # species
         self.player.set_race(self.ui.race.currentText())
-        # pixels
-        self.player.set_pixels(self.ui.pixels.value())
         # description
         self.player.set_description(self.ui.description.toPlainText())
         # gender
@@ -515,6 +514,9 @@ class MainWindow():
         formatted = str(int(play_time/60)) + " mins"
         self.ui.play_time.setText(formatted)
         self.set_edited()
+
+    def set_pixels(self):
+        self.player.set_pixels(self.ui.pixels.value())
 
     # these update all values in a stat group at once
     def update_energy(self):
