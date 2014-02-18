@@ -799,8 +799,7 @@ class Player():
 
     def get_mode_type(self, name):
         """Return a mode type key name from its pretty name."""
-        if name in self.mode_types.keys():
-            return self.mode_types[name]
+        return list(self.mode_types.keys())[list(self.mode_types.values()).index(name)]
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
