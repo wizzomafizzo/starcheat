@@ -11,7 +11,7 @@ Qt item edit dialog
 
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox, QFileDialog
 from PyQt5.QtGui import QPixmap
-import json
+import json, copy
 
 import assets, qt_itemedit, qt_itemeditoptions, saves
 from gui.common import inv_icon, ItemWidget, empty_slot
@@ -79,7 +79,7 @@ class ItemEdit():
 
         self.item_browser = None
         self.remember_browser = browser_category
-        self.item = item
+        self.item = copy.deepcopy(item)
 
         if self.item["name"] != "":
             # set name text box
