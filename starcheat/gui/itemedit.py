@@ -139,17 +139,16 @@ class ItemEdit():
             item = self.assets.items().get_item(name)
             if item[1].endswith("generatedgun"):
                 options = self.assets.items().generate_gun(item)
-                print(options)
                 name = options["itemName"]
-                self.ui.item_type.setText(name)
             elif item[1].endswith("generatedsword"):
                 options = self.assets.items().generate_sword(item)
                 name = options["itemName"]
-                self.ui.item_type.setText(name)
             elif item[1].endswith("generatedshield"):
                 options = self.assets.items().generate_shield(item)
                 name = options["itemName"]
-                self.ui.item_type.setText(name)
+            elif item[1].endswith("sapling"):
+                options = self.assets.items().generate_sapling(item)
+                name = options["itemName"]
             else:
                 options = item[0]
         except TypeError:
@@ -158,6 +157,8 @@ class ItemEdit():
             self.ui.icon.setPixmap(QPixmap())
             self.clear_item_options()
             return
+
+        self.ui.item_type.setText(name)
 
         self.item = saves.new_item(name, 1, options)
         self.ui.count.setValue(1)

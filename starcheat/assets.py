@@ -407,6 +407,8 @@ class Items():
             return Image.open(BytesIO(self.shield_icon())).convert("RGBA")
         elif name == "generatedgun":
             return Image.open(BytesIO(self.sword_icon())).convert("RGBA")
+        elif name == "sapling":
+            return Image.open(BytesIO(self.sapling_icon())).convert("RGBA")
 
         try:
             item = self.get_item(name)
@@ -438,6 +440,10 @@ class Items():
 
     def shield_icon(self):
         return self.assets.read("/interface/inventory/shield.png", self.assets.vanilla_assets, image=True)
+
+    def sapling_icon(self):
+        return self.assets.read("/objects/generic/sapling/saplingicon.png", self.assets.vanilla_assets,
+                                image=True)
 
     def generate_gun(self, item):
         image_folder = item[0]["name"].replace(item[0]["rarity"].lower(), "")
@@ -635,6 +641,9 @@ class Items():
             generated_shield["damagePoly"] = item[0]["baseline"]["damagePoly"]
 
         return generated_shield
+
+    def generate_sapling(self, item):
+        return item[0]
 
 class Species():
     def __init__(self, assets):
