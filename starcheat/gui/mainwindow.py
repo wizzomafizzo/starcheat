@@ -125,6 +125,7 @@ class MainWindow():
         self.ui.female.clicked.connect(self.update_player_preview)
         self.ui.description.textChanged.connect(self.set_edited)
         self.ui.pixels.valueChanged.connect(self.set_pixels)
+        self.ui.game_mode.currentTextChanged.connect(self.set_edited)
 
         self.ui.play_time_button1.clicked.connect(lambda: self.inc_play_time(10*60))
         self.ui.play_time_button2.clicked.connect(lambda: self.inc_play_time(60*60))
@@ -162,8 +163,10 @@ class MainWindow():
         getattr(self.ui, self.player.get_gender()).toggle()
         # game mode
         game_mode = self.player.get_game_mode()
-        if game_mode in self.assets.player().mode_types:
+        try:
             self.ui.game_mode.setCurrentText(self.assets.player().mode_types[game_mode])
+        except KeyError:
+            logging.exception("No game mode set on player")
         # play time
         # TODO: there must be a datetime function for doing this stuff
         play_time = str(int(self.player.get_play_time()/60)) + " mins"

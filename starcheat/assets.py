@@ -799,7 +799,10 @@ class Player():
 
     def get_mode_type(self, name):
         """Return a mode type key name from its pretty name."""
-        return list(self.mode_types.keys())[list(self.mode_types.values()).index(name)]
+        # TODO: is there a better way to do this kinda thing?
+        for key in self.mode_types.keys():
+            if name == self.mode_types[key]:
+                return key
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
