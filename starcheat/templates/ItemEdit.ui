@@ -240,7 +240,7 @@
              </property>
              <property name="icon">
               <iconset resource="../resources.qrc">
-               <normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</iconset>
+               <normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -278,7 +278,7 @@
             <set>QAbstractItemView::NoEditTriggers</set>
            </property>
            <property name="alternatingRowColors">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="selectionMode">
             <enum>QAbstractItemView::SingleSelection</enum>

@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="starcheat">
+    <file>images/icons/glyphicons_halflings_026_upload.png</file>
     <file>images/icons/glyphicons_halflings_075_fast-forward.png</file>
     <file>images/icons/glyphicons_halflings_074_forward.png</file>
     <file>images/icons/glyphicons_halflings_099_asterisk.png</file>

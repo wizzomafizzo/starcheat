@@ -7,13 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>731</width>
-    <height>512</height>
+    <height>526</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>731</width>
-    <height>512</height>
+    <height>526</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>731</width>
+    <height>526</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -92,7 +98,7 @@
           </property>
           <property name="icon">
            <iconset resource="../resources.qrc">
-            <normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</iconset>
+            <normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</iconset>
           </property>
          </widget>
         </item>
@@ -164,7 +170,7 @@
           </property>
           <property name="icon">
            <iconset resource="../resources.qrc">
-            <normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</iconset>
+            <normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</iconset>
           </property>
          </widget>
         </item>
@@ -318,7 +324,7 @@
           </property>
           <property name="icon">
            <iconset resource="../resources.qrc">
-            <normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</iconset>
+            <normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</iconset>
           </property>
          </widget>
         </item>
@@ -471,7 +477,7 @@
           </property>
           <property name="icon">
            <iconset resource="../resources.qrc">
-            <normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</iconset>
+            <normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</iconset>
           </property>
          </widget>
         </item>
@@ -553,7 +559,7 @@
           </property>
           <property name="icon">
            <iconset resource="../resources.qrc">
-            <normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_099_asterisk.png</iconset>
+            <normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</iconset>
           </property>
          </widget>
         </item>
@@ -1714,7 +1720,7 @@ border-radius: 4px;
          <number>0</number>
         </property>
         <property name="leftMargin">
-         <number>1</number>
+         <number>2</number>
         </property>
         <item>
          <widget class="QLabel" name="action_bar_label">
@@ -2288,7 +2294,11 @@ border-radius: 4px;
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="sizeGripEnabled">
+    <bool>false</bool>
+   </property>
+  </widget>
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="../resources.qrc">
