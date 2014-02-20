@@ -17,7 +17,7 @@ if os.path.isdir(config_folder) == False:
     os.mkdir(config_folder)
 
 STARCHEAT_VERSION = "alpha (Furious Koala)"
-CONFIG_VERSION = 4
+CONFIG_VERSION = 5
 ini_file = os.path.join(config_folder, "starcheat.ini")
 
 class Config():
@@ -80,7 +80,8 @@ class Config():
             'C:\Program Files\Steam\SteamApps\common\Starbound',
             'C:\Program Files (x86)\Steam\SteamApps\common\Starbound',
             os.path.expanduser("~/Library/Application Support/Steam/SteamApps/common/Starbound"),
-            os.path.expanduser("~/.steam/root/SteamApps/common/Starbound")
+            os.path.expanduser("~/.steam/root/SteamApps/common/Starbound"),
+            os.path.expanduser("~/.steam/steam/SteamApps/common/Starbound")
         ]
 
         if platform.system() == "Windows":
