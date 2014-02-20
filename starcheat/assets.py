@@ -6,7 +6,7 @@ Module for reading and indexing Starbound assets
 # deps. need to:
 # - custom exception classes
 
-import os, json, re, sqlite3, logging
+import os, json, re, sqlite3, logging, random
 from io import BytesIO
 
 from PIL import Image
@@ -76,6 +76,7 @@ class Assets():
         blueprints = Blueprints(self)
         items = Items(self)
         species = Species(self)
+        monsters = Monsters(self)
 
         new_index_query = "insert into assets values (?, ?, ?, ?, ?, ?)"
         c = self.db.cursor()
@@ -92,6 +93,8 @@ class Assets():
                 tmp_data = species.index_data(asset)
             elif items.is_item(asset[0]):
                 tmp_data = items.index_data(asset)
+            elif monsters.is_monster(asset[0]):
+                tmp_data = monsters.index_data(asset)
 
             if tmp_data != None:
                 c.execute(new_index_query, tmp_data)
@@ -221,6 +224,9 @@ class Assets():
 
     def player(self):
         return Player(self)
+
+    def monsters(self):
+        return Monsters(self)
 
     def get_all(self, asset_type):
         c = self.assets.db.cursor()
@@ -645,7 +651,7 @@ class Items():
     def generate_sapling(self, item):
         return item[0]
 
-    def generate_filledcapturepod(self, item):
+    def generate_filledcapturepod(self, item, player_uuid):
         filledcapturepod = {
             "projectileConfig": {
                 "actionOnReap": [
@@ -657,13 +663,13 @@ class Items():
                             "damageTeamType": "friendly",
                             "familyIndex": 0,
                             "killCount": None,
-                            "level": 0.992031991481781,
-                            "ownerUuid": "ad054f96b6e68670bdd4e2543ee80e96",
+                            "level": 1.0,
+                            "ownerUuid": player_uuid,
                             "persistent": True,
-                            "seed": "17292528309227664650"
+                            "seed": self.assets.monsters().monster_seed()
                         },
                         "offset": [0,2],
-                        "type": "smallbiped"
+                        "type": self.assets.monsters().random_monster()
                     }
                 ],
                 "level": 7,
@@ -840,6 +846,45 @@ class Player():
         for key in self.mode_types.keys():
             if name == self.mode_types[key]:
                 return key
+
+class Monsters():
+    def __init__(self, assets):
+        self.assets = assets
+        self.starbound_folder = assets.starbound_folder
+
+    def is_monster(self, key):
+        if key.endswith(".monstertype"):
+            return True
+        else:
+            return False
+
+    def index_data(self, asset):
+        key = asset[0]
+        path = asset[1]
+        asset_data = self.assets.read(key, path)
+
+        if asset_data == None: return
+
+        if "type" in asset_data:
+            return (key, path, "monster", "", asset_data["type"], "")
+        else:
+            logging.warning("Invalid monster: %s" % key)
+
+    def all(self):
+        """Return a list of all unique monster types."""
+        c = self.assets.db.cursor()
+        c.execute("select distinct name from assets where type = 'monster' order by name")
+        return c.fetchall()
+
+    def random_monster(self):
+        """Return type of a random monster as a string."""
+        return random.choice(self.all())[0]
+
+    def monster_seed(self):
+        """Return a random monster seed as a string."""
+        # okay, so i can't figure out exactly what this should be, but this
+        # number seems to cause no crashes so far
+        return str(random.randint(1, 9999999999999999999))
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

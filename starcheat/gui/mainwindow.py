@@ -287,7 +287,7 @@ class MainWindow():
             item.update(current.item)
 
         item_edit = ItemEdit(self.window, item,
-                             browser_category=self.remember_browser)
+                             self.player, self.remember_browser)
 
         def update_slot():
             logging.debug("Writing changes to slot")

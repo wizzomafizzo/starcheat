@@ -67,7 +67,7 @@ class ItemOptionWidget(QTableWidgetItem):
         self.setToolTip(str(value))
 
 class ItemEdit():
-    def __init__(self, parent, item, browser_category="<all>"):
+    def __init__(self, parent, item, player, browser_category="<all>"):
         """Takes an item widget and displays an edit dialog for it."""
         self.dialog = QDialog(parent)
         self.ui = qt_itemedit.Ui_Dialog()
@@ -76,6 +76,8 @@ class ItemEdit():
         assets_db_file = Config().read("assets_db")
         starbound_folder = Config().read("starbound_folder")
         self.assets = assets.Assets(assets_db_file, starbound_folder)
+
+        self.player = player
 
         self.item_browser = None
         self.remember_browser = browser_category
@@ -135,6 +137,8 @@ class ItemEdit():
         """Update main item view with current item browser data."""
         name = self.ui.item_type.text()
 
+        # TODO: i guess eventually we're gonna need like.. some sort of generic
+        # generate item function
         try:
             item = self.assets.items().get_item(name)
             if item[1].endswith("generatedgun"):
@@ -150,7 +154,8 @@ class ItemEdit():
                 options = self.assets.items().generate_sapling(item)
                 name = options["itemName"]
             elif name == "filledcapturepod":
-                options = self.assets.items().generate_filledcapturepod(item)
+                options = self.assets.items().generate_filledcapturepod(item,
+                                                                        self.player.get_uuid())
             else:
                 options = item[0]
         except TypeError:
