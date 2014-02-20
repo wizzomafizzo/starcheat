@@ -645,6 +645,34 @@ class Items():
     def generate_sapling(self, item):
         return item[0]
 
+    def generate_filledcapturepod(self, item):
+        filledcapturepod = {
+            "projectileConfig": {
+                "actionOnReap": [
+                    {
+                        "action": "spawnmonster",
+                        "arguments": {
+                            "aggressive": True,
+                            "damageTeam": 0,
+                            "damageTeamType": "friendly",
+                            "familyIndex": 0,
+                            "killCount": None,
+                            "level": 0.992031991481781,
+                            "ownerUuid": "ad054f96b6e68670bdd4e2543ee80e96",
+                            "persistent": True,
+                            "seed": "17292528309227664650"
+                        },
+                        "offset": [0,2],
+                        "type": "smallbiped"
+                    }
+                ],
+                "level": 7,
+                "speed": 70
+            }
+        }
+
+        return filledcapturepod
+
 class Species():
     def __init__(self, assets):
         self.assets = assets

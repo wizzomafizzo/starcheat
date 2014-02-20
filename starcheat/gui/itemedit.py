@@ -149,6 +149,8 @@ class ItemEdit():
             elif item[1].endswith("sapling"):
                 options = self.assets.items().generate_sapling(item)
                 name = options["itemName"]
+            elif name == "filledcapturepod":
+                options = self.assets.items().generate_filledcapturepod(item)
             else:
                 options = item[0]
         except TypeError:
