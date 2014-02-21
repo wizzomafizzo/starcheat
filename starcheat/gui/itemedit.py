@@ -11,7 +11,7 @@ Qt item edit dialog
 
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox, QFileDialog
 from PyQt5.QtGui import QPixmap
-import json, copy
+import json, copy, logging
 
 import assets, qt_itemedit, qt_itemeditoptions, saves
 from gui.common import inv_icon, ItemWidget, empty_slot
@@ -105,6 +105,7 @@ class ItemEdit():
         self.ui.remove_option_button.clicked.connect(self.remove_option)
         self.ui.edit_option_button.clicked.connect(self.edit_option)
         self.ui.export_button.clicked.connect(self.export_item)
+        self.ui.import_button.clicked.connect(self.import_item)
 
         self.ui.item_type.setFocus()
 
@@ -256,3 +257,31 @@ class ItemEdit():
             json_file = open(filename[0], "w")
             json_file.write(json_data)
             json_file.close()
+
+    def import_item(self):
+        filename = QFileDialog.getOpenFileName(self.dialog,
+                                               "Import Item File")
+        def parse():
+            try:
+                item_data = json.load(open(filename[0], "r"))
+            except:
+                logging.exception("Error parsing item: %s", filename[0])
+                return False
+            if "name" not in item_data:
+                return False
+            if "count" not in item_data:
+                item_data["count"] = 1
+            if "data" not in item_data:
+                item_data["data"] = {}
+            return item_data
+
+        item = parse()
+        if not item:
+            logging.warning("Invalid item file: %s", filename[0])
+            return
+        else:
+            self.ui.item_type.setText(item["name"])
+            self.item = item
+            self.ui.count.setValue(self.item["count"])
+            self.update_item_info(self.item["name"], self.item["data"])
+            self.populate_options()

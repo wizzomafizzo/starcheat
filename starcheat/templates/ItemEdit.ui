@@ -419,9 +419,6 @@
        </item>
        <item>
         <widget class="QToolButton" name="import_button">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
          <property name="toolTip">
           <string>Import Item From A File</string>
          </property>
@@ -434,10 +431,29 @@
          </property>
         </widget>
        </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </item>
      <item>
       <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
