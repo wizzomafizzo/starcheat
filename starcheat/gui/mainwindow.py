@@ -298,10 +298,17 @@ class MainWindow():
                 self.set_edited()
 
         def trash_slot():
-            logging.debug("Trashed item")
-            bag.setItem(row, column, empty_slot())
-            item_edit.dialog.close()
-            self.set_edited()
+            dialog = QMessageBox(item_edit.dialog)
+            dialog.setWindowTitle("Trash Item")
+            dialog.setText("Are you sure?")
+            dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            dialog.setDefaultButton(QMessageBox.No)
+            dialog.setIcon(QMessageBox.Question)
+            if dialog.exec() == QMessageBox.Yes:
+                logging.debug("Trashed item")
+                bag.setItem(row, column, empty_slot())
+                item_edit.dialog.close()
+                self.set_edited()
 
         item_edit.dialog.accepted.connect(update_slot)
         item_edit.ui.trash_button.clicked.connect(trash_slot)
