@@ -649,7 +649,14 @@ class Items():
         return generated_shield
 
     def generate_sapling(self, item):
-        return item[0]
+        sapling = {
+            "foliageHueShift": -0.0,
+            "foliageName": "brains",
+            "stemHueShift": -0.0,
+            "stemName": "metal"
+        }
+
+        return sapling
 
     def generate_filledcapturepod(self, item, player_uuid):
         filledcapturepod = {

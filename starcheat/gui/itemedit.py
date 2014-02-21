@@ -153,7 +153,6 @@ class ItemEdit():
                 name = options["itemName"]
             elif item[1].endswith("sapling"):
                 options = self.assets.items().generate_sapling(item)
-                name = options["itemName"]
             elif name == "filledcapturepod":
                 options = self.assets.items().generate_filledcapturepod(item,
                                                                         self.player.get_uuid())
