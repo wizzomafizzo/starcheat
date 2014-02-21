@@ -527,6 +527,7 @@ class MainWindow():
 
     def set_pixels(self):
         self.player.set_pixels(self.ui.pixels.value())
+        self.set_edited()
 
     # these update all values in a stat group at once
     def update_energy(self):
