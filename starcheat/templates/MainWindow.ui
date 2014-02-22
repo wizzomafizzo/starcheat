@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>731</width>
-    <height>526</height>
+    <height>497</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>731</width>
-    <height>526</height>
+    <height>497</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>731</width>
-    <height>526</height>
+    <height>497</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -916,7 +916,7 @@
        </layout>
       </item>
       <item>
-       <spacer name="verticalSpacer_5">
+       <spacer name="verticalSpacer_4">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -924,19 +924,6 @@
          <size>
           <width>20</width>
           <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <spacer name="verticalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>378</width>
-          <height>1</height>
          </size>
         </property>
        </spacer>
@@ -954,6 +941,12 @@
         </property>
         <item>
          <widget class="QLabel" name="action_bar_label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Action Bar</string>
           </property>
@@ -1110,7 +1103,7 @@
        </layout>
       </item>
       <item>
-       <spacer name="verticalSpacer_6">
+       <spacer name="verticalSpacer_5">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -1503,7 +1496,7 @@
       <property name="rightMargin">
        <number>2</number>
       </property>
-      <item row="12" column="1">
+      <item row="13" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLabel" name="food_val">
@@ -1554,6 +1547,9 @@
             <height>22</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>Fill Stomach</string>
+          </property>
           <property name="text">
            <string>...</string>
           </property>
@@ -1565,14 +1561,14 @@
         </item>
        </layout>
       </item>
-      <item row="13" column="0">
+      <item row="14" column="0">
        <widget class="QLabel" name="warmth_label">
         <property name="text">
          <string>Warmth</string>
         </property>
        </widget>
       </item>
-      <item row="13" column="1">
+      <item row="14" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
          <widget class="QLabel" name="warmth_val">
@@ -1682,7 +1678,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
+      <item row="8" column="0">
        <widget class="QLabel" name="health_label">
         <property name="text">
          <string>Health</string>
@@ -1716,7 +1712,7 @@
         </property>
        </widget>
       </item>
-      <item row="10" column="1">
+      <item row="11" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QLabel" name="energy_val">
@@ -1766,6 +1762,9 @@
             <width>22</width>
             <height>22</height>
            </size>
+          </property>
+          <property name="toolTip">
+           <string>Fill Energy</string>
           </property>
           <property name="text">
            <string>...</string>
@@ -1829,6 +1828,9 @@
         </item>
        </layout>
       </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="race"/>
+      </item>
       <item row="6" column="0">
        <widget class="QLabel" name="play_time_label">
         <property name="text">
@@ -1866,7 +1868,7 @@
         </item>
        </layout>
       </item>
-      <item row="8" column="1">
+      <item row="9" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="health_val">
@@ -1917,6 +1919,9 @@
             <height>22</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>Fill Health</string>
+          </property>
           <property name="text">
            <string>...</string>
           </property>
@@ -1928,24 +1933,21 @@
         </item>
        </layout>
       </item>
-      <item row="9" column="0">
+      <item row="10" column="0">
        <widget class="QLabel" name="energy_label">
         <property name="text">
          <string>Energy</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="race"/>
-      </item>
-      <item row="14" column="0">
+      <item row="15" column="0">
        <widget class="QLabel" name="breath_label">
         <property name="text">
          <string>Breath</string>
         </property>
        </widget>
       </item>
-      <item row="14" column="1">
+      <item row="15" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
          <widget class="QLabel" name="breath_val">
@@ -1996,6 +1998,9 @@
             <height>22</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>Fill Lungs</string>
+          </property>
           <property name="text">
            <string>...</string>
           </property>
@@ -2007,7 +2012,7 @@
         </item>
        </layout>
       </item>
-      <item row="9" column="1">
+      <item row="10" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_11">
         <item>
          <widget class="QSlider" name="energy">
@@ -2056,7 +2061,7 @@ border-radius: 4px;
         </item>
        </layout>
       </item>
-      <item row="7" column="1">
+      <item row="8" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_10">
         <item>
          <widget class="QSlider" name="health">
@@ -2152,13 +2157,10 @@ border-radius: 4px;
         </widget>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="game_mode_label">
+      <item row="13" column="0">
+       <widget class="QLabel" name="food_label">
         <property name="text">
-         <string>Game Mode</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <string>Hunger</string>
         </property>
        </widget>
       </item>
@@ -2169,7 +2171,27 @@ border-radius: 4px;
         </property>
        </widget>
       </item>
-      <item row="11" column="1">
+      <item row="5" column="0">
+       <widget class="QLabel" name="game_mode_label">
+        <property name="text">
+         <string>Game Mode</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QPlainTextEdit" name="description">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>44</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
          <widget class="QLabel" name="energy_regen_label">
@@ -2227,15 +2249,18 @@ border-radius: 4px;
         </item>
        </layout>
       </item>
-      <item row="12" column="0">
-       <widget class="QLabel" name="food_label">
-        <property name="text">
-         <string>Hunger</string>
+      <item row="7" column="0">
+       <spacer name="verticalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QPlainTextEdit" name="description"/>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
