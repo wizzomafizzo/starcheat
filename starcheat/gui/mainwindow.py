@@ -79,15 +79,6 @@ class MainWindow():
         self.ui.actionExport.triggered.connect(self.export_save)
         self.ui.actionExportJSON.triggered.connect(self.export_json)
 
-        # launch open file dialog
-        self.player = None
-        # we *need* at least an initial save file
-        logging.debug("Open file dialog")
-        open_player = self.open_file(skip_update=True)
-        if not open_player:
-            logging.warning("No player file selected")
-            return
-
         # populate species combobox
         for species in self.assets.species().get_species_list():
             self.ui.race.addItem(species)
@@ -95,18 +86,6 @@ class MainWindow():
         # populate game mode combobox
         for mode in self.assets.player().mode_types.values():
             self.ui.game_mode.addItem(mode)
-
-        # set up sliders to update values together
-        stats = "health", "energy"
-        for s in stats:
-            logging.debug("Setting up %s stat", s)
-            update = getattr(self, "update_" + s)
-            getattr(self.ui, s).valueChanged.connect(update)
-            getattr(self.ui, "max_" + s).valueChanged.connect(update)
-
-        self.ui.max_food.valueChanged.connect(self.set_edited)
-        self.ui.max_breath.valueChanged.connect(self.set_edited)
-        self.ui.max_warmth.valueChanged.connect(self.set_edited)
 
         # set up bag tables
         bags = "wieldable", "head", "chest", "legs", "back", "main_bag", "action_bar", "tile_bag"
@@ -130,7 +109,29 @@ class MainWindow():
         self.ui.play_time_button1.clicked.connect(lambda: self.inc_play_time(10*60))
         self.ui.play_time_button2.clicked.connect(lambda: self.inc_play_time(60*60))
 
-        self.update()
+        # set up stat signals
+        self.ui.health.valueChanged.connect(lambda: self.set_stat_slider("health"))
+        self.ui.max_health.valueChanged.connect(lambda: self.set_stat("health"))
+        self.ui.energy.valueChanged.connect(lambda: self.set_stat_slider("energy"))
+        self.ui.max_energy.valueChanged.connect(lambda: self.set_stat("energy"))
+        self.ui.max_food.valueChanged.connect(lambda: self.set_stat("food"))
+        self.ui.max_breath.valueChanged.connect(lambda: self.set_stat("breath"))
+        self.ui.max_warmth.valueChanged.connect(lambda: self.set_stat("warmth"))
+
+        self.ui.health_button.clicked.connect(lambda: self.max_stat("health"))
+        self.ui.energy_button.clicked.connect(lambda: self.max_stat("energy"))
+        self.ui.food_button.clicked.connect(lambda: self.max_stat("food"))
+        self.ui.breath_button.clicked.connect(lambda: self.max_stat("breath"))
+
+        # launch open file dialog
+        self.player = None
+        logging.debug("Open file dialog")
+        open_player = self.open_file()
+        # we *need* at least an initial save file
+        if not open_player:
+            logging.warning("No player file selected")
+            return
+
         self.ui.name.setFocus()
         self.window.setWindowModified(False)
 
@@ -173,43 +174,15 @@ class MainWindow():
         self.ui.play_time.setText(play_time)
 
         # stats
-        stats = "health", "energy"
-        for stat in stats:
-            try:
-                max_stat = getattr(self.player, "get_max_" + stat)()
-                getattr(self.ui, "max_" + stat).setValue(max_stat)
-                cur_stat = getattr(self.player, "get_" + stat)()
-                getattr(self.ui, stat).setMaximum(max_stat)
-                getattr(self.ui, stat).setValue(cur_stat[0])
-                getattr(self, "update_" + stat)()
-            except TypeError:
-                logging.exception("Unable to set %s", stat)
+        for stat in ["health", "energy", "food", "breath", "warmth"]:
+            max = getattr(self.player, "get_max_"+stat)()
+            getattr(self.ui, "max_"+stat).setValue(int(max))
+            self.update_stat(stat)
         # energy regen rate
         try:
             self.ui.energy_regen.setValue(self.player.get_energy_regen())
         except TypeError:
             logging.exception("Unable to set energy regen rate")
-        # breath
-        try:
-            max_food = self.player.get_max_food()
-            self.ui.max_food.setValue(max_food)
-            self.ui.food_val.setText(str(int(self.player.get_food()[0])) + " /")
-        except TypeError:
-            logging.exception("Unable to set food")
-        # warmth
-        try:
-            max_warmth = self.player.get_max_warmth()
-            self.ui.max_warmth.setValue(max_warmth)
-            self.ui.warmth_val.setText(str(int(self.player.get_warmth()[1])) + " /")
-        except TypeError:
-            logging.exception("Unable to set warmth")
-        # breath
-        try:
-            max_breath = self.player.get_max_breath()
-            self.ui.max_breath.setValue(max_breath)
-            self.ui.breath_val.setText(str(int(self.player.get_breath()[0])) + " /")
-        except TypeError:
-            logging.exception("Unable to set warmth")
 
         # equipment
         equip_bags = "head", "chest", "legs", "back"
@@ -242,21 +215,8 @@ class MainWindow():
         self.player.set_gender(self.get_gender())
         # game mode
         self.player.set_game_mode(self.assets.player().get_mode_type(self.ui.game_mode.currentText()))
-        # stats
-        stats = "health", "energy"
-        for s in stats:
-            current = getattr(self.ui, s).value()
-            maximum = getattr(self.ui, "max_" + s).value()
-            getattr(self.player, "set_" + s)(current, maximum)
-            getattr(self.player, "set_max_" + s)(maximum)
-        # food
-        self.player.set_max_food(self.ui.max_food.value())
         # energy regen rate
         self.player.set_energy_regen(self.ui.energy_regen.value())
-        # warmth
-        self.player.set_max_warmth(self.ui.max_warmth.value())
-        # breath
-        self.player.set_max_breath(self.ui.max_breath.value())
         # equipment
         equip_bags = "head", "chest", "legs", "back"
         for b in equip_bags:
@@ -368,7 +328,7 @@ class MainWindow():
         self.ui.statusbar.showMessage("Reloaded " + self.player.filename, 3000)
         self.window.setWindowModified(False)
 
-    def open_file(self, skip_update=False):
+    def open_file(self):
         """Display open file dialog and load selected save."""
         if self.window.isWindowModified():
             button = save_modified_dialog()
@@ -386,8 +346,7 @@ class MainWindow():
         else:
             self.player = character_select.selected
 
-        if not skip_update:
-            self.update()
+        self.update()
 
         self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
@@ -500,6 +459,53 @@ class MainWindow():
         self.update_player_preview()
         self.window.setWindowModified(True)
 
+    def inc_play_time(self, amount):
+        play_time = self.player.get_play_time() + float(amount)
+        self.player.set_play_time(play_time)
+        formatted = str(int(play_time/60)) + " mins"
+        self.ui.play_time.setText(formatted)
+        self.set_edited()
+
+    def set_pixels(self):
+        self.player.set_pixels(self.ui.pixels.value())
+        self.set_edited()
+
+    def max_stat(self, name):
+        """Set a stat's current value to its max value."""
+        max = getattr(self.ui, "max_"+name).value()
+        getattr(self.player, "set_"+name)(float(max), float(max))
+        self.update_stat(name)
+
+    def set_stat(self, name):
+        max = getattr(self.ui, "max_"+name).value()
+        logging.debug("Setting max %s", name)
+        getattr(self.player, "set_max_"+name)(float(max))
+        self.update_stat(name)
+
+    def set_stat_slider(self, name):
+        current = getattr(self.ui, name).value()
+        max = getattr(self.player, "get_max_"+name)()
+        getattr(self.player, "set_"+name)(float(current), max)
+        self.update_stat(name)
+
+    def update_stat(self, name):
+        try:
+            max = int(getattr(self.player, "get_max_"+name)())
+            if name == "warmth":
+                current = int(getattr(self.player, "get_"+name)()[1])
+            else:
+                current = int(getattr(self.player, "get_"+name)()[0])
+
+            getattr(self.ui, name+"_val").setText(str(current) + " /")
+
+            if name == "health" or name == "energy":
+                getattr(self.ui, name).setMaximum(max)
+                getattr(self.ui, name).setValue(current)
+
+            self.set_edited()
+        except TypeError:
+            logging.exception("Unable to set stat %s", name)
+
     # these are used for connecting the item edit dialog to bag tables
     def new_main_bag_item_edit(self):
         self.new_item_edit(self.ui.main_bag)
@@ -517,24 +523,3 @@ class MainWindow():
         self.new_item_edit(self.ui.back)
     def new_wieldable_item_edit(self):
         self.new_item_edit(self.ui.wieldable)
-
-    def inc_play_time(self, amount):
-        play_time = self.player.get_play_time() + float(amount)
-        self.player.set_play_time(play_time)
-        formatted = str(int(play_time/60)) + " mins"
-        self.ui.play_time.setText(formatted)
-        self.set_edited()
-
-    def set_pixels(self):
-        self.player.set_pixels(self.ui.pixels.value())
-        self.set_edited()
-
-    # these update all values in a stat group at once
-    def update_energy(self):
-        self.ui.energy.setMaximum(self.ui.max_energy.value())
-        self.ui.energy_val.setText(str(self.ui.energy.value()) + " /")
-        self.set_edited()
-    def update_health(self):
-        self.ui.health.setMaximum(self.ui.max_health.value())
-        self.ui.health_val.setText(str(self.ui.health.value()) + " /")
-        self.set_edited()

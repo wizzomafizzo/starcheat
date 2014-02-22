@@ -578,6 +578,10 @@ class PlayerSave():
         self.entity["status"]["warmthSchema"]["max"] = float(max)
         self.entity["statusParameters"]["baseMaxWarmth"] = float(max)
 
+    def set_breath(self, current, max):
+        self.entity["status"]["breathSchema"]["max"] = float(max)
+        self.entity["status"]["breathSchema"]["value"] = float(current)
+
     def set_max_breath(self, max):
         self.entity["status"]["breathSchema"]["max"] = float(max)
         self.entity["statusParameters"]["baseMaxBreath"] = float(max)
