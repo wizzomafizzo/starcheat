@@ -26,13 +26,13 @@ ignore_items = re.compile(".*\.(png|config|frames)", re.IGNORECASE)
 def parse_json(content, key):
     if key.endswith(".grapplinghook"):
         content = content.replace("[-.", "[-0.")
-
+    decoder = json.JSONDecoder(None,None,None,None,False,None)
     # Looking for comments
     # Allows for // inside of the " " JSON data
     content = comment_re.sub(lambda m: m.group(1) or '', content)
 
     # Return json file
-    return json.loads(content)
+    return decoder.decode(content)
 
 def load_asset_file(filename):
     with open(filename) as f:
