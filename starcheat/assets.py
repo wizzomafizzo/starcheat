@@ -141,6 +141,7 @@ class Assets():
             mod_assets = None
             files = os.listdir(folder)
             logging.debug(files)
+            foundModInfo = False #will need more logic to handle .modpack with modinfo inside.
             for f in files:
                 if f.endswith(".modinfo"):
                     modinfo = os.path.join(folder, f)
@@ -148,6 +149,7 @@ class Assets():
                         modinfo_data = load_asset_file(modinfo)
                         path = modinfo_data["path"]
                         mod_assets = os.path.join(folder, path)
+                        foundModInfo = True
                     except ValueError:
                         # really old mods
                         folder = os.path.join(folder, "assets")
@@ -157,7 +159,7 @@ class Assets():
 
             if mod_assets == None:
                 return index
-            elif mod_assets.endswith(".pak"): #TODO: make a .pak scanner function that works for vanilla and mods
+            elif foundModInfo and self.is_packed_file(mod_assets): #TODO: make a .pak scanner function that works for vanilla and mods
                 pak_path = os.path.normpath(mod_assets)
                 pak_file = open(pak_path, 'rb')
                 bf = BlockFile(pak_file)
@@ -179,8 +181,17 @@ class Assets():
                         index.append((asset_file, asset_folder))
             return index
 
+    
+    def is_packed_file(self, path):
+        """ 
+            Returns true if the asset path is a file (will be assuming from the index that it is a packed type)
+            Returns false if the asset path is a folder (legacy/non-packed mods)
+        """
+        return os.path.isfile(path)
+    
     def read(self, key, path, image=False):
-        if path.endswith(".pak"):
+        if self.is_packed_file(path): 
+            key = key.lower()
             pak_file = open(path, 'rb')
             bf = BlockFile(pak_file)
             db = AssetDatabase(bf)
