@@ -85,17 +85,19 @@ class Assets():
             yield (asset[0], asset[1])
 
             tmp_data = None
-            if asset[0].endswith(".png"):
-                tmp_data = (asset[0], asset[1], "image", "", "", "")
-            elif blueprints.is_blueprint(asset[0]):
-                tmp_data = blueprints.index_data(asset)
-            elif species.is_species(asset[0]):
-                tmp_data = species.index_data(asset)
-            elif items.is_item(asset[0]):
-                tmp_data = items.index_data(asset)
-            elif monsters.is_monster(asset[0]):
-                tmp_data = monsters.index_data(asset)
-
+            if os.path.splitext(asset[0])[1] != '':
+                if asset[0].endswith(".png"):
+                    tmp_data = (asset[0], asset[1], "image", "", "", "")
+                elif blueprints.is_blueprint(asset[0]):
+                    tmp_data = blueprints.index_data(asset)
+                elif species.is_species(asset[0]):
+                    tmp_data = species.index_data(asset)
+                elif items.is_item(asset[0]):
+                    tmp_data = items.index_data(asset)
+                elif monsters.is_monster(asset[0]):
+                    tmp_data = monsters.index_data(asset)
+            else:
+                logging.warning("Skipping invalid asset (no file extension) %s in %s" % (asset[0], asset[1]))
             if tmp_data != None:
                 c.execute(new_index_query, tmp_data)
 
@@ -282,7 +284,7 @@ class Blueprints():
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
-        name = os.path.basename(asset[0]).split(".")[0]
+        name = os.path.splitext(asset[0])[1]
         asset_type = "blueprint"
         asset_data = self.assets.read(key, path)
 
@@ -330,7 +332,7 @@ class Items():
         key = asset[0]
         path = asset[1]
         asset_type = "item"
-        category = os.path.basename(asset[0]).split(".")[1]
+        category = os.path.splitext(asset[0])[1]
         asset_data = self.assets.read(key, path)
 
         if asset_data == None: return
