@@ -20,7 +20,7 @@ comment_re = re.compile(
     re.DOTALL | re.MULTILINE
 )
 
-ignore_assets = re.compile(".*\.(db|ds_store)", re.IGNORECASE)
+ignore_assets = re.compile(".*\.(db|ds_store|ini)", re.IGNORECASE)
 ignore_items = re.compile(".*\.(png|config|frames)", re.IGNORECASE)
 
 def parse_json(content, key):
@@ -189,7 +189,7 @@ class Assets():
             try:
                 data = db[key]
             except KeyError:
-                logging.warning("Unable to read db asset '%s' from '%s'" % (key, path))
+                logging.exception("Unable to read db asset '%s' from '%s'" % (key, path))
                 return None
 
             if image:
@@ -199,7 +199,7 @@ class Assets():
                     asset = parse_json(data.decode("utf-8"), key)
                     return asset
                 except ValueError:
-                    logging.warning("Unable to read db asset '%s' from '%s'" % (key, path))
+                    logging.exception("Unable to read db asset '%s' from '%s'" % (key, path))
                     return None
         else:
             asset_file = os.path.join(path, key[1:])
@@ -210,7 +210,7 @@ class Assets():
                     asset = load_asset_file(asset_file)
                     return asset
             except (FileNotFoundError, ValueError):
-                logging.warning("Unable to read asset file '%s' from '%s'" % (key, path))
+                logging.exception("Unable to read asset file '%s' from '%s'" % (key, path))
                 return None
 
     def blueprints(self):
@@ -337,7 +337,7 @@ class Items():
             desc = asset_data["shortdescription"]
 
         if not name:
-            logging.warning("Invalid item: %s" % key)
+            logging.warning("Skipping invalid item asset (no name set) %s in %s" % (key, path))
             return
         else:
             if key.endswith(".techitem"):
@@ -708,7 +708,7 @@ class Species():
         if "kind" in asset_data:
             return (key, path, "species", "", asset_data["kind"].lower(), "")
         else:
-            logging.warning("Invalid species: %s" % key)
+            logging.warning("Invalid species asset (no kind key) %s in %s" % (key, path))
 
     def get_species_list(self):
         """Return a formatted list of all species."""
