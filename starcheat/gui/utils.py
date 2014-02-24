@@ -311,13 +311,6 @@ class CharacterSelectDialog():
         self.ui.total_label.setText(str(total) + " total")
         self.ui.player_list.setCurrentRow(0)
 
-    def manual_select(self):
-        manual_select = QFileDialog.getOpenFileName(None,
-                                                    "Select player save file...",
-                                                    self.player_folder,
-                                                    "*.player")
-        return manual_select
-
     def show(self):
         # quit if there are no players
         if len(self.players) == 0:
@@ -326,8 +319,5 @@ class CharacterSelectDialog():
             dialog.setInformativeText(self.player_folder)
             dialog.setIcon(QMessageBox.Warning)
             dialog.exec()
-            manual_player = self.manual_select()
-            if manual_player[0] != "":
-                self.selected = saves.PlayerSave(manual_player[0])
         else:
             self.dialog.exec()
