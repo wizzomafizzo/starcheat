@@ -540,7 +540,8 @@ class PlayerSave():
     # references to species
     def set_race(self, race):
         if race == "":
-            race = "dummy"
+            logging.warning("Attempted to save empty race, asset index may be corrupt")
+            return
         self.entity["identity"]["species"] = race.lower()
 
     def set_pixels(self, pixels):
