@@ -78,6 +78,7 @@ class MainWindow():
         # won't be populated until the file is actually saved
         self.ui.actionExport.triggered.connect(self.export_save)
         self.ui.actionExportJSON.triggered.connect(self.export_json)
+        self.ui.actionImportJSON.triggered.connect(self.import_json)
 
         # populate species combobox
         for species in self.assets.species().get_species_list():
@@ -374,6 +375,26 @@ class MainWindow():
             json_file.write(json_data)
             json_file.close()
             self.ui.statusbar.showMessage("Exported JSON file to " + filename[0], 3000)
+
+    def import_json(self):
+        """Import an exported JSON player entity and merge/update with open player."""
+        filename = QFileDialog.getOpenFileName(self.window,
+                                               "Import JSON Player File")
+
+        print(filename)
+
+        if filename[0] == "":
+            logging.debug("No player file selected to import")
+            return
+
+        try:
+            player_data = json.load(open(filename[0], "r"))
+            self.player.entity.update(player_data)
+            self.update()
+            self.ui.statusbar.showMessage("Imported player file " + filename[0], 3000)
+        except:
+            logging.exception("Error parsing player: %s", filename[0])
+            self.ui.statusbar.showMessage("Error importing player, see starcheat log for details", 3000)
 
     def get_gender(self):
         if self.ui.male.isChecked():

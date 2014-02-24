@@ -2291,6 +2291,7 @@ border-radius: 4px;
     <addaction name="actionSave"/>
     <addaction name="actionExport"/>
     <addaction name="actionExportJSON"/>
+    <addaction name="actionImportJSON"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -2517,7 +2518,7 @@ border-radius: 4px;
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Export As JSON...</string>
+    <string>Export JSON...</string>
    </property>
    <property name="statusTip">
     <string>Export a copy of the current save as a JSON text file</string>
@@ -2526,6 +2527,14 @@ border-radius: 4px;
   <action name="actionManage_Appearance">
    <property name="text">
     <string>Manage Appearance</string>
+   </property>
+  </action>
+  <action name="actionImportJSON">
+   <property name="text">
+    <string>Import JSON...</string>
+   </property>
+   <property name="statusTip">
+    <string>Import a JSON player file and merge with the current player</string>
    </property>
   </action>
  </widget>
