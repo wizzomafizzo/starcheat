@@ -74,8 +74,6 @@ class MainWindow():
         self.ui.actionOptions.triggered.connect(self.new_options_dialog)
         self.ui.actionItemBrowser.triggered.connect(self.new_item_browser)
         self.ui.actionAbout.triggered.connect(self.new_about_dialog)
-        # BUG: these export the current values in self.player but a lot of that
-        # won't be populated until the file is actually saved
         self.ui.actionExport.triggered.connect(self.export_save)
         self.ui.actionExportJSON.triggered.connect(self.export_json)
         self.ui.actionImportJSON.triggered.connect(self.import_json)
@@ -99,13 +97,14 @@ class MainWindow():
 
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.appearance_button.clicked.connect(self.new_appearance_dialog)
-        self.ui.name.textChanged.connect(self.set_edited)
+        self.ui.name.textChanged.connect(self.set_name)
         self.ui.race.currentTextChanged.connect(self.update_species)
-        self.ui.male.clicked.connect(self.update_player_preview)
-        self.ui.female.clicked.connect(self.update_player_preview)
-        self.ui.description.textChanged.connect(self.set_edited)
+        self.ui.male.clicked.connect(self.set_gender)
+        self.ui.female.clicked.connect(self.set_gender)
+        self.ui.description.textChanged.connect(self.set_description)
         self.ui.pixels.valueChanged.connect(self.set_pixels)
-        self.ui.game_mode.currentTextChanged.connect(self.set_edited)
+        self.ui.game_mode.currentTextChanged.connect(self.set_game_mode)
+        self.ui.energy_regen.valueChanged.connect(self.set_energy_regen)
 
         self.ui.play_time_button1.clicked.connect(lambda: self.inc_play_time(10*60))
         self.ui.play_time_button2.clicked.connect(lambda: self.inc_play_time(60*60))
@@ -206,27 +205,7 @@ class MainWindow():
     def save(self):
         """Update internal player dict with GUI values and export to file."""
         logging.info("Saving player file %s", self.player.filename)
-        # name
-        self.player.set_name(self.ui.name.text())
-        # species
-        self.player.set_race(self.ui.race.currentText())
-        # description
-        self.player.set_description(self.ui.description.toPlainText())
-        # gender
-        self.player.set_gender(self.get_gender())
-        # game mode
-        self.player.set_game_mode(self.assets.player().get_mode_type(self.ui.game_mode.currentText()))
-        # energy regen rate
-        self.player.set_energy_regen(self.ui.energy_regen.value())
-        # equipment
-        equip_bags = "head", "chest", "legs", "back"
-        for b in equip_bags:
-            bag = self.get_equip(b)
-            getattr(self.player, "set_" + b)(bag[0], bag[1])
-        # bags
-        bags = "wieldable", "main_bag", "tile_bag", "action_bar"
-        for b in bags:
-            getattr(self.player, "set_" + b)(self.get_bag(b))
+        self.set_bags()
         # save and show status
         logging.info("Writing file to disk")
         logging.debug(self.player.data)
@@ -360,11 +339,13 @@ class MainWindow():
         filename = QFileDialog.getSaveFileName(self.window,
                                                "Export Save File As")
         if filename[0] != "":
+            self.set_bags()
             self.player.export_save(filename[0])
             self.ui.statusbar.showMessage("Exported save file to " + filename[0], 3000)
 
     def export_json(self):
         """Export player entity as json."""
+        self.set_bags()
         entity = self.player.entity
         json_data = json.dumps(entity, sort_keys=True,
                                indent=4, separators=(',', ': '))
@@ -380,8 +361,6 @@ class MainWindow():
         """Import an exported JSON player entity and merge/update with open player."""
         filename = QFileDialog.getOpenFileName(self.window,
                                                "Import JSON Player File")
-
-        print(filename)
 
         if filename[0] == "":
             logging.debug("No player file selected to import")
@@ -490,6 +469,40 @@ class MainWindow():
     def set_pixels(self):
         self.player.set_pixels(self.ui.pixels.value())
         self.set_edited()
+
+    def set_name(self):
+        self.player.set_name(self.ui.name.text())
+        self.set_edited()
+
+    def set_description(self):
+        self.player.set_description(self.ui.description.toPlainText())
+        self.set_edited()
+
+    def set_gender(self):
+        self.player.set_gender(self.get_gender())
+        self.update_player_preview()
+        self.set_edited()
+
+    def set_game_mode(self):
+        self.player.set_game_mode(self.assets.player().get_mode_type(self.ui.game_mode.currentText()))
+        self.set_edited()
+
+    def set_energy_regen(self):
+        self.player.set_energy_regen(self.ui.energy_regen.value())
+        self.set_edited()
+
+    def set_bags(self):
+        # this function mostly just exist to work around the bug of
+        # dragndrop not updating player entity. this requires the table view
+        # equipment
+        equip_bags = "head", "chest", "legs", "back"
+        for b in equip_bags:
+            bag = self.get_equip(b)
+            getattr(self.player, "set_" + b)(bag[0], bag[1])
+        # bags
+        bags = "wieldable", "main_bag", "tile_bag", "action_bar"
+        for b in bags:
+            getattr(self.player, "set_" + b)(self.get_bag(b))
 
     def max_stat(self, name):
         """Set a stat's current value to its max value."""
