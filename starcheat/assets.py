@@ -183,16 +183,16 @@ class Assets():
                         index.append((asset_file, asset_folder))
             return index
 
-    
+
     def is_packed_file(self, path):
-        """ 
+        """
             Returns true if the asset path is a file (will be assuming from the index that it is a packed type)
             Returns false if the asset path is a folder (legacy/non-packed mods)
         """
         return os.path.isfile(path)
-    
+
     def read(self, key, path, image=False):
-        if self.is_packed_file(path): 
+        if self.is_packed_file(path):
             key = key.lower()
             pak_file = open(path, 'rb')
             bf = BlockFile(pak_file)
@@ -322,6 +322,8 @@ class Items():
         if key.endswith(".object"):
             return True
         elif key.endswith(".techitem"):
+            return True
+        elif key.endswith(".codexitem"):
             return True
         elif key.startswith("items", 1) and re.match(ignore_items, key) == None:
             return True
