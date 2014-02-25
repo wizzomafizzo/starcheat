@@ -1654,7 +1654,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="gender_label">
         <property name="text">
          <string>Gender</string>
@@ -1664,7 +1664,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="race_label">
         <property name="text">
          <string>Species</string>
@@ -1740,68 +1740,7 @@
        </layout>
       </item>
       <item row="6" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QLabel" name="play_time">
-          <property name="text">
-           <string>0 mins</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="play_time_button1">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>22</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Skip 10 Minutes</string>
-          </property>
-          <property name="text">
-           <string>...</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../resources.qrc">
-            <normaloff>:/starcheat/images/icons/glyphicons_halflings_074_forward.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_074_forward.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="play_time_button2">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="toolTip">
-           <string>Skip An Hour</string>
-          </property>
-          <property name="text">
-           <string>...</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../resources.qrc">
-            <normaloff>:/starcheat/images/icons/glyphicons_halflings_075_fast-forward.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_075_fast-forward.png</iconset>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="4" column="1">
        <widget class="QComboBox" name="race"/>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="play_time_label">
-        <property name="text">
-         <string>Play Time</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
       </item>
       <item row="1" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -2069,7 +2008,7 @@ border-radius: 4px;
         </item>
        </layout>
       </item>
-      <item row="3" column="1">
+      <item row="5" column="1">
        <widget class="QWidget" name="gender_group" native="true">
         <property name="minimumSize">
          <size>
@@ -2123,23 +2062,6 @@ border-radius: 4px;
        <widget class="QLabel" name="food_label">
         <property name="text">
          <string>Hunger</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QComboBox" name="game_mode">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="game_mode_label">
-        <property name="text">
-         <string>Game Mode</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
@@ -2217,6 +2139,19 @@ border-radius: 4px;
         </item>
        </layout>
       </item>
+      <item row="4" column="0">
+       <spacer name="verticalSpacer_7">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="7" column="0">
        <spacer name="verticalSpacer_6">
         <property name="orientation">
@@ -2229,6 +2164,23 @@ border-radius: 4px;
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="game_mode_label">
+        <property name="text">
+         <string>Game Mode</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="game_mode">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

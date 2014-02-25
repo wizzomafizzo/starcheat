@@ -106,9 +106,6 @@ class MainWindow():
         self.ui.game_mode.currentTextChanged.connect(self.set_game_mode)
         self.ui.energy_regen.valueChanged.connect(self.set_energy_regen)
 
-        self.ui.play_time_button1.clicked.connect(lambda: self.inc_play_time(10*60))
-        self.ui.play_time_button2.clicked.connect(lambda: self.inc_play_time(60*60))
-
         # set up stat signals
         self.ui.health.valueChanged.connect(lambda: self.set_stat_slider("health"))
         self.ui.max_health.valueChanged.connect(lambda: self.set_stat("health"))
@@ -168,10 +165,6 @@ class MainWindow():
             self.ui.game_mode.setCurrentText(self.assets.player().mode_types[game_mode])
         except KeyError:
             logging.exception("No game mode set on player")
-        # play time
-        # TODO: there must be a datetime function for doing this stuff
-        play_time = str(int(self.player.get_play_time()/60)) + " mins"
-        self.ui.play_time.setText(play_time)
 
         # stats
         for stat in ["health", "energy", "food", "breath", "warmth"]:
@@ -458,13 +451,6 @@ class MainWindow():
             getattr(self.player, "set_%s_directives" % key)(defaults[key])
         self.update_player_preview()
         self.window.setWindowModified(True)
-
-    def inc_play_time(self, amount):
-        play_time = self.player.get_play_time() + float(amount)
-        self.player.set_play_time(play_time)
-        formatted = str(int(play_time/60)) + " mins"
-        self.ui.play_time.setText(formatted)
-        self.set_edited()
 
     def set_pixels(self):
         self.player.set_pixels(self.ui.pixels.value())
