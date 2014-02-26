@@ -212,9 +212,11 @@ class Assets():
             try:
                 data = db[key]
             except KeyError:
-                logging.exception("Unable to read db asset '%s' from '%s'" % (key, path))
-                return None
-
+                if image and path != self.vanilla_assets:
+                    return self.read(key, self.vanilla_assets, image)
+                else:
+                    logging.exception("Unable to read db asset '%s' from '%s'" % (key, path))
+                    return None
             if image:
                 return data
             else:
@@ -233,8 +235,14 @@ class Assets():
                     asset = load_asset_file(asset_file)
                     return asset
             except (FileNotFoundError, ValueError):
-                logging.exception("Unable to read asset file '%s' from '%s'" % (key, path))
-                return None
+                if image and path != self.vanilla_assets:
+                    if self.is_packed_file(self.vanilla_assets):
+                        return self.read(key.replace("\\", "/"), self.vanilla_assets, image)
+                    else:
+                        return self.read(key, self.vanilla_assets, image)
+                else:
+                    logging.exception("Unable to read asset file '%s' from '%s'" % (key, path))
+                    return None
 
     def blueprints(self):
         return Blueprints(self)
