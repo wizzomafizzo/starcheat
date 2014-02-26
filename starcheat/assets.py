@@ -47,6 +47,16 @@ def read_default_color(species_data):
         color.append([group, species_data[0][group]])
     return color
 
+def asset_category(keyStr):
+    """
+    Returns the asset key extension as the category
+    :param keyStr: the asset's key.
+    """
+    extension = os.path.splitext(keyStr)[1]
+    if extension == '':
+        return ''
+    else:
+        return extension[1:] #removes the . from the extension
 class Assets():
     def __init__(self, db_file, starbound_folder):
         self.starbound_folder = starbound_folder
@@ -85,7 +95,7 @@ class Assets():
             yield (asset[0], asset[1])
 
             tmp_data = None
-            if os.path.splitext(asset[0])[1] != '':
+            if asset_category(asset[0]) != '':
                 if asset[0].endswith(".png"):
                     tmp_data = (asset[0], asset[1], "image", "", "", "")
                 elif blueprints.is_blueprint(asset[0]):
@@ -284,7 +294,7 @@ class Blueprints():
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
-        name = os.path.splitext(asset[0])[1]
+        name = asset_category(key)
         asset_type = "blueprint"
         asset_data = self.assets.read(key, path)
 
@@ -334,7 +344,7 @@ class Items():
         key = asset[0]
         path = asset[1]
         asset_type = "item"
-        category = os.path.splitext(asset[0])[1]
+        category = asset_category(key)
         asset_data = self.assets.read(key, path)
 
         if asset_data == None: return
