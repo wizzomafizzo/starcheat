@@ -821,10 +821,7 @@
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QPushButton" name="blueprints_button_2">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
+             <widget class="QPushButton" name="techs_button">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                 <horstretch>0</horstretch>
@@ -1655,16 +1652,6 @@
        </widget>
       </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="gender_label">
-        <property name="text">
-         <string>Gender</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
        <widget class="QLabel" name="race_label">
         <property name="text">
          <string>Species</string>
@@ -1739,7 +1726,7 @@
         </item>
        </layout>
       </item>
-      <item row="6" column="1">
+      <item row="5" column="1">
        <widget class="QComboBox" name="race"/>
       </item>
       <item row="1" column="1">
@@ -2008,56 +1995,6 @@ border-radius: 4px;
         </item>
        </layout>
       </item>
-      <item row="5" column="1">
-       <widget class="QWidget" name="gender_group" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>30</height>
-         </size>
-        </property>
-        <widget class="QRadioButton" name="male">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>91</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Male</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources.qrc">
-           <normaloff>:/starcheat/images/icons/glyphicons_003_user.png</normaloff>:/starcheat/images/icons/glyphicons_003_user.png</iconset>
-         </property>
-        </widget>
-        <widget class="QRadioButton" name="female">
-         <property name="geometry">
-          <rect>
-           <x>90</x>
-           <y>0</y>
-           <width>111</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Female</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources.qrc">
-           <normaloff>:/starcheat/images/icons/glyphicons_004_girl.png</normaloff>:/starcheat/images/icons/glyphicons_004_girl.png</iconset>
-         </property>
-        </widget>
-       </widget>
-      </item>
       <item row="13" column="0">
        <widget class="QLabel" name="food_label">
         <property name="text">
@@ -2139,19 +2076,6 @@ border-radius: 4px;
         </item>
        </layout>
       </item>
-      <item row="4" column="0">
-       <spacer name="verticalSpacer_7">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="7" column="0">
        <spacer name="verticalSpacer_6">
         <property name="orientation">
@@ -2181,6 +2105,79 @@ border-radius: 4px;
          <bool>true</bool>
         </property>
        </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="gender_label">
+        <property name="text">
+         <string>Gender</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QWidget" name="gender_group" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>30</height>
+         </size>
+        </property>
+        <widget class="QRadioButton" name="male">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Male</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/starcheat/images/icons/glyphicons_003_user.png</normaloff>:/starcheat/images/icons/glyphicons_003_user.png</iconset>
+         </property>
+        </widget>
+        <widget class="QRadioButton" name="female">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>0</y>
+           <width>111</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Female</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/starcheat/images/icons/glyphicons_004_girl.png</normaloff>:/starcheat/images/icons/glyphicons_004_girl.png</iconset>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <spacer name="verticalSpacer_7">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
@@ -2454,32 +2451,40 @@ border-radius: 4px;
  </widget>
  <tabstops>
   <tabstop>name</tabstop>
+  <tabstop>name_button</tabstop>
+  <tabstop>description</tabstop>
+  <tabstop>game_mode</tabstop>
   <tabstop>race</tabstop>
   <tabstop>male</tabstop>
   <tabstop>female</tabstop>
   <tabstop>health</tabstop>
   <tabstop>max_health</tabstop>
+  <tabstop>health_button</tabstop>
   <tabstop>energy</tabstop>
   <tabstop>max_energy</tabstop>
+  <tabstop>energy_button</tabstop>
   <tabstop>energy_regen</tabstop>
   <tabstop>max_food</tabstop>
+  <tabstop>food_button</tabstop>
   <tabstop>max_warmth</tabstop>
   <tabstop>max_breath</tabstop>
-  <tabstop>back</tabstop>
-  <tabstop>wieldable</tabstop>
+  <tabstop>breath_button</tabstop>
   <tabstop>head</tabstop>
+  <tabstop>wieldable</tabstop>
+  <tabstop>back</tabstop>
+  <tabstop>inv_tabs</tabstop>
+  <tabstop>techs_button</tabstop>
+  <tabstop>action_bar</tabstop>
+  <tabstop>main_bag</tabstop>
   <tabstop>chest</tabstop>
   <tabstop>legs</tabstop>
-  <tabstop>pixels</tabstop>
-  <tabstop>appearance_button</tabstop>
-  <tabstop>blueprints_button</tabstop>
-  <tabstop>action_bar</tabstop>
-  <tabstop>inv_tabs</tabstop>
-  <tabstop>main_bag</tabstop>
-  <tabstop>blueprints_button</tabstop>
-  <tabstop>pixels</tabstop>
   <tabstop>tile_bag</tabstop>
+  <tabstop>blueprints_button</tabstop>
   <tabstop>appearance_button</tabstop>
+  <tabstop>blueprints_button</tabstop>
+  <tabstop>appearance_button</tabstop>
+  <tabstop>pixels</tabstop>
+  <tabstop>pixels</tabstop>
  </tabstops>
  <resources>
   <include location="../resources.qrc"/>

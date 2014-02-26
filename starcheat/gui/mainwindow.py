@@ -16,6 +16,7 @@ from gui.itemedit import ItemEdit
 from gui.blueprints import BlueprintLib
 from gui.itembrowser import ItemBrowser
 from gui.appearance import Appearance
+from gui.techs import Techs
 
 class StarcheatMainWindow(QMainWindow):
     """Overrides closeEvent on the main window to allow "want to save changes?" dialog"""
@@ -97,6 +98,8 @@ class MainWindow():
 
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.appearance_button.clicked.connect(self.new_appearance_dialog)
+        self.ui.techs_button.clicked.connect(self.new_techs_dialog)
+
         self.ui.name.textChanged.connect(self.set_name)
         self.ui.race.currentTextChanged.connect(self.update_species)
         self.ui.male.clicked.connect(self.set_gender)
@@ -292,6 +295,10 @@ class MainWindow():
         appearance_dialog = Appearance(self)
         appearance_dialog.dialog.accepted.connect(appearance_dialog.write_appearance_values)
         appearance_dialog.dialog.exec()
+
+    def new_techs_dialog(self):
+        techs_dialog = Techs(self)
+        techs_dialog.dialog.exec()
 
     def reload(self):
         """Reload the currently open save file and update GUI values."""

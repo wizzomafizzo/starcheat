@@ -20,7 +20,7 @@ comment_re = re.compile(
     re.DOTALL | re.MULTILINE
 )
 
-ignore_assets = re.compile(".*\.(db|ds_store|ini)", re.IGNORECASE)
+ignore_assets = re.compile(".*\.(db|ds_store|ini|psd)", re.IGNORECASE)
 ignore_items = re.compile(".*\.(png|config|frames)", re.IGNORECASE)
 
 def parse_json(content, key):
@@ -87,6 +87,7 @@ class Assets():
         items = Items(self)
         species = Species(self)
         monsters = Monsters(self)
+        techs = Techs(self)
 
         new_index_query = "insert into assets values (?, ?, ?, ?, ?, ?)"
         c = self.db.cursor()
@@ -95,6 +96,7 @@ class Assets():
             yield (asset[0], asset[1])
 
             tmp_data = None
+
             if asset_category(asset[0]) != '':
                 if asset[0].endswith(".png"):
                     tmp_data = (asset[0], asset[1], "image", "", "", "")
@@ -106,8 +108,11 @@ class Assets():
                     tmp_data = items.index_data(asset)
                 elif monsters.is_monster(asset[0]):
                     tmp_data = monsters.index_data(asset)
+                elif techs.is_tech(asset[0]):
+                    tmp_data = techs.index_data(asset)
             else:
                 logging.warning("Skipping invalid asset (no file extension) %s in %s" % (asset[0], asset[1]))
+
             if tmp_data != None:
                 c.execute(new_index_query, tmp_data)
 
@@ -152,8 +157,11 @@ class Assets():
             index = []
             mod_assets = None
             files = os.listdir(folder)
+
             logging.debug(files)
-            foundModInfo = False #will need more logic to handle .modpack with modinfo inside.
+
+            found_mod_info = False #will need more logic to handle .modpack with modinfo inside.
+
             for f in files:
                 if f.endswith(".modinfo"):
                     modinfo = os.path.join(folder, f)
@@ -161,7 +169,7 @@ class Assets():
                         modinfo_data = load_asset_file(modinfo)
                         path = modinfo_data["path"]
                         mod_assets = os.path.join(folder, path)
-                        foundModInfo = True
+                        found_mod_info = True
                     except ValueError:
                         # really old mods
                         folder = os.path.join(folder, "assets")
@@ -171,14 +179,16 @@ class Assets():
 
             if mod_assets == None:
                 return index
-            elif foundModInfo and self.is_packed_file(mod_assets): #TODO: make a .pak scanner function that works for vanilla and mods
+            elif found_mod_info and self.is_packed_file(mod_assets):
+                # TODO: make a .pak scanner function that works for vanilla and mods
                 pak_path = os.path.normpath(mod_assets)
                 pak_file = open(pak_path, 'rb')
                 bf = BlockFile(pak_file)
                 db = AssetDatabase(bf)
                 db.open()
                 for x in db.getFileList():
-                    if re.match(ignore_assets, x) == None: #removes thumbs.db etc from user pak files
+                    # removes thumbs.db etc from user pak files
+                    if re.match(ignore_assets, x) == None:
                         index.append((x, pak_path))
                 return index
             elif not os.path.isdir(mod_assets):
@@ -258,6 +268,9 @@ class Assets():
 
     def monsters(self):
         return Monsters(self)
+
+    def techs(self):
+        return Techs(self)
 
     def get_all(self, asset_type):
         c = self.assets.db.cursor()
@@ -925,6 +938,32 @@ class Monsters():
         # okay, so i can't figure out exactly what this should be, but this
         # number seems to cause no crashes so far
         return str(random.randint(1, 9999999999999999999))
+
+class Techs():
+    def __init__(self, assets):
+        self.assets = assets
+        self.starbound_folder = assets.starbound_folder
+
+    def is_tech(self, key):
+        if key.endswith(".tech"):
+            return True
+        else:
+            return False
+
+    def index_data(self, asset):
+        key = asset[0]
+        path = asset[1]
+        asset_data = self.assets.read(key, path)
+
+        if asset_data == None: return
+
+        return (key, path, "tech", "", "", "")
+
+    def all(self):
+        """Return a list of all unique techs."""
+        c = self.assets.db.cursor()
+        c.execute("select distinct name from assets where type = 'tech' order by name")
+        return c.fetchall()
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
