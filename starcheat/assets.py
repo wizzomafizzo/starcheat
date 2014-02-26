@@ -23,6 +23,8 @@ comment_re = re.compile(
 ignore_assets = re.compile(".*\.(db|ds_store|ini)", re.IGNORECASE)
 ignore_items = re.compile(".*\.(png|config|frames)", re.IGNORECASE)
 
+replace_directive_re = re.compile("(?:\?replace((?:;[a-fA-F0-9]{1,6}=[a-fA-F0-9]{1,6}){1,}))")
+
 def parse_json(content, key):
     if key.endswith(".grapplinghook"):
         content = content.replace("[-.", "[-0.")
@@ -57,6 +59,49 @@ def asset_category(keyStr):
         return ''
     else:
         return extension[1:] #removes the . from the extension
+
+#function from: http://stackoverflow.com/a/7548779
+def hex_to_rgb(value):
+    value = value.lstrip('#')
+    lv = len(value)
+    if lv == 1: #might not be supported in starbound
+        v = int(value, 16)*17
+        return v, v, v
+    if lv == 3: #might not be supported in starbound
+        return tuple(int(value[i:i+1], 16)*17 for i in range(0, 3))
+    if lv == 6:
+        return tuple(int(value[i:i+int(lv/3)], 16) for i in range(0, lv, int(lv/3))) #only allow values that can be split into 3 decimals <= 255
+    return None
+
+def unpack_color_directives(data):
+    replace_matches = replace_directive_re.findall(data) #won't grab fade directives
+    groups = []
+    for directive in replace_matches:
+        unpack_gr = directive.split(";")
+        for group in unpack_gr[1:]:
+            hexkey, hexval = tuple(group.split("="))
+            rgbkey = hex_to_rgb(hexkey)
+            rgbval = hex_to_rgb(hexval)
+            if rgbkey is not None and rgbval is not None:
+                groups.append((rgbkey,rgbval))
+    return dict(groups)
+
+def replace_colors(image, dict_colors):
+    pixel_data = image.load()
+    
+    result_img = image.copy()
+    result_pixel_data = result_img.load()
+    for (key, value) in dict_colors.items():
+        for y in range(result_img.size[1]):
+            for x in range(result_img.size[0]):
+                pixel = pixel_data[x,y]
+                if pixel[0] == key[0] and pixel[1] == key[1] and pixel[2] == key[2]:
+                    if result_img.mode == "RGBA":
+                        result_pixel_data[x,y] = (value + (pixel[3],))
+                    elif result_img.mode == "RGB":
+                        result_pixel_data[x,y] = value
+    return result_img
+
 class Assets():
     def __init__(self, db_file, starbound_folder):
         self.starbound_folder = starbound_folder
@@ -434,6 +479,8 @@ class Items():
 
         inv_icon = Image.new("RGBA", (16,16))
         inv_icon.paste(item_icon)
+        
+        inv_icon = replace_colors(inv_icon, unpack_color_directives("?replace;ffca8a=838383;e0975c=555555;a85636=383838;6f2919=bd8317"))
         return inv_icon
 
     def get_item_image(self, name):
@@ -468,6 +515,7 @@ class Items():
             return None
 
         item_image = Image.open(BytesIO(icon_data)).convert("RGBA")
+        item_image = replace_colors(item_image, unpack_color_directives("?replace;ffca8a=838383;e0975c=555555;a85636=383838;6f2919=bd8317"))
         return item_image
 
     def missing_icon(self):
