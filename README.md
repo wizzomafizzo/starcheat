@@ -46,6 +46,4 @@ $ ./build/starcheat.py
 - Install [homebrew](http://brew.sh/)
 - ```$ brew update```
 - ```$ brew install https://raw.github.com/wizzomafizzo/starcheat/master/mac/starcheat.rb``` (optionally pass ```--without-app``` (create no .app) or ```--without-binary``` (creates no binary linked into your prefix) )
-- ```brew linkapps```(symlinks the .app into your Applications folder)
-s\packed.pak" "C:\Program Files (x86)\Steam\SteamApps\common\Starbound\assets"
-  - If Steam is not installed to the default location, change the paths above to match your Steam/Starbound location
+- ```brew linkapps``` (symlinks the .app into your Applications folder)
