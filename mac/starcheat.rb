@@ -2,7 +2,7 @@ require 'formula'
 
 class Starcheat < Formula
   homepage 'https://github.com/wizzomafizzo/starcheat'
-  url 'https://github.com/wizzomafizzo/starcheat/archive/0.1.tar.gz'
+  url 'https://github.com/wizzomafizzo/starcheat.git', :tag => '0.1'
 
   head 'https://github.com/wizzomafizzo/starcheat.git', :branch => 'dev'
 
