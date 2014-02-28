@@ -13,7 +13,7 @@ system 'python3', 'build.py', '-v'
 FileUtils.cd 'build'
 system './starcheat.py', '-v' 
 # ToDo: run some other unit test here
-unless ENV['TRAVIS_BUILD_ID'].nil? || ENV['TRAVIS_SECURE_ENV_VARS'] == 'false' || "#{ENV['TRAVIS_BRANCH']}" !~ /^v?(\d)+(\.\d+)*/
+unless ENV['TRAVIS_BUILD_ID'].nil? || ENV['TRAVIS_SECURE_ENV_VARS'] == 'false' || "#{ENV['TRAVIS_BRANCH']}" !~ /^v?(\d)+(\.\d+)*$/
   # Build OS X .app
   FileUtils.mv '../mac/setup.py', '.'
   system 'python3', 'setup.py', 'py2app'
