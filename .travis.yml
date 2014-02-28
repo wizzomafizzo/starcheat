@@ -9,4 +9,4 @@ script:
   - mac/travis.rb
 branches:
   only:
-    - master
+    - /^v?(\d)+(\.\d+)*/

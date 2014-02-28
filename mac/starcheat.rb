@@ -2,13 +2,9 @@ require 'formula'
 
 class Starcheat < Formula
   homepage 'https://github.com/wizzomafizzo/starcheat'
-  url 'https://github.com/wizzomafizzo/starcheat.git'
-  version 'beta'
+  url 'https://github.com/wizzomafizzo/starcheat/archive/0.1.tar.gz'
 
-  devel do
-    url 'https://github.com/wizzomafizzo/starcheat.git', :branch => 'dev'
-    version 'dev'
-  end
+  head 'https://github.com/wizzomafizzo/starcheat.git', :branch => 'dev'
 
   depends_on :python3
   depends_on 'pyqt5'
