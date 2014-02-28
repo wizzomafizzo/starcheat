@@ -11,8 +11,8 @@ from io import BytesIO
 
 from PIL import Image
 
-from stardb.storage import BlockFile
-from stardb.databases import AssetDatabase
+import starbound
+import starbound.btreedb4
 
 # Regular expression for comments
 comment_re = re.compile(
@@ -145,11 +145,8 @@ class Assets():
         pak_path = os.path.join(folder, "packed.pak")
 
         if os.path.isfile(pak_path):
-            pak_file = open(pak_path, 'rb')
-            bf = BlockFile(pak_file)
-            db = AssetDatabase(bf)
-            db.open()
-            index = [(x, pak_path) for x in db.getFileList()]
+            db = starbound.open_file(pak_path)
+            index = [(x, pak_path) for x in db.get_index()]
             return index
         else:
             # old style, probably a mod
@@ -182,11 +179,8 @@ class Assets():
             elif found_mod_info and self.is_packed_file(mod_assets):
                 # TODO: make a .pak scanner function that works for vanilla and mods
                 pak_path = os.path.normpath(mod_assets)
-                pak_file = open(pak_path, 'rb')
-                bf = BlockFile(pak_file)
-                db = AssetDatabase(bf)
-                db.open()
-                for x in db.getFileList():
+                db = starbound.open_file(pak_path)
+                for x in db.get_index():
                     # removes thumbs.db etc from user pak files
                     if re.match(ignore_assets, x) == None:
                         index.append((x, pak_path))
@@ -214,13 +208,10 @@ class Assets():
     def read(self, key, path, image=False):
         if self.is_packed_file(path):
             key = key.lower()
-            pak_file = open(path, 'rb')
-            bf = BlockFile(pak_file)
-            db = AssetDatabase(bf)
-            db.open()
+            db = starbound.open_file(path)
 
             try:
-                data = db[key]
+                data = db.get(key)
             except KeyError:
                 if image and path != self.vanilla_assets:
                     return self.read(key, self.vanilla_assets, image)
