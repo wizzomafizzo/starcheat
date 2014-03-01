@@ -306,7 +306,7 @@ class Blueprints():
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
-        name = asset_category(key)
+        name = os.path.basename(asset[0]).split(".")[0]
         asset_type = "blueprint"
         asset_data = self.assets.read(key, path)
 
