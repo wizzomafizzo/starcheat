@@ -944,20 +944,31 @@ class Techs():
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
+        name = os.path.basename(asset[0]).split(".")[0]
         asset_data = self.assets.read(key, path)
 
         if asset_data == None: return
 
-        return (key, path, "tech", "", "", "")
+        return (key, path, "tech", "", name, "")
 
     def all(self):
         """Return a list of all techs."""
         c = self.assets.db.cursor()
-        c.execute("select key from assets where type = 'tech' order by name")
+        c.execute("select name from assets where type = 'tech' order by name")
         return [x[0] for x in c.fetchall()]
 
-    def filter(self, name):
-        return self.assets.filter("tech", "", name)
+    def get_tech(self, name):
+        c = self.assets.db.cursor()
+        c.execute("select key, path from assets where type = 'tech' and name = ?", (name,))
+        tech = c.fetchone()
+        info = self.assets.read(tech[0]+"item", tech[1])
+
+        icon = self.assets.read(info["inventoryIcon"], tech[1], image=True)
+
+        if icon is None:
+            icon = self.assets.items().missing_icon()
+
+        return info, Image.open(BytesIO(icon)).convert("RGBA")
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
