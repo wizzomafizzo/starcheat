@@ -951,10 +951,13 @@ class Techs():
         return (key, path, "tech", "", "", "")
 
     def all(self):
-        """Return a list of all unique techs."""
+        """Return a list of all techs."""
         c = self.assets.db.cursor()
-        c.execute("select distinct name from assets where type = 'tech' order by name")
-        return c.fetchall()
+        c.execute("select key from assets where type = 'tech' order by name")
+        return [x[0] for x in c.fetchall()]
+
+    def filter(self, name):
+        return self.assets.filter("tech", "", name)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

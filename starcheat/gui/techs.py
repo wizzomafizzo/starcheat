@@ -16,7 +16,12 @@ class Techs():
         self.ui.setupUi(self.dialog)
         self.main_window = main_window
 
-        assets_db_file = Config().read("assets_db")
         starbound_folder = Config().read("starbound_folder")
-        self.assets = assets.Assets(assets_db_file, starbound_folder)
+        self.assets = assets.Assets(Config().read("assets_db"),
+                                    starbound_folder)
         self.player = main_window.player
+
+        print(self.assets.techs().all())
+        self.ui.known_techs.clear()
+        for tech in self.assets.techs().all():
+            self.ui.known_techs.addItem(tech)
