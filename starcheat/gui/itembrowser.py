@@ -13,8 +13,10 @@ from config import Config
 class BrowserItem(QListWidgetItem):
     def __init__(self, name, desc):
         if desc == "":
-            desc = name
-        QListWidgetItem.__init__(self, desc)
+            display = name
+        else:
+            display = "%s (%s)" % (desc, name)
+        QListWidgetItem.__init__(self, display)
         self.name = name
 
 class ItemBrowser():
