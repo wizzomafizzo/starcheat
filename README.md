@@ -12,17 +12,17 @@ If you're not trying to build starcheat yourself, here be dragons.
 Here is how to build starcheat from source. Make sure everything in the dependencies section is installed before you do a build.
 
 ### Dependencies
-- [Python 3.3](http://www.python.org/getit/)
-- [Qt 5](http://qt-project.org/downloads) (Windows users don't need this)
+- [Python 3.3+](http://www.python.org/getit/)
 - [PyQt5](http://www.riverbankcomputing.com/software/pyqt/download5)
+- [Qt 5](http://qt-project.org/downloads) (don't need this on Windows)
 - [Pillow](https://pypi.python.org/pypi/Pillow/)
-- [StarDB](https://github.com/McSimp/StarDB) (this is included as a git submodule)
+- [py-starbound](https://github.com/blixt/py-starbound) (this is included as a [git submodule](http://git-scm.com/docs/git-submodule))
 
 ### Windows
-Lines starting with ```PS>``` are to be run in PowerShell.
+Lines starting with ```>``` can be run in PowerShell or cmd.exe.
 
-- ```PS> cd <starcheat top folder>```
-- ```PS> C:\Python33\python.exe .\build.py```
+- ```> cd <starcheat top folder>```
+- ```> C:\Python33\python.exe .\build.py```
 - Browse to newly created ```build\``` folder
 - Double click ```starcheat.py```
 
@@ -30,8 +30,8 @@ Lines starting with ```PS>``` are to be run in PowerShell.
 The standalone build makes an executable which includes all Python and Qt dependencies.
 
 - Install [cx_freeze](http://cx-freeze.sourceforge.net/)
-- ```PS> cd <starcheat top folder>```
-- ```PS> C:\Python33\python.exe .\build.py -e```
+- ```> cd <starcheat top folder>```
+- ```> C:\Python33\python.exe .\build.py -e```
 - Browse to newly created ```dist\``` folder
 - Double click ```starcheat.exe```
 
