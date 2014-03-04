@@ -823,7 +823,7 @@
             <item row="1" column="1">
              <widget class="QPushButton" name="techs_button">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -2220,6 +2220,7 @@ border-radius: 4px;
      <string>Tools</string>
     </property>
     <addaction name="actionItemBrowser"/>
+    <addaction name="actionMods"/>
     <addaction name="separator"/>
     <addaction name="actionOptions"/>
    </widget>
@@ -2449,6 +2450,18 @@ border-radius: 4px;
    </property>
    <property name="statusTip">
     <string>Import a JSON player file and merge with the current player</string>
+   </property>
+  </action>
+  <action name="actionMods">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/starcheat/images/icons/glyphicons_halflings_101_gift.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_101_gift.png</iconset>
+   </property>
+   <property name="text">
+    <string>Mods</string>
+   </property>
+   <property name="statusTip">
+    <string>List your installed Starbound mods</string>
    </property>
   </action>
  </widget>

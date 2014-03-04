@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QListWidgetItem, QProgressDialog
 from PyQt5 import QtGui, QtCore
 
 import saves, assets, logging, config
-import qt_options, qt_openplayer, qt_about
+import qt_options, qt_openplayer, qt_about, qt_mods
 from config import Config
 from gui.common import preview_icon
 
@@ -321,3 +321,18 @@ class CharacterSelectDialog():
             dialog.exec()
         else:
             self.dialog.exec()
+
+class ModsDialog():
+    def __init__(self, parent):
+        self.dialog = QDialog(parent)
+        self.ui = qt_mods.Ui_Dialog()
+        self.ui.setupUi(self.dialog)
+
+        starbound_folder = Config().read("starbound_folder")
+        self.assets = assets.Assets(Config().read("assets_db"),
+                                    starbound_folder)
+
+        mods = self.assets.get_mods()
+        self.ui.mods_total.setText(str(len(mods))+" total")
+        for mod in mods:
+            self.ui.mods_list.addItem(mod)

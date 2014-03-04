@@ -57,6 +57,7 @@ def asset_category(keyStr):
         return ''
     else:
         return extension[1:] #removes the . from the extension
+
 class Assets():
     def __init__(self, db_file, starbound_folder):
         self.starbound_folder = starbound_folder
@@ -291,6 +292,12 @@ class Assets():
 
     def missing_icon(self):
         return self.read("/interface/inventory/x.png", self.vanilla_assets, image=True)
+
+    def get_mods(self):
+        """Return a list of all unique mod paths."""
+        c = self.db.cursor()
+        c.execute("select distinct path from assets order by category")
+        return [x[0].replace(self.starbound_folder,"") for x in c.fetchall()][1:]
 
 class Blueprints():
     def __init__(self, assets):
