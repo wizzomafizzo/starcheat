@@ -1494,7 +1494,7 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>1000000</number>
+           <number>999999999</number>
           </property>
           <property name="singleStep">
            <number>10</number>
@@ -1566,7 +1566,7 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>1000000</number>
+           <number>999999999</number>
           </property>
           <property name="singleStep">
            <number>10</number>
@@ -1700,7 +1700,7 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>1000000</number>
+           <number>999999999</number>
           </property>
           <property name="singleStep">
            <number>10</number>
@@ -1795,7 +1795,7 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>1000000</number>
+           <number>999999999</number>
           </property>
           <property name="singleStep">
            <number>10</number>
@@ -1874,7 +1874,7 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>1000000</number>
+           <number>999999999</number>
           </property>
           <property name="singleStep">
            <number>10</number>
@@ -2060,7 +2060,7 @@ border-radius: 4px;
            <double>0.100000000000000</double>
           </property>
           <property name="maximum">
-           <double>1000000.000000000000000</double>
+           <double>999999999.000000000000000</double>
           </property>
           <property name="value">
            <double>1.000000000000000</double>
