@@ -16,7 +16,7 @@ else:
 if os.path.isdir(config_folder) == False:
     os.mkdir(config_folder)
 
-STARCHEAT_VERSION = "0.11 (Enraged Koala)"
+STARCHEAT_VERSION = "0.12 (Enraged Koala)"
 CONFIG_VERSION = 7
 ini_file = os.path.join(config_folder, "starcheat.ini")
 
