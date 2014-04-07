@@ -264,7 +264,6 @@ def unpack_var(var, data):
     if pattern in save_file_types:
         return save_file_types[pattern][0](data)
     else:
-        # TODO: same here, can we make it unpack()?
         return unpack_from(pattern, data, 0), length
 
 def pack_var(var, data):
@@ -528,6 +527,9 @@ class PlayerSave():
 
     def get_play_time(self):
         return self.entity["playTime"]
+
+    def get_tech_modules(self):
+        return self.entity["techController"]["techModules"]
 
     # here be setters
     def set_blueprints(self, blueprints):
