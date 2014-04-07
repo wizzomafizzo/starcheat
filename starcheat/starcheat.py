@@ -42,7 +42,7 @@ def exception_handler(type, value, tb):
     if starbound_folder is None:
         logging.debug("No Starbound folder is set!")
     else:
-        logging.debug("Starbound folder: %s", )
+        logging.debug("Starbound folder: %s", starbound_folder)
         logging.debug("Assets folder: %s", config.Config().read("assets_folder"))
         logging.debug("Player folder: %s", config.Config().read("player_folder"))
 

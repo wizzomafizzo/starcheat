@@ -139,7 +139,15 @@ class Assets():
             if os.path.isdir(mod_folder):
                 mod_assets = self.scan_asset_folder(mod_folder)
                 [index.append(x) for x in mod_assets]
+            elif mod_folder.endswith(".modpak"):
+                mod_assets = self.scan_modpak(mod_folder)
+                [index.append(x) for x in mod_assets]
+        return index
 
+    def scan_modpak(self, modpak):
+        # TODO: may need support for reading the mod folder from the pakinfo file
+        db = starbound.open_file(modpak)
+        index = [(x, modpak) for x in db.get_index()]
         return index
 
     def scan_asset_folder(self, folder):
@@ -151,13 +159,13 @@ class Assets():
             return index
         else:
             # old style, probably a mod
-            # TODO: do packed mods still use the path key?
             index = []
             mod_assets = None
             files = os.listdir(folder)
 
             logging.debug(files)
 
+            # TODO: would like to keep this idea but moved to modpak specific function
             found_mod_info = False #will need more logic to handle .modpack with modinfo inside.
 
             for f in files:
