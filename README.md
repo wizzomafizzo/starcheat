@@ -47,3 +47,8 @@ $ ./build/starcheat.py
 - ```$ brew update```
 - ```$ brew install https://raw.github.com/wizzomafizzo/starcheat/master/mac/starcheat.rb``` (optionally pass ```--without-app``` (create no .app) or ```--without-binary``` (creates no binary linked into your prefix) )
 - ```brew linkapps``` (symlinks the .app into your Applications folder)
+
+## Release checklist
+- Update version string in config.py
+- Update version string in brew file
+- Tag release
