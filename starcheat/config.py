@@ -17,7 +17,7 @@ if os.path.isdir(config_folder) == False:
     os.mkdir(config_folder)
 
 STARCHEAT_VERSION = "0.12 (Enraged Koala)"
-CONFIG_VERSION = 7
+CONFIG_VERSION = 8
 ini_file = os.path.join(config_folder, "starcheat.ini")
 
 class Config():
@@ -42,7 +42,6 @@ class Config():
 
     def create_config(self, starbound_folder=None):
         # Default values
-        # TODO: we can do some auto-detection here
         if starbound_folder == None:
             starbound_folder = self.detect_starbound_folder()
 
@@ -59,7 +58,6 @@ class Config():
             "player_folder": player_folder,
             "backup_folder": backup_folder,
             "assets_db": assets_db,
-            "make_backups": make_backups,
             "update_timestamps": update_timestamps,
             "config_version": CONFIG_VERSION
         }
@@ -67,6 +65,9 @@ class Config():
         self.config["starcheat"] = defaults
 
         self.config.write(open(ini_file, "w"))
+
+        if not os.path.isdir(backup_folder):
+            os.mkdir(backup_folder)
 
     def remove_config(self):
         """Delete/reset the current config file if possible."""

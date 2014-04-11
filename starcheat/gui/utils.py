@@ -2,7 +2,7 @@
 Utility dialogs for starcheat itself
 """
 
-import os, sys, platform, subprocess
+import os, sys, platform, subprocess, shutil
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from PyQt5.QtWidgets import QListWidgetItem, QProgressDialog
 from PyQt5 import QtGui, QtCore
@@ -265,12 +265,14 @@ class CharacterSelectDialog():
         self.ui.setupUi(self.dialog)
 
         self.player_folder = Config().read("player_folder")
+        self.backup_folder = Config().read("backup_folder")
         self.selected = None
 
         self.dialog.rejected.connect(self.dialog.close)
         self.dialog.accepted.connect(self.accept)
         # bizarre, if i set this to self.accept it just doesn't work...
         self.ui.player_list.itemDoubleClicked.connect(self.dialog.accept)
+        self.ui.trash_button.clicked.connect(self.trash_player)
 
         self.get_players()
         self.populate()
@@ -321,6 +323,45 @@ class CharacterSelectDialog():
             dialog.exec()
         else:
             self.dialog.exec()
+
+    def trash_player(self):
+        """Move all player files to backup folder set in config file."""
+        player = self.ui.player_list.currentItem().text()
+        uuid = self.players[player].get_uuid()
+        player_files = []
+
+        # are you sure?
+        dialog = QMessageBox()
+        dialog.setText("Trash this player?")
+        dialog.setInformativeText("Player files will be backed up to: %s" % self.backup_folder)
+        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+        dialog.setDefaultButton(QMessageBox.Cancel)
+        dialog.setIcon(QMessageBox.Question)
+
+        answer = dialog.exec()
+        if answer != QMessageBox.Yes:
+            return
+
+        # find files
+        for f in os.listdir(self.player_folder):
+            if f.startswith(uuid):
+                player_files.append(f)
+
+        # move em
+        for f in player_files:
+            logging.info("Moving player file %s", f)
+            try:
+                # using shutil cause of a problem with os.rename not working
+                # across filesystems. trust me to be the only person on earth
+                # with that setup
+                shutil.move(os.path.join(self.player_folder, f),
+                            os.path.join(self.backup_folder, f))
+            except OSError:
+                logging.exception("Unable to move file %s", f)
+                break
+
+        self.get_players()
+        self.populate()
 
 class ModsDialog():
     def __init__(self, parent):
