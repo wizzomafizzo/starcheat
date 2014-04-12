@@ -733,13 +733,13 @@
             <item>
              <widget class="QSpinBox" name="pixels">
               <property name="maximum">
-               <number>99999999</number>
+               <number>2147483647</number>
               </property>
               <property name="singleStep">
                <number>100</number>
               </property>
               <property name="value">
-               <number>99999999</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -1494,7 +1494,7 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>999999999</number>
+           <number>2147483647</number>
           </property>
           <property name="singleStep">
            <number>10</number>
@@ -1566,7 +1566,7 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>999999999</number>
+           <number>2147483647</number>
           </property>
           <property name="singleStep">
            <number>10</number>
@@ -1700,7 +1700,7 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>999999999</number>
+           <number>2147483647</number>
           </property>
           <property name="singleStep">
            <number>10</number>
@@ -1795,7 +1795,7 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>999999999</number>
+           <number>2147483647</number>
           </property>
           <property name="singleStep">
            <number>10</number>
@@ -1874,7 +1874,7 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>999999999</number>
+           <number>2147483647</number>
           </property>
           <property name="singleStep">
            <number>10</number>
