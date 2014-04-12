@@ -983,7 +983,7 @@ class Techs():
         if icon is None:
             icon = self.assets.items().missing_icon()
 
-        return info, Image.open(BytesIO(icon)).convert("RGBA")
+        return info, Image.open(BytesIO(icon)).convert("RGBA"), tech[0]
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

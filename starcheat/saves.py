@@ -8,7 +8,7 @@ It can also be run from the command line to dump the contents, like this:
 $ python ./save_file.py <.player file>
 """
 
-import sys, logging, struct
+import sys, logging, struct, os
 from pprint import pprint
 from struct import pack, unpack_from
 
@@ -302,7 +302,9 @@ variant_types = (
     (unpack_variant7, pack_variant7)
 )
 
-def new_item(name, count, data):
+def new_item(name, count, data={}):
+    if name is None: return None
+
     item = {
         "name": name,
         "count": count,
@@ -658,6 +660,18 @@ class PlayerSave():
 
     def set_play_time(self, time):
         self.entity["playTime"] = float(time)
+
+    def set_tech_modules(self, techs, equip):
+        # this works similar to the equip items in that it needs to be set
+        # in 2 separate places to stick
+
+        # this is where techs start in the equip list
+        equip_index = 8
+        for tech in equip:
+            self.entity["inventory"]["equipment"][equip_index] = new_item(tech, 1)
+            equip_index += 1
+
+        self.entity["techController"]["techModules"] = techs
 
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])

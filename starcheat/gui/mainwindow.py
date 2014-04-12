@@ -299,6 +299,7 @@ class MainWindow():
 
     def new_techs_dialog(self):
         techs_dialog = Techs(self)
+        techs_dialog.dialog.accepted.connect(techs_dialog.write_techs)
         techs_dialog.dialog.exec()
 
     def new_mods_dialog(self):

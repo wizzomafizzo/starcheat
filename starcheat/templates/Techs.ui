@@ -52,7 +52,7 @@
          <bool>false</bool>
         </property>
         <property name="toolTip">
-         <string>Toggle Known Tech</string>
+         <string>Learn/Unlearn</string>
         </property>
         <property name="text">
          <string>...</string>
@@ -181,7 +181,7 @@
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: white</string>
+             <string notr="true">QLabel { background-color: white }</string>
             </property>
             <property name="frameShape">
              <enum>QFrame::Box</enum>
@@ -259,7 +259,7 @@
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: white</string>
+             <string notr="true">QLabel { background-color: white }</string>
             </property>
             <property name="frameShape">
              <enum>QFrame::Box</enum>
@@ -337,7 +337,7 @@
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: white</string>
+             <string notr="true">QLabel { background-color: white }</string>
             </property>
             <property name="frameShape">
              <enum>QFrame::Box</enum>
@@ -415,7 +415,7 @@
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: white</string>
+             <string notr="true">QLabel { background-color: white }</string>
             </property>
             <property name="frameShape">
              <enum>QFrame::Box</enum>
