@@ -22,6 +22,9 @@ class Appearance():
         starbound_folder = Config().read("starbound_folder")
         self.assets = assets.Assets(assets_db_file, starbound_folder)
         self.species = self.assets.species()
+        # need to think of a new approach here. player rendering on the fly
+        # will not work if we also want to maintain the save/cancel functions
+        # it will probably be easier to ditch that entirely across all dialogs
         self.player = main_window.player
 
         race = main_window.ui.race.currentText()
@@ -66,6 +69,9 @@ class Appearance():
             type_widget.setCurrentText(current_appearance[value][1])
             if len(type_data) < 2: type_widget.setEnabled(False)
 
+            group_widget.currentTextChanged.connect(self.write_appearance_values)
+            type_widget.currentTextChanged.connect(self.write_appearance_values)
+
         # personality
         for option in self.species.get_personality():
             self.ui.personality.addItem(option[0])
@@ -78,8 +84,9 @@ class Appearance():
                 getattr(self.ui, value+"_color").setEnabled(False)
 
         # player image
-        image = preview_icon(race, gender)
-        self.ui.player_preview.setPixmap(image.scaled(64, 64))
+        image = self.assets.species().render_player(self.player)
+        pixmap = QPixmap.fromImage(ImageQt(image)).scaled(86, 86)
+        self.ui.player_preview.setPixmap(pixmap)
 
     def write_appearance_values(self):
         hair = self.ui.hair_group.currentText(), self.ui.hair_type.currentText()
@@ -94,6 +101,10 @@ class Appearance():
         self.player.set_hair_directives(self.colors["hair"])
         self.player.set_facial_hair_directives(self.colors["facial_hair"])
         self.player.set_facial_mask_directives(self.colors["facial_mask"])
+
+        image = self.assets.species().render_player(self.player)
+        pixmap = QPixmap.fromImage(ImageQt(image)).scaled(86, 86)
+        self.ui.player_preview.setPixmap(pixmap)
         self.main_window.window.setWindowModified(True)
 
     def new_color_edit(self, type):

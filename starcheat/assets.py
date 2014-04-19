@@ -766,14 +766,20 @@ class Species():
         """Return a formatted list of all species."""
         c = self.assets.db.cursor()
         c.execute("select distinct name from assets where type = 'species' order by name")
+
         names = [x[0] for x in c.fetchall()]
         formatted = []
+
         for s in names:
+            if s == "dummy":
+                continue
+
             try:
                 formatted.append(s[0].upper() + s[1:])
             except IndexError:
                 formatted.append(s)
                 logging.exception("Unable to format species: %s", s)
+
         return formatted
 
     def get_species(self, name):
@@ -879,13 +885,57 @@ class Species():
             logging.warning("No race set on player")
             return None
 
-    def get_hair_image(self, name, hair_type, hair_group):
+    def render_player(self, player):
+        name = player.get_race()
+        gender = player.get_gender()
+
+        body_sprites = self.assets.read("/humanoid/%s/%sbody.png" % (name, gender),
+                                        self.assets.vanilla_assets, True)
+        frontarm_sprites = self.assets.read("/humanoid/%s/frontarm.png" % name,
+                                            self.assets.vanilla_assets, True)
+        backarm_sprites = self.assets.read("/humanoid/%s/backarm.png" % name,
+                                            self.assets.vanilla_assets, True)
+        head_sprites = self.assets.read("/humanoid/%s/%shead.png" % (name, gender),
+                                        self.assets.vanilla_assets, True)
+
+        body_img = Image.open(BytesIO(body_sprites)).crop((43, 0, 86, 43))
+        frontarm_img = Image.open(BytesIO(frontarm_sprites)).crop((43, 0, 86, 43))
+        backarm_img = Image.open(BytesIO(backarm_sprites)).crop((43, 0, 86, 43))
+        head_img = Image.open(BytesIO(head_sprites)).crop((43, 0, 86, 43))
+
+        hair = player.get_hair()
+        hair_img = self.get_hair_image(name, hair[0], hair[1], gender)
+
+        base = Image.new("RGBA", (43, 43))
+
+        base.paste(backarm_img)
+        base.paste(head_img, mask=head_img)
+
+        if hair_img is not None:
+            try:
+                base.paste(hair_img, mask=hair_img)
+            except ValueError:
+                logging.exception("Bad hair image: %s, %s", hair[0], hair[1])
+
+        base.paste(body_img, mask=body_img)
+        base.paste(frontarm_img, mask=frontarm_img)
+
+
+        return base
+
+    def get_hair_image(self, name, hair_type, hair_group, gender):
+        # TODO: bbox is from .frame file, need a way to read them still
         species = self.get_species(name.lower())
+
         # BUG: this will break for species mods on windows maybe?
         image_path = "/humanoid/%s/%s/%s.png" % (name, hair_type, hair_group)
-        image = self.assets.read(image_path, species[0][1], image=True)
-        # TODO: bbox is from .frame file, need a way to read them still
-        return Image.open(BytesIO(image)).crop((43, 0, 86, 43))
+
+        try:
+            image = self.assets.read(image_path, species[0][1], image=True)
+            return Image.open(BytesIO(image)).crop((43, 0, 86, 43))
+        except OSError:
+            logging.exception("Missing hair image: %s", image_path)
+            return
 
 class Player():
     def __init__(self, assets):

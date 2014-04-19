@@ -66,9 +66,9 @@ def build_assets_db(parent):
     else:
         return True
 
-def save_modified_dialog():
+def save_modified_dialog(parent):
     """Display a prompt asking user what to do about a modified file. Return button clicked."""
-    dialog = QMessageBox()
+    dialog = QMessageBox(parent)
     dialog.setText("This player has been modified.")
     dialog.setInformativeText("Do you want to save your changes?")
     dialog.setStandardButtons(QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard)
@@ -316,7 +316,7 @@ class CharacterSelectDialog():
     def show(self):
         # quit if there are no players
         if len(self.players) == 0:
-            dialog = QMessageBox()
+            dialog = QMessageBox(self.dialog)
             dialog.setText("No compatible save files found in:")
             dialog.setInformativeText(self.player_folder)
             dialog.setIcon(QMessageBox.Warning)
@@ -331,9 +331,9 @@ class CharacterSelectDialog():
         player_files = []
 
         # are you sure?
-        dialog = QMessageBox()
+        dialog = QMessageBox(self.dialog)
         dialog.setText("Trash this player?")
-        dialog.setInformativeText("Player files will be backed up to: %s" % self.backup_folder)
+        dialog.setInformativeText("Player files will be moved to: %s" % self.backup_folder)
         dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
         dialog.setDefaultButton(QMessageBox.Cancel)
         dialog.setIcon(QMessageBox.Question)

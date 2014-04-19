@@ -41,6 +41,7 @@ def preview_icon(race, gender):
         return QPixmap.fromImage(QImage.fromData(db.missing_icon())).scaledToHeight(48)
     else:
         return QPixmap.fromImage(QImage.fromData(icon_file)).scaledToHeight(48)
+
 def empty_slot():
     """Return an empty bag slot widget."""
     return ItemWidget(None)

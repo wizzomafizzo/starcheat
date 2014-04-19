@@ -6,6 +6,8 @@ import sys, logging, json
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtGui import QPixmap, QImage
+from PIL.ImageQt import ImageQt
 
 import saves, assets, qt_mainwindow
 from config import Config
@@ -29,7 +31,7 @@ class StarcheatMainWindow(QMainWindow):
             event.accept()
             return
 
-        button = save_modified_dialog()
+        button = save_modified_dialog(self.parent.window)
         if button == QMessageBox.Save:
             self.parent.save()
             event.accept()
@@ -294,8 +296,9 @@ class MainWindow():
 
     def new_appearance_dialog(self):
         appearance_dialog = Appearance(self)
-        appearance_dialog.dialog.accepted.connect(appearance_dialog.write_appearance_values)
         appearance_dialog.dialog.exec()
+        appearance_dialog.write_appearance_values()
+        self.update_player_preview()
 
     def new_techs_dialog(self):
         techs_dialog = Techs(self)
@@ -317,7 +320,7 @@ class MainWindow():
     def open_file(self):
         """Display open file dialog and load selected save."""
         if self.window.isWindowModified():
-            button = save_modified_dialog()
+            button = save_modified_dialog(self.window)
             if button == QMessageBox.Cancel:
                 return False
             elif button == QMessageBox.Save:
@@ -447,10 +450,9 @@ class MainWindow():
                 column = 0
 
     def update_player_preview(self):
-        species = self.ui.race.currentText()
-        gender = self.get_gender()
-        image = preview_icon(species, gender)
-        self.ui.player_preview.setPixmap(image.scaled(64, 64))
+        image = self.assets.species().render_player(self.player)
+        pixmap = QPixmap.fromImage(ImageQt(image)).scaled(86, 86)
+        self.ui.player_preview.setPixmap(pixmap)
         self.window.setWindowModified(True)
 
     def update_species(self):
