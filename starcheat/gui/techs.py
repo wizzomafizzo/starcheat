@@ -66,12 +66,12 @@ class Techs():
         self.ui.icon3_button.clicked.connect(lambda: self.set_tech(2))
         self.ui.icon4_button.clicked.connect(lambda: self.set_tech(3))
 
-        #known_recipes = [x["name"] for x in self.player.get_blueprints()]
+        known_recipes = [x["name"] for x in self.player.get_blueprints()]
         self.ui.tech_list.clear()
         for tech in self.assets.techs().all():
             item = QListWidgetItem(tech)
-            #if tech in known_recipes:
-            #    item.setBackground(QBrush(QColor("lightBlue")))
+            if tech in known_recipes:
+                item.setBackground(QBrush(QColor("lightBlue")))
             self.ui.tech_list.addItem(item)
 
     def update_selection(self):
