@@ -473,7 +473,7 @@ class Items():
             icon_file = item[0]["image"]
             icon = icon_file.split(':')
             icon = icon[0]
-        except KeyError:
+        except (KeyError, TypeError):
             logging.warning("No image key for "+name)
             return None
 
@@ -888,15 +888,16 @@ class Species():
     def render_player(self, player):
         name = player.get_race()
         gender = player.get_gender()
+        asset_loc = self.get_species(name)[0][1]
 
         body_sprites = self.assets.read("/humanoid/%s/%sbody.png" % (name, gender),
-                                        self.assets.vanilla_assets, True)
+                                        asset_loc, True)
         frontarm_sprites = self.assets.read("/humanoid/%s/frontarm.png" % name,
-                                            self.assets.vanilla_assets, True)
+                                            asset_loc, True)
         backarm_sprites = self.assets.read("/humanoid/%s/backarm.png" % name,
-                                            self.assets.vanilla_assets, True)
+                                            asset_loc, True)
         head_sprites = self.assets.read("/humanoid/%s/%shead.png" % (name, gender),
-                                        self.assets.vanilla_assets, True)
+                                        asset_loc, True)
 
         body_img = Image.open(BytesIO(body_sprites)).crop((43, 0, 86, 43))
         frontarm_img = Image.open(BytesIO(frontarm_sprites)).crop((43, 0, 86, 43))
@@ -919,7 +920,6 @@ class Species():
 
         base.paste(body_img, mask=body_img)
         base.paste(frontarm_img, mask=frontarm_img)
-
 
         return base
 

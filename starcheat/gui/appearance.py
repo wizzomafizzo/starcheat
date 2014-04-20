@@ -102,9 +102,16 @@ class Appearance():
         self.player.set_facial_hair_directives(self.colors["facial_hair"])
         self.player.set_facial_mask_directives(self.colors["facial_mask"])
 
-        image = self.assets.species().render_player(self.player)
-        pixmap = QPixmap.fromImage(ImageQt(image)).scaled(86, 86)
+        # render player preview
+        try:
+            image = self.assets.species().render_player(self.player)
+            pixmap = QPixmap.fromImage(ImageQt(image)).scaled(86, 86)
+        except (OSError, TypeError, AttributeError):
+            logging.exception("Couldn't load species images")
+            pixmap = QPixmap()
+
         self.ui.player_preview.setPixmap(pixmap)
+
         self.main_window.window.setWindowModified(True)
 
     def new_color_edit(self, type):

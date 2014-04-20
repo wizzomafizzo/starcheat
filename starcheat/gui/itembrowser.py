@@ -10,12 +10,66 @@ from PIL.ImageQt import ImageQt
 import assets, qt_itembrowser
 from config import Config
 
+def format_status_effects(data):
+    info = "<b>Status Effects:</b><br>"
+    for status in data:
+        if "amount" in status:
+            info += "%s (%s)<br>" % (status["kind"], str(status["amount"]))
+        else:
+            info += "%s<br>" % status["kind"]
+    return info
+
+def format_effects(data):
+    info = "<b>Effects:</b><br>"
+    for status in data[0]:
+        if "amount" in status:
+            info += "%s (%s)<br>" % (status["kind"], str(status["amount"]))
+        else:
+            info += "%s<br>" % status["kind"]
+    return info
+
+data_format = (
+    # (key name, format/func)
+    # key name is name of the key in item data it corresponds to
+    # format/func is either a format string with 1 %s replacement that the
+    # key gets passed to or a function that outputs a string using the option
+    # as input
+    # order matters
+    ("shortdescription", "<b>%s</b> "),
+    ("itemName", "(%s)<br>"),
+    ("objectName", "(%s)<br>"),
+    ("description", "%s<br><br>"),
+    ("inspectionKind", "<b>Type:</b> %s<br>"),
+    ("rarity", "<b>Rarity:</b> %s<br><br>"),
+    ("statusEffects", format_status_effects),
+    ("effects", format_effects),
+    ("blockRadius", "<b>Mining Radius:</b> %s blocks")
+)
+
+def generate_item_info(item_data):
+    """Takes inventory item data and makes a detailed description (HTML)."""
+    info = ""
+
+    if item_data == None:
+        return ""
+
+    for fmt in data_format:
+        if fmt[0] in item_data:
+            if type(fmt[1]) is str:
+                info += fmt[1] % str(item_data[fmt[0]])
+            else:
+                info += fmt[1](item_data[fmt[0]])
+
+    return info
+
+
 class BrowserItem(QListWidgetItem):
     def __init__(self, name, desc):
         if desc == "":
             display = name
         else:
-            display = "%s (%s)" % (desc, name)
+            #display = "%s (%s)" % (desc, name)
+            display = desc
         QListWidgetItem.__init__(self, display)
         self.name = name
 
@@ -87,16 +141,7 @@ class ItemBrowser():
             logging.warning("Unable to load item image: "+selected)
             self.ui.item_icon.setPixmap(QPixmap())
 
-        # TODO: update qt objectnames, already not making sense
-        try:
-            self.ui.item_name.setText(item[0]["shortdescription"])
-        except KeyError:
-            self.ui.item_name.setText("Missing short description")
-
-        try:
-            self.ui.short_desc.setText(item[0]["description"])
-        except KeyError:
-            self.ui.short_desc.setText("Missing description")
+        self.ui.short_desc.setText(generate_item_info(item[0]))
 
         # populate default variant table
         row = 0

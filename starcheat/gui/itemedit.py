@@ -15,7 +15,7 @@ import json, copy, logging
 
 import assets, qt_itemedit, qt_itemeditoptions, saves
 from gui.common import inv_icon, ItemWidget, empty_slot
-from gui.itembrowser import ItemBrowser
+from gui.itembrowser import ItemBrowser, generate_item_info
 from config import Config
 
 class ItemEditOptions():
@@ -112,18 +112,15 @@ class ItemEdit():
     def update_item_info(self, name, data):
         item_info = "<html><body>"
 
-        try:
-            item_info += "<strong>" + data["shortdescription"] + "</strong>"
-        except KeyError:
-            try:
-                item_info += "<strong>" + self.assets.items().get_item(name)[0]["shortdescription"] + "</strong>"
-            except:
-                pass
+        #try:
+        #    item_info += "<strong>" + data["shortdescription"] + "</strong><br>"
+        #except KeyError:
+        #    try:
+        #        item_info += "<strong>" + self.assets.items().get_item(name)[0]["shortdescription"] + "</strong><br>"
+        #    except:
+        #        pass
 
-        try:
-            item_info += "<p>" + data["description"] + "</p>"
-        except KeyError:
-            pass
+        item_info += generate_item_info(data)
 
         item_info += "</body></html>"
         self.ui.desc.setText(item_info)

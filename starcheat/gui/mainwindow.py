@@ -450,8 +450,15 @@ class MainWindow():
                 column = 0
 
     def update_player_preview(self):
-        image = self.assets.species().render_player(self.player)
-        pixmap = QPixmap.fromImage(ImageQt(image)).scaled(86, 86)
+        try:
+            image = self.assets.species().render_player(self.player)
+            pixmap = QPixmap.fromImage(ImageQt(image)).scaled(86, 86)
+        except (OSError, TypeError, AttributeError):
+            # TODO: more specific error handling. may as well except all errors
+            # at this point jeez
+            logging.exception("Couldn't load species images")
+            pixmap = QPixmap()
+
         self.ui.player_preview.setPixmap(pixmap)
         self.window.setWindowModified(True)
 
