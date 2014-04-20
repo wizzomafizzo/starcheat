@@ -24,7 +24,7 @@ unless ENV['TRAVIS_BUILD_ID'].nil? || ENV['TRAVIS_SECURE_ENV_VARS'] == 'false' |
   # Upload OS X .app to Github Releases
   system 'tar', 'czf', 'starcheat.tar.gz', 'StarCheat.app'
   puts '==> Uploading'
-  `curl -H "Authorization: token #{ENV['HOMEBREW_GITHUB_API_TOKEN']}" -H "Accept: application/json" -d '{"tag_name":"#{ENV['TRAVIS_BRANCH']}","name":"starcheat #{ENV['TRAVIS_BRANCH']}"}' https://api.github.com/repos/wizzomafizzo/starcheat/releases` =~ /.*"upload_url":\s*"([\w\.\:\/]*){\?name}.*/m
-  `curl -H "Authorization: token #{ENV['HOMEBREW_GITHUB_API_TOKEN']}" -H "Accept: application/json" -H "Content-Type: application/gzip" --data-binary @starcheat.tar.gz #{$1}?name=starcheat-#{ENV['TRAVIS_BRANCH']}-osx.tar.gz` unless $1.nil?
+  `curl -H "Authorization: token #{ENV['GITHUB_KEY']}" -H "Accept: application/json" -d '{"tag_name":"#{ENV['TRAVIS_BRANCH']}","name":"starcheat #{ENV['TRAVIS_BRANCH']}"}' https://api.github.com/repos/wizzomafizzo/starcheat/releases` =~ /.*"upload_url":\s*"([\w\.\:\/]*){\?name}.*/m
+  `curl -H "Authorization: token #{ENV['GITHUB_KEY']}" -H "Accept: application/json" -H "Content-Type: application/gzip" --data-binary @starcheat.tar.gz #{$1}?name=starcheat-#{ENV['TRAVIS_BRANCH']}-osx.tar.gz` unless $1.nil?
   raise "Skipping uploading build because tag is already in use" if $1.nil?
 end
