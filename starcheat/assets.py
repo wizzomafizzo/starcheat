@@ -2,10 +2,6 @@
 Module for reading and indexing Starbound assets
 """
 
-# TODO: this file should end up similar to save_file in that it has no external
-# deps. need to:
-# - custom exception classes
-
 import os, json, re, sqlite3, logging, random
 from io import BytesIO
 
@@ -899,10 +895,10 @@ class Species():
         head_sprites = self.assets.read("/humanoid/%s/%shead.png" % (name, gender),
                                         asset_loc, True)
 
-        body_img = Image.open(BytesIO(body_sprites)).crop((43, 0, 86, 43))
-        frontarm_img = Image.open(BytesIO(frontarm_sprites)).crop((43, 0, 86, 43))
-        backarm_img = Image.open(BytesIO(backarm_sprites)).crop((43, 0, 86, 43))
-        head_img = Image.open(BytesIO(head_sprites)).crop((43, 0, 86, 43))
+        body_img = Image.open(BytesIO(body_sprites)).convert("RGBA").crop((43, 0, 86, 43))
+        frontarm_img = Image.open(BytesIO(frontarm_sprites)).convert("RGBA").crop((43, 0, 86, 43))
+        backarm_img = Image.open(BytesIO(backarm_sprites)).convert("RGBA").crop((43, 0, 86, 43))
+        head_img = Image.open(BytesIO(head_sprites)).convert("RGBA").crop((43, 0, 86, 43))
 
         hair = player.get_hair()
         hair_img = self.get_hair_image(name, hair[0], hair[1], gender)
@@ -932,7 +928,7 @@ class Species():
 
         try:
             image = self.assets.read(image_path, species[0][1], image=True)
-            return Image.open(BytesIO(image)).crop((43, 0, 86, 43))
+            return Image.open(BytesIO(image)).convert("RGBA").crop((43, 0, 86, 43))
         except OSError:
             logging.exception("Missing hair image: %s", image_path)
             return

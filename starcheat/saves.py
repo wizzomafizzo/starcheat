@@ -186,7 +186,7 @@ def pack_variant7(var):
     total = len(var)
     dict_items = b""
     for k in var.keys():
-        logging.debug(k)
+        # logging.debug(k)
         key = pack_vlq_str(k)
         value = pack_variant(var[k])
         dict_items += key + value
@@ -238,13 +238,13 @@ def unpack_starsave(data):
 
 def pack_starsave(var):
     data = b''
-    logging.debug("Packing entity name")
+    # logging.debug("Packing entity name")
     entity_name = pack_vlq_str(var["entity_name"])
     data += entity_name
-    logging.debug("Packing variant version")
+    # logging.debug("Packing variant version")
     variant_ver = pack("<i", var["variant_version"])
     data += variant_ver
-    logging.debug("Packing save data")
+    # logging.debug("Packing save data")
     save_data = pack_variant6([var["data"]])
     data += save_data
     return data
@@ -364,7 +364,7 @@ class PlayerSave():
         # populate self.data with save data
         offset = 0
         for var in data_format:
-            logging.debug("Unpacking " + var[0])
+            # logging.debug("Unpacking " + var[0])
             try:
                 unpacked = unpack_var(var, save_data[offset:])
             except:
@@ -383,7 +383,7 @@ class PlayerSave():
         player_data = b""
 
         for var in data_format:
-            logging.debug("Packing " + var[0])
+            # logging.debug("Packing " + var[0])
             player_data += pack_var(var, self.data[var[0]])
 
         if filename != None:
