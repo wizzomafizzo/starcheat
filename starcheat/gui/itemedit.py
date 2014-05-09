@@ -9,7 +9,8 @@ Qt item edit dialog
 # once that's complete, work can be started on proper item generation. to begin,
 # we just wanna pull in all the default values of an item
 
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox, QFileDialog, QListWidgetItem
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
+from PyQt5.QtWidgets import QInputDialog, QListWidgetItem, QFileDialog
 from PyQt5.QtGui import QPixmap
 from PIL.ImageQt import ImageQt
 import json, copy, logging
@@ -217,16 +218,42 @@ class ItemEdit():
             self.item["data"] = {}
 
     def new_item_edit_options(self, new):
+        """Edit the selected item option with custom dialog."""
+
         if new:
             selected = ItemOptionWidget("", None)
         else:
             selected = self.ui.variant.currentItem()
 
         # TODO: need a better way to lay this out. it's going to get big
+
+        # this is for the qinputdialog stuff. can't set signals on them
+        generic = False
         if selected.option[0] in ["inventoryIcon", "image", "largeImage"]:
             dialog = ImageBrowser(self.dialog, self.assets)
             def get_option():
                 return selected.option[0], dialog.get_key()
+        elif type(self.item["data"][selected.option[0]]) is str:
+            generic = True
+            text, ok = QInputDialog.getText(self.dialog, "Edit Text", selected.option[0],
+                                            text=self.item["data"][selected.option[0]])
+            if ok:
+                self.item["data"][selected.option[0]] = text
+        elif type(self.item["data"][selected.option[0]]) is float:
+            generic = True
+            num, ok = QInputDialog.getDouble(self.dialog, "Edit Double", selected.option[0],
+                                             self.item["data"][selected.option[0]], decimals=2)
+            if ok:
+                self.item["data"][selected.option[0]] = num
+        elif type(self.item["data"][selected.option[0]]) is int:
+            generic = True
+            num, ok = QInputDialog.getDouble(self.dialog, "Edit Integer", selected.option[0],
+                                             self.item["data"][selected.option[0]])
+            if ok:
+                self.item["data"][selected.option[0]] = num
+        elif type(self.item["data"][selected.option[0]]) is bool:
+            generic = True
+            self.item["data"][selected.option[0]] = not self.item["data"][selected.option[0]]
         else:
             dialog = ItemEditOptions(self.dialog, selected.option[0], selected.option[1])
             def get_option():
@@ -236,11 +263,13 @@ class ItemEdit():
         def save():
             new_option = get_option()
             self.item["data"][new_option[0]] = new_option[1]
-            self.populate_options()
-            self.update_item_info(self.item["name"], self.item["data"])
 
-        dialog.dialog.accepted.connect(save)
-        dialog.dialog.exec()
+        if not generic:
+            dialog.dialog.accepted.connect(save)
+            dialog.dialog.exec()
+
+        self.populate_options()
+        self.update_item_info(self.item["name"], self.item["data"])
 
     def remove_option(self):
         """Remove the currently selected item option."""

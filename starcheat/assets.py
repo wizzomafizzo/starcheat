@@ -903,6 +903,11 @@ class Species():
         return directives
 
     def get_preview_image(self, name, gender):
+        """Return raw image data for species placeholder pic.
+
+        I don't think this is actually used anywhere in game. Some mods don't
+        include it."""
+
         species = self.get_species(name.lower())
         try:
             try:
@@ -916,10 +921,13 @@ class Species():
             return None
 
     def render_player(self, player):
+        """Return an Image of a fully rendered player from a save."""
+
         name = player.get_race()
         gender = player.get_gender()
         asset_loc = self.get_species(name)[0][1]
 
+        # load up body spritesheets for species
         body_sprites = self.assets.read("/humanoid/%s/%sbody.png" % (name, gender),
                                         asset_loc, True)
         frontarm_sprites = self.assets.read("/humanoid/%s/frontarm.png" % name,
@@ -929,46 +937,59 @@ class Species():
         head_sprites = self.assets.read("/humanoid/%s/%shead.png" % (name, gender),
                                         asset_loc, True)
 
+        # crop the spritesheets
         body_img = Image.open(BytesIO(body_sprites)).convert("RGBA").crop((43, 0, 86, 43))
         frontarm_img = Image.open(BytesIO(frontarm_sprites)).convert("RGBA").crop((43, 0, 86, 43))
         backarm_img = Image.open(BytesIO(backarm_sprites)).convert("RGBA").crop((43, 0, 86, 43))
         head_img = Image.open(BytesIO(head_sprites)).convert("RGBA").crop((43, 0, 86, 43))
 
+        # hair image if set
         hair = player.get_hair()
         hair_img = None
         if hair[0] != "":
             hair_img = self.get_hair_image(name, hair[0], hair[1], gender)
 
+        # facial hair if set
         facial_hair = player.get_facial_hair()
         facial_hair_img = None
         if facial_hair[0] != "":
             facial_hair_img = self.get_hair_image(name, facial_hair[0], facial_hair[1], gender)
 
+        # facial mask if set
         facial_mask = player.get_facial_mask()
         facial_mask_img = None
         if facial_mask[0] != "":
             facial_mask_img = self.get_hair_image(name, facial_mask[0], facial_mask[1], gender)
 
+        # new blank canvas!
         base = Image.new("RGBA", (43, 43))
 
+        # the order of these is important!
+
+        # back arm first
         base.paste(backarm_img)
+        # then the head
         base.paste(head_img, mask=head_img)
 
+        # hair if set
         if hair_img is not None:
             try:
                 base.paste(hair_img, mask=hair_img)
             except ValueError:
                 logging.exception("Bad hair image: %s, %s", hair[0], hair[1])
 
+        # body
         base.paste(body_img, mask=body_img)
         base.paste(frontarm_img, mask=frontarm_img)
 
+        # facial mask if set
         if facial_mask_img is not None:
             try:
                 base.paste(facial_mask_img, mask=facial_mask_img)
             except ValueError:
                 logging.exception("Bad facial mask image: %s, %s", facial_mask[0], facial_mask[1])
 
+        # facial hair if set
         if facial_hair_img is not None:
             try:
                 base.paste(facial_hair_img, mask=facial_hair_img)
@@ -1005,7 +1026,6 @@ class Player():
 
     def get_mode_type(self, name):
         """Return a mode type key name from its pretty name."""
-        # TODO: is there a better way to do this kinda thing?
         for key in self.mode_types.keys():
             if name == self.mode_types[key]:
                 return key
