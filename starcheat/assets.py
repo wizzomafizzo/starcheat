@@ -268,6 +268,9 @@ class Assets():
     def techs(self):
         return Techs(self)
 
+    def images(self):
+        return Images(self)
+
     def get_all(self, asset_type):
         c = self.assets.db.cursor()
         c.execute("select * from assets where type = ? order by name collate nocase", (asset_type,))
@@ -302,6 +305,37 @@ class Assets():
         c = self.db.cursor()
         c.execute("select distinct path from assets order by category")
         return [x[0].replace(self.starbound_folder,"") for x in c.fetchall()][1:]
+
+class Images():
+    def __init__(self, assets):
+        """
+        For loading and searching image assets.
+
+        TODO: i want this for the most basic image stuff:
+        - loading an image and handling errors
+        - placeholder images if error
+        - color replace functions
+        - maybe some spritesheets (common ones)
+
+        probably leave out specific stuff like full player rendering
+        """
+        self.assets = assets
+        self.starbound_folder = assets.starbound_folder
+
+    def filter_images(self, name):
+        """Find image assets from their filename/asset key."""
+        q = "select key, path from assets where type = 'image' and key like ?"
+        c = self.assets.db.cursor()
+        name = "%"+name+"%"
+        c.execute(q, (name,))
+        return c.fetchall()
+
+    def get_image(self, name):
+        """Find an image asset from its key, return PIL Image."""
+        # only care about the first hit
+        asset = self.filter_images(name)[0]
+        data = self.assets.read(asset[0], asset[1], True)
+        return Image.open(BytesIO(data)).convert("RGBA")
 
 class Blueprints():
     def __init__(self, assets):

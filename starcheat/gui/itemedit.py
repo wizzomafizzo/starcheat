@@ -9,11 +9,13 @@ Qt item edit dialog
 # once that's complete, work can be started on proper item generation. to begin,
 # we just wanna pull in all the default values of an item
 
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox, QFileDialog
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox, QFileDialog, QListWidgetItem
 from PyQt5.QtGui import QPixmap
+from PIL.ImageQt import ImageQt
 import json, copy, logging
 
 import assets, qt_itemedit, qt_itemeditoptions, saves
+import qt_imagebrowser
 from gui.common import inv_icon, ItemWidget, empty_slot
 from gui.itembrowser import ItemBrowser, generate_item_info
 from config import Config
@@ -58,6 +60,40 @@ class ItemEditOptions():
             self.ui.valid_label.setText(invalid % err)
             # this would be nicer if it just disabled the save button
             self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Cancel)
+
+class ImageBrowser():
+    def __init__(self, parent, assets):
+        self.dialog = QDialog(parent)
+        self.ui = qt_imagebrowser.Ui_Dialog()
+        self.ui.setupUi(self.dialog)
+
+        self.assets = assets
+
+        self.ui.search_button.clicked.connect(self.search)
+        self.ui.results.currentItemChanged.connect(self.set_preview)
+
+    def search(self):
+        query = self.ui.search.text()
+        results = self.assets.images().filter_images(query)
+        self.ui.results.clear()
+        for image in results:
+            self.ui.results.addItem(QListWidgetItem(image[0]))
+
+    def set_preview(self):
+        if self.ui.results.currentItem() is None:
+            self.ui.image.setPixmap(QPixmap())
+            return
+
+        key = self.ui.results.currentItem().text()
+        image = QPixmap.fromImage(ImageQt(self.assets.images().get_image(key)))
+        # TODO: scale image up
+        self.ui.image.setPixmap(image)
+
+    def get_key(self):
+        if self.ui.results.currentItem() is None:
+            return ""
+        else:
+            return self.ui.results.currentItem().text()
 
 class ItemOptionWidget(QTableWidgetItem):
     def __init__(self, key, value):
@@ -111,25 +147,21 @@ class ItemEdit():
 
     def update_item_info(self, name, data):
         item_info = "<html><body>"
-
-        #try:
-        #    item_info += "<strong>" + data["shortdescription"] + "</strong><br>"
-        #except KeyError:
-        #    try:
-        #        item_info += "<strong>" + self.assets.items().get_item(name)[0]["shortdescription"] + "</strong><br>"
-        #    except:
-        #        pass
-
         item_info += generate_item_info(data)
-
         item_info += "</body></html>"
         self.ui.desc.setText(item_info)
 
         try:
-            self.ui.icon.setPixmap(inv_icon(name))
-        except TypeError:
-            # TODO: change this to the x.png?
-            self.ui.icon.setPixmap(QPixmap())
+            key = data["image"]
+            image = QPixmap.fromImage(ImageQt(self.assets.images().get_image(key)))
+            # TODO: scale image up
+            self.ui.icon.setPixmap(image)
+        except KeyError:
+            try:
+                self.ui.icon.setPixmap(inv_icon(name))
+            except TypeError:
+                # TODO: change this to the x.png?
+                self.ui.icon.setPixmap(QPixmap())
 
     def update_item(self):
         """Update main item view with current item browser data."""
@@ -189,15 +221,26 @@ class ItemEdit():
             selected = ItemOptionWidget("", None)
         else:
             selected = self.ui.variant.currentItem()
-        item_edit_options = ItemEditOptions(self.dialog, selected.option[0], selected.option[1])
+
+        # TODO: need a better way to lay this out. it's going to get big
+        if selected.option[0] in ["inventoryIcon", "image", "largeImage"]:
+            dialog = ImageBrowser(self.dialog, self.assets)
+            def get_option():
+                return selected.option[0], dialog.get_key()
+        else:
+            dialog = ItemEditOptions(self.dialog, selected.option[0], selected.option[1])
+            def get_option():
+                data = dialog.ui.options.toPlainText()
+                return dialog.ui.name.text(), json.loads(data)
+
         def save():
-            new_option = json.loads(item_edit_options.ui.options.toPlainText())
-            name = item_edit_options.ui.name.text()
-            self.item["data"][name] = new_option
-            # TODO: update the item info. not working for some reason
+            new_option = get_option()
+            self.item["data"][new_option[0]] = new_option[1]
             self.populate_options()
-        item_edit_options.dialog.accepted.connect(save)
-        item_edit_options.dialog.exec()
+            self.update_item_info(self.item["name"], self.item["data"])
+
+        dialog.dialog.accepted.connect(save)
+        dialog.dialog.exec()
 
     def remove_option(self):
         """Remove the currently selected item option."""
