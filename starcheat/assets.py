@@ -935,7 +935,19 @@ class Species():
         head_img = Image.open(BytesIO(head_sprites)).convert("RGBA").crop((43, 0, 86, 43))
 
         hair = player.get_hair()
-        hair_img = self.get_hair_image(name, hair[0], hair[1], gender)
+        hair_img = None
+        if hair[0] != "":
+            hair_img = self.get_hair_image(name, hair[0], hair[1], gender)
+
+        facial_hair = player.get_facial_hair()
+        facial_hair_img = None
+        if facial_hair[0] != "":
+            facial_hair_img = self.get_hair_image(name, facial_hair[0], facial_hair[1], gender)
+
+        facial_mask = player.get_facial_mask()
+        facial_mask_img = None
+        if facial_mask[0] != "":
+            facial_mask_img = self.get_hair_image(name, facial_mask[0], facial_mask[1], gender)
 
         base = Image.new("RGBA", (43, 43))
 
@@ -950,6 +962,18 @@ class Species():
 
         base.paste(body_img, mask=body_img)
         base.paste(frontarm_img, mask=frontarm_img)
+
+        if facial_mask_img is not None:
+            try:
+                base.paste(facial_mask_img, mask=facial_mask_img)
+            except ValueError:
+                logging.exception("Bad facial mask image: %s, %s", facial_mask[0], facial_mask[1])
+
+        if facial_hair_img is not None:
+            try:
+                base.paste(facial_hair_img, mask=facial_hair_img)
+            except ValueError:
+                logging.exception("Bad facial hair image: %s, %s", facial_hair[0], facial_hair[1])
 
         return base
 
