@@ -225,11 +225,17 @@ class ItemEdit():
         else:
             selected = self.ui.variant.currentItem()
 
-        # TODO: need a better way to lay this out. it's going to get big
+        # TODO: need a better way to lay this out. it's going to get big and messy fast
 
         # this is for the qinputdialog stuff. can't set signals on them
         generic = False
-        if selected.option[0] in ["inventoryIcon", "image", "largeImage"]:
+        if new:
+            # needs to be here or new opts get detected as string (?)
+            dialog = ItemEditOptions(self.dialog, selected.option[0], selected.option[1])
+            def get_option():
+                data = dialog.ui.options.toPlainText()
+                return dialog.ui.name.text(), json.loads(data)
+        elif selected.option[0] in ["inventoryIcon", "image", "largeImage"]:
             dialog = ImageBrowser(self.dialog, self.assets)
             def get_option():
                 return selected.option[0], dialog.get_key()
