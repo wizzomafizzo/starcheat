@@ -116,9 +116,12 @@ class Appearance():
 
     def new_color_edit(self, type):
         color_edit = ColorEdit(self.dialog, self.colors[type])
-        color_edit.dialog.exec()
-        new_colors = color_edit.get_colors()
-        return new_colors
+        color_edit.dialog.show()
+
+        def save():
+            self.colors[type] = color_edit.get_colors()
+
+        color_edit.dialog.accepted.connect(save)
 
     def hair_icon(self, species, hair_type, hair_group):
         image_data = self.assets.species().get_hair_image(species, hair_type, hair_group)
@@ -126,13 +129,13 @@ class Appearance():
 
     # for color button signals
     def new_body_color_edit(self):
-        self.colors["body"] = self.new_color_edit("body")
+        self.new_color_edit("body")
     def new_hair_color_edit(self):
-        self.colors["hair"] = self.new_color_edit("hair")
+        self.new_color_edit("hair")
     def new_facial_hair_color_edit(self):
-        self.colors["facial_hair"] = self.new_color_edit("facial_hair")
+        self.new_color_edit("facial_hair")
     def new_facial_mask_color_edit(self):
-        self.colors["facial_mask"] = self.new_color_edit("facial_mask")
+        self.new_color_edit("facial_mask")
 
 class ColorItem(QTableWidgetItem):
     def __init__(self, color):
