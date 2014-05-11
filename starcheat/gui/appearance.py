@@ -120,6 +120,7 @@ class Appearance():
 
         def save():
             self.colors[type] = color_edit.get_colors()
+            self.write_appearance_values()
 
         color_edit.dialog.accepted.connect(save)
 
@@ -152,16 +153,23 @@ class ColorEdit():
         self.parent = parent
 
         self.ui.colors.cellDoubleClicked.connect(self.edit_color)
+        self.ui.add_button.clicked.connect(self.add_color)
+        self.ui.remove_button.clicked.connect(self.remove_color)
 
         self.directives = directives
+        self.populate()
+
+    def populate(self):
+        self.ui.colors.clear()
         self.splits = []
         total_rows = 0
-        for i in directives:
+        for i in self.directives:
             for j in i:
                 total_rows += 1
         self.ui.colors.setRowCount(total_rows)
+        self.ui.colors.setHorizontalHeaderLabels(["From", "To"])
         row = 0
-        for directive in directives:
+        for directive in self.directives:
             for group in directive:
                 orig = ColorItem(group[0])
                 replace = ColorItem(group[1])
@@ -169,6 +177,24 @@ class ColorEdit():
                 self.ui.colors.setItem(row, 1, replace)
                 row += 1
             self.splits.append(row)
+
+    def add_color(self):
+        self.directives[0].append(["ffffff", "ffffff"])
+        self.populate()
+
+    def remove_color(self):
+        row = self.ui.colors.currentRow()
+        orig = self.ui.colors.item(row, 0).text()
+        replace = self.ui.colors.item(row, 1).text()
+
+        for group in self.directives:
+            for directive in group:
+                try:
+                    group.remove([orig, replace])
+                except ValueError:
+                    pass
+
+        self.populate()
 
     def get_colors(self):
         new_colors = []
@@ -190,3 +216,5 @@ class ColorEdit():
         if qcolor.isValid():
             new_color = qcolor.name()[1:].lower()
             self.ui.colors.setItem(row, column, ColorItem(new_color))
+            self.directives = self.get_colors()
+        self.populate()
