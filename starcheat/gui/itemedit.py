@@ -319,7 +319,7 @@ class ItemEdit():
         if "maxStack" in self.item["data"]:
             max = int(self.item["data"]["maxStack"])
         else:
-            max = 999
+            max = 1000
         self.ui.count.setValue(max)
 
     def export_item(self):
