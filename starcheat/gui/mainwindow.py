@@ -230,11 +230,19 @@ class MainWindow():
 
         def update_slot():
             logging.debug("Writing changes to slot")
-            new_slot = ItemWidget(item_edit.get_item(), self.assets)
-            if new_slot.item["name"] != "":
-                bag.setItem(row, column, new_slot)
-                self.remember_browser = item_edit.remember_browser
-                self.set_edited()
+            try:
+                new_slot = ItemWidget(item_edit.get_item(), self.assets)
+                if new_slot.item["name"] != "":
+                    bag.setItem(row, column, new_slot)
+                    self.remember_browser = item_edit.remember_browser
+                    self.set_edited()
+            except TypeError:
+                dialog = QMessageBox(item_edit.dialog)
+                dialog.setWindowTitle("Invalid Item ID")
+                dialog.setText("That item ID does not exist in the Starbound assets.")
+                dialog.setStandardButtons(QMessageBox.Close)
+                dialog.setIcon(QMessageBox.Critical)
+                dialog.exec()
 
         def trash_slot():
             dialog = QMessageBox(item_edit.dialog)
