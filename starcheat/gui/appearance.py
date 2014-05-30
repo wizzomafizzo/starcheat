@@ -118,11 +118,21 @@ class Appearance():
         color_edit = ColorEdit(self.dialog, self.colors[type])
         color_edit.dialog.show()
 
+        # i've made a decision here to make this dialog non-modal so that the
+        # screen color picker can still choose colors in the appearance dialog
+        # properly. this has come with some unusual behaviour:
+        # - adding and removing colours will immediately write
+        # - editing existing colours needs a button click to write
+        # i am not sure why this happens, because both seem to use the same
+        # method to update the directive variable
+        # current solution "works" but should be changed. perhaps back to an exec
+        # but have an image of the hair/body/whatever along with the edit table?
+
         def save():
             self.colors[type] = color_edit.get_colors()
             self.write_appearance_values()
 
-        color_edit.dialog.accepted.connect(save)
+        color_edit.ui.buttonBox.rejected.connect(save)
 
     def hair_icon(self, species, hair_type, hair_group):
         image_data = self.assets.species().get_hair_image(species, hair_type, hair_group)
@@ -184,8 +194,12 @@ class ColorEdit():
 
     def remove_color(self):
         row = self.ui.colors.currentRow()
-        orig = self.ui.colors.item(row, 0).text()
-        replace = self.ui.colors.item(row, 1).text()
+        try:
+            orig = self.ui.colors.item(row, 0).text()
+            replace = self.ui.colors.item(row, 1).text()
+        except AttributeError:
+            # nothing was selected
+            return
 
         for group in self.directives:
             for directive in group:
