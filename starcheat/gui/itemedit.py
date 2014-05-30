@@ -235,26 +235,26 @@ class ItemEdit():
             def get_option():
                 data = dialog.ui.options.toPlainText()
                 return dialog.ui.name.text(), json.loads(data)
-        elif selected.option[0] in ["inventoryIcon", "image", "largeImage"]:
-            dialog = ImageBrowser(self.dialog, self.assets)
-            def get_option():
-                return selected.option[0], dialog.get_key()
+        #elif selected.option[0] in ["inventoryIcon", "image", "largeImage"]:
+        #    dialog = ImageBrowser(self.dialog, self.assets)
+        #    def get_option():
+        #        return selected.option[0], dialog.get_key()
         elif type(self.item["data"][selected.option[0]]) is str:
             generic = True
             text, ok = QInputDialog.getText(self.dialog, "Edit Text", selected.option[0],
                                             text=self.item["data"][selected.option[0]])
             if ok:
                 self.item["data"][selected.option[0]] = text
+        elif type(self.item["data"][selected.option[0]]) is int:
+            generic = True
+            num, ok = QInputDialog.getInt(self.dialog, "Edit Integer", selected.option[0],
+                                          self.item["data"][selected.option[0]])
+            if ok:
+                self.item["data"][selected.option[0]] = num
         elif type(self.item["data"][selected.option[0]]) is float:
             generic = True
             num, ok = QInputDialog.getDouble(self.dialog, "Edit Double", selected.option[0],
                                              self.item["data"][selected.option[0]], decimals=2)
-            if ok:
-                self.item["data"][selected.option[0]] = num
-        elif type(self.item["data"][selected.option[0]]) is int:
-            generic = True
-            num, ok = QInputDialog.getDouble(self.dialog, "Edit Integer", selected.option[0],
-                                             self.item["data"][selected.option[0]])
             if ok:
                 self.item["data"][selected.option[0]] = num
         elif type(self.item["data"][selected.option[0]]) is bool:
