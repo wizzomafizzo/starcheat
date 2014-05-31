@@ -89,6 +89,7 @@ class ImageBrowser():
         image = QPixmap.fromImage(ImageQt(self.assets.images().get_image(key)))
         # TODO: scale image up
         self.ui.image.setPixmap(image)
+        self.ui.asset_path.setText(key)
 
     def get_key(self):
         if self.ui.results.currentItem() is None:

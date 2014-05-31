@@ -2220,8 +2220,9 @@ border-radius: 4px;
      <string>Tools</string>
     </property>
     <addaction name="actionItemBrowser"/>
-    <addaction name="actionMods"/>
+    <addaction name="actionImageBrowser"/>
     <addaction name="separator"/>
+    <addaction name="actionMods"/>
     <addaction name="actionOptions"/>
    </widget>
    <addaction name="menuFile"/>
@@ -2462,6 +2463,15 @@ border-radius: 4px;
    </property>
    <property name="statusTip">
     <string>List your installed Starbound mods</string>
+   </property>
+  </action>
+  <action name="actionImageBrowser">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/starcheat/images/icons/glyphicons_halflings_199_tree_deciduous.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_199_tree_deciduous.png</iconset>
+   </property>
+   <property name="text">
+    <string>Image Browser</string>
    </property>
   </action>
  </widget>

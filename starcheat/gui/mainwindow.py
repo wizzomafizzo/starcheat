@@ -14,7 +14,7 @@ from config import Config
 from gui.common import ItemWidget, empty_slot, preview_icon
 from gui.utils import CharacterSelectDialog, OptionsDialog, AboutDialog, ModsDialog
 from gui.utils import save_modified_dialog, new_setup_dialog
-from gui.itemedit import ItemEdit
+from gui.itemedit import ItemEdit, ImageBrowser
 from gui.blueprints import BlueprintLib
 from gui.itembrowser import ItemBrowser
 from gui.appearance import Appearance
@@ -81,6 +81,7 @@ class MainWindow():
         self.ui.actionExportJSON.triggered.connect(self.export_json)
         self.ui.actionImportJSON.triggered.connect(self.import_json)
         self.ui.actionMods.triggered.connect(self.new_mods_dialog)
+        self.ui.actionImageBrowser.triggered.connect(self.new_image_browser_dialog)
 
         # populate species combobox
         for species in self.assets.species().get_species_list():
@@ -316,6 +317,10 @@ class MainWindow():
     def new_mods_dialog(self):
         mods_dialog = ModsDialog(self.window)
         mods_dialog.dialog.show()
+
+    def new_image_browser_dialog(self):
+        self.image_browser = ImageBrowser(self.window, self.assets)
+        self.image_browser.dialog.show()
 
     def reload(self):
         """Reload the currently open save file and update GUI values."""
