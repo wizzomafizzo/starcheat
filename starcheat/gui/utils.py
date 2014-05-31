@@ -377,3 +377,18 @@ class ModsDialog():
         self.ui.mods_total.setText(str(len(mods))+" total")
         for mod in mods:
             self.ui.mods_list.addItem(mod)
+
+        self.ui.export_button.clicked.connect(self.export_list)
+
+    def export_list(self):
+        data = ""
+        for mod in self.assets.get_mods():
+            data += mod + "\n"
+
+        filename = QFileDialog.getSaveFileName(self.dialog,
+                                               "Export Mod List As")
+
+        if filename[0] != "":
+            json_file = open(filename[0], "w")
+            json_file.write(data)
+            json_file.close()

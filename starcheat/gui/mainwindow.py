@@ -316,7 +316,7 @@ class MainWindow():
 
     def new_mods_dialog(self):
         mods_dialog = ModsDialog(self.window)
-        mods_dialog.dialog.show()
+        mods_dialog.dialog.exec()
 
     def new_image_browser_dialog(self):
         self.image_browser = ImageBrowser(self.window, self.assets)
