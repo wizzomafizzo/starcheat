@@ -279,7 +279,11 @@ class CharacterSelectDialog():
         self.ui.player_list.setFocus()
 
     def accept(self):
-        player = self.ui.player_list.currentItem().text()
+        try:
+            player = self.ui.player_list.currentItem().text()
+        except AttributeError:
+            player = ""
+
         if player != "":
             self.selected = self.players[player]
             self.dialog.close()
@@ -317,10 +321,19 @@ class CharacterSelectDialog():
         # quit if there are no players
         if len(self.players) == 0:
             dialog = QMessageBox(self.dialog)
-            dialog.setText("No compatible save files found in:")
+            dialog.setText("No player files detected. Reselect the Starbound folder?")
             dialog.setInformativeText(self.player_folder)
             dialog.setIcon(QMessageBox.Warning)
-            dialog.exec()
+            dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+            answer = dialog.exec()
+
+            if answer == QMessageBox.Yes:
+                Config().remove_config()
+                new_setup_dialog(self.dialog)
+                dialog = QMessageBox(self.dialog)
+                dialog.setText("Please restart starcheat to see changes.")
+                dialog.setIcon(QMessageBox.Information)
+                dialog.exec()
         else:
             self.dialog.exec()
 
