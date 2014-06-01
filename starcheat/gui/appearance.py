@@ -4,11 +4,12 @@ Qt appearance management dialog
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QDialog, QColorDialog, QTableWidgetItem
-from PyQt5.QtGui import QColor, QBrush, QPixmap, QImage, QIcon
+from PyQt5.QtGui import QColor, QBrush, QPixmap
 from PIL.ImageQt import ImageQt
 
+import logging
+
 import assets, qt_appearance, qt_coloredit
-from gui.common import preview_icon
 from config import Config
 
 class Appearance():

@@ -5,7 +5,7 @@ Qt techs management dialog
 import os, logging
 
 from PyQt5.QtWidgets import QDialog, QListWidgetItem
-from PyQt5.QtGui import QPixmap, QImage, QIcon, QBrush, QColor
+from PyQt5.QtGui import QPixmap, QBrush, QColor
 from PIL.ImageQt import ImageQt
 
 import assets, qt_techs

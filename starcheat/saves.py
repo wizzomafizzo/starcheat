@@ -8,7 +8,7 @@ It can also be run from the command line to dump the contents, like this:
 $ python ./save_file.py <.player file>
 """
 
-import sys, logging, struct, os
+import sys, logging, struct
 from pprint import pprint
 from struct import pack, unpack_from
 

@@ -6,12 +6,12 @@ import sys, logging, json
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap
 from PIL.ImageQt import ImageQt
 
 import saves, assets, qt_mainwindow
 from config import Config
-from gui.common import ItemWidget, empty_slot, preview_icon
+from gui.common import ItemWidget, empty_slot
 from gui.utils import CharacterSelectDialog, OptionsDialog, AboutDialog, ModsDialog
 from gui.utils import save_modified_dialog, new_setup_dialog
 from gui.itemedit import ItemEdit, ImageBrowser

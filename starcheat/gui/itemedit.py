@@ -17,7 +17,7 @@ import json, copy, logging
 
 import assets, qt_itemedit, qt_itemeditoptions, saves
 import qt_imagebrowser
-from gui.common import inv_icon, ItemWidget, empty_slot
+from gui.common import inv_icon, empty_slot
 from gui.itembrowser import ItemBrowser, generate_item_info
 from config import Config
 
