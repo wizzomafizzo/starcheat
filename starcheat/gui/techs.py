@@ -107,12 +107,12 @@ class Techs():
 
         # tech list can't have empty spaces in it
         for i in self.techs:
-            if i != None:
+            if i is not None:
                 techs.append(i)
 
         index = 0
         for i in self.equip:
-            if i != None:
+            if i is not None:
                 equip[index] = i
                 index += 1
 
