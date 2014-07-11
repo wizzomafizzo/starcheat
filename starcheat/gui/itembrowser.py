@@ -124,15 +124,15 @@ class ItemBrowser():
             logging.warning("Unable to load asset "+selected)
             return
 
-        image_file = self.items.get_item_image(selected)
-        if image_file is None:
-            inv_icon_file = self.items.get_item_icon(selected)
-            if inv_icon_file is not None:
-                icon = QPixmap.fromImage(ImageQt(inv_icon_file)).scaled(32, 32)
-            else:
-                icon = QPixmap.fromImage(QImage.fromData(self.items.missing_icon())).scaled(32, 32)
+        inv_icon_file = self.items.get_item_icon(selected)
+        if inv_icon_file is not None:
+            icon = QPixmap.fromImage(ImageQt(inv_icon_file)).scaled(32, 32)
         else:
-            icon = QPixmap.fromImage(ImageQt(image_file)).scaledToHeight(64)
+            image_file = self.items.get_item_image(selected)
+            if image_file is not None:
+                icon = QPixmap.fromImage(ImageQt(image_file)).scaledToWidth(64)
+            else:
+                icon = QPixmap.fromImage(QImage.fromData(self.assets.items().missing_icon())).scaled(32, 32)
 
         # last ditch
         try:

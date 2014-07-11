@@ -11,7 +11,7 @@ Qt item edit dialog
 
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 from PyQt5.QtWidgets import QInputDialog, QListWidgetItem, QFileDialog
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QImage
 from PIL.ImageQt import ImageQt
 import json, copy, logging
 
@@ -153,17 +153,21 @@ class ItemEdit():
         item_info += "</body></html>"
         self.ui.desc.setText(item_info)
 
+        inv_icon_file = self.assets.items().get_item_icon(name)
+        if inv_icon_file is not None:
+            icon = QPixmap.fromImage(ImageQt(inv_icon_file)).scaled(32, 32)
+        else:
+            image_file = self.assets.items().get_item_image(name)
+            if image_file is not None:
+                icon = QPixmap.fromImage(ImageQt(image_file)).scaledToWidth(64)
+            else:
+                icon = QPixmap.fromImage(QImage.fromData(self.assets.items().missing_icon())).scaled(32, 32)
+        # last ditch
         try:
-            key = data["image"]
-            image = QPixmap.fromImage(ImageQt(self.assets.images().get_image(key)))
-            # TODO: scale image up
-            self.ui.icon.setPixmap(image)
-        except KeyError:
-            try:
-                self.ui.icon.setPixmap(inv_icon(name))
-            except TypeError:
-                # TODO: change this to the x.png?
-                self.ui.icon.setPixmap(QPixmap())
+            self.ui.icon.setPixmap(icon)
+        except TypeError:
+            logging.warning("Unable to load item image: "+name)
+            self.ui.icon.setPixmap(QPixmap())
 
     def update_item(self):
         """Update main item view with current item browser data."""
