@@ -167,9 +167,9 @@ class ItemBrowser():
 
         if src_width == src_height and width == height: #square image and square bounds
             scaled_qpix = qpix.scaled(width,height)
-        elif src_width > src_height or width > height: #wider than tall needs width scaling to fit
+        elif src_width > src_height: #wider than tall needs width scaling to fit
             scaled_qpix = qpix.scaledToWidth(width)
-        elif src_height > src_width or height > width: #taller than wide needs height scaling to fit
+        elif src_height > src_width: #taller than wide needs height scaling to fit
             scaled_qpix = qpix.scaledToHeight(height)
         return scaled_qpix
 
