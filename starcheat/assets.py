@@ -110,7 +110,7 @@ class Assets():
             else:
                 logging.warning("Skipping invalid asset (no file extension) %s in %s" % (asset[0], asset[1]))
 
-            if tmp_data != None:
+            if tmp_data is not None:
                 c.execute(new_index_query, tmp_data)
 
         self.db.commit()
@@ -179,7 +179,7 @@ class Assets():
                             mod_assets = folder
             logging.debug(mod_assets)
 
-            if mod_assets == None:
+            if mod_assets is None:
                 return index
             elif found_mod_info and self.is_packed_file(mod_assets):
                 # TODO: make a .pak scanner function that works for vanilla and mods
@@ -187,7 +187,7 @@ class Assets():
                 db = starbound.open_file(pak_path)
                 for x in db.get_index():
                     # removes thumbs.db etc from user pak files
-                    if re.match(ignore_assets, x) == None:
+                    if re.match(ignore_assets, x) is None:
                         index.append((x, pak_path))
                 return index
             elif not os.path.isdir(mod_assets):
@@ -196,7 +196,7 @@ class Assets():
             # now we can scan!
             for root, dirs, files in os.walk(mod_assets):
                 for f in files:
-                    if re.match(ignore_assets, f) == None:
+                    if re.match(ignore_assets, f) is None:
                         asset_folder = os.path.normpath(mod_assets)
                         asset_file = os.path.normpath(os.path.join(root.replace(folder, ""), f))
                         index.append((asset_file, asset_folder))
@@ -355,7 +355,7 @@ class Blueprints():
         asset_type = "blueprint"
         asset_data = self.assets.read(key, path)
 
-        if asset_data == None: return
+        if asset_data is None: return
 
         try:
             category = asset_data["groups"][1]
@@ -392,7 +392,7 @@ class Items():
             return True
         elif key.endswith(".codexitem"):
             return True
-        elif key.startswith("items", 1) and re.match(ignore_items, key) == None:
+        elif key.startswith("items", 1) and re.match(ignore_items, key) is None:
             return True
         else:
             return False
@@ -404,7 +404,7 @@ class Items():
         category = asset_category(key)
         asset_data = self.assets.read(key, path)
 
-        if asset_data == None: return
+        if asset_data is None: return
 
         name = False
         item_name_keys = ["itemName", "name", "objectName"]
@@ -468,7 +468,7 @@ class Items():
             icon[0] = os.path.dirname(item[1]) + "/" + icon[0]
 
         icon_data = self.assets.read(icon[0], item[2], image=True)
-        if icon_data == None:
+        if icon_data is None:
             return None
 
         item_icon = Image.open(BytesIO(icon_data))
@@ -512,7 +512,7 @@ class Items():
 
         icon_data = self.assets.read(icon, item[2], image=True)
 
-        if icon_data == None:
+        if icon_data is None:
             logging.warning("Unable to read %s from %s" % (icon, item[2]))
             return None
 
@@ -785,7 +785,7 @@ class Species():
         path = asset[1]
         asset_data = self.assets.read(key, path)
 
-        if asset_data == None: return
+        if asset_data is None: return
 
         if "kind" in asset_data:
             return (key, path, "species", "", asset_data["kind"].lower(), "")
@@ -1046,7 +1046,7 @@ class Monsters():
         path = asset[1]
         asset_data = self.assets.read(key, path)
 
-        if asset_data == None: return
+        if asset_data is None: return
 
         if "type" in asset_data:
             return (key, path, "monster", "", asset_data["type"], "")
@@ -1086,7 +1086,7 @@ class Techs():
         name = os.path.basename(asset[0]).split(".")[0]
         asset_data = self.assets.read(key, path)
 
-        if asset_data == None: return
+        if asset_data is None: return
 
         return (key, path, "tech", "", name, "")
 

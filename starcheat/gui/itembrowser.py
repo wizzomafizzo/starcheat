@@ -50,7 +50,7 @@ def generate_item_info(item_data):
     """Takes inventory item data and makes a detailed description (HTML)."""
     info = ""
 
-    if item_data == None:
+    if item_data is None:
         return ""
 
     for fmt in data_format:
@@ -125,9 +125,9 @@ class ItemBrowser():
             return
 
         image_file = self.items.get_item_image(selected)
-        if image_file == None:
+        if image_file is None:
             inv_icon_file = self.items.get_item_icon(selected)
-            if inv_icon_file != None:
+            if inv_icon_file is not None:
                 icon = QPixmap.fromImage(ImageQt(inv_icon_file)).scaled(32, 32)
             else:
                 icon = QPixmap.fromImage(QImage.fromData(self.items.missing_icon())).scaled(32, 32)

@@ -200,7 +200,7 @@ def unpack_variant(data):
     return unpacked[0], offset
 
 def pack_variant(var):
-    if var == None:
+    if var is None:
         return b'\x01' + variant_types[1][1](var)
     elif type(var) is float:
         return b'\x02' + variant_types[2][1](var)
@@ -386,7 +386,7 @@ class PlayerSave():
             # logging.debug("Packing " + var[0])
             player_data += pack_var(var, self.data[var[0]])
 
-        if filename != None:
+        if filename is not None:
             save_file = open(filename, "wb")
             save_file.write(player_data)
             save_file.close()

@@ -342,7 +342,7 @@ class MainWindow():
         character_select = CharacterSelectDialog(self.window)
         character_select.show()
 
-        if character_select.selected == None:
+        if character_select.selected is None:
             logging.warning("No player selected")
             return False
         else:
@@ -411,7 +411,7 @@ class MainWindow():
 
         for i in range(len(bag)):
             item = getattr(self.ui, name).item(row, column)
-            if type(item) is QTableWidgetItem or item == None:
+            if type(item) is QTableWidgetItem or item is None:
                 item = None
             else:
                 item = item.item
@@ -435,12 +435,12 @@ class MainWindow():
 
         # when you drag itemwidgets around the cell will become empty so just
         # pretend it had an empty slot value
-        if main_cell == None or type(main_cell) is QTableWidgetItem:
+        if main_cell is None or type(main_cell) is QTableWidgetItem:
             main = None
         else:
             main = main_cell.item
 
-        if glamor_cell == None or type(glamor_cell) is QTableWidgetItem:
+        if glamor_cell is None or type(glamor_cell) is QTableWidgetItem:
             glamor = None
         else:
             glamor = glamor_cell.item

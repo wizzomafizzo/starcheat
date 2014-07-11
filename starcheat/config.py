@@ -42,7 +42,7 @@ class Config():
 
     def create_config(self, starbound_folder=None):
         # Default values
-        if starbound_folder == None:
+        if starbound_folder is None:
             starbound_folder = self.detect_starbound_folder()
 
         assets_folder = os.path.join(starbound_folder, "assets")

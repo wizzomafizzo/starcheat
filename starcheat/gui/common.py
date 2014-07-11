@@ -18,7 +18,7 @@ def inv_icon(item_name):
     db = assets.Assets(assets_db_file, starbound_folder)
     icon_file = db.items().get_item_icon(item_name)
 
-    if icon_file == None:
+    if icon_file is None:
         try:
             image_file = db.items().get_item_image(item_name)
             return QPixmap.fromImage(ImageQt(image_file)).scaledToHeight(64)
