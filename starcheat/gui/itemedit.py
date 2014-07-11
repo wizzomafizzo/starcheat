@@ -155,19 +155,34 @@ class ItemEdit():
 
         inv_icon_file = self.assets.items().get_item_icon(name)
         if inv_icon_file is not None:
-            icon = QPixmap.fromImage(ImageQt(inv_icon_file)).scaled(32, 32)
+            icon = QPixmap.fromImage(ImageQt(inv_icon_file))
         else:
             image_file = self.assets.items().get_item_image(name)
             if image_file is not None:
-                icon = QPixmap.fromImage(ImageQt(image_file)).scaledToWidth(64)
+                icon = QPixmap.fromImage(ImageQt(image_file))
             else:
-                icon = QPixmap.fromImage(QImage.fromData(self.assets.items().missing_icon())).scaled(32, 32)
+                icon = QPixmap.fromImage(QImage.fromData(self.assets.items().missing_icon()))
         # last ditch
         try:
+            icon = self.scale_image_icon(icon,64,64)
             self.ui.icon.setPixmap(icon)
         except TypeError:
             logging.warning("Unable to load item image: "+name)
             self.ui.icon.setPixmap(QPixmap())
+
+    def scale_image_icon(self, qpix, width, height):
+        """Scales the image icon to best fit in the width and height bounds given. Preserves aspect ratio."""
+        scaled_qpix = qpix
+        src_width = qpix.width()
+        src_height = qpix.height()
+
+        if src_width == src_height and width == height: #square image and square bounds
+            scaled_qpix = qpix.scaled(width,height)
+        elif src_width > src_height or width > height: #wider than tall needs width scaling to fit
+            scaled_qpix = qpix.scaledToWidth(width)
+        elif src_height > src_width or height > width: #taller than wide needs height scaling to fit
+            scaled_qpix = qpix.scaledToHeight(height)
+        return scaled_qpix
 
     def update_item(self):
         """Update main item view with current item browser data."""
