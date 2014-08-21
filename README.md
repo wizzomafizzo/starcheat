@@ -2,11 +2,9 @@
 
 starcheat is a [Starbound](http://playstarbound.com/) player save editor, you can get free pixels with this! (omg)
 
-**[starcheat.org](http://starcheat.org) wiki is now up with the latest downloads, guides and troubleshooting info.**
+**An archive of the old starcheat wiki is located in the website_archive folder.**
 
 ![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/starcheat/images/screenshot.png)
-
-If you're not trying to build starcheat yourself, here be dragons.
 
 ## Building from source
 Here is how to build starcheat from source. Make sure everything in the dependencies section is installed before you do a build.
