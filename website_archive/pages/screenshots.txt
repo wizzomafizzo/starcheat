@@ -1,0 +1,13 @@
+{{ :wiki:mainwindow.png |}}
+
+{{ :wiki:playerselect.png |}}
+
+{{ :wiki:itemedit.png |}}
+
+{{ :wiki:itembrowser.png |}}
+
+{{ :wiki:appearance.png |}}
+
+{{ :wiki:blueprints.png |}}
+
+{{ :wiki:techs.png |}}

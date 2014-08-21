@@ -1,0 +1,18 @@
+starcheat item files are just JSON text files, very similar to Starbound assets before they're packed. They can be exported, imported again and edited with a text editor like Notepad.
+
+Example items can be found in the [[community:items|community items]] section.
+
+====== Export an item ======
+  - Double click an empty inventory slot
+  - Click cancel on the item browser dialog
+  - Click the import item button in the bottom left of the item edit dialog
+  - Select and open a saved item file
+  - //(Optional)// Make changes to the item from the edit dialog
+  - Click Ok
+
+====== Import an item ======
+  - Double click a filled inventory slot to open the edit dialog
+  - Click the import item button in the bottom left of the dialog
+  - Browse to the folder you want
+  - Type a name for the file (you can use .txt for the file extension)
+  - Click Save

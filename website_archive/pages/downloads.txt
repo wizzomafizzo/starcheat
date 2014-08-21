@@ -1,0 +1,33 @@
+**Latest version:** 0.16 (Enraged Koala) [2014-06-01]
+
+These are builds of the latest development version. They should work fine, but may be unstable. **Don't forget to back up your save files before using them.**
+
+**NOTE:** starcheat is not a normal mod, it's a separate program. You don't need to put it in the Starbound mods folder.
+
+====== Windows ======
+
+[[http://callan.io/builds/starcheat-0.16.zip|Download here]]
+
+**NOTE:** If Windows complains about a system error (re: missing msvcr100.dll), you probably need to install the Microsoft Visual C++ 2010 Redistributable Package.
+
+===== How to run =====
+  - Download the starcheat .zip file above
+  - Extract all files into a folder somewhere (not the mods folder)
+  - Go into the newly created folder
+  - Run **starcheat.exe**
+  - Follow the prompts to configure starcheat (only happens once)
+  - Open a player
+
+===== Old versions =====
+If you want an old Windows version of starcheat for some reason you can find them [[http://callan.io/builds/?C=M;O=D|here]].
+
+====== Mac ======
+
+[[https://github.com/wizzomafizzo/starcheat/releases|Download here]] (get the newest release)
+
+====== Linux ======
+
+There are no static builds of starcheat for Linux yet. You can build starcheat from source using instructions on the [[https://github.com/wizzomafizzo/starcheat|github page]].
+
+===== Arch Linux =====
+[[https://aur.archlinux.org/packages/starcheat/|AUR package]] (thanks Schala)

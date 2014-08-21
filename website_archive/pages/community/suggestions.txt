@@ -1,0 +1,10 @@
+Add any ideas you have for the future of starcheat. Anything is fair game, but check the [[:features|features page]] in case it already exists or is planned.
+
+^ Awesome Idea ^ Notes ^
+| 3d printer management | This would be cool but it depends on being able to interpret and edit the .shipworld files. Need to find a library that can update it (or come up with something) |
+| Quest management | This is stored in a .db file in the universe folder. blixt has been making good progress on reading the file but still some unknowns |
+| Codex management | No idea where this information is stored yet, probably somewhere in the universe folder or on the ship |
+| Ship management | Swap out your ship from starcheat |
+| Toggle friendly item names | Maybe like a checkbox or something in options or browser dialog? |
+| Item color picker | Add a nice color picker dialog for item color options |
+| Manage known sectors | Looks like this may be just recipe management |
