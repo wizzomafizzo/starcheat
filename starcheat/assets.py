@@ -169,7 +169,9 @@ class Assets():
                     modinfo = os.path.join(folder, f)
                     try:
                         modinfo_data = load_asset_file(modinfo)
-                        path = modinfo_data["path"]
+                        path = "./"
+                        if modinfo_data["path"]:
+                            path = modinfo_data["path"]
                         mod_assets = os.path.join(folder, path)
                         found_mod_info = True
                     except ValueError:
