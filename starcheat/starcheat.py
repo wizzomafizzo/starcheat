@@ -38,7 +38,11 @@ def exception_handler(type, value, tb):
     for err in traceback.format_exception(type, value, tb):
         logging.debug(err)
 
-    starbound_folder = config.Config().read("starbound_folder")
+    try:
+        starbound_folder = config.Config().read("starbound_folder")
+    except KeyError:
+        starbound_folder = None
+
     if starbound_folder is None:
         logging.debug("No Starbound folder is set!")
     else:

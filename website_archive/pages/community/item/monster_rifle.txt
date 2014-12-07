@@ -1,0 +1,111 @@
+You'll have to update the ownerUuid key (search for it on this page) to your own player's UUID otherwise the monster may spawn hostile.
+
+<code - monster_rifle.json>
+{
+    "count": 1,
+    "data": {
+        "classMultiplier": 1.0,
+        "drawables": [
+            {
+                "image": "/items/guns/randomgenerated/assaultrifle/butt/1.png",
+                "position": [
+                    -8.0,
+                    0.0
+                ]
+            },
+            {
+                "image": "/items/guns/randomgenerated/assaultrifle/middle/1.png",
+                "position": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "image": "/items/guns/randomgenerated/assaultrifle/barrel/1.png",
+                "position": [
+                    12.0,
+                    0.0
+                ]
+            }
+        ],
+        "firePosition": [
+            0.0,
+            0.0
+        ],
+        "fireTime": 0.1,
+        "generated": true,
+        "handPosition": [
+            5.0,
+            2.0
+        ],
+        "inspectionKind": "gun",
+        "inventoryIcon": [
+            {
+                "image": "/items/guns/randomgenerated/assaultrifle/butt/1.png",
+                "position": [
+                    -8.0,
+                    0.0
+                ]
+            },
+            {
+                "image": "/items/guns/randomgenerated/assaultrifle/middle/1.png",
+                "position": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "image": "/items/guns/randomgenerated/assaultrifle/barrel/1.png",
+                "position": [
+                    12.0,
+                    0.0
+                ]
+            }
+        ],
+        "itemName": "generatedgun",
+        "level": 1.0,
+        "levelScale": 2.0,
+        "muzzleEffect": {
+            "animation": "/animations/muzzleflash/plasmamuzzle1/plasmamuzzle1.animation",
+            "fireSound": [
+                {
+                    "file": "/sfx/gun/plasma_ar1.wav"
+                }
+            ]
+        },
+        "projectile": {
+            "actionOnReap": [
+                {
+                    "action": "spawnmonster",
+                    "arguments": {
+                        "aggressive": true,
+                        "damageTeam": 0,
+                        "damageTeamType": "friendly",
+                        "familyIndex": 0,
+                        "killCount": null,
+                        "level": 100.0,
+                        "ownerUuid": "70280142f506f5e15986b96049e4484f",
+                        "persistent": true,
+                        "seed": "1063532063183364708"
+                    },
+                    "offset": [
+                        0,
+                        2
+                    ],
+                    "type": "tallbiped"
+                }
+            ],
+            "level": 7.0,
+            "power": 7.0
+        },
+        "projectileType": "filledcapturepod",
+        "rarity": "common",
+        "recoilTime": 0.1,
+        "shortdescription": "Monster Rifle",
+        "spread": 1.0,
+        "twoHanded": true,
+        "weaponType": "Plasma Rifle"
+    },
+    "name": "generatedgun"
+}
+</code>

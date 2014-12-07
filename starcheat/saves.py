@@ -676,4 +676,4 @@ class PlayerSave():
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])
     player.dump()
-    print(player.export_save())
+    #print(player.export_save())

@@ -13,7 +13,7 @@ elif platform.system() == "Darwin":
 else:
     config_folder = os.path.expanduser("~/.starcheat")
 
-if os.path.isdir(config_folder) == False:
+if not os.path.isdir(config_folder):
     os.mkdir(config_folder)
 
 STARCHEAT_VERSION = "0.16 (Enraged Koala)"

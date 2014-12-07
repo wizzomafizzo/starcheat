@@ -124,18 +124,19 @@ class ItemBrowser():
             logging.warning("Unable to load asset "+selected)
             return
 
-        image_file = self.items.get_item_image(selected)
-        if image_file is None:
-            inv_icon_file = self.items.get_item_icon(selected)
-            if inv_icon_file is not None:
-                icon = QPixmap.fromImage(ImageQt(inv_icon_file)).scaled(32, 32)
-            else:
-                icon = QPixmap.fromImage(QImage.fromData(self.items.missing_icon())).scaled(32, 32)
+        inv_icon_file = self.items.get_item_icon(selected)
+        if inv_icon_file is not None:
+            icon = QPixmap.fromImage(ImageQt(inv_icon_file))
         else:
-            icon = QPixmap.fromImage(ImageQt(image_file)).scaledToHeight(64)
+            image_file = self.items.get_item_image(selected)
+            if image_file is not None:
+                icon = QPixmap.fromImage(ImageQt(image_file))
+            else:
+                icon = QPixmap.fromImage(QImage.fromData(self.assets.items().missing_icon()))
 
         # last ditch
         try:
+            icon = self.scale_image_icon(icon,64,64)
             self.ui.item_icon.setPixmap(icon)
         except TypeError:
             logging.warning("Unable to load item image: "+selected)
@@ -157,6 +158,20 @@ class ItemBrowser():
             row += 1
 
         self.item_browse_select = selected
+
+    def scale_image_icon(self, qpix, width, height):
+        """Scales the image icon to best fit in the width and height bounds given. Preserves aspect ratio."""
+        scaled_qpix = qpix
+        src_width = qpix.width()
+        src_height = qpix.height()
+
+        if src_width == src_height and width == height: #square image and square bounds
+            scaled_qpix = qpix.scaled(width,height)
+        elif src_width > src_height: #wider than tall needs width scaling to fit
+            scaled_qpix = qpix.scaledToWidth(width)
+        elif src_height > src_width: #taller than wide needs height scaling to fit
+            scaled_qpix = qpix.scaledToHeight(height)
+        return scaled_qpix
 
     def update_item_list(self):
         """Populate item list based on current filter details."""
