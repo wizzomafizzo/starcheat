@@ -156,6 +156,7 @@ class ItemBrowser():
                 self.ui.info.setItem(row, 0, table_item)
                 row += 1
         except TypeError:
+            self.ui.info.setRowCount(0)
             logging.error("No item data")
 
         self.item_browse_select = selected
