@@ -809,7 +809,7 @@
           <item>
            <widget class="QPushButton" name="techs_button">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1460,6 +1460,9 @@
     </item>
     <item>
      <layout class="QFormLayout" name="formLayout">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="ver_label">
         <property name="enabled">
@@ -1770,44 +1773,14 @@ border-radius: 4px;
         </item>
        </layout>
       </item>
-      <item row="10" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Max Multiplier</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="max_health">
-          <property name="minimumSize">
-           <size>
-            <width>100</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>100</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="11" column="0">
+      <item row="10" column="0">
        <widget class="QLabel" name="energy_label">
         <property name="text">
          <string>Energy</string>
         </property>
        </widget>
       </item>
-      <item row="11" column="1">
+      <item row="10" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QSlider" name="energy">
@@ -1871,54 +1844,6 @@ border-radius: 4px;
           <property name="icon">
            <iconset resource="../resources.qrc">
             <normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</iconset>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="12" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_9">
-        <item>
-         <widget class="QLabel" name="energy_regen_label">
-          <property name="minimumSize">
-           <size>
-            <width>90</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Regen Rate</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="energy_regen">
-          <property name="minimumSize">
-           <size>
-            <width>100</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>100</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="decimals">
-           <number>1</number>
-          </property>
-          <property name="minimum">
-           <double>0.100000000000000</double>
-          </property>
-          <property name="maximum">
-           <double>999999999.000000000000000</double>
-          </property>
-          <property name="value">
-           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
@@ -2228,10 +2153,8 @@ border-radius: 4px;
   <tabstop>race</tabstop>
   <tabstop>male</tabstop>
   <tabstop>female</tabstop>
-  <tabstop>max_health</tabstop>
   <tabstop>energy</tabstop>
   <tabstop>energy_button</tabstop>
-  <tabstop>energy_regen</tabstop>
   <tabstop>head</tabstop>
   <tabstop>wieldable</tabstop>
   <tabstop>back</tabstop>

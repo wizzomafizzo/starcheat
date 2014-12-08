@@ -114,9 +114,7 @@ class MainWindow():
 
         # set up stat signals
         self.ui.health.valueChanged.connect(lambda: self.set_stat_slider("health"))
-        self.ui.max_health.valueChanged.connect(lambda: self.set_stat("health"))
         self.ui.energy.valueChanged.connect(lambda: self.set_stat_slider("energy"))
-        self.ui.energy_regen.valueChanged.connect(self.set_energy_regen)
         self.ui.health_button.clicked.connect(lambda: self.max_stat("health"))
         self.ui.energy_button.clicked.connect(lambda: self.max_stat("energy"))
 
@@ -165,11 +163,6 @@ class MainWindow():
         # stats
         self.update_stat("health")
         self.update_stat("energy")
-        # energy regen rate
-        try:
-            self.ui.energy_regen.setValue(self.player.get_energy_regen())
-        except TypeError:
-            logging.exception("Unable to set energy regen rate")
 
         # equipment
         equip_bags = "head", "chest", "legs", "back"
@@ -275,8 +268,7 @@ class MainWindow():
             blueprint_lib.dialog.close()
             self.set_edited()
 
-        blueprint_lib.ui.buttonBox.accepted.connect(update_blueprints)
-        blueprint_lib.ui.buttonBox.rejected.connect(blueprint_lib.dialog.close)
+        blueprint_lib.ui.buttonBox.rejected.connect(update_blueprints)
         blueprint_lib.dialog.exec()
 
     def new_item_browser(self):
@@ -528,10 +520,6 @@ class MainWindow():
 
     def set_game_mode(self):
         self.player.set_game_mode(self.assets.player().get_mode_type(self.ui.game_mode.currentText()))
-        self.set_edited()
-
-    def set_energy_regen(self):
-        self.player.set_energy_regen(self.ui.energy_regen.value())
         self.set_edited()
 
     def set_bags(self):

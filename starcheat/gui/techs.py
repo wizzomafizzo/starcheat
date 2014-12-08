@@ -9,16 +9,8 @@ from PyQt5.QtGui import QPixmap, QBrush, QColor
 from PIL.ImageQt import ImageQt
 
 import assets, qt_techs
+import saves
 from config import Config
-
-def new_tech_slot(tech_asset):
-    module = {
-        "active": False,
-        "modulePath": tech_asset,
-        "scriptData": {}
-    }
-
-    return module
 
 class Techs():
     def __init__(self, main_window):
@@ -91,7 +83,7 @@ class Techs():
         icon = QPixmap.fromImage(ImageQt(tech[1]))
         getattr(self.ui, "icon"+str(index+1)).setPixmap(icon.scaled(32,32))
         getattr(self.ui, "icon"+str(index+1)).setToolTip(tech[0]["shortdescription"])
-        self.techs[index] = new_tech_slot(tech[2])
+        self.techs[index] = saves.new_item_data(tech[2], 1)
         self.equip[index] = tech[0]["itemName"]
 
     def clear_tech(self, index):

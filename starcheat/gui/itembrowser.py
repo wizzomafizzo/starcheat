@@ -41,8 +41,8 @@ data_format = (
     ("description", "%s<br><br>"),
     ("inspectionKind", "<b>Type:</b> %s<br>"),
     ("rarity", "<b>Rarity:</b> %s<br><br>"),
-    ("statusEffects", format_status_effects),
-    ("effects", format_effects),
+    #("statusEffects", format_status_effects),
+    #("effects", format_effects),
     ("blockRadius", "<b>Mining Radius:</b> %s blocks")
 )
 

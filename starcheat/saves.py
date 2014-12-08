@@ -302,17 +302,24 @@ variant_types = (
     (unpack_variant7, pack_variant7)
 )
 
+def new_item_data(name, count, data={}):
+    if name is None: return None
+
+    item = {
+        'count': count,
+        'name': name,
+        'parameters': data
+    }
+
+    return item
+
 def new_item(name, count, data={}):
     if name is None: return None
 
     item = {
         '__id': 'Item',
         '__version': 1,
-        '__content': {
-            'count': count,
-            'name': name,
-            'parameters': data
-        }
+        '__content': new_item_data(name, count, data)
     }
 
     return item
@@ -412,16 +419,8 @@ class PlayerSave():
     def get_health(self):
         return self.entity["statusController"]["resourcePercentages"]["health"] * 100
 
-    def get_max_health(self):
-        # TODO: health max multiplier
-        return 100
-
     def get_energy(self):
         return self.entity["statusController"]["resourcePercentages"]["energy"] * 100
-
-    def get_energy_regen(self):
-        # TODO: energy regen
-        return 1
 
     def get_gender(self):
         return self.entity["identity"]["gender"]
@@ -473,7 +472,7 @@ class PlayerSave():
         return self.entity["description"]
 
     def get_blueprints(self):
-        return self.entity["blueprints"]
+        return self.entity["blueprints"]["knownBlueprints"]
 
     def get_personality(self):
         # self.entity["identity"]["personalityArmIdle"]
@@ -512,11 +511,11 @@ class PlayerSave():
         return self.entity["playTime"]
 
     def get_tech_modules(self):
-        return self.entity["techController"]["techModules"]
+        return self.entity["techs"]["enabledTechs"]
 
     # here be setters
     def set_blueprints(self, blueprints):
-        self.entity["blueprints"] = blueprints
+        self.entity["blueprints"]["knownBlueprints"] = blueprints
 
     def set_name(self, name):
         self.entity["identity"]["name"] = name
@@ -541,14 +540,8 @@ class PlayerSave():
     def set_health(self, current):
         self.entity["statusController"]["resourcePercentages"]["health"] = current / 100
 
-    def set_max_health(self, max):
-        self.entity["statusParameters"]["baseMaxHealth"] = float(max)
-
     def set_energy(self, current):
         self.entity["statusController"]["resourcePercentages"]["energy"] = current / 100
-
-    def set_energy_regen(self, rate):
-        self.entity["statusParameters"]["energyReplenishmentRate"] = float(rate)
 
     def set_main_bag(self, bag):
         self.entity["inventory"]["bag"] = bag
@@ -627,7 +620,7 @@ class PlayerSave():
             self.entity["inventory"]["equipment"][equip_index] = new_item(tech, 1)
             equip_index += 1
 
-        self.entity["techController"]["techModules"] = techs
+        self.entity["techs"]["enabledTechs"] = techs
 
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])

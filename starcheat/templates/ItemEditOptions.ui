@@ -17,10 +17,10 @@
    <item row="4" column="0">
     <widget class="QLabel" name="valid_label">
      <property name="styleSheet">
-      <string notr="true">color: red</string>
+      <string notr="true">color: green</string>
      </property>
      <property name="text">
-      <string>Options are invalid</string>
+      <string>Options are valid</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
