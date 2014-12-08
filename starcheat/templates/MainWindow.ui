@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>838</width>
-    <height>576</height>
+    <width>780</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,17 +18,27 @@
     <normaloff>:/starcheat/images/starcheat_64_single.png</normaloff>:/starcheat/images/starcheat_64_single.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_7">
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_9">
+   <layout class="QGridLayout" name="gridLayout_7">
+    <item row="0" column="0" rowspan="2">
+     <layout class="QVBoxLayout" name="verticalLayout_8">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_10">
-          <property name="leftMargin">
-           <number>1</number>
-          </property>
-          <item>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0" rowspan="2">
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0" rowspan="5">
+           <spacer name="horizontalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>18</width>
+              <height>238</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1">
            <spacer name="verticalSpacer_3">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -41,7 +51,20 @@
             </property>
            </spacer>
           </item>
-          <item>
+          <item row="0" column="2" rowspan="5">
+           <spacer name="horizontalSpacer_9">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>18</width>
+              <height>238</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1">
            <layout class="QVBoxLayout" name="verticalLayout">
             <property name="spacing">
              <number>3</number>
@@ -163,7 +186,7 @@
             </item>
            </layout>
           </item>
-          <item>
+          <item row="2" column="1">
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -176,7 +199,7 @@
             </property>
            </spacer>
           </item>
-          <item>
+          <item row="3" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <property name="spacing">
              <number>3</number>
@@ -298,9 +321,22 @@
             </item>
            </layout>
           </item>
+          <item row="4" column="1">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>17</width>
+              <height>34</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
          </layout>
         </item>
-        <item>
+        <item row="0" column="1">
          <widget class="QLabel" name="player_preview">
           <property name="minimumSize">
            <size>
@@ -322,9 +358,22 @@
           </property>
          </widget>
         </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_8">
-          <item>
+        <item row="0" column="2" rowspan="2">
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0" rowspan="4">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>18</width>
+              <height>238</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <property name="spacing">
              <number>3</number>
@@ -446,7 +495,20 @@
             </item>
            </layout>
           </item>
-          <item>
+          <item row="0" column="2" rowspan="4">
+           <spacer name="horizontalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>18</width>
+              <height>238</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <property name="spacing">
              <number>3</number>
@@ -568,7 +630,7 @@
             </item>
            </layout>
           </item>
-          <item>
+          <item row="2" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <property name="spacing">
              <number>3</number>
@@ -690,151 +752,90 @@
             </item>
            </layout>
           </item>
+          <item row="3" column="1">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
          </layout>
         </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item row="1" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <property name="spacing">
+           <number>3</number>
+          </property>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_7">
-            <property name="spacing">
-             <number>3</number>
+           <widget class="QLabel" name="legs_label_2">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>19</height>
+             </size>
             </property>
-            <item>
-             <widget class="QLabel" name="pixels_label">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>15</height>
-               </size>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>Pixels</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="pixels">
-              <property name="maximum">
-               <number>2147483647</number>
-              </property>
-              <property name="singleStep">
-               <number>100</number>
-              </property>
-              <property name="value">
-               <number>0</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
+            <property name="text">
+             <string>Essentials</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="appearance_button">
-            <property name="enabled">
+           <widget class="QTableWidget" name="legs_2">
+            <property name="maximumSize">
+             <size>
+              <width>118</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="acceptDrops">
              <bool>true</bool>
             </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+            <property name="styleSheet">
+             <string notr="true">selection-background-color: white;</string>
             </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>35</height>
-             </size>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
             </property>
-            <property name="toolTip">
-             <string>Manage Appearance</string>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
             </property>
-            <property name="statusTip">
-             <string>Change how you look</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/starcheat/images/icons/glyphicons_051_eye_open.png</normaloff>:/starcheat/images/icons/glyphicons_051_eye_open.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>32</width>
-              <height>32</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="blueprints_button">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>35</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Manage Blueprints</string>
-            </property>
-            <property name="statusTip">
-             <string>Manage known crafting recipes/blueprints</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/starcheat/images/icons/glyphicons_460_blacksmith.png</normaloff>:/starcheat/images/icons/glyphicons_460_blacksmith.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>32</width>
-              <height>32</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="techs_button">
-            <property name="enabled">
+            <property name="autoScroll">
              <bool>false</bool>
             </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
             </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>35</height>
-             </size>
+            <property name="tabKeyNavigation">
+             <bool>false</bool>
             </property>
-            <property name="toolTip">
-             <string>Manage Techs</string>
+            <property name="dragEnabled">
+             <bool>true</bool>
             </property>
-            <property name="statusTip">
-             <string>Manage your techs</string>
+            <property name="dragDropOverwriteMode">
+             <bool>false</bool>
             </property>
-            <property name="text">
-             <string/>
+            <property name="dragDropMode">
+             <enum>QAbstractItemView::DragDrop</enum>
             </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/starcheat/images/icons/glyphicons_137_cogwheels.png</normaloff>:/starcheat/images/icons/glyphicons_137_cogwheels.png</iconset>
+            <property name="defaultDropAction">
+             <enum>Qt::MoveAction</enum>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
             </property>
             <property name="iconSize">
              <size>
@@ -842,24 +843,58 @@
               <height>32</height>
              </size>
             </property>
+            <property name="cornerButtonEnabled">
+             <bool>false</bool>
+            </property>
+            <attribute name="horizontalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="horizontalHeaderMinimumSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderDefaultSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="verticalHeaderMinimumSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="verticalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <row>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </row>
+            <column>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>2</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>3</string>
+             </property>
+            </column>
            </widget>
           </item>
          </layout>
         </item>
        </layout>
-      </item>
-      <item>
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout_5">
@@ -1458,7 +1493,122 @@
       </item>
      </layout>
     </item>
-    <item>
+    <item row="0" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="appearance_button">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Manage Appearance</string>
+        </property>
+        <property name="statusTip">
+         <string>Change how you look</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources.qrc">
+          <normaloff>:/starcheat/images/icons/glyphicons_051_eye_open.png</normaloff>:/starcheat/images/icons/glyphicons_051_eye_open.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="blueprints_button">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Manage Blueprints</string>
+        </property>
+        <property name="statusTip">
+         <string>Manage known crafting recipes/blueprints</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources.qrc">
+          <normaloff>:/starcheat/images/icons/glyphicons_460_blacksmith.png</normaloff>:/starcheat/images/icons/glyphicons_460_blacksmith.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="techs_button">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Manage Techs</string>
+        </property>
+        <property name="statusTip">
+         <string>Manage your techs</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources.qrc">
+          <normaloff>:/starcheat/images/icons/glyphicons_137_cogwheels.png</normaloff>:/starcheat/images/icons/glyphicons_137_cogwheels.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="1">
      <layout class="QFormLayout" name="formLayout">
       <property name="fieldGrowthPolicy">
        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
@@ -1557,7 +1707,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <spacer name="verticalSpacer_8">
+       <spacer name="verticalSpacer_5">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -1570,9 +1720,18 @@
        </spacer>
       </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="game_mode_label">
+       <widget class="QLabel" name="pixels_label">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>15</height>
+         </size>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
         <property name="text">
-         <string>Game Mode</string>
+         <string>Pixels</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -1580,14 +1739,20 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QComboBox" name="game_mode">
-        <property name="enabled">
-         <bool>true</bool>
+       <widget class="QSpinBox" name="pixels">
+        <property name="maximum">
+         <number>2147483647</number>
+        </property>
+        <property name="singleStep">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>0</number>
         </property>
        </widget>
       </item>
       <item row="5" column="1">
-       <spacer name="verticalSpacer_7">
+       <spacer name="verticalSpacer_6">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -1600,6 +1765,36 @@
        </spacer>
       </item>
       <item row="6" column="0">
+       <widget class="QLabel" name="game_mode_label">
+        <property name="text">
+         <string>Game Mode</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QComboBox" name="game_mode">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <spacer name="verticalSpacer_7">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="8" column="0">
        <widget class="QLabel" name="race_label">
         <property name="text">
          <string>Species</string>
@@ -1609,10 +1804,10 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
+      <item row="8" column="1">
        <widget class="QComboBox" name="race"/>
       </item>
-      <item row="7" column="0">
+      <item row="9" column="0">
        <widget class="QLabel" name="gender_label">
         <property name="text">
          <string>Gender</string>
@@ -1622,7 +1817,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="9" column="1">
        <widget class="QWidget" name="gender_group" native="true">
         <property name="minimumSize">
          <size>
@@ -1687,27 +1882,27 @@
         </layout>
        </widget>
       </item>
-      <item row="8" column="1">
-       <spacer name="verticalSpacer_6">
+      <item row="10" column="1">
+       <spacer name="verticalSpacer_8">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>60</height>
+          <height>40</height>
          </size>
         </property>
        </spacer>
       </item>
-      <item row="9" column="0">
+      <item row="11" column="0">
        <widget class="QLabel" name="health_label">
         <property name="text">
          <string>Health</string>
         </property>
        </widget>
       </item>
-      <item row="9" column="1">
+      <item row="11" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QSlider" name="health">
@@ -1773,14 +1968,14 @@ border-radius: 4px;
         </item>
        </layout>
       </item>
-      <item row="10" column="0">
+      <item row="12" column="0">
        <widget class="QLabel" name="energy_label">
         <property name="text">
          <string>Energy</string>
         </property>
        </widget>
       </item>
-      <item row="10" column="1">
+      <item row="12" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QSlider" name="energy">
@@ -1855,13 +2050,22 @@ border-radius: 4px;
    <zorder></zorder>
    <zorder>horizontalSpacer_5</zorder>
    <zorder>label</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>verticalSpacer_4</zorder>
+   <zorder>verticalSpacer_2</zorder>
+   <zorder>horizontalSpacer_5</zorder>
+   <zorder>horizontalSpacer_7</zorder>
+   <zorder>horizontalSpacer_8</zorder>
+   <zorder>horizontalSpacer_9</zorder>
+   <zorder>horizontalSpacer_9</zorder>
+   <zorder></zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>838</width>
+     <width>780</width>
      <height>31</height>
     </rect>
    </property>
@@ -2165,7 +2369,6 @@ border-radius: 4px;
   <tabstop>chest</tabstop>
   <tabstop>legs</tabstop>
   <tabstop>tile_bag</tabstop>
-  <tabstop>blueprints_button</tabstop>
   <tabstop>appearance_button</tabstop>
   <tabstop>blueprints_button</tabstop>
   <tabstop>appearance_button</tabstop>
