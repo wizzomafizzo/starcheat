@@ -1014,6 +1014,7 @@ class Species():
             logging.exception("Missing hair image: %s", image_path)
             return
 
+# TODO: move to save.py
 class Player():
     def __init__(self, assets):
         self.assets = assets
@@ -1021,9 +1022,9 @@ class Player():
 
         # haven't found any definitions for these in the assets
         self.mode_types = {
-             "supernova": "Normal",
-             "blackHole": "Hardcore",
-             "bigCrunch": "Permadeath"
+            "hardcore": "Hardcore",
+            "normal": "Normal",
+            "casual": "Casual",
         }
 
     def get_mode_type(self, name):

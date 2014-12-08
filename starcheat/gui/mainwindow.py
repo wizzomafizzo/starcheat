@@ -111,21 +111,14 @@ class MainWindow():
         self.ui.description.textChanged.connect(self.set_description)
         self.ui.pixels.valueChanged.connect(self.set_pixels)
         self.ui.game_mode.currentTextChanged.connect(self.set_game_mode)
-        self.ui.energy_regen.valueChanged.connect(self.set_energy_regen)
 
         # set up stat signals
         self.ui.health.valueChanged.connect(lambda: self.set_stat_slider("health"))
         self.ui.max_health.valueChanged.connect(lambda: self.set_stat("health"))
         self.ui.energy.valueChanged.connect(lambda: self.set_stat_slider("energy"))
-        self.ui.max_energy.valueChanged.connect(lambda: self.set_stat("energy"))
-        self.ui.max_food.valueChanged.connect(lambda: self.set_stat("food"))
-        self.ui.max_breath.valueChanged.connect(lambda: self.set_stat("breath"))
-        self.ui.max_warmth.valueChanged.connect(lambda: self.set_stat("warmth"))
-
+        self.ui.energy_regen.valueChanged.connect(self.set_energy_regen)
         self.ui.health_button.clicked.connect(lambda: self.max_stat("health"))
         self.ui.energy_button.clicked.connect(lambda: self.max_stat("energy"))
-        self.ui.food_button.clicked.connect(lambda: self.max_stat("food"))
-        self.ui.breath_button.clicked.connect(lambda: self.max_stat("breath"))
 
         # launch open file dialog
         self.player = None
@@ -153,10 +146,6 @@ class MainWindow():
         self.ui.name.setText(self.player.get_name())
         # race
         self.ui.race.setCurrentText(self.player.get_race(pretty=True))
-        # BUG: okay so there is this bug where sometimes on windows pyqt will chuck
-        # a fit and not set values on some stuff. this seems to work itself out
-        # when you overwrite the values and reopen the file. i'm going to just
-        # ignore it but would still like a better solution
         # pixels
         try:
             self.ui.pixels.setValue(self.player.get_pixels())
@@ -174,10 +163,8 @@ class MainWindow():
             logging.exception("No game mode set on player")
 
         # stats
-        for stat in ["health", "energy", "food", "breath", "warmth"]:
-            max = getattr(self.player, "get_max_"+stat)()
-            getattr(self.ui, "max_"+stat).setValue(int(max))
-            self.update_stat(stat)
+        self.update_stat("health")
+        self.update_stat("energy")
         # energy regen rate
         try:
             self.ui.energy_regen.setValue(self.player.get_energy_regen())
@@ -527,41 +514,29 @@ class MainWindow():
 
     def max_stat(self, name):
         """Set a stat's current value to its max value."""
-        max = getattr(self.ui, "max_"+name).value()
-        getattr(self.player, "set_"+name)(float(max), float(max))
+        getattr(self.player, "set_"+name)(100)
         self.update_stat(name)
 
     def set_stat(self, name):
         max = getattr(self.ui, "max_"+name).value()
-        logging.debug("Setting max %s", name)
         getattr(self.player, "set_max_"+name)(float(max))
         self.update_stat(name)
 
     def set_stat_slider(self, name):
         current = getattr(self.ui, name).value()
-        max = getattr(self.player, "get_max_"+name)()
-        getattr(self.player, "set_"+name)(float(current), max)
+        getattr(self.player, "set_"+name)(current)
         self.update_stat(name)
 
     def update_stat(self, name):
         try:
-            max = int(getattr(self.player, "get_max_"+name)())
-            if name == "warmth":
-                current = int(getattr(self.player, "get_"+name)()[1])
-            else:
-                current = int(getattr(self.player, "get_"+name)()[0])
-
-            getattr(self.ui, name+"_val").setText(str(current) + " /")
-
-            if name == "health" or name == "energy":
-                getattr(self.ui, name).setMaximum(max)
-                getattr(self.ui, name).setValue(current)
-
+            current = int(getattr(self.player, "get_"+name)())
+            getattr(self.ui, name).setValue(current)
             self.set_edited()
         except TypeError:
             logging.exception("Unable to set stat %s", name)
 
     # these are used for connecting the item edit dialog to bag tables
+    # TODO: change to lamdas
     def new_main_bag_item_edit(self):
         self.new_item_edit(self.ui.main_bag)
     def new_tile_bag_item_edit(self):
