@@ -213,7 +213,12 @@ class MainWindow():
         row = bag.currentRow()
         column = bag.currentColumn()
         current = bag.currentItem()
-        item = saves.new_item("", 0, {})
+        # TODO: move to separate function?
+        item = {
+            "name": "",
+            "count": 1,
+            "parameters": {}
+        }
         # cells don't retain ItemSlot widget when they've been dragged away
         if type(current) is QTableWidgetItem or current.item is None:
             pass
@@ -405,10 +410,16 @@ class MainWindow():
 
         for i in range(len(bag)):
             item = getattr(self.ui, name).item(row, column)
-            if type(item) is QTableWidgetItem or item is None:
+            empty_item = (item is None or
+                          type(item) is QTableWidgetItem or
+                          item.item is None)
+            if empty_item:
                 item = None
             else:
-                item = item.item
+                widget = item.item
+                item = saves.new_item(widget["name"],
+                                      widget["count"],
+                                      widget["parameters"])
 
             bag[i] = item
 
@@ -429,15 +440,27 @@ class MainWindow():
 
         # when you drag itemwidgets around the cell will become empty so just
         # pretend it had an empty slot value
-        if main_cell is None or type(main_cell) is QTableWidgetItem:
+        empty_main = (main_cell is None or
+                      type(main_cell) is QTableWidgetItem or
+                      main_cell.item is None)
+        if empty_main:
             main = None
         else:
-            main = main_cell.item
+            widget = main_cell.item
+            main = saves.new_item(widget["name"],
+                                  widget["count"],
+                                  widget["parameters"])
 
-        if glamor_cell is None or type(glamor_cell) is QTableWidgetItem:
+        empty_glamor = (glamor_cell is None or
+                        type(glamor_cell) is QTableWidgetItem or
+                        glamor_cell.item is None)
+        if empty_glamor:
             glamor = None
         else:
-            glamor = glamor_cell.item
+            widget = glamor_cell.item
+            glamor = saves.new_item(widget["name"],
+                                    widget["count"],
+                                    widget["parameters"])
 
         return main, glamor
 

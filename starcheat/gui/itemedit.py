@@ -217,7 +217,12 @@ class ItemEdit():
 
         self.ui.item_type.setText(name)
 
-        self.item = saves.new_item(name, 1, options)
+        self.item = {
+            "name": name,
+            "count": 1,
+            "parameters": options
+        }
+
         self.ui.count.setValue(1)
         self.update_item_info(name, options)
         self.populate_options()
@@ -227,13 +232,17 @@ class ItemEdit():
         name = self.ui.item_type.text()
         count = self.ui.count.value()
         data = self.item["parameters"]
-        return saves.new_item(name, count, data)
+        # TODO: should this be another function?
+        return {
+            "name": name,
+            "count": count,
+            "parameters": data
+        }
 
     def clear_item_options(self):
         self.ui.variant.clear()
         self.ui.variant.setHorizontalHeaderLabels(["Options"])
         self.ui.variant.setRowCount(0)
-        # don't understand why i need to do this check either...
         if self.item is not None:
             self.item["parameters"] = {}
 

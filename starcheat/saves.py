@@ -306,10 +306,15 @@ def new_item(name, count, data={}):
     if name is None: return None
 
     item = {
-        "name": name,
-        "count": count,
-        "data": data
+        '__id': 'Item',
+        '__version': 1,
+        '__content': {
+            'count': count,
+            'name': name,
+            'parameters': data
+        }
     }
+
     return item
 
 def unpack_color_directives(data):
@@ -415,6 +420,7 @@ class PlayerSave():
         return self.entity["statusController"]["resourcePercentages"]["energy"] * 100
 
     def get_energy_regen(self):
+        # TODO: energy regen
         return 1
 
     def get_gender(self):
