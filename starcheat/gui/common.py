@@ -65,15 +65,12 @@ class ItemWidget(QTableWidgetItem):
         self.setTextAlignment(QtCore.Qt.AlignCenter)
 
         name = self.item["name"]
-        if "shortdescription" in self.item["data"]:
-            name = self.item["data"]["shortdescription"]
-        else:
-            try:
-                asset_name = assets.items().get_item(name)[3]
-                if asset_name != "":
-                    name = asset_name
-            except TypeError:
-                pass
+        try:
+            asset_name = assets.items().get_item(name)[3]
+            if asset_name != "":
+                name = asset_name
+        except TypeError:
+            pass
 
         self.setToolTip(name + " (" + str(self.item["count"]) + ")")
 

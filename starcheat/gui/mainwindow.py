@@ -175,7 +175,14 @@ class MainWindow():
         equip_bags = "head", "chest", "legs", "back"
         for bag in equip_bags:
             logging.debug("Updating %s", bag)
-            items = [ItemWidget(x, self.assets) for x in getattr(self.player, "get_" + bag)()]
+            # TODO: hide meta attributes in saves.py?
+            items = []
+            for x in getattr(self.player, "get_" + bag)():
+                if x is not None:
+                    items.append(ItemWidget(x["__content"], self.assets))
+                else:
+                    items.append(ItemWidget(None, self.assets))
+
             getattr(self.ui, bag).setItem(0, 0, items[0])
             getattr(self.ui, bag).setItem(0, 1, items[1])
 
@@ -441,7 +448,12 @@ class MainWindow():
         bag = getattr(self.player, "get_" + bag_name)()
 
         for slot in range(len(bag)):
-            widget = ItemWidget(bag[slot], self.assets)
+            item = bag[slot]
+            if item is not None:
+                widget = ItemWidget(bag[slot]["__content"], self.assets)
+            else:
+                widget = ItemWidget(None, self.assets)
+
             getattr(self.ui, bag_name).setItem(row, column, widget)
 
             column += 1

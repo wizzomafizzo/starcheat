@@ -145,17 +145,18 @@ class ItemBrowser():
         self.ui.short_desc.setText(generate_item_info(item[0]))
 
         # populate default variant table
-        row = 0
-        self.ui.info.setRowCount(len(item[0]))
-        for key in sorted(item[0].keys()):
-            try:
+
+        try:
+            row = 0
+            self.ui.info.setRowCount(len(item[0]))
+            for key in sorted(item[0].keys()):
                 text = str(key) + ": " + str(item[0][key])
                 table_item = QTableWidgetItem(text)
                 table_item.setToolTip(text)
                 self.ui.info.setItem(row, 0, table_item)
-            except TypeError:
-                pass
-            row += 1
+                row += 1
+        except TypeError:
+            logging.error("No item data")
 
         self.item_browse_select = selected
 

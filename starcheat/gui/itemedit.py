@@ -128,7 +128,7 @@ class ItemEdit():
             self.ui.count.setValue(int(self.item["count"]))
             # set up variant table
             self.populate_options()
-            self.update_item_info(self.item["name"], self.item["data"])
+            self.update_item_info(self.item["name"], self.item["parameters"])
         else:
             # empty slot
             self.new_item_browser()
@@ -226,7 +226,7 @@ class ItemEdit():
         """Return an ItemWidget of the currently open item."""
         name = self.ui.item_type.text()
         count = self.ui.count.value()
-        data = self.item["data"]
+        data = self.item["parameters"]
         return saves.new_item(name, count, data)
 
     def clear_item_options(self):
@@ -235,7 +235,7 @@ class ItemEdit():
         self.ui.variant.setRowCount(0)
         # don't understand why i need to do this check either...
         if self.item is not None:
-            self.item["data"] = {}
+            self.item["parameters"] = {}
 
     def new_item_edit_options(self, new):
         """Edit the selected item option with custom dialog."""
@@ -259,27 +259,27 @@ class ItemEdit():
         #    dialog = ImageBrowser(self.dialog, self.assets)
         #    def get_option():
         #        return selected.option[0], dialog.get_key()
-        elif type(self.item["data"][selected.option[0]]) is str:
+        elif type(self.item["parameters"][selected.option[0]]) is str:
             generic = True
             text, ok = QInputDialog.getText(self.dialog, "Edit Text", selected.option[0],
-                                            text=self.item["data"][selected.option[0]])
+                                            text=self.item["parameters"][selected.option[0]])
             if ok:
-                self.item["data"][selected.option[0]] = text
-        elif type(self.item["data"][selected.option[0]]) is int:
+                self.item["parameters"][selected.option[0]] = text
+        elif type(self.item["parameters"][selected.option[0]]) is int:
             generic = True
             num, ok = QInputDialog.getInt(self.dialog, "Edit Integer", selected.option[0],
-                                          self.item["data"][selected.option[0]])
+                                          self.item["parameters"][selected.option[0]])
             if ok:
-                self.item["data"][selected.option[0]] = num
-        elif type(self.item["data"][selected.option[0]]) is float:
+                self.item["parameters"][selected.option[0]] = num
+        elif type(self.item["parameters"][selected.option[0]]) is float:
             generic = True
             num, ok = QInputDialog.getDouble(self.dialog, "Edit Double", selected.option[0],
-                                             self.item["data"][selected.option[0]], decimals=2)
+                                             self.item["parameters"][selected.option[0]], decimals=2)
             if ok:
-                self.item["data"][selected.option[0]] = num
-        elif type(self.item["data"][selected.option[0]]) is bool:
+                self.item["parameters"][selected.option[0]] = num
+        elif type(self.item["parameters"][selected.option[0]]) is bool:
             generic = True
-            self.item["data"][selected.option[0]] = not self.item["data"][selected.option[0]]
+            self.item["parameters"][selected.option[0]] = not self.item["parameters"][selected.option[0]]
         else:
             dialog = ItemEditOptions(self.dialog, selected.option[0], selected.option[1])
             def get_option():
@@ -288,14 +288,14 @@ class ItemEdit():
 
         def save():
             new_option = get_option()
-            self.item["data"][new_option[0]] = new_option[1]
+            self.item["parameters"][new_option[0]] = new_option[1]
 
         if not generic:
             dialog.dialog.accepted.connect(save)
             dialog.dialog.exec()
 
         self.populate_options()
-        self.update_item_info(self.item["name"], self.item["data"])
+        self.update_item_info(self.item["name"], self.item["parameters"])
 
     def remove_option(self):
         """Remove the currently selected item option."""
@@ -303,7 +303,7 @@ class ItemEdit():
             option_name = self.ui.variant.currentItem().option[0]
         except AttributeError:
             return
-        self.item["data"].pop(option_name)
+        self.item["parameters"].pop(option_name)
         self.populate_options()
 
     def edit_option(self):
@@ -320,11 +320,11 @@ class ItemEdit():
         self.item_browser.dialog.exec()
 
     def populate_options(self):
-        self.ui.variant.setRowCount(len(self.item["data"]))
+        self.ui.variant.setRowCount(len(self.item["parameters"]))
         self.ui.variant.setHorizontalHeaderLabels(["Options"])
         row = 0
-        for k in sorted(self.item["data"].keys()):
-            variant = ItemOptionWidget(k, self.item["data"][k])
+        for k in sorted(self.item["parameters"].keys()):
+            variant = ItemOptionWidget(k, self.item["parameters"][k])
             self.ui.variant.setItem(row, 0, variant)
             row += 1
 
@@ -336,8 +336,8 @@ class ItemEdit():
         self.ui.item_type.setText(name)
 
     def max_count(self):
-        if "maxStack" in self.item["data"]:
-            max = int(self.item["data"]["maxStack"])
+        if "maxStack" in self.item["parameters"]:
+            max = int(self.item["parameters"]["maxStack"])
         else:
             max = 1000
         self.ui.count.setValue(max)
@@ -366,7 +366,7 @@ class ItemEdit():
             if "count" not in item_data:
                 item_data["count"] = 1
             if "data" not in item_data:
-                item_data["data"] = {}
+                item_data["parameters"] = {}
             return item_data
 
         item = parse()
@@ -377,5 +377,5 @@ class ItemEdit():
             self.ui.item_type.setText(item["name"])
             self.item = item
             self.ui.count.setValue(self.item["count"])
-            self.update_item_info(self.item["name"], self.item["data"])
+            self.update_item_info(self.item["name"], self.item["parameters"])
             self.populate_options()
