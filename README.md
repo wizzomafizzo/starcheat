@@ -18,9 +18,9 @@ Here is how to build starcheat from source. Make sure everything in the dependen
 
 **NOTE:** py-starbound is included as a [git submodule](http://git-scm.com/docs/git-submodule) and needs to be cloned with the following commands:
 
-- ```> cd <starcheat parent folder>/starcheat/starbound```
-- ```> git submodule init```
-- ```> git submodule update```
+- ```cd <starcheat top folder>```
+- ```git submodule init```
+- ```git submodule update```
 
 Applications such as [Sourcetree](http://www.sourcetreeapp.com/) should offer to clone it automatically.
 
