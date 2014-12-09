@@ -217,11 +217,7 @@ class ItemEdit():
 
         self.ui.item_type.setText(name)
 
-        self.item = {
-            "name": name,
-            "count": 1,
-            "parameters": options
-        }
+        self.item = saves.new_item_data(name, 1, options)
 
         self.ui.count.setValue(1)
         self.update_item_info(name, options)
@@ -232,12 +228,7 @@ class ItemEdit():
         name = self.ui.item_type.text()
         count = self.ui.count.value()
         data = self.item["parameters"]
-        # TODO: should this be another function?
-        return {
-            "name": name,
-            "count": count,
-            "parameters": data
-        }
+        return saves.new_item_data(name, count, data)
 
     def clear_item_options(self):
         self.ui.variant.clear()
