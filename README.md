@@ -2,9 +2,14 @@
 
 starcheat is a [Starbound](http://playstarbound.com/) player save editor, you can get free pixels with this! (omg)
 
-**An archive of the old starcheat wiki is located in the website_archive folder.**
-
 ![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/starcheat/images/screenshot.png)
+
+## Downloads
+
+Starbound                | starcheat
+------------------------ | ---------
+Nightly                  | [dev branch](#building-from-source)
+Enraged Koala (Update 8) | [0.16](https://github.com/wizzomafizzo/starcheat/releases/tag/0.16)
 
 ## Building from source
 Here is how to build starcheat from source. Make sure everything in the dependencies section is installed before you do a build.
