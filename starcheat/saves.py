@@ -511,7 +511,7 @@ class PlayerSave():
         return self.entity["playTime"]
 
     def get_tech_modules(self):
-        return self.entity["techs"]["enabledTechs"]
+        return self.entity["techController"]["techModules"]
 
     # here be setters
     def set_blueprints(self, blueprints):
@@ -620,7 +620,7 @@ class PlayerSave():
             self.entity["inventory"]["equipment"][equip_index] = new_item(tech, 1)
             equip_index += 1
 
-        self.entity["techs"]["enabledTechs"] = techs
+        self.entity["techController"]["techModules"] = techs
 
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])

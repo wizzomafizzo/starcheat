@@ -773,7 +773,7 @@
            <number>3</number>
           </property>
           <item>
-           <widget class="QLabel" name="legs_label_2">
+           <widget class="QLabel" name="essentials">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -789,7 +789,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTableWidget" name="legs_2">
+           <widget class="QTableWidget" name="essentials_label">
             <property name="maximumSize">
              <size>
               <width>118</width>
@@ -1571,7 +1571,7 @@
       <item>
        <widget class="QPushButton" name="techs_button">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -2054,16 +2054,6 @@ border-radius: 4px;
     </item>
    </layout>
    <zorder></zorder>
-   <zorder>horizontalSpacer_5</zorder>
-   <zorder>label</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>verticalSpacer_4</zorder>
-   <zorder>verticalSpacer_2</zorder>
-   <zorder>horizontalSpacer_5</zorder>
-   <zorder>horizontalSpacer_7</zorder>
-   <zorder>horizontalSpacer_8</zorder>
-   <zorder>horizontalSpacer_9</zorder>
-   <zorder>horizontalSpacer_9</zorder>
    <zorder></zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">

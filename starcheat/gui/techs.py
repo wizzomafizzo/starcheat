@@ -12,6 +12,14 @@ import assets, qt_techs
 import saves
 from config import Config
 
+def new_tech_slot(tech_asset):
+    module = {
+        "module": tech_asset,
+        "scriptData": {}
+    }
+
+    return module
+
 class Techs():
     def __init__(self, main_window):
         self.dialog = QDialog(main_window.window)
@@ -35,7 +43,7 @@ class Techs():
         current = 1
         for i in self.player.get_tech_modules():
             try:
-                tech_name = os.path.basename(i["modulePath"].replace(".tech",""))
+                tech_name = os.path.basename(i["module"].replace(".tech",""))
                 tech = self.assets.techs().get_tech(tech_name)
                 icon = QPixmap.fromImage(ImageQt(tech[1]))
                 getattr(self.ui, "icon"+str(current)).setPixmap(icon.scaled(32,32))
@@ -83,7 +91,7 @@ class Techs():
         icon = QPixmap.fromImage(ImageQt(tech[1]))
         getattr(self.ui, "icon"+str(index+1)).setPixmap(icon.scaled(32,32))
         getattr(self.ui, "icon"+str(index+1)).setToolTip(tech[0]["shortdescription"])
-        self.techs[index] = saves.new_item_data(tech[2], 1)
+        self.techs[index] = new_tech_slot(tech[0]["techModule"])
         self.equip[index] = tech[0]["itemName"]
 
     def clear_tech(self, index):
@@ -96,6 +104,7 @@ class Techs():
     def write_techs(self):
         techs = []
         equip = [None, None, None, None]
+        enabled = []
 
         # tech list can't have empty spaces in it
         for i in self.techs:
