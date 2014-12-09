@@ -92,7 +92,7 @@ class MainWindow():
             self.ui.game_mode.addItem(mode)
 
         # set up bag tables
-        bags = "wieldable", "head", "chest", "legs", "back", "main_bag", "action_bar", "tile_bag"
+        bags = "wieldable", "head", "chest", "legs", "back", "main_bag", "action_bar", "tile_bag", "essentials"
         for b in bags:
             logging.debug("Setting up %s bag", b)
             item_edit = getattr(self, "new_" + b + "_item_edit")
@@ -186,6 +186,7 @@ class MainWindow():
         self.update_bag("main_bag")
         self.update_bag("tile_bag")
         self.update_bag("action_bar")
+        self.update_bag("essentials")
 
         self.update_player_preview()
 
@@ -531,7 +532,7 @@ class MainWindow():
             bag = self.get_equip(b)
             getattr(self.player, "set_" + b)(bag[0], bag[1])
         # bags
-        bags = "wieldable", "main_bag", "tile_bag", "action_bar"
+        bags = "wieldable", "main_bag", "tile_bag", "action_bar", "essentials"
         for b in bags:
             getattr(self.player, "set_" + b)(self.get_bag(b))
 
@@ -576,3 +577,5 @@ class MainWindow():
         self.new_item_edit(self.ui.back)
     def new_wieldable_item_edit(self):
         self.new_item_edit(self.ui.wieldable)
+    def new_essentials_item_edit(self):
+        self.new_item_edit(self.ui.essentials)

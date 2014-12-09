@@ -773,7 +773,7 @@
            <number>3</number>
           </property>
           <item>
-           <widget class="QLabel" name="essentials">
+           <widget class="QLabel" name="essentials_label">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -789,7 +789,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTableWidget" name="essentials_label">
+           <widget class="QTableWidget" name="essentials">
             <property name="maximumSize">
              <size>
               <width>118</width>

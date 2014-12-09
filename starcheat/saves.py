@@ -453,6 +453,9 @@ class PlayerSave():
     def get_wieldable(self):
         return self.entity["inventory"]["wieldable"]
 
+    def get_essentials(self):
+        return self.entity["inventory"]["essentialBar"]
+
     def get_race(self, pretty=False):
         race = self.entity["identity"]["species"]
         if pretty:
@@ -554,6 +557,9 @@ class PlayerSave():
 
     def set_wieldable(self, bag):
         self.entity["inventory"]["wieldable"] = bag
+
+    def set_essentials(self, bag):
+        self.entity["inventory"]["essentialBar"] = bag
 
     def set_head(self, main, glamor):
         self.entity["inventory"]["equipment"][0] = main
