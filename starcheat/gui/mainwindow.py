@@ -480,7 +480,7 @@ class MainWindow():
     def update_player_preview(self):
         try:
             image = self.assets.species().render_player(self.player)
-            pixmap = QPixmap.fromImage(ImageQt(image)).scaled(86, 86)
+            pixmap = QPixmap.fromImage(ImageQt(image))
         except (OSError, TypeError, AttributeError):
             # TODO: more specific error handling. may as well except all errors
             # at this point jeez

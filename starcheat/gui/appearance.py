@@ -77,6 +77,7 @@ class Appearance():
         for option in self.species.get_personality():
             self.ui.personality.addItem(option[0])
         self.ui.personality.setCurrentText(personality)
+        self.ui.personality.currentTextChanged.connect(self.write_appearance_values)
 
         # set up color picker buttons
         for value in color_values:
@@ -86,13 +87,15 @@ class Appearance():
 
         # player image
         image = self.assets.species().render_player(self.player)
-        pixmap = QPixmap.fromImage(ImageQt(image)).scaled(86, 86)
+        pixmap = QPixmap.fromImage(ImageQt(image))
         self.ui.player_preview.setPixmap(pixmap)
 
     def write_appearance_values(self):
         hair = self.ui.hair_group.currentText(), self.ui.hair_type.currentText()
-        facial_hair = self.ui.facial_hair_group.currentText(), self.ui.facial_hair_type.currentText()
-        facial_mask = self.ui.facial_mask_group.currentText(), self.ui.facial_mask_type.currentText()
+        facial_hair = (self.ui.facial_hair_group.currentText(),
+                       self.ui.facial_hair_type.currentText())
+        facial_mask = (self.ui.facial_mask_group.currentText(),
+                       self.ui.facial_mask_type.currentText())
         personality = self.ui.personality.currentText()
         self.player.set_hair(*hair)
         self.player.set_facial_hair(*facial_hair)
@@ -106,7 +109,7 @@ class Appearance():
         # render player preview
         try:
             image = self.assets.species().render_player(self.player)
-            pixmap = QPixmap.fromImage(ImageQt(image)).scaled(86, 86)
+            pixmap = QPixmap.fromImage(ImageQt(image))
         except (OSError, TypeError, AttributeError):
             logging.exception("Couldn't load species images")
             pixmap = QPixmap()

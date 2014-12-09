@@ -940,7 +940,11 @@ class Species():
                                         asset_loc, True)
 
         # crop the spritesheets
-        body_img = Image.open(BytesIO(body_sprites)).convert("RGBA").crop((43, 0, 86, 43))
+        personality_offset = int(re.search("\d$", player.get_personality()).group(0)) * 43
+        body_img = Image.open(BytesIO(body_sprites)).convert("RGBA").crop((personality_offset,
+                                                                           0,
+                                                                           personality_offset+43,
+                                                                           43))
         frontarm_img = Image.open(BytesIO(frontarm_sprites)).convert("RGBA").crop((43, 0, 86, 43))
         backarm_img = Image.open(BytesIO(backarm_sprites)).convert("RGBA").crop((43, 0, 86, 43))
         head_img = Image.open(BytesIO(head_sprites)).convert("RGBA").crop((43, 0, 86, 43))
@@ -964,7 +968,8 @@ class Species():
             facial_mask_img = self.get_hair_image(name, facial_mask[0], facial_mask[1], gender)
 
         # new blank canvas!
-        base = Image.new("RGBA", (43, 43))
+        base_size = 43
+        base = Image.new("RGBA", (base_size, base_size))
 
         # the order of these is important!
 
@@ -998,7 +1003,7 @@ class Species():
             except ValueError:
                 logging.exception("Bad facial hair image: %s, %s", facial_hair[0], facial_hair[1])
 
-        return base
+        return base.resize((base_size*3, base_size*3))
 
     def get_hair_image(self, name, hair_type, hair_group, gender):
         # TODO: bbox is from .frame file, need a way to read them still
