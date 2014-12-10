@@ -139,25 +139,9 @@ class Appearance():
 
         self.main_window.window.setWindowModified(True)
 
-    def new_color_edit(self, type):
-        color_edit = ColorEdit(self.dialog, self.colors[type])
-        color_edit.dialog.show()
-
-        # i've made a decision here to make this dialog non-modal so that the
-        # screen color picker can still choose colors in the appearance dialog
-        # properly. this has come with some unusual behaviour:
-        # - adding and removing colours will immediately write
-        # - editing existing colours needs a button click to write
-        # i am not sure why this happens, because both seem to use the same
-        # method to update the directive variable
-        # current solution "works" but should be changed. perhaps back to an exec
-        # but have an image of the hair/body/whatever along with the edit table?
-
-        def save():
-            self.colors[type] = color_edit.get_colors()
-            self.write_appearance_values()
-
-        color_edit.ui.buttonBox.rejected.connect(save)
+    def new_color_edit(self, color_type):
+        color_edit = ColorEdit(self, self.colors[color_type], color_type)
+        color_edit.dialog.exec()
 
     def hair_icon(self, species, hair_type, hair_group):
         image_data = self.assets.species().get_hair_image(species, hair_type, hair_group)
@@ -176,23 +160,28 @@ class Appearance():
 class ColorItem(QTableWidgetItem):
     def __init__(self, color):
         QTableWidgetItem.__init__(self, color)
-        color = color.upper()
         self.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.setBackground(QBrush(QColor("#"+color)))
+        self.setBackground(QBrush(QColor("#" + color.upper())))
 
 class ColorEdit():
-    def __init__(self, parent, directives):
-        self.dialog = QDialog(parent)
+    def __init__(self, parent, directives, color_type):
+        self.dialog = QDialog(parent.dialog)
         self.ui = qt_coloredit.Ui_Dialog()
         self.ui.setupUi(self.dialog)
         self.parent = parent
+        self.color_type = color_type
 
         self.ui.colors.cellDoubleClicked.connect(self.edit_color)
         self.ui.add_button.clicked.connect(self.add_color)
         self.ui.remove_button.clicked.connect(self.remove_color)
+        self.ui.buttonBox.rejected.connect(self.save)
 
         self.directives = directives
         self.populate()
+
+    def save(self):
+        self.parent.colors[self.color_type] = self.get_colors()
+        self.parent.write_appearance_values()
 
     def populate(self):
         self.ui.colors.clear()
@@ -216,6 +205,7 @@ class ColorEdit():
     def add_color(self):
         self.directives[0].append(["ffffff", "ffffff"])
         self.populate()
+        self.save()
 
     def remove_color(self):
         row = self.ui.colors.currentRow()
@@ -234,6 +224,7 @@ class ColorEdit():
                     pass
 
         self.populate()
+        self.save()
 
     def get_colors(self):
         new_colors = []
@@ -252,8 +243,11 @@ class ColorEdit():
         column = self.ui.colors.currentColumn()
         old_color = self.ui.colors.currentItem().text()
         qcolor = QColorDialog().getColor(QColor("#"+old_color), self.dialog)
+
         if qcolor.isValid():
             new_color = qcolor.name()[1:].lower()
             self.ui.colors.setItem(row, column, ColorItem(new_color))
             self.directives = self.get_colors()
+
         self.populate()
+        self.save()
