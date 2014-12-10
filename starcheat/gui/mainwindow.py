@@ -97,6 +97,7 @@ class MainWindow():
             logging.debug("Setting up %s bag", b)
             item_edit = getattr(self, "new_" + b + "_item_edit")
             getattr(self.ui, b).cellDoubleClicked.connect(item_edit)
+            getattr(self.ui, b).cellChanged.connect(self.set_edited)
             # TODO: still issues with drag drop between tables
             getattr(self.ui, b).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
 
