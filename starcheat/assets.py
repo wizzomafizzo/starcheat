@@ -19,6 +19,8 @@ comment_re = re.compile(
 ignore_assets = re.compile(".*\.(db|ds_store|ini|psd)", re.IGNORECASE)
 ignore_items = re.compile(".*\.(png|config|frames)", re.IGNORECASE)
 
+replace_directive_re = re.compile("(?:\?replace((?:;[a-fA-F0-9]{1,6}=[a-fA-F0-9]{1,6}){1,}))")
+
 def parse_json(content, key):
     if key.endswith(".grapplinghook"):
         content = content.replace("[-.", "[-0.")
@@ -52,7 +54,50 @@ def asset_category(keyStr):
     if extension == '':
         return ''
     else:
-        return extension[1:] #removes the . from the extension
+        return extension[1:] #  removes the . from the extension
+
+# from: http://stackoverflow.com/a/7548779
+def hex_to_rgb(value):
+    value = value.lstrip('#')
+    lv = len(value)
+    if lv == 1: #  might not be supported in starbound
+        v = int(value, 16)*17
+        return v, v, v
+    if lv == 3: #  might not be supported in starbound
+        return tuple(int(value[i:i+1], 16)*17 for i in range(0, 3))
+    if lv == 6:
+        # only allow values that can be split into 3 decimals <= 255
+        return tuple(int(value[i:i+int(lv/3)], 16) for i in range(0, lv, int(lv/3)))
+    return None
+
+def unpack_color_directives(data):
+    replace_matches = replace_directive_re.findall(data) #  won't grab fade directives
+    groups = []
+    for directive in replace_matches:
+        unpack_gr = directive.split(";")
+        for group in unpack_gr[1:]:
+            hexkey, hexval = tuple(group.split("="))
+            rgbkey = hex_to_rgb(hexkey)
+            rgbval = hex_to_rgb(hexval)
+            if rgbkey is not None and rgbval is not None:
+                groups.append((rgbkey,rgbval))
+    return dict(groups)
+
+def replace_colors(image, dict_colors):
+    pixel_data = image.load()
+
+    result_img = image.copy()
+    result_pixel_data = result_img.load()
+    for (key, value) in dict_colors.items():
+        for y in range(result_img.size[1]):
+            for x in range(result_img.size[0]):
+                pixel = pixel_data[x,y]
+                if pixel[0] == key[0] and pixel[1] == key[1] and pixel[2] == key[2]:
+                    if result_img.mode == "RGBA":
+                        result_pixel_data[x,y] = (value + (pixel[3],))
+                    elif result_img.mode == "RGB":
+                        result_pixel_data[x,y] = value
+    return result_img
 
 class Assets():
     def __init__(self, db_file, starbound_folder):
@@ -485,6 +530,10 @@ class Items():
 
         inv_icon = Image.new("RGBA", (16,16))
         inv_icon.paste(item_icon)
+
+        #if "directives" in item[0].keys():
+        #    inv_icon = replace_colors(inv_icon, unpack_color_directives(item[0]["directives"]))
+
         return inv_icon
 
     def get_item_image(self, name):
@@ -519,6 +568,7 @@ class Items():
             return None
 
         item_image = Image.open(BytesIO(icon_data)).convert("RGBA")
+
         return item_image
 
     def missing_icon(self):
@@ -929,43 +979,50 @@ class Species():
         gender = player.get_gender()
         asset_loc = self.get_species(name)[0][1]
 
-        # load up body spritesheets for species
-        body_sprites = self.assets.read("/humanoid/%s/%sbody.png" % (name, gender),
-                                        asset_loc, True)
-        frontarm_sprites = self.assets.read("/humanoid/%s/frontarm.png" % name,
-                                            asset_loc, True)
-        backarm_sprites = self.assets.read("/humanoid/%s/backarm.png" % name,
-                                            asset_loc, True)
-        head_sprites = self.assets.read("/humanoid/%s/%shead.png" % (name, gender),
-                                        asset_loc, True)
+        # crop the spritesheets and replace colours
+        def grab_sprite(sheet_path, rect, directives):
+            sheet = self.assets.read(sheet_path, asset_loc, True)
+            img = Image.open(BytesIO(sheet)).convert("RGBA").crop(rect)
+            return replace_colors(img, unpack_color_directives(directives))
 
-        # crop the spritesheets
+        default_rect  = (43, 0, 86, 43)
+        # TODO: should use the .bbox to figure this out
         personality_offset = int(re.search("\d$", player.get_personality()).group(0)) * 43
-        body_img = Image.open(BytesIO(body_sprites)).convert("RGBA").crop((personality_offset,
-                                                                           0,
-                                                                           personality_offset+43,
-                                                                           43))
-        frontarm_img = Image.open(BytesIO(frontarm_sprites)).convert("RGBA").crop((43, 0, 86, 43))
-        backarm_img = Image.open(BytesIO(backarm_sprites)).convert("RGBA").crop((43, 0, 86, 43))
-        head_img = Image.open(BytesIO(head_sprites)).convert("RGBA").crop((43, 0, 86, 43))
+        body_rect = (personality_offset, 0, personality_offset+43, 43)
 
-        # hair image if set
+        body_img = grab_sprite("/humanoid/%s/%sbody.png" % (name, gender),
+                               body_rect,
+                               player.get_body_directives())
+        frontarm_img = grab_sprite("/humanoid/%s/frontarm.png" % name,
+                                   default_rect,
+                                   player.get_body_directives())
+        backarm_img = grab_sprite("/humanoid/%s/backarm.png" % name,
+                                  default_rect,
+                                  player.get_body_directives())
+        head_img = grab_sprite("/humanoid/%s/%shead.png" % (name, gender),
+                               default_rect,
+                               player.get_body_directives())
+
         hair = player.get_hair()
         hair_img = None
         if hair[0] != "":
-            hair_img = self.get_hair_image(name, hair[0], hair[1], gender)
+            hair_img = self.get_hair_image(name, hair[0],
+                                           hair[1], gender,
+                                           player.get_hair_directives())
 
-        # facial hair if set
         facial_hair = player.get_facial_hair()
         facial_hair_img = None
         if facial_hair[0] != "":
-            facial_hair_img = self.get_hair_image(name, facial_hair[0], facial_hair[1], gender)
+            facial_hair_img = self.get_hair_image(name, facial_hair[0],
+                                                  facial_hair[1], gender,
+                                                  player.get_facial_hair_directives())
 
-        # facial mask if set
         facial_mask = player.get_facial_mask()
         facial_mask_img = None
         if facial_mask[0] != "":
-            facial_mask_img = self.get_hair_image(name, facial_mask[0], facial_mask[1], gender)
+            facial_mask_img = self.get_hair_image(name, facial_mask[0],
+                                                  facial_mask[1], gender,
+                                                  player.get_facial_mask_directives())
 
         # new blank canvas!
         base_size = 43
@@ -1005,16 +1062,15 @@ class Species():
 
         return base.resize((base_size*3, base_size*3))
 
-    def get_hair_image(self, name, hair_type, hair_group, gender):
+    def get_hair_image(self, name, hair_type, hair_group, gender, directives):
         # TODO: bbox is from .frame file, need a way to read them still
         species = self.get_species(name.lower())
-
-        # BUG: this will break for species mods on windows maybe?
         image_path = "/humanoid/%s/%s/%s.png" % (name, hair_type, hair_group)
 
         try:
             image = self.assets.read(image_path, species[0][1], image=True)
-            return Image.open(BytesIO(image)).convert("RGBA").crop((43, 0, 86, 43))
+            image = Image.open(BytesIO(image)).convert("RGBA").crop((43, 0, 86, 43))
+            return replace_colors(image, unpack_color_directives(directives))
         except OSError:
             logging.exception("Missing hair image: %s", image_path)
             return

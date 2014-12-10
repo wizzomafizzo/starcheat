@@ -324,27 +324,6 @@ def new_item(name, count, data={}):
 
     return item
 
-def unpack_color_directives(data):
-    unpack_dir = data.split("?replace;")
-    directives = []
-    for directive in unpack_dir[1:]:
-        unpack_gr = directive.split(";")
-        groups = []
-        for group in unpack_gr:
-            groups.append(group.split("="))
-        directives.append(groups)
-    return directives
-
-def pack_color_directives(colors):
-    string = ""
-    for directive in colors:
-        if len(directive) == 0:
-            continue
-        string += "?replace"
-        for group in directive:
-            string += ";%s=%s" % (group[0], group[1])
-    return string
-
 class WrongSaveVer(Exception):
     pass
 
@@ -478,6 +457,7 @@ class PlayerSave():
         return self.entity["blueprints"]["knownBlueprints"]
 
     def get_personality(self):
+        # these don't seem to be used yet
         # self.entity["identity"]["personalityArmIdle"]
         # self.entity["identity"]["personalityArmOffset"]
         # self.entity["identity"]["personalityHeadOffset"]
@@ -493,19 +473,19 @@ class PlayerSave():
         return self.entity["identity"]["facialMaskGroup"], self.entity["identity"]["facialMaskType"]
 
     def get_body_directives(self):
-        return unpack_color_directives(self.entity["identity"]["bodyDirectives"])
+        return self.entity["identity"]["bodyDirectives"]
 
     def get_emote_directives(self):
-        return unpack_color_directives(self.entity["identity"]["emoteDirectives"])
+        return self.entity["identity"]["emoteDirectives"]
 
     def get_hair_directives(self):
-        return unpack_color_directives(self.entity["identity"]["hairDirectives"])
+        return self.entity["identity"]["hairDirectives"]
 
     def get_facial_hair_directives(self):
-        return unpack_color_directives(self.entity["identity"]["facialHairDirectives"])
+        return self.entity["identity"]["facialHairDirectives"]
 
     def get_facial_mask_directives(self):
-        return unpack_color_directives(self.entity["identity"]["facialMaskDirectives"])
+        return self.entity["identity"]["facialMaskDirectives"]
 
     def get_game_mode(self):
         return self.entity["modeType"]
@@ -596,19 +576,19 @@ class PlayerSave():
         self.entity["identity"]["facialMaskType"] = type
 
     def set_body_directives(self, colors):
-        self.entity["identity"]["bodyDirectives"] = pack_color_directives(colors)
+        self.entity["identity"]["bodyDirectives"] = colors
 
     def set_emote_directives(self, colors):
-        self.entity["identity"]["emoteDirectives"] = pack_color_directives(colors)
+        self.entity["identity"]["emoteDirectives"] = colors
 
     def set_hair_directives(self, colors):
-        self.entity["identity"]["hairDirectives"] = pack_color_directives(colors)
+        self.entity["identity"]["hairDirectives"] = colors
 
     def set_facial_hair_directives(self, colors):
-        self.entity["identity"]["facialHairDirectives"] = pack_color_directives(colors)
+        self.entity["identity"]["facialHairDirectives"] = colors
 
     def set_facial_mask_directives(self, colors):
-        self.entity["identity"]["facialMaskDirectives"] = pack_color_directives(colors)
+        self.entity["identity"]["facialMaskDirectives"] = colors
 
     def set_game_mode(self, mode):
         self.entity["modeType"] = mode
