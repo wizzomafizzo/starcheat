@@ -2,9 +2,14 @@
 Module for reading and indexing Starbound assets
 """
 
-import os, json, re, sqlite3, logging, random
-from io import BytesIO
+import os
+import json
+import re
+import sqlite3
+import logging
+import random
 
+from io import BytesIO
 from PIL import Image
 
 import starbound
@@ -19,12 +24,15 @@ comment_re = re.compile(
 ignore_assets = re.compile(".*\.(db|ds_store|ini|psd)", re.IGNORECASE)
 ignore_items = re.compile(".*\.(png|config|frames)", re.IGNORECASE)
 
-replace_directive_re = re.compile("(?:\?replace((?:;[a-fA-F0-9]{1,6}=[a-fA-F0-9]{1,6}){1,}))")
+replace_directive_re = re.compile(
+    "(?:\?replace((?:;[a-fA-F0-9]{1,6}=[a-fA-F0-9]{1,6}){1,}))"
+)
+
 
 def parse_json(content, key):
     if key.endswith(".grapplinghook"):
         content = content.replace("[-.", "[-0.")
-    decoder = json.JSONDecoder(None,None,None,None,False,None)
+    decoder = json.JSONDecoder(strict=False)
     # Looking for comments
     # Allows for // inside of the " " JSON data
     content = comment_re.sub(lambda m: m.group(1) or '', content)
@@ -32,10 +40,12 @@ def parse_json(content, key):
     # Return json file
     return decoder.decode(content)
 
+
 def load_asset_file(filename):
     with open(filename) as f:
         content = ''.join(f.readlines())
         return parse_json(content, filename)
+
 
 def read_default_color(species_data):
     color = []
@@ -44,6 +54,7 @@ def read_default_color(species_data):
     for group in species_data[0].keys():
         color.append([group, species_data[0][group]])
     return color
+
 
 def asset_category(keyStr):
     """
@@ -54,24 +65,27 @@ def asset_category(keyStr):
     if extension == '':
         return ''
     else:
-        return extension[1:] #  removes the . from the extension
+        return extension[1:]  # removes the . from the extension
+
 
 # from: http://stackoverflow.com/a/7548779
 def hex_to_rgb(value):
     value = value.lstrip('#')
     lv = len(value)
-    if lv == 1: #  might not be supported in starbound
+    if lv == 1:  # might not be supported in starbound
         v = int(value, 16)*17
         return v, v, v
-    if lv == 3: #  might not be supported in starbound
+    if lv == 3:  # might not be supported in starbound
         return tuple(int(value[i:i+1], 16)*17 for i in range(0, 3))
     if lv == 6:
         # only allow values that can be split into 3 decimals <= 255
         return tuple(int(value[i:i+int(lv/3)], 16) for i in range(0, lv, int(lv/3)))
     return None
 
+
 def unpack_color_directives(data):
-    replace_matches = replace_directive_re.findall(data) #  won't grab fade directives
+    # won't grab fade directives
+    replace_matches = replace_directive_re.findall(data)
     groups = []
     for directive in replace_matches:
         unpack_gr = directive.split(";")
@@ -82,6 +96,7 @@ def unpack_color_directives(data):
             if rgbkey is not None and rgbval is not None:
                 groups.append((rgbkey,rgbval))
     return dict(groups)
+
 
 def replace_colors(image, dict_colors):
     pixel_data = image.load()
@@ -98,6 +113,7 @@ def replace_colors(image, dict_colors):
                     elif result_img.mode == "RGB":
                         result_pixel_data[x,y] = value
     return result_img
+
 
 class Assets():
     def __init__(self, db_file, starbound_folder):
@@ -531,8 +547,8 @@ class Items():
         inv_icon = Image.new("RGBA", (16,16))
         inv_icon.paste(item_icon)
 
-        #if "directives" in item[0].keys():
-        #    inv_icon = replace_colors(inv_icon, unpack_color_directives(item[0]["directives"]))
+        # if "directives" in item[0].keys():
+        #     inv_icon = replace_colors(inv_icon, unpack_color_directives(item[0]["directives"]))
 
         return inv_icon
 
@@ -573,16 +589,20 @@ class Items():
 
     def missing_icon(self):
         """Return the image data for the default inventory placeholder icon."""
-        return self.assets.read("/interface/inventory/x.png", self.assets.vanilla_assets, image=True)
+        return self.assets.read("/interface/inventory/x.png",
+                                self.assets.vanilla_assets, image=True)
 
     def sword_icon(self):
-        return self.assets.read("/interface/inventory/sword.png", self.assets.vanilla_assets, image=True)
+        return self.assets.read("/interface/inventory/sword.png",
+                                self.assets.vanilla_assets, image=True)
 
     def shield_icon(self):
-        return self.assets.read("/interface/inventory/shield.png", self.assets.vanilla_assets, image=True)
+        return self.assets.read("/interface/inventory/shield.png",
+                                self.assets.vanilla_assets, image=True)
 
     def sapling_icon(self):
-        return self.assets.read("/objects/generic/sapling/saplingicon.png", self.assets.vanilla_assets,
+        return self.assets.read("/objects/generic/sapling/saplingicon.png",
+                                self.assets.vanilla_assets,
                                 image=True)
 
     def generate_gun(self, item):
@@ -650,9 +670,9 @@ class Items():
             generated_gun["handPosition"] = [float(item[0]["handPosition"][0]),
                                              float(item[0]["handPosition"][1])]
 
-        #if "firePosition" in item[0]:
-        #    generated_gun["firePosition"] = [float(item[0]["firePosition"][0]),
-        #                                     float(item[0]["firePosition"][1])]
+        # if "firePosition" in item[0]:
+        #     generated_gun["firePosition"] = [float(item[0]["firePosition"][0]),
+        #                                      float(item[0]["firePosition"][1])]
 
         if "rateOfFire" in item[0]:
             generated_gun["fireTime"] = float(item[0]["rateOfFire"][0])
@@ -750,8 +770,8 @@ class Items():
             ]
         }
 
-        #if "kind" in item[0]:
-        #    generated_shield["inspectionKind"] = item[0]["kind"]
+        # if "kind" in item[0]:
+        #     generated_shield["inspectionKind"] = item[0]["kind"]
 
         if "shortdescription" in item[0]:
             generated_shield["shortdescription"] = item[0]["shortdescription"]
@@ -820,11 +840,13 @@ class Items():
 
         return filledcapturepod
 
+
 class Species():
     def __init__(self, assets):
         self.assets = assets
         self.starbound_folder = assets.starbound_folder
-        self.humanoid_config = self.assets.read("/humanoid.config", self.assets.vanilla_assets)
+        self.humanoid_config = self.assets.read("/humanoid.config",
+                                                self.assets.vanilla_assets)
 
     def is_species(self, key):
         if key.endswith(".species"):
@@ -837,12 +859,13 @@ class Species():
         path = asset[1]
         asset_data = self.assets.read(key, path)
 
-        if asset_data is None: return
+        if asset_data is None:
+            return
 
         if "kind" in asset_data:
             return (key, path, "species", "", asset_data["kind"].lower(), "")
         else:
-            logging.warning("Invalid species asset (no kind key) %s in %s" % (key, path))
+            logging.warning("Species missing kind key: %s in %s" % (key, path))
 
     def get_species_list(self):
         """Return a formatted list of all species."""
@@ -865,9 +888,11 @@ class Species():
         return formatted
 
     def get_species(self, name):
-        """Look up a species from the index and return contents of species files."""
+        """Look up a species from the index and return contents of species
+        files."""
         c = self.assets.db.cursor()
-        c.execute("select * from assets where type = 'species' and name = ?", (name.lower(),))
+        c.execute("select * from assets where type = 'species' and name = ?",
+                  (name.lower(),))
         species = c.fetchone()
         if species is None:
             # species is not indexed
@@ -929,6 +954,7 @@ class Species():
     def get_default_colors(self, species):
         # just use first option
         species_data = self.get_species(species)[1]
+
         def val(key):
             if key in species_data:
                 return read_default_color(species_data[key])
@@ -940,11 +966,11 @@ class Species():
             "undyColor": val("undyColor"),
             "hairColor": val("hairColor")
         }
-        # TODO: there is an unbelievably complicated method for choosing default
-        # player colors. i'm not sure if it's worth going into too much considering
-        # it will only be used if a player switches species
-        # it might be easier to just leave this out entirely. let user add/remove
-        # their own directive colors
+        # TODO: there is an unbelievably complicated method for choosing
+        # default player colors. i'm not sure if it's worth going into too much
+        # considering it will only be used if a player switches species
+        # it might be easier to just leave this out entirely. let user
+        # add/remove their own directive colors
         directives = {
             "body": [colors["bodyColor"]],
             "emote": [colors["bodyColor"], colors["undyColor"]],
@@ -985,9 +1011,10 @@ class Species():
             img = Image.open(BytesIO(sheet)).convert("RGBA").crop(rect)
             return replace_colors(img, unpack_color_directives(directives))
 
-        default_rect  = (43, 0, 86, 43)
+        default_rect = (43, 0, 86, 43)
         # TODO: should use the .bbox to figure this out
-        personality_offset = int(re.search("\d$", player.get_personality()).group(0)) * 43
+        personality = player.get_personality()
+        personality_offset = int(re.search("\d$", personality).group(0)) * 43
         body_rect = (personality_offset, 0, personality_offset+43, 43)
 
         body_img = grab_sprite("/humanoid/%s/%sbody.png" % (name, gender),
@@ -1006,23 +1033,29 @@ class Species():
         hair = player.get_hair()
         hair_img = None
         if hair[0] != "":
-            hair_img = self.get_hair_image(name, hair[0],
-                                           hair[1], gender,
-                                           player.get_hair_directives())
+            hair_img = self.get_hair_image(
+                name, hair[0],
+                hair[1], gender,
+                player.get_hair_directives()
+            )
 
         facial_hair = player.get_facial_hair()
         facial_hair_img = None
         if facial_hair[0] != "":
-            facial_hair_img = self.get_hair_image(name, facial_hair[0],
-                                                  facial_hair[1], gender,
-                                                  player.get_facial_hair_directives())
+            facial_hair_img = self.get_hair_image(
+                name, facial_hair[0],
+                facial_hair[1], gender,
+                player.get_facial_hair_directives()
+            )
 
         facial_mask = player.get_facial_mask()
         facial_mask_img = None
         if facial_mask[0] != "":
-            facial_mask_img = self.get_hair_image(name, facial_mask[0],
-                                                  facial_mask[1], gender,
-                                                  player.get_facial_mask_directives())
+            facial_mask_img = self.get_hair_image(
+                name, facial_mask[0],
+                facial_mask[1], gender,
+                player.get_facial_mask_directives()
+            )
 
         # new blank canvas!
         base_size = 43
@@ -1051,14 +1084,16 @@ class Species():
             try:
                 base.paste(facial_mask_img, mask=facial_mask_img)
             except ValueError:
-                logging.exception("Bad facial mask image: %s, %s", facial_mask[0], facial_mask[1])
+                logging.exception("Bad facial mask image: %s, %s",
+                                  facial_mask[0], facial_mask[1])
 
         # facial hair if set
         if facial_hair_img is not None:
             try:
                 base.paste(facial_hair_img, mask=facial_hair_img)
             except ValueError:
-                logging.exception("Bad facial hair image: %s, %s", facial_hair[0], facial_hair[1])
+                logging.exception("Bad facial hair image: %s, %s",
+                                  facial_hair[0], facial_hair[1])
 
         return base.resize((base_size*3, base_size*3))
 
@@ -1069,11 +1104,13 @@ class Species():
 
         try:
             image = self.assets.read(image_path, species[0][1], image=True)
-            image = Image.open(BytesIO(image)).convert("RGBA").crop((43, 0, 86, 43))
+            image = Image.open(BytesIO(image)).convert("RGBA").crop((43, 0,
+                                                                     86, 43))
             return replace_colors(image, unpack_color_directives(directives))
         except OSError:
             logging.exception("Missing hair image: %s", image_path)
             return
+
 
 # TODO: move to save.py
 class Player():
@@ -1094,6 +1131,7 @@ class Player():
             if name == self.mode_types[key]:
                 return key
 
+
 class Monsters():
     def __init__(self, assets):
         self.assets = assets
@@ -1110,7 +1148,8 @@ class Monsters():
         path = asset[1]
         asset_data = self.assets.read(key, path)
 
-        if asset_data is None: return
+        if asset_data is None:
+            return
 
         if "type" in asset_data:
             return (key, path, "monster", "", asset_data["type"], "")
@@ -1119,8 +1158,9 @@ class Monsters():
 
     def all(self):
         """Return a list of all unique monster types."""
+        q = "select distinct name from assets where type = 'monster' order by name"
         c = self.assets.db.cursor()
-        c.execute("select distinct name from assets where type = 'monster' order by name")
+        c.execute(q)
         return c.fetchall()
 
     def random_monster(self):
@@ -1132,6 +1172,7 @@ class Monsters():
         # okay, so i can't figure out exactly what this should be, but this
         # number seems to cause no crashes so far
         return str(random.randint(1, 9999999999999999999))
+
 
 class Techs():
     def __init__(self, assets):
@@ -1150,7 +1191,8 @@ class Techs():
         name = os.path.basename(asset[0]).split(".")[0]
         asset_data = self.assets.read(key, path)
 
-        if asset_data is None: return
+        if asset_data is None:
+            return
 
         return (key, path, "tech", "", name, "")
 
@@ -1161,8 +1203,9 @@ class Techs():
         return [x[0] for x in c.fetchall()]
 
     def get_tech(self, name):
+        q = "select key, path from assets where type = 'tech' and name = ?"
         c = self.assets.db.cursor()
-        c.execute("select key, path from assets where type = 'tech' and name = ?", (name,))
+        c.execute(q, (name,))
         tech = c.fetchone()
         info = self.assets.read(tech[0]+"item", tech[1])
 

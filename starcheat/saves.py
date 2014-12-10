@@ -41,8 +41,7 @@ def pack_str(var):
     return str(var).encode("utf-8")
 
 
-# source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls
-# -w-packing-format
+# source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
 def unpack_vlq(data):
     """Return the first VLQ number and byte offset from a list of bytes."""
     offset = 0
@@ -56,8 +55,7 @@ def unpack_vlq(data):
     return value, offset
 
 
-# source: https://github.com/metachris/binary-serializer/blob/master/python/bin
-# calc.py
+# source: https://github.com/metachris/binary-serializer/blob/master/python/bincalc.py
 def pack_vlq(n):
     """Convert an integer to a VLQ and return a list of bytes."""
     value = int(n)
@@ -76,8 +74,7 @@ def pack_vlq(n):
 
 
 # thanks starrypy dude
-# source: https://github.com/CarrotsAreMediocre/StarryPy/blob/master/packets/da
-# ta_types.py
+# source: https://github.com/CarrotsAreMediocre/StarryPy/blob/master/packets/data_types.py
 def unpack_vlqs(data):
     value = 0
     offset = 0
