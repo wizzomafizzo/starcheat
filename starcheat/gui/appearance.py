@@ -63,9 +63,10 @@ class Appearance():
             "emote": unpack_color_directives(self.player.get_emote_directives()),
             "hair": unpack_color_directives(self.player.get_hair_directives()),
             "facial_hair": unpack_color_directives(self.player.get_facial_hair_directives()),
-            "facial_mask": unpack_color_directives(self.player.get_facial_mask_directives())
+            "facial_mask": unpack_color_directives(self.player.get_facial_mask_directives()),
+            "undy": self.player.get_undy_color()
         }
-        color_values = ("body", "hair", "facial_hair", "facial_mask")
+        color_values = ("body", "emote", "hair", "facial_hair", "facial_mask")
 
         current_appearance = {
             "hair": self.player.get_hair(),
@@ -105,6 +106,10 @@ class Appearance():
             getattr(self.ui, value+"_color").clicked.connect(getattr(self, "new_%s_color_edit" % value))
             if len(self.colors[value]) == 0:
                 getattr(self.ui, value+"_color").setEnabled(False)
+            else:
+                getattr(self.ui, value+"_color").setEnabled(True)
+
+        self.ui.favorite_color.clicked.connect(self.new_undy_edit)
 
         # player image
         image = self.assets.species().render_player(self.player)
@@ -126,6 +131,8 @@ class Appearance():
         self.player.set_hair_directives(pack_color_directives(self.colors["hair"]))
         self.player.set_facial_hair_directives(pack_color_directives(self.colors["facial_hair"]))
         self.player.set_facial_mask_directives(pack_color_directives(self.colors["facial_mask"]))
+        self.player.set_emote_directives(pack_color_directives(self.colors["emote"]))
+        self.player.set_undy_color(self.colors["undy"])
 
         # render player preview
         try:
@@ -143,6 +150,13 @@ class Appearance():
         color_edit = ColorEdit(self, self.colors[color_type], color_type)
         color_edit.dialog.exec()
 
+    def new_undy_edit(self):
+        qcolor = QColorDialog().getColor(QColor(*self.colors["undy"]), self.dialog)
+        if qcolor.isValid():
+            new = qcolor.getRgb()
+            self.colors["undy"] = [new[0], new[1], new[2]]
+            self.write_appearance_values()
+
     def hair_icon(self, species, hair_type, hair_group):
         image_data = self.assets.species().get_hair_image(species, hair_type, hair_group)
         return QPixmap.fromImage(ImageQt(image_data))
@@ -156,10 +170,12 @@ class Appearance():
         self.new_color_edit("facial_hair")
     def new_facial_mask_color_edit(self):
         self.new_color_edit("facial_mask")
+    def new_emote_color_edit(self):
+        self.new_color_edit("emote")
 
 class ColorItem(QTableWidgetItem):
     def __init__(self, color):
-        QTableWidgetItem.__init__(self, color)
+        QTableWidgetItem.__init__(self, color.upper())
         self.setTextAlignment(QtCore.Qt.AlignCenter)
         self.setBackground(QBrush(QColor("#" + color.upper())))
 
@@ -242,7 +258,7 @@ class ColorEdit():
         row = self.ui.colors.currentRow()
         column = self.ui.colors.currentColumn()
         old_color = self.ui.colors.currentItem().text()
-        qcolor = QColorDialog().getColor(QColor("#"+old_color), self.dialog)
+        qcolor = QColorDialog().getColor(QColor("#" + old_color), self.dialog)
 
         if qcolor.isValid():
             new_color = qcolor.name()[1:].lower()

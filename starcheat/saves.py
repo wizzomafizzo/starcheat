@@ -533,6 +533,9 @@ class PlayerSave():
     def get_tech_modules(self):
         return self.entity["techController"]["techModules"]
 
+    def get_undy_color(self):
+        return self.entity["identity"]["color"]
+
     # here be setters
     def set_blueprints(self, blueprints):
         self.entity["blueprints"]["knownBlueprints"] = blueprints
@@ -628,6 +631,9 @@ class PlayerSave():
 
     def set_facial_mask_directives(self, colors):
         self.entity["identity"]["facialMaskDirectives"] = colors
+
+    def set_undy_color(self, color):
+        self.entity["identity"]["color"] = color
 
     def set_game_mode(self, mode):
         self.entity["modeType"] = mode
