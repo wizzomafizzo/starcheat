@@ -8,7 +8,10 @@ It can also be run from the command line to dump the contents, like this:
 $ python ./save_file.py <.player file>
 """
 
-import sys, logging, struct
+import sys
+import logging
+import struct
+
 from pprint import pprint
 from struct import pack, unpack_from
 
@@ -27,28 +30,34 @@ data_format = (
     ("the_rest", "__the_rest__", None)
 )
 
+
 def unpack_str(bytes):
     """Convert a list of bytes to a string."""
-    return "".join(map(chr,map(ord,bytes)))
+    return "".join(map(chr, map(ord, bytes)))
+
 
 def pack_str(var):
     """Convert a string to a list of bytes."""
     return str(var).encode("utf-8")
 
-# source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls-w-packing-format
+
+# source: http://stackoverflow.com/questions/6776553/python-equivalent-of-perls
+# -w-packing-format
 def unpack_vlq(data):
     """Return the first VLQ number and byte offset from a list of bytes."""
     offset = 0
     value = 0
     while True:
         tmp = data[offset]
-        value = (value<<7) | (tmp&0x7f)
+        value = (value << 7) | (tmp & 0x7f)
         offset += 1
         if tmp & 0x80 == 0:
             break
     return value, offset
 
-# source: https://github.com/metachris/binary-serializer/blob/master/python/bincalc.py
+
+# source: https://github.com/metachris/binary-serializer/blob/master/python/bin
+# calc.py
 def pack_vlq(n):
     """Convert an integer to a VLQ and return a list of bytes."""
     value = int(n)
@@ -58,16 +67,17 @@ def pack_vlq(n):
     round = 0
     while value > 0:
         # only use the lower 7 bits of this byte (big endian)
-        # if subsequent length byte, set highest bit to 1, else just insert the value with
-        # sets length-bit to 1 on all but first
+        # if subsequent length byte, set highest bit to 1, else just insert
+        # the value with sets length-bit to 1 on all but first
         result.insert(0, value & 127 | 128 if round > 0 else value & 127)
         value >>= 7
         round += 1
     return result
 
-# i don't know how the hell this works. thanks starrypy dude
-# source: https://github.com/CarrotsAreMediocre/StarryPy/blob/master/packets/data_types.py
-# funny license
+
+# thanks starrypy dude
+# source: https://github.com/CarrotsAreMediocre/StarryPy/blob/master/packets/da
+# ta_types.py
 def unpack_vlqs(data):
     value = 0
     offset = 0
@@ -82,11 +92,13 @@ def unpack_vlqs(data):
     else:
         return -((value >> 1)+1), offset
 
+
 def pack_vlqs(var):
     value = abs(var * 2)
     if var < 0:
         value -= 1
     return pack_vlq(value)
+
 
 # <vlq len of str><str>
 def unpack_vlq_str(data):
@@ -97,12 +109,14 @@ def unpack_vlq_str(data):
     string = unpack_from(pat, data, vlq[1]), (vlq[1] + vlq[0])
     return unpack_str(string[0]), string[1]
 
+
 def pack_vlq_str(var):
     if var == "":
         return b"\x00"
     vlq = pack_vlq(len(var))
     string = pack_str(var)
     return vlq + string
+
 
 # <vlq total items><vlq str len><str>...
 def unpack_str_list(data):
@@ -115,6 +129,7 @@ def unpack_str_list(data):
         offset += vlq_str[1]
     return str_list, offset
 
+
 def pack_str_list(var):
     list_total = len(var)
     str_list = b""
@@ -122,20 +137,25 @@ def pack_str_list(var):
         str_list += pack_vlq_str(string)
     return pack_vlq(list_total) + str_list
 
+
 # unset value, 0 bytes
 def unpack_variant1(data):
     return None, 0
 
+
 def pack_variant1(var):
     return b''
+
 
 # big endian double
 def unpack_variant2(data):
     # TODO: can these be plain unpack()?
     return unpack_from(">d", data, 0)[0], 8
 
+
 def pack_variant2(var):
     return pack(">d", var)
+
 
 # boolean
 def unpack_variant3(data):
@@ -145,8 +165,10 @@ def unpack_variant3(data):
     else:
         return False, 1
 
+
 def pack_variant3(var):
     return pack("b", var)
+
 
 # variant list
 # <vlq total><variant>...
@@ -160,12 +182,14 @@ def unpack_variant6(data):
         offset += variant[1]
     return variants, offset
 
+
 def pack_variant6(var):
     total = len(var)
     variant_list = b""
     for variant in var:
         variant_list += pack_variant(variant)
     return pack_vlq(total) + variant_list
+
 
 # variant dict
 # <vlq total><vlq key str len><str key><variant>...
@@ -182,6 +206,7 @@ def unpack_variant7(data):
             dict_items[key[0]] = value[0]
     return dict_items, offset
 
+
 def pack_variant7(var):
     total = len(var)
     dict_items = b""
@@ -192,12 +217,14 @@ def pack_variant7(var):
         dict_items += key + value
     return pack_vlq(total) + dict_items
 
+
 def unpack_variant(data):
     variant_type = unpack_vlq(data)
     offset = variant_type[1]
     unpacked = variant_types[variant_type[0]][0](data[offset:])
     offset += unpacked[1]
     return unpacked[0], offset
+
 
 def pack_variant(var):
     if var is None:
@@ -217,6 +244,7 @@ def pack_variant(var):
     else:
         raise WrongSaveVer("Unsupported variant type")
 
+
 def unpack_starsave(data):
     save = {}
 
@@ -229,32 +257,31 @@ def unpack_starsave(data):
     offset += 4
 
     save_data = unpack_variant6(data[offset:])
-    # TODO: this will work but might break
-    # need a way to figure the right list item on the fly?
     save["data"] = save_data[0][0]
     offset += save_data[1]
 
     return save, offset
 
+
 def pack_starsave(var):
     data = b''
-    # logging.debug("Packing entity name")
     entity_name = pack_vlq_str(var["entity_name"])
     data += entity_name
-    # logging.debug("Packing variant version")
     variant_ver = pack("<i", var["variant_version"])
     data += variant_ver
-    # logging.debug("Packing save data")
     save_data = pack_variant6([var["data"]])
     data += save_data
     return data
+
 
 # just grabs any remaining bytes
 def unpack_the_rest(data):
     return data, len(data)
 
+
 def pack_the_rest(var):
     return var
+
 
 # unpack any starbound save type
 def unpack_var(var, data):
@@ -266,6 +293,7 @@ def unpack_var(var, data):
     else:
         return unpack_from(pattern, data, 0), length
 
+
 def pack_var(var, data):
     pattern = var[1]
 
@@ -273,6 +301,7 @@ def pack_var(var, data):
         return save_file_types[pattern][1](data)
     else:
         return pack(pattern, *data)
+
 
 # all the special save file types
 # name: (unpack func, pack func)
@@ -302,8 +331,10 @@ variant_types = (
     (unpack_variant7, pack_variant7)
 )
 
+
 def new_item_data(name, count, data={}):
-    if name is None: return None
+    if name is None:
+        return None
 
     item = {
         'count': count,
@@ -313,8 +344,10 @@ def new_item_data(name, count, data={}):
 
     return item
 
+
 def new_item(name, count, data={}):
-    if name is None: return None
+    if name is None:
+        return None
 
     item = {
         '__id': 'Item',
@@ -324,8 +357,10 @@ def new_item(name, count, data={}):
 
     return item
 
+
 class WrongSaveVer(Exception):
     pass
+
 
 class PlayerSave():
     def __init__(self, filename):
@@ -396,10 +431,12 @@ class PlayerSave():
         return self.entity["uuid"]
 
     def get_health(self):
-        return self.entity["statusController"]["resourcePercentages"]["health"] * 100
+        status = self.entity["statusController"]
+        return status["resourcePercentages"]["health"] * 100
 
     def get_energy(self):
-        return self.entity["statusController"]["resourcePercentages"]["energy"] * 100
+        status = self.entity["statusController"]
+        return status["resourcePercentages"]["energy"] * 100
 
     def get_gender(self):
         return self.entity["identity"]["gender"]
@@ -464,13 +501,16 @@ class PlayerSave():
         return self.entity["identity"]["personalityIdle"]
 
     def get_hair(self):
-        return self.entity["identity"]["hairGroup"], self.entity["identity"]["hairType"]
+        return (self.entity["identity"]["hairGroup"],
+                self.entity["identity"]["hairType"])
 
     def get_facial_hair(self):
-        return self.entity["identity"]["facialHairGroup"], self.entity["identity"]["facialHairType"]
+        return (self.entity["identity"]["facialHairGroup"],
+                self.entity["identity"]["facialHairType"])
 
     def get_facial_mask(self):
-        return self.entity["identity"]["facialMaskGroup"], self.entity["identity"]["facialMaskType"]
+        return (self.entity["identity"]["facialMaskGroup"],
+                self.entity["identity"]["facialMaskType"])
 
     def get_body_directives(self):
         return self.entity["identity"]["bodyDirectives"]
@@ -507,7 +547,7 @@ class PlayerSave():
     # references to species
     def set_race(self, race):
         if race == "":
-            logging.warning("Attempted to save empty race, asset index may be corrupt")
+            logging.warning("Attempted to save empty race")
             return
         self.entity["identity"]["species"] = race.lower()
 
@@ -521,10 +561,12 @@ class PlayerSave():
         self.entity["identity"]["gender"] = gender.lower()
 
     def set_health(self, current):
-        self.entity["statusController"]["resourcePercentages"]["health"] = current / 100
+        new = current / 100
+        self.entity["statusController"]["resourcePercentages"]["health"] = new
 
     def set_energy(self, current):
-        self.entity["statusController"]["resourcePercentages"]["energy"] = current / 100
+        new = current / 100
+        self.entity["statusController"]["resourcePercentages"]["energy"] = new
 
     def set_main_bag(self, bag):
         self.entity["inventory"]["bag"] = bag
@@ -603,7 +645,8 @@ class PlayerSave():
         # this is where techs start in the equip list
         equip_index = 8
         for tech in equip:
-            self.entity["inventory"]["equipment"][equip_index] = new_item(tech, 1)
+            item = new_item(tech, 1)
+            self.entity["inventory"]["equipment"][equip_index] = item
             equip_index += 1
 
         self.entity["techController"]["techModules"] = techs
@@ -611,4 +654,4 @@ class PlayerSave():
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])
     player.dump()
-    #print(player.export_save())
+    # print(player.export_save())
