@@ -1021,10 +1021,10 @@ class Species():
                                body_rect,
                                player.get_body_directives())
         frontarm_img = grab_sprite("/humanoid/%s/frontarm.png" % name,
-                                   default_rect,
+                                   body_rect,
                                    player.get_body_directives())
         backarm_img = grab_sprite("/humanoid/%s/backarm.png" % name,
-                                  default_rect,
+                                  body_rect,
                                   player.get_body_directives())
         head_img = grab_sprite("/humanoid/%s/%shead.png" % (name, gender),
                                default_rect,
