@@ -133,7 +133,7 @@
      <item row="8" column="0">
       <widget class="QLabel" name="favorite_label">
        <property name="text">
-        <string>Undies</string>
+        <string>Favorite</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
