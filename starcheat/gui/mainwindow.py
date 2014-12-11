@@ -2,11 +2,15 @@
 Main application window for starcheat GUI
 """
 
-import sys, logging, json
+import sys
+import logging
+import json
+
 from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QMenu, QAction
+from PyQt5.QtGui import QPixmap, QCursor
 from PIL.ImageQt import ImageQt
 
 import saves, assets, qt_mainwindow
@@ -19,6 +23,7 @@ from gui.blueprints import BlueprintLib
 from gui.itembrowser import ItemBrowser
 from gui.appearance import Appearance
 from gui.techs import Techs
+
 
 class StarcheatMainWindow(QMainWindow):
     """Overrides closeEvent on the main window to allow "want to save changes?" dialog"""
@@ -39,6 +44,7 @@ class StarcheatMainWindow(QMainWindow):
             event.ignore()
         elif button == QMessageBox.Discard:
             event.accept()
+
 
 class MainWindow():
     def __init__(self):
@@ -92,12 +98,24 @@ class MainWindow():
             self.ui.game_mode.addItem(mode)
 
         # set up bag tables
-        bags = "wieldable", "head", "chest", "legs", "back", "main_bag", "action_bar", "tile_bag", "essentials"
+        self.last_bag = None
+        bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
+                "action_bar", "tile_bag", "essentials", "mouse")
         for b in bags:
             logging.debug("Setting up %s bag", b)
             item_edit = getattr(self, "new_" + b + "_item_edit")
             getattr(self.ui, b).cellDoubleClicked.connect(item_edit)
             getattr(self.ui, b).cellChanged.connect(self.set_edited)
+            getattr(self.ui, b).setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+            getattr(self.ui, b).addAction(QAction("Edit...", getattr(self.ui, b)))
+            getattr(self.ui, b).addAction(QAction("Trash", getattr(self.ui, b)))
+            sep = QAction(getattr(self.ui, b))
+            sep.setSeparator(True)
+            getattr(self.ui, b).addAction(sep)
+            getattr(self.ui, b).addAction(QAction("Clear Held Items", getattr(self.ui, b)))
+            getattr(self.ui, b).addAction(QAction("Sort Items...", getattr(self.ui, b)))
+
             # TODO: still issues with drag drop between tables
             getattr(self.ui, b).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
 
@@ -188,6 +206,7 @@ class MainWindow():
         self.update_bag("tile_bag")
         self.update_bag("action_bar")
         self.update_bag("essentials")
+        self.update_bag("mouse")
 
         self.update_player_preview()
 
@@ -533,7 +552,7 @@ class MainWindow():
             bag = self.get_equip(b)
             getattr(self.player, "set_" + b)(bag[0], bag[1])
         # bags
-        bags = "wieldable", "main_bag", "tile_bag", "action_bar", "essentials"
+        bags = "wieldable", "main_bag", "tile_bag", "action_bar", "essentials", "mouse"
         for b in bags:
             getattr(self.player, "set_" + b)(self.get_bag(b))
 
@@ -580,3 +599,5 @@ class MainWindow():
         self.new_item_edit(self.ui.wieldable)
     def new_essentials_item_edit(self):
         self.new_item_edit(self.ui.essentials)
+    def new_mouse_item_edit(self):
+        self.new_item_edit(self.ui.mouse)

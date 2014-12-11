@@ -469,6 +469,10 @@ class PlayerSave():
     def get_essentials(self):
         return self.entity["inventory"]["essentialBar"]
 
+    def get_mouse(self):
+        # pretend it's a regular bag
+        return [self.entity["inventory"]["swapSlot"]]
+
     def get_race(self, pretty=False):
         race = self.entity["identity"]["species"]
         if pretty:
@@ -582,6 +586,9 @@ class PlayerSave():
 
     def set_essentials(self, bag):
         self.entity["inventory"]["essentialBar"] = bag
+
+    def set_mouse(self, bag):
+        self.entity["inventory"]["swapSlot"] = bag[0]
 
     def set_head(self, main, glamor):
         self.entity["inventory"]["equipment"][0] = main
