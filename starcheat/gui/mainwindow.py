@@ -97,6 +97,34 @@ class MainWindow():
         for mode in self.assets.player().mode_types.values():
             self.ui.game_mode.addItem(mode)
 
+        def bag_context(widget, name):
+            widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+            item_edit = getattr(self, "new_" + b + "_item_edit")
+            sortable = ("main_bag", "action_bar", "tile_bag")
+            clearable = ("wieldable", "action_bar", "essentials")
+
+            edit_action = QAction("Edit...", widget)
+            edit_action.triggered.connect(item_edit)
+            widget.addAction(edit_action)
+            trash_action = QAction("Trash", widget)
+            trash_slot = lambda: self.trash_slot(self.window, widget, True)
+            trash_action.triggered.connect(trash_slot)
+            widget.addAction(trash_action)
+            sep_action = QAction(widget)
+
+            if name in sortable or name in clearable:
+                sep_action.setSeparator(True)
+                widget.addAction(sep_action)
+                if name in clearable:
+                    clear_action = QAction("Clear Held Items", widget)
+                    clear_action.triggered.connect(self.clear_held_slots)
+                    widget.addAction(clear_action)
+                if name in sortable:
+                    sort_action = QAction("Sort Items...", widget)
+                    sort_action.setEnabled(False)
+                    widget.addAction(sort_action)
+
         # set up bag tables
         self.last_bag = None
         bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
@@ -106,15 +134,8 @@ class MainWindow():
             item_edit = getattr(self, "new_" + b + "_item_edit")
             getattr(self.ui, b).cellDoubleClicked.connect(item_edit)
             getattr(self.ui, b).cellChanged.connect(self.set_edited)
-            getattr(self.ui, b).setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
-            getattr(self.ui, b).addAction(QAction("Edit...", getattr(self.ui, b)))
-            getattr(self.ui, b).addAction(QAction("Trash", getattr(self.ui, b)))
-            sep = QAction(getattr(self.ui, b))
-            sep.setSeparator(True)
-            getattr(self.ui, b).addAction(sep)
-            getattr(self.ui, b).addAction(QAction("Clear Held Items", getattr(self.ui, b)))
-            getattr(self.ui, b).addAction(QAction("Sort Items...", getattr(self.ui, b)))
+            bag_context(getattr(self.ui, b), b)
 
             # TODO: still issues with drag drop between tables
             getattr(self.ui, b).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
@@ -258,25 +279,33 @@ class MainWindow():
                 dialog.setIcon(QMessageBox.Critical)
                 dialog.exec()
 
-        def trash_slot():
-            dialog = QMessageBox(item_edit.dialog)
-            dialog.setWindowTitle("Trash Item")
-            dialog.setText("Are you sure?")
-            dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            dialog.setDefaultButton(QMessageBox.No)
-            dialog.setIcon(QMessageBox.Question)
-            if dialog.exec() == QMessageBox.Yes:
-                logging.debug("Trashed item")
-                bag.setItem(row, column, empty_slot())
-                item_edit.dialog.close()
-                self.set_edited()
+        trash_slot = lambda: self.trash_slot(item_edit.dialog, bag)
 
         item_edit.dialog.accepted.connect(update_slot)
         item_edit.ui.trash_button.clicked.connect(trash_slot)
         item_edit.dialog.exec()
 
+    def trash_slot(self, dialog, bag, standalone=False):
+        row = bag.currentRow()
+        column = bag.currentColumn()
+        dialog = QMessageBox(dialog)
+        dialog.setWindowTitle("Trash Item")
+        dialog.setText("Are you sure?")
+        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        dialog.setDefaultButton(QMessageBox.No)
+        dialog.setIcon(QMessageBox.Question)
+        if dialog.exec() == QMessageBox.Yes:
+            bag.setItem(row, column, empty_slot())
+            if not standalone:
+                dialog.close()
+            self.set_edited()
+
     def set_edited(self):
         self.window.setWindowModified(True)
+
+    def clear_held_slots(self):
+        self.player.clear_held_slots()
+        self.ui.statusbar.showMessage("All held items have been cleared", 3000)
 
     def new_blueprint_edit(self):
         """Launch a new blueprint management dialog."""

@@ -310,6 +310,9 @@
           </item>
           <item row="3" column="1">
            <layout class="QGridLayout" name="gridLayout_4">
+            <property name="verticalSpacing">
+             <number>3</number>
+            </property>
             <item row="0" column="0" colspan="3">
              <widget class="QLabel" name="mouse_label">
               <property name="text">
@@ -327,7 +330,7 @@
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>5</width>
+                <width>3</width>
                 <height>20</height>
                </size>
               </property>
@@ -434,7 +437,7 @@
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>5</width>
+                <width>3</width>
                 <height>20</height>
                </size>
               </property>
@@ -450,6 +453,12 @@
            <size>
             <width>100</width>
             <height>160</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>118</width>
+            <height>16777215</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -2152,8 +2161,6 @@ border-radius: 4px;
    <zorder></zorder>
    <zorder></zorder>
    <zorder></zorder>
-   <zorder>horizontalSpacer_10</zorder>
-   <zorder>horizontalSpacer_11</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -2441,6 +2448,9 @@ border-radius: 4px;
    </property>
    <property name="text">
     <string>Image Browser</string>
+   </property>
+   <property name="statusTip">
+    <string>Search indexed Starbound images</string>
    </property>
   </action>
  </widget>

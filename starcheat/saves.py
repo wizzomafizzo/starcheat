@@ -648,6 +648,14 @@ class PlayerSave():
     def set_play_time(self, time):
         self.entity["playTime"] = float(time)
 
+    def clear_held_slots(self):
+        empty = {
+            "location": None,
+            "type": "none"
+        }
+        self.entity["inventory"]["primaryHeldSlot"] = empty
+        self.entity["inventory"]["altHeldSlot"] = empty
+
     def set_tech_modules(self, techs, equip):
         # this works similar to the equip items in that it needs to be set
         # in 2 separate places to stick
