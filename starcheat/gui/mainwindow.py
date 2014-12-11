@@ -9,7 +9,7 @@ import json
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QMenu, QAction
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QAction
 from PyQt5.QtGui import QPixmap, QCursor
 from PIL.ImageQt import ImageQt
 

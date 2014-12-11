@@ -9,8 +9,9 @@ Qt item edit dialog
 # once that's complete, work can be started on proper item generation. to begin,
 # we just wanna pull in all the default values of an item
 
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
-from PyQt5.QtWidgets import QInputDialog, QListWidgetItem, QFileDialog
+from PyQt5.QtWidgets import QInputDialog, QListWidgetItem, QFileDialog, QAction
 from PyQt5.QtGui import QPixmap, QImage
 from PIL.ImageQt import ImageQt
 import json, copy, logging
@@ -145,6 +146,17 @@ class ItemEdit():
         self.ui.export_button.clicked.connect(self.export_item)
         self.ui.import_button.clicked.connect(self.import_item)
 
+        self.ui.variant.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        edit_action = QAction("Edit...", self.ui.variant)
+        edit_action.triggered.connect(lambda: self.new_item_edit_options(False))
+        self.ui.variant.addAction(edit_action)
+        edit_raw_action = QAction("Edit Raw JSON...", self.ui.variant)
+        edit_raw_action.triggered.connect(lambda: self.new_item_edit_options(False, True))
+        self.ui.variant.addAction(edit_raw_action)
+        remove_action = QAction("Remove", self.ui.variant)
+        remove_action.triggered.connect(self.remove_option)
+        self.ui.variant.addAction(remove_action)
+
         self.ui.item_type.setFocus()
 
     def update_item_info(self, name, data):
@@ -237,7 +249,7 @@ class ItemEdit():
         if self.item is not None:
             self.item["parameters"] = {}
 
-    def new_item_edit_options(self, new):
+    def new_item_edit_options(self, new, raw=False):
         """Edit the selected item option with custom dialog."""
 
         if new:
@@ -249,7 +261,7 @@ class ItemEdit():
 
         # this is for the qinputdialog stuff. can't set signals on them
         generic = False
-        if new:
+        if new or raw:
             # needs to be here or new opts get detected as string (?)
             dialog = ItemEditOptions(self.dialog, selected.option[0], selected.option[1])
             def get_option():

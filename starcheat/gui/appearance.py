@@ -12,6 +12,7 @@ import logging
 import assets, qt_appearance, qt_coloredit
 from config import Config
 
+
 def unpack_color_directives(data):
     unpack_dir = data.split("?replace;")
     directives = []
