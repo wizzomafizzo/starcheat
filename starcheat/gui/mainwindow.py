@@ -100,7 +100,7 @@ class MainWindow():
         def bag_context(widget, name):
             widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
-            item_edit = getattr(self, "new_" + b + "_item_edit")
+            item_edit = getattr(self, "new_" + name + "_item_edit")
             sortable = ("main_bag", "action_bar", "tile_bag")
             clearable = ("wieldable", "action_bar", "essentials")
 
@@ -126,19 +126,17 @@ class MainWindow():
                     widget.addAction(sort_action)
 
         # set up bag tables
-        self.last_bag = None
         bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
                 "action_bar", "tile_bag", "essentials", "mouse")
-        for b in bags:
-            logging.debug("Setting up %s bag", b)
-            item_edit = getattr(self, "new_" + b + "_item_edit")
-            getattr(self.ui, b).cellDoubleClicked.connect(item_edit)
-            getattr(self.ui, b).cellChanged.connect(self.set_edited)
-
-            bag_context(getattr(self.ui, b), b)
-
+        for bag in bags:
+            logging.debug("Setting up %s bag", bag)
+            item_edit = getattr(self, "new_" + bag + "_item_edit")
+            widget = getattr(self.ui, bag)
+            widget.cellDoubleClicked.connect(item_edit)
+            widget.cellChanged.connect(self.set_edited)
+            bag_context(getattr(self.ui, bag), bag)
             # TODO: still issues with drag drop between tables
-            getattr(self.ui, b).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
+            getattr(self.ui, bag).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
 
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.appearance_button.clicked.connect(self.new_appearance_dialog)
@@ -305,6 +303,7 @@ class MainWindow():
 
     def clear_held_slots(self):
         self.player.clear_held_slots()
+        self.set_edited()
         self.ui.statusbar.showMessage("All held items have been cleared", 3000)
 
     def new_blueprint_edit(self):
