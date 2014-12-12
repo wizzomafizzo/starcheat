@@ -11,24 +11,24 @@ from PIL.ImageQt import ImageQt
 import assets
 from config import Config
 
-def inv_icon(item_name):
+def inv_icon(item_name, item_data, assets):
     """Return a QPixmap object of the inventory icon of a given item (if possible)."""
-    assets_db_file = Config().read("assets_db")
-    starbound_folder = Config().read("starbound_folder")
-    db = assets.Assets(assets_db_file, starbound_folder)
-    icon_file = db.items().get_item_icon(item_name)
+    missing = QPixmap.fromImage(QImage.fromData(assets.items().missing_icon())).scaled(32, 32)
+    icon_file = assets.items().get_item_icon(item_name)
 
     if icon_file is None:
         try:
-            image_file = db.items().get_item_image(item_name)
+            image_file = assets.items().get_item_image(item_name)
+            image_file = assets.images().color_image(image_file, item_data)
             return QPixmap.fromImage(ImageQt(image_file)).scaledToHeight(64)
         except (TypeError, AttributeError):
-            return QPixmap.fromImage(QImage.fromData(db.items().missing_icon())).scaled(32, 32)
+            return missing
 
+    icon_file = assets.images().color_image(icon_file, item_data)
     try:
         return QPixmap.fromImage(ImageQt(icon_file)).scaled(32, 32)
     except AttributeError:
-        return QPixmap.fromImage(QImage.fromData(db.items().missing_icon())).scaled(32, 32)
+        return missing
 
 def preview_icon(race, gender):
     """Return an icon image for player race/gender previews."""
@@ -74,7 +74,7 @@ class ItemWidget(QTableWidgetItem):
 
         self.setToolTip(name + " (" + str(self.item["count"]) + ")")
 
-        icon = inv_icon(self.item["name"])
+        icon = inv_icon(self.item["name"], self.item["parameters"], assets)
         try:
             self.setIcon(QtGui.QIcon(icon))
         except TypeError:

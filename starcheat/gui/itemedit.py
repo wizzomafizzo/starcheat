@@ -166,10 +166,12 @@ class ItemEdit():
         self.ui.desc.setText(item_info)
 
         inv_icon_file = self.assets.items().get_item_icon(name)
+        inv_icon_file = self.assets.images().color_image(inv_icon_file, data)
         if inv_icon_file is not None:
             icon = QPixmap.fromImage(ImageQt(inv_icon_file))
         else:
             image_file = self.assets.items().get_item_image(name)
+            image_file = self.assets.images().color_image(image_file, data)
             if image_file is not None:
                 icon = QPixmap.fromImage(ImageQt(image_file))
             else:

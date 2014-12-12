@@ -608,7 +608,6 @@ class MainWindow():
             logging.exception("Unable to set stat %s", name)
 
     # these are used for connecting the item edit dialog to bag tables
-    # TODO: change to lamdas
     def new_main_bag_item_edit(self):
         self.new_item_edit(self.ui.main_bag)
     def new_tile_bag_item_edit(self):

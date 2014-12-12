@@ -400,6 +400,45 @@ class Images():
         data = self.assets.read(asset[0], asset[1], True)
         return Image.open(BytesIO(data)).convert("RGBA")
 
+    def color_image(self, image, item_data):
+        data_keys = item_data.keys()
+        new_image = image
+
+        def get_replace(img_str):
+            match = re.search("\?replace.+", img_str)
+            if match is not None:
+                return match.group()
+            else:
+                return None
+
+        if "directives" in data_keys:
+            replace = unpack_color_directives(item_data["directives"])
+            new_image = replace_colors(new_image, replace)
+        elif "colorOptions" in data_keys:
+            pass
+        elif "image" in data_keys:
+            replace = get_replace(item_data["image"])
+            if replace is not None:
+                replace = unpack_color_directives(replace)
+                new_image = replace_colors(new_image, replace)
+        elif "largeImage" in data_keys:
+            replace = get_replace(item_data["largeImage"])
+            if replace is not None:
+                replace = unpack_color_directives(replace)
+                new_image = replace_colors(new_image, replace)
+        elif "inventoryIcon" in data_keys:
+            replace = get_replace(item_data["inventoryIcon"])
+            if replace is not None:
+                replace = unpack_color_directives(replace)
+                new_image = replace_colors(new_image, replace)
+        elif "materialHueShift" in data_keys:
+            pass
+        elif "drawables" in data_keys:
+            pass
+
+        return new_image
+
+
 class Blueprints():
     def __init__(self, assets):
         self.assets = assets
@@ -518,6 +557,7 @@ class Items():
 
     def get_item_icon(self, name):
         """Return the path and spritesheet offset of a given item name."""
+        logging.debug("Loading %s icon", name)
         try:
             item = self.get_item(name)
             icon_file = item[0]["inventoryIcon"]
@@ -535,20 +575,26 @@ class Items():
             return None
 
         item_icon = Image.open(BytesIO(icon_data))
+        orig_size = item_icon.size
 
         icon_type = str(icon[1])
         if icon_type.startswith("chest"):
             item_icon = item_icon.crop((16, 0, 16+16, 16))
+            size = (16, 16)
         elif icon_type.startswith("pants"):
             item_icon = item_icon.crop((32, 0, 32+16, 16))
-        else:
+            size = (16, 16)
+        elif icon_type.startswith("back"):
+            item_icon = item_icon.crop((48, 0, 48+16, 16))
+            size = (16, 16)
+        elif icon_type.startswith("head"):
             item_icon = item_icon.crop((0, 0, 16, 16))
+            size = (16, 16)
+        else:
+            size = orig_size
 
-        inv_icon = Image.new("RGBA", (16,16))
+        inv_icon = Image.new("RGBA", size)
         inv_icon.paste(item_icon)
-
-        # if "directives" in item[0].keys():
-        #     inv_icon = replace_colors(inv_icon, unpack_color_directives(item[0]["directives"]))
 
         return inv_icon
 
