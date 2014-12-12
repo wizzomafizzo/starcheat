@@ -13,19 +13,34 @@ from config import Config
 def format_status_effects(data):
     info = "<b>Status Effects:</b><br>"
     for status in data:
-        if "amount" in status:
-            info += "%s (%s)<br>" % (status["kind"], str(status["amount"]))
+        if type(status) is str:
+            info += "%s<br>" % status
+        elif "amount" in status.keys():
+            info += "%s (%s)<br>" % (status["stat"], str(status["amount"]))
+        elif "effect" in status.keys():
+            info += "%s<br>" % status["effect"]
         else:
-            info += "%s<br>" % status["kind"]
+            info += "%s<br>" % status["stat"]
     return info
 
 def format_effects(data):
     info = "<b>Effects:</b><br>"
     for status in data[0]:
-        if "amount" in status:
-            info += "%s (%s)<br>" % (status["kind"], str(status["amount"]))
-        else:
-            info += "%s<br>" % status["kind"]
+        if type(status) is str:
+            info += "%s<br>" % status
+        elif type(status) is dict:
+            if "effect" in status.keys():
+                if "duration" in status.keys():
+                    info += "%s (%s)<br>" % (status["effect"], str(status["duration"]))
+                else:
+                    info += "%s<br>" % status["effect"]
+            # NOTE: old style effect, potentially remove later
+            elif "kind" in status.keys():
+                if "amount" in status.keys():
+                    info += "%s (%s)<br>" % (status["kind"], str(status["amount"]))
+                else:
+                    info += "%s<br>" % status["kind"]
+
     return info
 
 data_format = (
@@ -41,8 +56,8 @@ data_format = (
     ("description", "%s<br><br>"),
     ("inspectionKind", "<b>Type:</b> %s<br>"),
     ("rarity", "<b>Rarity:</b> %s<br><br>"),
-    #("statusEffects", format_status_effects),
-    #("effects", format_effects),
+    ("statusEffects", format_status_effects),
+    ("effects", format_effects),
     ("blockRadius", "<b>Mining Radius:</b> %s blocks")
 )
 
@@ -55,10 +70,13 @@ def generate_item_info(item_data):
 
     for fmt in data_format:
         if fmt[0] in item_data:
-            if type(fmt[1]) is str:
-                info += fmt[1] % str(item_data[fmt[0]])
-            else:
-                info += fmt[1](item_data[fmt[0]])
+            try:
+                if type(fmt[1]) is str:
+                    info += fmt[1] % str(item_data[fmt[0]])
+                else:
+                    info += fmt[1](item_data[fmt[0]])
+            except:
+                logging.exception("Error parsing %s key", fmt[0])
 
     return info
 
