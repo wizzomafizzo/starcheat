@@ -60,7 +60,9 @@ class ItemWidget(QTableWidgetItem):
             QTableWidgetItem.__init__(self)
             return
 
+        self.assets = assets
         self.item = item
+
         QTableWidgetItem.__init__(self, self.item["name"])
         self.setTextAlignment(QtCore.Qt.AlignCenter)
 

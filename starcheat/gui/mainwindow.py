@@ -5,6 +5,7 @@ Main application window for starcheat GUI
 import sys
 import logging
 import json
+import pprint
 
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
@@ -107,7 +108,7 @@ class MainWindow():
             widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
             item_edit = getattr(self, "new_" + name + "_item_edit")
-            sortable = ("main_bag", "action_bar", "tile_bag")
+            sortable = ("main_bag", "tile_bag")
             clearable = ("wieldable", "action_bar", "essentials")
 
             edit_action = QAction("Edit...", widget)
@@ -127,9 +128,12 @@ class MainWindow():
                     clear_action.triggered.connect(self.clear_held_slots)
                     widget.addAction(clear_action)
                 if name in sortable:
-                    sort_action = QAction("Sort Items...", widget)
-                    sort_action.setEnabled(False)
-                    widget.addAction(sort_action)
+                    sort_name = QAction("Sort By Name", widget)
+                    sort_name.triggered.connect(lambda: self.sort_bag(name, "name"))
+                    widget.addAction(sort_name)
+                    sort_type = QAction("Sort By Type", widget)
+                    sort_type.triggered.connect(lambda: self.sort_bag(name, "category"))
+                    widget.addAction(sort_type)
 
         # set up bag tables
         bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
@@ -306,6 +310,14 @@ class MainWindow():
 
     def set_edited(self):
         self.window.setWindowModified(True)
+
+    def sort_bag(self, bag_name, sort_by):
+        bag = getattr(self.player, "get_" + bag_name)()
+        sorted_bag = self.assets.player().sort_bag(bag, sort_by)
+        getattr(self.player, "set_" + bag_name)(sorted_bag)
+        self.ui.statusbar.showMessage("Sorting by " + sort_by + "...", 3000)
+        self.update()
+        self.ui.statusbar.clearMessage()
 
     def clear_held_slots(self):
         self.player.clear_held_slots()

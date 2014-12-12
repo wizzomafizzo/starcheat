@@ -538,6 +538,12 @@ class Items():
         c.execute("select * from assets where type = 'item' order by name collate nocase")
         return c.fetchall()
 
+    def get_item_index(self, name):
+        """Return raw item index entry."""
+        c = self.assets.db.cursor()
+        c.execute("select * from assets where type = 'item' and name = ?", (name,))
+        return c.fetchone()
+
     def get_item(self, name):
         """
         Find the first hit in the DB for a given item name, return the
@@ -1158,7 +1164,6 @@ class Species():
             return
 
 
-# TODO: move to save.py
 class Player():
     def __init__(self, assets):
         self.assets = assets
@@ -1176,6 +1181,24 @@ class Player():
         for key in self.mode_types.keys():
             if name == self.mode_types[key]:
                 return key
+
+    def sort_bag(self, bag, sort_by):
+        def get_category(slot):
+            name = slot["__content"]["name"]
+            return self.assets.items().get_item_index(name)[3]
+
+        sort_map = {
+            "name": lambda x: x["__content"]["name"],
+            "count": lambda x: x["__content"]["count"],
+            "category": get_category
+        }
+
+        filtered = [x for x in bag if x is not None]
+        sorted_bag = sorted(filtered, key=sort_map[sort_by])
+        # TODO: only handles main/tile bags atm
+        sorted_bag += [None] * (40 - len(sorted_bag))
+
+        return sorted_bag
 
 
 class Monsters():
