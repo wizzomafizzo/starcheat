@@ -17,7 +17,7 @@ import saves, assets, qt_mainwindow
 from config import Config
 from gui.common import ItemWidget, empty_slot
 from gui.utils import CharacterSelectDialog, OptionsDialog, AboutDialog, ModsDialog
-from gui.utils import save_modified_dialog, new_setup_dialog
+from gui.utils import save_modified_dialog, new_setup_dialog, check_index_valid
 from gui.itemedit import ItemEdit, ImageBrowser
 from gui.blueprints import BlueprintLib
 from gui.itembrowser import ItemBrowser
@@ -58,9 +58,14 @@ class MainWindow():
 
         # launch first setup if we need to
         if not new_setup_dialog(self.window):
-            logging.warning("Config/index creation failed")
+            logging.error("Config/index creation failed")
             return
         logging.info("Starbound folder: %s", Config().read("starbound_folder"))
+
+        logging.info("Checking assets hash")
+        if not check_index_valid(self.window):
+            logging.error("Index creation failed")
+            return
 
         self.filename = None
 
@@ -97,6 +102,7 @@ class MainWindow():
         for mode in self.assets.player().mode_types.values():
             self.ui.game_mode.addItem(mode)
 
+        # TODO: move to outside method
         def bag_context(widget, name):
             widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 

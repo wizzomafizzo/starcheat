@@ -2,7 +2,7 @@
 Utility dialogs for starcheat itself
 """
 
-import os, sys, platform, subprocess, shutil
+import os, sys, platform, subprocess, shutil, hashlib
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from PyQt5.QtWidgets import QListWidgetItem, QProgressDialog
 from PyQt5 import QtGui, QtCore
@@ -15,28 +15,35 @@ from gui.common import preview_icon
 # TODO: there are way too many html templates and message text in here now
 # it should all be moved to a templates file or something
 
-# TODO: we can use this for rebuild db but have to skip the sys.exit and
-# file remove calls
+def make_pak_hash():
+    vanilla = os.path.join(Config().read("assets_folder"), "packed.pak")
+    mods = os.path.join(Config().read("starbound_folder"), "mods")
+    pak_list = [vanilla]
+    timestamps = []
+
+    for root, dirs, files in os.walk(mods):
+        for f in files:
+            if f.endswith(".pak"):
+                pak_list.append(os.path.join(root, f))
+
+    for pak in pak_list:
+        timestamps.append(str(os.stat(pak).st_mtime))
+
+    final_hash = hashlib.md5()
+    final_hash.update("_".join(timestamps).encode())
+
+    return final_hash.hexdigest()
+
 def build_assets_db(parent):
     assets_db_file = Config().read("assets_db")
     starbound_folder = Config().read("starbound_folder")
     assets_db = assets.Assets(assets_db_file, starbound_folder)
 
-    missing_assets_text = """<html><body>
-    <p>starcheat couldn't find any Starbound assets. You should double check:</p>
-    <ol>
-    <li>You selected the right Starbound folder.</li>
-    <li>The assets you want to use have been unpacked. Instructions are
-    <a href="https://github.com/wizzomafizzo/starcheat#unpacking-starbound-assets">here</a>
-    and this includes vanilla Starbound assets.</li>
-    </ol>
-    <p>Once that's done, try restart starcheat to run the setup again.</p>
-    </body></html>"""
-
     def bad_asset_dialog():
         dialog = QMessageBox()
-        dialog.setText("Unable to index assets.")
-        dialog.setInformativeText(missing_assets_text)
+        dialog.setWindowTitle("No Assets Found")
+        dialog.setText("Unable to index Starbound assets.")
+        dialog.setInformativeText("Check that the Starbound folder was set correctly.")
         dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
         assets_db.db.close()
@@ -46,8 +53,9 @@ def build_assets_db(parent):
     asset_files = assets_db.find_assets()
     total = 0
     progress = QProgressDialog("Indexing Starbound assets...",
-                               "Cancel", 0, len(asset_files),
+                               "Abort", 0, len(asset_files),
                                parent)
+    progress.setWindowTitle("Indexing...")
     progress.setWindowModality(QtCore.Qt.ApplicationModal)
     progress.forceShow()
 
@@ -64,11 +72,32 @@ def build_assets_db(parent):
         bad_asset_dialog()
         return False
     else:
+        Config().set("pak_hash", make_pak_hash())
+        return True
+
+def check_index_valid(parent):
+    old_hash = Config().read("pak_hash")
+    new_hash = make_pak_hash()
+    if old_hash != new_hash:
+        logging.info("Hashes don't match, updating index")
+        dialog = QMessageBox(parent)
+        dialog.setWindowTitle("Assets Out-of-date")
+        dialog.setText("Starbound assets have been changed.")
+        dialog.setInformativeText("Rebuild the starcheat assets index?")
+        dialog.setIcon(QMessageBox.Question)
+        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        answer = dialog.exec()
+        if answer == QMessageBox.Yes:
+            return build_assets_db(parent)
+        else:
+            return True
+    else:
         return True
 
 def save_modified_dialog(parent):
     """Display a prompt asking user what to do about a modified file. Return button clicked."""
     dialog = QMessageBox(parent)
+    dialog.setWindowTitle("Save Changes?")
     dialog.setText("This player has been modified.")
     dialog.setInformativeText("Do you want to save your changes?")
     dialog.setStandardButtons(QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard)
@@ -79,7 +108,9 @@ def save_modified_dialog(parent):
 def select_starbound_folder_dialog():
     folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
     while not os.path.isfile(os.path.join(folder, "starbound.config")):
+        # TODO: parent?
         dialog = QMessageBox()
+        dialog.setWindowTitle("Wrong Starbound Folder")
         dialog.setText("This is not your Starbound folder!")
         dialog.setInformativeText("Please try again and select your Starbound folder, which should contain the starbound.config file.")
         dialog.setIcon(QMessageBox.Warning)
@@ -87,6 +118,7 @@ def select_starbound_folder_dialog():
         answer = dialog.exec()
         if answer == QMessageBox.Cancel:
             dialog = QMessageBox()
+            dialog.setWindowTitle("Starbound Not Installed")
             dialog.setIcon(QMessageBox.Critical)
             dialog.setText("starcheat needs Starbound installed to work.")
             dialog.exec()
@@ -104,6 +136,7 @@ def new_setup_dialog(parent):
         if not (Config().has_key("config_version") and int(Config().read("config_version")) == Config().CONFIG_VERSION):
             logging.info("rebuild config and assets_db (config_version mismatch)")
             dialog = QMessageBox()
+            dialog.setWindowTitle("Config Out-of-date")
             dialog.setText("Your starcheat settings are outdated.")
             dialog.setInformativeText("A new config file and assets index will be created...")
             dialog.setIcon(QMessageBox.Warning)
@@ -116,6 +149,7 @@ def new_setup_dialog(parent):
     starbound_folder = Config().detect_starbound_folder()
     if starbound_folder == "":
         dialog = QMessageBox()
+        dialog.setWindowTitle("Starbound Not Found")
         dialog.setText("Unable to detect the main Starbound folder.")
         dialog.setInformativeText("Please select it in the next dialog.")
         dialog.setIcon(QMessageBox.Warning)
@@ -123,6 +157,7 @@ def new_setup_dialog(parent):
         starbound_folder = select_starbound_folder_dialog()
     else:
         dialog = QMessageBox()
+        dialog.setWindowTitle("Starbound Folder Found")
         dialog.setText("Detected the following folder as the location of Starbound. Is this correct?")
         dialog.setInformativeText(starbound_folder)
         dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
@@ -230,7 +265,8 @@ class OptionsDialog():
         self.write()
 
         def bad_asset_dialog():
-            dialog = QMessageBox()
+            dialog = QMessageBox(self.dialog)
+            dialog.setWindowTitle("No Starbound Assets")
             dialog.setText("No Starbound assets could be found.")
             dialog.setInformativeText("The Starbound folder option might be set wrong.")
             dialog.setIcon(QMessageBox.Critical)
@@ -249,7 +285,8 @@ class OptionsDialog():
         if not rebuild or total == 0:
             bad_asset_dialog()
         else:
-            dialog = QMessageBox()
+            dialog = QMessageBox(self.dialog)
+            dialog.setWindowTitle("Finished Indexing")
             dialog.setText("Finished indexing Starbound assets.")
             dialog.setInformativeText("Found %s assets." % total)
             dialog.setIcon(QMessageBox.Information)
@@ -321,6 +358,7 @@ class CharacterSelectDialog():
         # quit if there are no players
         if len(self.players) == 0:
             dialog = QMessageBox(self.dialog)
+            dialog.setWindowTitle("No Player Files")
             dialog.setText("No player files detected. Reselect the Starbound folder?")
             dialog.setInformativeText(self.player_folder)
             dialog.setIcon(QMessageBox.Warning)
@@ -331,6 +369,7 @@ class CharacterSelectDialog():
                 Config().remove_config()
                 new_setup_dialog(self.dialog)
                 dialog = QMessageBox(self.dialog)
+                dialog.setWindowTitle("Restart starcheat")
                 dialog.setText("Please restart starcheat to see changes.")
                 dialog.setIcon(QMessageBox.Information)
                 dialog.exec()
@@ -345,6 +384,7 @@ class CharacterSelectDialog():
 
         # are you sure?
         dialog = QMessageBox(self.dialog)
+        dialog.setWindowTitle("Trash Player")
         dialog.setText("Trash this player?")
         dialog.setInformativeText("Player files will be moved to: %s" % self.backup_folder)
         dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)

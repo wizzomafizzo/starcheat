@@ -17,7 +17,7 @@ if not os.path.isdir(config_folder):
     os.mkdir(config_folder)
 
 STARCHEAT_VERSION = "0.16 (Enraged Koala)"
-CONFIG_VERSION = 8
+CONFIG_VERSION = 9
 ini_file = os.path.join(config_folder, "starcheat.ini")
 
 class Config():
@@ -48,6 +48,7 @@ class Config():
         assets_folder = os.path.join(starbound_folder, "assets")
         player_folder = os.path.join(starbound_folder, "player")
         backup_folder = os.path.join(config_folder, "backups")
+        pak_hash = "none"
         make_backups = "no"
         update_timestamps = "no"
         assets_db = os.path.join(config_folder, "assets.db")
@@ -57,6 +58,7 @@ class Config():
             "assets_folder": assets_folder,
             "player_folder": player_folder,
             "backup_folder": backup_folder,
+            "pak_hash": pak_hash,
             "assets_db": assets_db,
             "update_timestamps": update_timestamps,
             "config_version": CONFIG_VERSION
