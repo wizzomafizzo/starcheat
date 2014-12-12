@@ -133,7 +133,10 @@ def new_setup_dialog(parent):
     logging.info("First setup dialog")
 
     if os.path.isfile(Config().ini_file):
-        if not (Config().has_key("config_version") and int(Config().read("config_version")) == Config().CONFIG_VERSION):
+        config_valid = (Config().has_key("config_version") and
+                        int(Config().read("config_version")) == Config().CONFIG_VERSION)
+
+        if not config_valid:
             logging.info("rebuild config and assets_db (config_version mismatch)")
             dialog = QMessageBox()
             dialog.setWindowTitle("Config Out-of-date")
@@ -142,7 +145,12 @@ def new_setup_dialog(parent):
             dialog.setIcon(QMessageBox.Warning)
             dialog.exec()
         else:
-            return True
+            vanilla_pak = os.path.join(Config().read("starbound_folder"), "assets", "packed.pak")
+            if os.path.isfile(vanilla_pak):
+                return True
+            else:
+                logging.error("No vanilla pak, Starbound folder may be wrong")
+
         os.remove(Config().ini_file)
 
     # Starbound folder settings
