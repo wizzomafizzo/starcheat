@@ -329,7 +329,7 @@ variant_types = (
 )
 
 
-def new_item_data(name, count, data={}):
+def new_item_data(name, count=1, data={}):
     if name is None:
         return None
 
@@ -342,7 +342,7 @@ def new_item_data(name, count, data={}):
     return item
 
 
-def new_item(name, count, data={}):
+def new_item(name, count=1, data={}):
     if name is None:
         return None
 
@@ -353,6 +353,10 @@ def new_item(name, count, data={}):
     }
 
     return item
+
+
+def empty_slot():
+    return new_item_data("")
 
 
 class WrongSaveVer(Exception):

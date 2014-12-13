@@ -19,7 +19,7 @@ from config import Config
 from gui.common import ItemWidget, empty_slot
 from gui.utils import CharacterSelectDialog, OptionsDialog, AboutDialog, ModsDialog
 from gui.utils import save_modified_dialog, new_setup_dialog, check_index_valid
-from gui.itemedit import ItemEdit, ImageBrowser
+from gui.itemedit import ItemEdit, ImageBrowser, import_json
 from gui.blueprints import BlueprintLib
 from gui.itembrowser import ItemBrowser
 from gui.appearance import Appearance
@@ -103,53 +103,12 @@ class MainWindow():
         for mode in self.assets.player().mode_types.values():
             self.ui.game_mode.addItem(mode)
 
-        # TODO: move to outside method
-        def bag_context(widget, name):
-            widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-
-            item_edit = getattr(self, "new_" + name + "_item_edit")
-            sortable = ("main_bag", "tile_bag")
-            clearable = ("wieldable", "action_bar", "essentials")
-
-            edit_action = QAction("Edit...", widget)
-            edit_action.triggered.connect(item_edit)
-            widget.addAction(edit_action)
-            import_json = QAction("Import...", widget)
-            #import_json.triggered.connect(item_edit)
-            widget.addAction(import_json)
-            trash_action = QAction("Trash", widget)
-            trash_slot = lambda: self.trash_slot(self.window, widget, True)
-            trash_action.triggered.connect(trash_slot)
-            widget.addAction(trash_action)
-
-            if name in sortable or name in clearable:
-                sep_action = QAction(widget)
-                sep_action.setSeparator(True)
-                widget.addAction(sep_action)
-                if name in clearable:
-                    clear_action = QAction("Clear Held Items", widget)
-                    clear_action.triggered.connect(self.clear_held_slots)
-                    widget.addAction(clear_action)
-                if name in sortable:
-                    sort_name = QAction("Sort By Name", widget)
-                    sort_name.triggered.connect(lambda: self.sort_bag(name, "name"))
-                    widget.addAction(sort_name)
-                    sort_type = QAction("Sort By Type", widget)
-                    sort_type.triggered.connect(lambda: self.sort_bag(name, "category"))
-                    widget.addAction(sort_type)
-
         # set up bag tables
         bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
                 "action_bar", "tile_bag", "essentials", "mouse")
         for bag in bags:
             logging.debug("Setting up %s bag", bag)
-            item_edit = getattr(self, "new_" + bag + "_item_edit")
-            widget = getattr(self.ui, bag)
-            widget.cellDoubleClicked.connect(item_edit)
-            widget.cellChanged.connect(self.set_edited)
-            bag_context(getattr(self.ui, bag), bag)
-            # TODO: still issues with drag drop between tables
-            getattr(self.ui, bag).setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
+            self.bag_setup(getattr(self.ui, bag), bag)
 
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.appearance_button.clicked.connect(self.new_appearance_dialog)
@@ -242,6 +201,46 @@ class MainWindow():
 
         self.update_player_preview()
 
+    def bag_setup(self, widget, name):
+        widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        # TODO: still issues with drag drop between tables
+        widget.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
+        widget.cellChanged.connect(self.set_edited)
+
+        item_edit = getattr(self, "new_" + name + "_item_edit")
+
+        widget.cellDoubleClicked.connect(lambda: item_edit(False))
+
+        sortable = ("main_bag", "tile_bag")
+        clearable = ("wieldable", "action_bar", "essentials")
+
+        edit_action = QAction("Edit...", widget)
+        edit_action.triggered.connect(lambda: item_edit(False))
+        widget.addAction(edit_action)
+        import_json = QAction("Import...", widget)
+        import_json.triggered.connect(lambda: item_edit(True))
+        widget.addAction(import_json)
+        trash_action = QAction("Trash", widget)
+        trash_slot = lambda: self.trash_slot(self.window, widget, True)
+        trash_action.triggered.connect(trash_slot)
+        widget.addAction(trash_action)
+
+        if name in sortable or name in clearable:
+            sep_action = QAction(widget)
+            sep_action.setSeparator(True)
+            widget.addAction(sep_action)
+            if name in clearable:
+                clear_action = QAction("Clear Held Items", widget)
+                clear_action.triggered.connect(self.clear_held_slots)
+                widget.addAction(clear_action)
+            if name in sortable:
+                sort_name = QAction("Sort By Name", widget)
+                sort_name.triggered.connect(lambda: self.sort_bag(name, "name"))
+                widget.addAction(sort_name)
+                sort_type = QAction("Sort By Type", widget)
+                sort_type.triggered.connect(lambda: self.sort_bag(name, "category"))
+                widget.addAction(sort_type)
+
     def save(self):
         """Update internal player dict with GUI values and export to file."""
         logging.info("Saving player file %s", self.player.filename)
@@ -253,22 +252,29 @@ class MainWindow():
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)
         self.window.setWindowModified(False)
 
-    def new_item_edit(self, bag):
+    def new_item_edit(self, bag, do_import):
         """Display a new item edit dialog using the select cell in a given bag."""
         logging.debug("New item edit dialog")
         row = bag.currentRow()
         column = bag.currentColumn()
         current = bag.currentItem()
-        # TODO: move to separate function?
-        item = {
-            "name": "",
-            "count": 1,
-            "parameters": {}
-        }
+        item = saves.empty_slot()
+        valid_slot = (type(current) is not QTableWidgetItem and
+                      current is not None and
+                      current.item is not None)
+
+        if do_import:
+            imported = import_json(self.window)
+            if imported == False:
+                self.ui.statusbar.showMessage("Error importing item, see starcheat log for details", 3000)
+                return
+            elif imported is None:
+                return
+            else:
+                item = imported
+
         # cells don't retain ItemSlot widget when they've been dragged away
-        if type(current) is QTableWidgetItem or current.item is None:
-            pass
-        else:
+        if valid_slot:
             item.update(current.item)
 
         item_edit = ItemEdit(self.window, item,
@@ -423,7 +429,8 @@ class MainWindow():
         """Save a copy of the current player file to another location.
         Doesn't change the current filename."""
         filename = QFileDialog.getSaveFileName(self.window,
-                                               "Export Save File As")
+                                               "Export Save File As",
+                                               filter="Player (*.player);;All Files (*)")
         if filename[0] != "":
             self.set_bags()
             self.player.export_save(filename[0])
@@ -436,7 +443,8 @@ class MainWindow():
         json_data = json.dumps(entity, sort_keys=True,
                                indent=4, separators=(',', ': '))
         filename = QFileDialog.getSaveFileName(self.window,
-                                               "Export JSON File As")
+                                               "Export JSON File As",
+                                               filter="JSON (*.json);;All Files (*)")
         if filename[0] != "":
             json_file = open(filename[0], "w")
             json_file.write(json_data)
@@ -446,7 +454,8 @@ class MainWindow():
     def import_json(self):
         """Import an exported JSON player entity and merge/update with open player."""
         filename = QFileDialog.getOpenFileName(self.window,
-                                               "Import JSON Player File")
+                                               "Import JSON Player File",
+                                               filter="JSON (*.json);;All Files (*)")
 
         if filename[0] == "":
             logging.debug("No player file selected to import")
@@ -632,23 +641,23 @@ class MainWindow():
             logging.exception("Unable to set stat %s", name)
 
     # these are used for connecting the item edit dialog to bag tables
-    def new_main_bag_item_edit(self):
-        self.new_item_edit(self.ui.main_bag)
-    def new_tile_bag_item_edit(self):
-        self.new_item_edit(self.ui.tile_bag)
-    def new_action_bar_item_edit(self):
-        self.new_item_edit(self.ui.action_bar)
-    def new_head_item_edit(self):
-        self.new_item_edit(self.ui.head)
-    def new_chest_item_edit(self):
-        self.new_item_edit(self.ui.chest)
-    def new_legs_item_edit(self):
-        self.new_item_edit(self.ui.legs)
-    def new_back_item_edit(self):
-        self.new_item_edit(self.ui.back)
-    def new_wieldable_item_edit(self):
-        self.new_item_edit(self.ui.wieldable)
-    def new_essentials_item_edit(self):
-        self.new_item_edit(self.ui.essentials)
-    def new_mouse_item_edit(self):
-        self.new_item_edit(self.ui.mouse)
+    def new_main_bag_item_edit(self, do_import):
+        self.new_item_edit(self.ui.main_bag, do_import)
+    def new_tile_bag_item_edit(self, do_import):
+        self.new_item_edit(self.ui.tile_bag, do_import)
+    def new_action_bar_item_edit(self, do_import):
+        self.new_item_edit(self.ui.action_bar, do_import)
+    def new_head_item_edit(self, do_import):
+        self.new_item_edit(self.ui.head, do_import)
+    def new_chest_item_edit(self, do_import):
+        self.new_item_edit(self.ui.chest, do_import)
+    def new_legs_item_edit(self, do_import):
+        self.new_item_edit(self.ui.legs, do_import)
+    def new_back_item_edit(self, do_import):
+        self.new_item_edit(self.ui.back, do_import)
+    def new_wieldable_item_edit(self, do_import):
+        self.new_item_edit(self.ui.wieldable, do_import)
+    def new_essentials_item_edit(self, do_import):
+        self.new_item_edit(self.ui.essentials, do_import)
+    def new_mouse_item_edit(self, do_import):
+        self.new_item_edit(self.ui.mouse, do_import)

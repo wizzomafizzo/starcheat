@@ -10,7 +10,7 @@ Qt item edit dialog
 # we just wanna pull in all the default values of an item
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox, QMessageBox
 from PyQt5.QtWidgets import QInputDialog, QListWidgetItem, QFileDialog, QAction
 from PyQt5.QtGui import QPixmap, QImage
 from PIL.ImageQt import ImageQt
@@ -23,6 +23,39 @@ import qt_imagebrowser
 from gui.common import inv_icon, empty_slot
 from gui.itembrowser import ItemBrowser, generate_item_info
 from config import Config
+
+
+def import_json(parent):
+    filename = QFileDialog.getOpenFileName(parent,
+                                           "Import Item File",
+                                           filter="JSON (*.json);;All Files (*)")
+
+    if filename[0] == "":
+        return None
+
+    def parse():
+        try:
+            item_data = json.load(open(filename[0], "r"))
+        except:
+            logging.exception("Error parsing item: %s", filename[0])
+            return False
+        if "name" not in item_data:
+            return False
+        if "count" not in item_data:
+            item_data["count"] = 1
+        if "data" not in item_data:
+            item_data["parameters"] = {}
+        return item_data
+
+    item = parse()
+    if not item:
+        logging.warning("Invalid item file: %s", filename[0])
+        return False
+    else:
+        return saves.new_item_data(item["name"],
+                                   item["count"],
+                                   item["parameters"])
+
 
 class ItemEditOptions():
     def __init__(self, parent, key, value):
@@ -142,7 +175,6 @@ class ItemEdit():
         self.ui.item_type.setFocus()
 
     def launch(self):
-        print(self.item)
         if self.item["name"] == "":
             # empty slot
             self.new_item_browser()
@@ -233,9 +265,6 @@ class ItemEdit():
             category = re.search("\..+$", item[1])
             is_generated = (category is not None and
                             category.group()[1:] in generated_item.keys())
-            print(self.item)
-            print(item)
-            print(is_generated)
             if is_generated:
                 name = category.group()[1:]
                 self.ui.item_type.setText(name)
@@ -368,35 +397,27 @@ class ItemEdit():
         json_data = json.dumps(self.item, sort_keys=True,
                                indent=4, separators=(',', ': '))
         filename = QFileDialog.getSaveFileName(self.dialog,
-                                               "Export Item As")
+                                               "Export Item As",
+                                               filter="JSON (*.json);;All Files (*)")
         if filename[0] != "":
             json_file = open(filename[0], "w")
             json_file.write(json_data)
             json_file.close()
 
     def import_item(self):
-        filename = QFileDialog.getOpenFileName(self.dialog,
-                                               "Import Item File")
-        def parse():
-            try:
-                item_data = json.load(open(filename[0], "r"))
-            except:
-                logging.exception("Error parsing item: %s", filename[0])
-                return False
-            if "name" not in item_data:
-                return False
-            if "count" not in item_data:
-                item_data["count"] = 1
-            if "data" not in item_data:
-                item_data["parameters"] = {}
-            return item_data
-
-        item = parse()
-        if not item:
-            logging.warning("Invalid item file: %s", filename[0])
-            return
+        item = import_json(self.dialog)
+        if item == False:
+            dialog = QMessageBox(self.dialog)
+            dialog.setWindowTitle("Import Error")
+            dialog.setText("Could not import requested item file.")
+            dialog.setInformativeText("See starcheat log for more details.")
+            dialog.setStandardButtons(QMessageBox.Close)
+            dialog.setIcon(QMessageBox.Critical)
+            dialog.exec()
+        elif item is None:
+            pass
         else:
             self.ui.item_type.setText(item["name"])
+            self.ui.count.setValue(item["count"])
             self.item = item
-            self.ui.count.setValue(self.item["count"])
             self.update()
