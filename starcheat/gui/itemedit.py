@@ -14,7 +14,9 @@ from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 from PyQt5.QtWidgets import QInputDialog, QListWidgetItem, QFileDialog, QAction
 from PyQt5.QtGui import QPixmap, QImage
 from PIL.ImageQt import ImageQt
+
 import json, copy, logging
+import re
 
 import assets, qt_itemedit, qt_itemeditoptions, saves
 import qt_imagebrowser
@@ -63,6 +65,9 @@ class ItemEditOptions():
             # this would be nicer if it just disabled the save button
             self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Cancel)
 
+    def get_option(self):
+        return self.ui.name.text(), json.loads(self.ui.options.toPlainText())
+
 class ImageBrowser():
     def __init__(self, parent, assets):
         self.dialog = QDialog(parent)
@@ -106,38 +111,20 @@ class ItemOptionWidget(QTableWidgetItem):
         self.setToolTip(str(value))
 
 class ItemEdit():
-    def __init__(self, parent, item, player, browser_category="<all>"):
+    def __init__(self, parent, item, player, assets, browser_category="<all>"):
         """Takes an item widget and displays an edit dialog for it."""
         self.dialog = QDialog(parent)
         self.ui = qt_itemedit.Ui_Dialog()
         self.ui.setupUi(self.dialog)
 
-        assets_db_file = Config().read("assets_db")
-        starbound_folder = Config().read("starbound_folder")
-        self.assets = assets.Assets(assets_db_file, starbound_folder)
-
+        self.assets = assets
         self.player = player
 
-        self.item_browser = None
         self.remember_browser = browser_category
-        self.item = copy.deepcopy(item)
-
-        if self.item["name"] != "":
-            # set name text box
-            self.ui.item_type.setText(self.item["name"])
-            # set item count spinbox
-            self.ui.count.setValue(int(self.item["count"]))
-            # set up variant table
-            self.populate_options()
-            self.update_item_info(self.item["name"], self.item["parameters"])
-        else:
-            # empty slot
-            self.new_item_browser()
-            self.update_item()
+        self.item = item
 
         # set up signals
         self.ui.load_button.clicked.connect(self.new_item_browser)
-        self.ui.item_type.textChanged.connect(self.update_item)
         self.ui.variant.itemDoubleClicked.connect(lambda: self.new_item_edit_options(False))
         self.ui.max_button.clicked.connect(self.max_count)
         self.ui.add_option_button.clicked.connect(lambda: self.new_item_edit_options(True))
@@ -146,18 +133,40 @@ class ItemEdit():
         self.ui.export_button.clicked.connect(self.export_item)
         self.ui.import_button.clicked.connect(self.import_item)
 
+        self.make_context_menu()
+        self.ui.item_type.setFocus()
+
+    def launch(self):
+        print(self.item)
+        if self.item["name"] == "":
+            # empty slot
+            self.new_item_browser()
+            if self.ui.item_type.text() == "":
+                return False
+        else:
+            self.ui.item_type.setText(self.item["name"])
+            self.ui.count.setValue(int(self.item["count"]))
+            self.update()
+        return True
+
+    def update(self):
+        self.populate_options()
+        self.update_item_info(self.item["name"], self.item["parameters"])
+
+    def make_context_menu(self):
         self.ui.variant.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
         edit_action = QAction("Edit...", self.ui.variant)
         edit_action.triggered.connect(lambda: self.new_item_edit_options(False))
         self.ui.variant.addAction(edit_action)
+
         edit_raw_action = QAction("Edit Raw JSON...", self.ui.variant)
         edit_raw_action.triggered.connect(lambda: self.new_item_edit_options(False, True))
         self.ui.variant.addAction(edit_raw_action)
+
         remove_action = QAction("Remove", self.ui.variant)
         remove_action.triggered.connect(self.remove_option)
         self.ui.variant.addAction(remove_action)
-
-        self.ui.item_type.setFocus()
 
     def update_item_info(self, name, data):
         item_info = "<html><body>"
@@ -165,77 +174,79 @@ class ItemEdit():
         item_info += "</body></html>"
         self.ui.desc.setText(item_info)
 
-        inv_icon_file = self.assets.items().get_item_icon(name)
-        inv_icon_file = self.assets.images().color_image(inv_icon_file, data)
-        if inv_icon_file is not None:
-            icon = QPixmap.fromImage(ImageQt(inv_icon_file))
+        inv_icon = self.assets.items().get_item_icon(name)
+        image = self.assets.items().get_item_image(name)
+
+        if inv_icon is not None:
+            inv_icon = self.assets.images().color_image(inv_icon, data)
+            icon = QPixmap.fromImage(ImageQt(inv_icon))
+        elif image is not None:
+            image = self.assets.images().color_image(image, data)
+            icon = QPixmap.fromImage(ImageQt(image))
         else:
-            image_file = self.assets.items().get_item_image(name)
-            image_file = self.assets.images().color_image(image_file, data)
-            if image_file is not None:
-                icon = QPixmap.fromImage(ImageQt(image_file))
-            else:
-                icon = QPixmap.fromImage(QImage.fromData(self.assets.items().missing_icon()))
-        # last ditch
-        try:
-            icon = self.scale_image_icon(icon,64,64)
-            self.ui.icon.setPixmap(icon)
-        except TypeError:
-            logging.warning("Unable to load item image: "+name)
-            self.ui.icon.setPixmap(QPixmap())
+            logging.warning("Unable to load image for %s", name)
+            icon = QPixmap.fromImage(QImage.fromData(self.assets.items().missing_icon()))
+
+        icon = self.scale_image_icon(icon, 64, 64)
+        self.ui.icon.setPixmap(icon)
 
     def scale_image_icon(self, qpix, width, height):
-        """Scales the image icon to best fit in the width and height bounds given. Preserves aspect ratio."""
+        """Scales the image icon to best fit in the width and height bounds
+        given. Preserves aspect ratio."""
         scaled_qpix = qpix
         src_width = qpix.width()
         src_height = qpix.height()
 
-        if src_width == src_height and width == height: #square image and square bounds
+        if src_width == src_height and width == height:
+            # square image and square bounds
             scaled_qpix = qpix.scaled(width,height)
-        elif src_width > src_height: #wider than tall needs width scaling to fit
+        elif src_width > src_height:
+            # wider than tall needs width scaling to fit
             scaled_qpix = qpix.scaledToWidth(width)
-        elif src_height > src_width: #taller than wide needs height scaling to fit
+        elif src_height > src_width:
+            # taller than wide needs height scaling to fit
             scaled_qpix = qpix.scaledToHeight(height)
+
         return scaled_qpix
 
     def update_item(self):
         """Update main item view with current item browser data."""
         name = self.ui.item_type.text()
+        item = self.assets.items().get_item(name)
+        uuid = self.player.get_uuid()
 
-        # TODO: i guess eventually we're gonna need like.. some sort of generic
-        # generate item function
-        try:
-            item = self.assets.items().get_item(name)
-            if item[1].endswith("generatedgun"):
-                options = self.assets.items().generate_gun(item)
-                name = options["itemName"]
-            elif item[1].endswith("generatedsword"):
-                options = self.assets.items().generate_sword(item)
-                name = options["itemName"]
-            elif item[1].endswith("generatedshield"):
-                options = self.assets.items().generate_shield(item)
-                name = options["itemName"]
-            elif item[1].endswith("sapling"):
-                options = self.assets.items().generate_sapling(item)
-            elif name == "filledcapturepod":
-                options = self.assets.items().generate_filledcapturepod(item,
-                                                                        self.player.get_uuid())
+        generated_item = {
+            "generatedgun": lambda: self.assets.items().generate_gun(item),
+            "generatedsword": lambda: self.assets.items().generate_sword(item),
+            "generatedshield": lambda: self.assets.items().generate_shield(item),
+            "sapling": lambda: self.assets.items().generate_sapling(item),
+            "filledcapturepod": lambda: self.assets.items().generate_filledcapturepod(item,
+                                                                                      uuid)
+        }
+
+        if item is not None:
+            category = re.search("\..+$", item[1])
+            is_generated = (category is not None and
+                            category.group()[1:] in generated_item.keys())
+            print(self.item)
+            print(item)
+            print(is_generated)
+            if is_generated:
+                name = category.group()[1:]
+                self.ui.item_type.setText(name)
+                generated = generated_item[name]()
+                self.item = saves.new_item_data(name, 1, generated)
             else:
-                options = item[0]
-        except TypeError:
-            self.item = empty_slot().item
+                self.item = saves.new_item_data(name, 1, item[0])
+
+            self.ui.count.setValue(1)
+            self.update()
+            return True
+        else:
+            self.item = saves.new_item_data("", 1)
             self.ui.desc.setText("<html><body><strong>Empty Slot</strong></body></html>")
-            self.ui.icon.setPixmap(QPixmap())
-            self.clear_item_options()
-            return
-
-        self.ui.item_type.setText(name)
-
-        self.item = saves.new_item_data(name, 1, options)
-
-        self.ui.count.setValue(1)
-        self.update_item_info(name, options)
-        self.populate_options()
+            self.update()
+            return False
 
     def get_item(self):
         """Return an ItemWidget of the currently open item."""
@@ -251,7 +262,7 @@ class ItemEdit():
         if self.item is not None:
             self.item["parameters"] = {}
 
-    def new_item_edit_options(self, new, raw=False):
+    def new_item_edit_options(self, new=False, raw=False):
         """Edit the selected item option with custom dialog."""
 
         if new:
@@ -259,79 +270,78 @@ class ItemEdit():
         else:
             selected = self.ui.variant.currentItem()
 
-        # TODO: need a better way to lay this out. it's going to get big and messy fast
-
-        # this is for the qinputdialog stuff. can't set signals on them
         generic = False
+        dialog = None
+        name, value = selected.option
+
         if new or raw:
-            # needs to be here or new opts get detected as string (?)
-            dialog = ItemEditOptions(self.dialog, selected.option[0], selected.option[1])
-            def get_option():
-                data = dialog.ui.options.toPlainText()
-                return dialog.ui.name.text(), json.loads(data)
-        #elif selected.option[0] in ["inventoryIcon", "image", "largeImage"]:
-        #    dialog = ImageBrowser(self.dialog, self.assets)
-        #    def get_option():
-        #        return selected.option[0], dialog.get_key()
-        elif type(self.item["parameters"][selected.option[0]]) is str:
-            generic = True
-            text, ok = QInputDialog.getText(self.dialog, "Edit Text", selected.option[0],
-                                            text=self.item["parameters"][selected.option[0]])
+            dialog = ItemEditOptions(self.dialog, name, value)
+            def save():
+                name, value = dialog.get_option()
+                self.item["parameters"][name] = value
+            dialog.dialog.accepted.connect(save)
+            dialog.dialog.exec()
+        elif name in ["inventoryIcon", "image", "largeImage"] and type(value) is str:
+            dialog = ImageBrowser(self.dialog, self.assets)
+            def save():
+                value = dialog.get_key()
+                self.item["parameters"][name] = value
+            dialog.dialog.accepted.connect(save)
+            dialog.dialog.exec()
+        elif type(value) is str:
+            text, ok = QInputDialog.getText(self.dialog, "Edit Text", name, text=value)
             if ok:
-                self.item["parameters"][selected.option[0]] = text
-        elif type(self.item["parameters"][selected.option[0]]) is int:
-            generic = True
-            num, ok = QInputDialog.getInt(self.dialog, "Edit Integer", selected.option[0],
-                                          self.item["parameters"][selected.option[0]])
+                value = text
+                self.item["parameters"][name] = value
+        elif type(value) is int:
+            num, ok = QInputDialog.getInt(self.dialog, "Edit Integer", name, value)
             if ok:
-                self.item["parameters"][selected.option[0]] = num
-        elif type(self.item["parameters"][selected.option[0]]) is float:
-            generic = True
-            num, ok = QInputDialog.getDouble(self.dialog, "Edit Double", selected.option[0],
-                                             self.item["parameters"][selected.option[0]], decimals=2)
+                value = num
+                self.item["parameters"][name] = value
+        elif type(value) is float:
+            num, ok = QInputDialog.getDouble(self.dialog, "Edit Double", name, value, decimals=2)
             if ok:
-                self.item["parameters"][selected.option[0]] = num
-        elif type(self.item["parameters"][selected.option[0]]) is bool:
-            generic = True
-            self.item["parameters"][selected.option[0]] = not self.item["parameters"][selected.option[0]]
+                value = num
+                self.item["parameters"][name] = value
+        elif type(value) is bool:
+            value = not value
+            self.item["parameters"][name] = value
         else:
-            dialog = ItemEditOptions(self.dialog, selected.option[0], selected.option[1])
-            def get_option():
-                data = dialog.ui.options.toPlainText()
-                return dialog.ui.name.text(), json.loads(data)
-
-        def save():
-            new_option = get_option()
-            self.item["parameters"][new_option[0]] = new_option[1]
-
-        if not generic:
+            dialog = ItemEditOptions(self.dialog, name, value)
+            def save():
+                name, value = dialog.get_option()
+                self.item["parameters"][name] = value
             dialog.dialog.accepted.connect(save)
             dialog.dialog.exec()
 
-        self.populate_options()
-        self.update_item_info(self.item["name"], self.item["parameters"])
+        self.update()
 
     def remove_option(self):
         """Remove the currently selected item option."""
-        try:
-            option_name = self.ui.variant.currentItem().option[0]
-        except AttributeError:
+        current = self.ui.variant.currentItem()
+        if current is None:
             return
-        self.item["parameters"].pop(option_name)
+        self.item["parameters"].pop(current.option[0])
         self.populate_options()
 
     def edit_option(self):
         """Edit currently selected item option."""
-        try:
-            option_name = self.ui.variant.currentItem().option[0]
-        except AttributeError:
-            return
-        self.new_item_edit_options(False)
+        current = self.ui.variant.currentItem()
+        if current is not None:
+            self.new_item_edit_options()
 
     def new_item_browser(self):
         self.item_browser = ItemBrowser(self.dialog, category=self.remember_browser)
         self.item_browser.dialog.accepted.connect(self.set_item_browser_selection)
         self.item_browser.dialog.exec()
+
+    def set_item_browser_selection(self):
+        name = self.item_browser.get_selection()
+        if name is None:
+            return
+        self.remember_browser = self.item_browser.remember_category
+        self.ui.item_type.setText(name)
+        self.update_item()
 
     def populate_options(self):
         self.ui.variant.setRowCount(len(self.item["parameters"]))
@@ -341,13 +351,6 @@ class ItemEdit():
             variant = ItemOptionWidget(k, self.item["parameters"][k])
             self.ui.variant.setItem(row, 0, variant)
             row += 1
-
-    def set_item_browser_selection(self):
-        name = self.item_browser.get_selection()
-        if name is None:
-            return
-        self.remember_browser = self.item_browser.remember_category
-        self.ui.item_type.setText(name)
 
     def max_count(self):
         if "maxStack" in self.item["parameters"]:
@@ -391,5 +394,4 @@ class ItemEdit():
             self.ui.item_type.setText(item["name"])
             self.item = item
             self.ui.count.setValue(self.item["count"])
-            self.update_item_info(self.item["name"], self.item["parameters"])
-            self.populate_options()
+            self.update()

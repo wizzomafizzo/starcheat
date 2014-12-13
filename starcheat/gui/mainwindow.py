@@ -114,13 +114,16 @@ class MainWindow():
             edit_action = QAction("Edit...", widget)
             edit_action.triggered.connect(item_edit)
             widget.addAction(edit_action)
+            import_json = QAction("Import...", widget)
+            #import_json.triggered.connect(item_edit)
+            widget.addAction(import_json)
             trash_action = QAction("Trash", widget)
             trash_slot = lambda: self.trash_slot(self.window, widget, True)
             trash_action.triggered.connect(trash_slot)
             widget.addAction(trash_action)
-            sep_action = QAction(widget)
 
             if name in sortable or name in clearable:
+                sep_action = QAction(widget)
                 sep_action.setSeparator(True)
                 widget.addAction(sep_action)
                 if name in clearable:
@@ -269,7 +272,8 @@ class MainWindow():
             item.update(current.item)
 
         item_edit = ItemEdit(self.window, item,
-                             self.player, self.remember_browser)
+                             self.player, self.assets,
+                             self.remember_browser)
 
         def update_slot():
             logging.debug("Writing changes to slot")
@@ -291,7 +295,9 @@ class MainWindow():
 
         item_edit.dialog.accepted.connect(update_slot)
         item_edit.ui.trash_button.clicked.connect(trash_slot)
-        item_edit.dialog.exec()
+        got_item = item_edit.launch()
+        if got_item:
+            item_edit.dialog.exec()
 
     def trash_slot(self, dialog, bag, standalone=False):
         row = bag.currentRow()

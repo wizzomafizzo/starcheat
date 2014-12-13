@@ -552,8 +552,11 @@ class Items():
         c = self.assets.db.cursor()
         c.execute("select key, path, desc from assets where type = 'item' and name = ?", (name,))
         meta = c.fetchone()
-        item = self.assets.read(meta[0], meta[1])
-        return item, meta[0], meta[1], meta[2]
+        if meta is not None:
+            item = self.assets.read(meta[0], meta[1])
+            return item, meta[0], meta[1], meta[2]
+        else:
+            return None
 
     def get_categories(self):
         """Return a list of all unique indexed item categories."""
