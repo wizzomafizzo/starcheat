@@ -301,6 +301,11 @@ class ItemEdit():
         dialog = None
         name, value = selected.option
 
+        # TODO: drawable images
+        # TODO: status effects
+        # TODO: color editing
+        # TODO: list?
+
         if new or raw:
             dialog = ItemEditOptions(self.dialog, name, value)
             def save():

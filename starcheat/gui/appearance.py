@@ -13,27 +13,6 @@ import assets, qt_appearance, qt_coloredit
 from config import Config
 
 
-def unpack_color_directives(data):
-    unpack_dir = data.split("?replace;")
-    directives = []
-    for directive in unpack_dir[1:]:
-        unpack_gr = directive.split(";")
-        groups = []
-        for group in unpack_gr:
-            groups.append(group.split("="))
-        directives.append(groups)
-    return directives
-
-def pack_color_directives(colors):
-    string = ""
-    for directive in colors:
-        if len(directive) == 0:
-            continue
-        string += "?replace"
-        for group in directive:
-            string += ";%s=%s" % (group[0], group[1])
-    return string
-
 class Appearance():
     def __init__(self, main_window):
         self.dialog = QDialog(main_window.window)
@@ -60,11 +39,11 @@ class Appearance():
         personality = self.player.get_personality()
 
         self.colors = {
-            "body": unpack_color_directives(self.player.get_body_directives()),
-            "emote": unpack_color_directives(self.player.get_emote_directives()),
-            "hair": unpack_color_directives(self.player.get_hair_directives()),
-            "facial_hair": unpack_color_directives(self.player.get_facial_hair_directives()),
-            "facial_mask": unpack_color_directives(self.player.get_facial_mask_directives()),
+            "body": assets.read_color_directives(self.player.get_body_directives()),
+            "emote": assets.read_color_directives(self.player.get_emote_directives()),
+            "hair": assets.read_color_directives(self.player.get_hair_directives()),
+            "facial_hair": assets.read_color_directives(self.player.get_facial_hair_directives()),
+            "facial_mask": assets.read_color_directives(self.player.get_facial_mask_directives()),
             "undy": self.player.get_undy_color()
         }
         color_values = ("body", "emote", "hair", "facial_hair", "facial_mask")
@@ -128,11 +107,11 @@ class Appearance():
         self.player.set_facial_hair(*facial_hair)
         self.player.set_facial_mask(*facial_mask)
         self.player.set_personality(personality)
-        self.player.set_body_directives(pack_color_directives(self.colors["body"]))
-        self.player.set_hair_directives(pack_color_directives(self.colors["hair"]))
-        self.player.set_facial_hair_directives(pack_color_directives(self.colors["facial_hair"]))
-        self.player.set_facial_mask_directives(pack_color_directives(self.colors["facial_mask"]))
-        self.player.set_emote_directives(pack_color_directives(self.colors["emote"]))
+        self.player.set_body_directives(assets.make_color_directives(self.colors["body"]))
+        self.player.set_hair_directives(assets.make_color_directives(self.colors["hair"]))
+        self.player.set_facial_hair_directives(assets.make_color_directives(self.colors["facial_hair"]))
+        self.player.set_facial_mask_directives(assets.make_color_directives(self.colors["facial_mask"]))
+        self.player.set_emote_directives(assets.make_color_directives(self.colors["emote"]))
         self.player.set_undy_color(self.colors["undy"])
 
         # render player preview

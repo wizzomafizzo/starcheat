@@ -578,7 +578,7 @@ class MainWindow():
         self.player.set_race(species)
         defaults = self.assets.species().get_default_colors(species)
         for key in defaults:
-            getattr(self.player, "set_%s_directives" % key)(defaults[key])
+            getattr(self.player, "set_%s_directives" % key)(defaults[key][0])
         self.update_player_preview()
         self.window.setWindowModified(True)
 

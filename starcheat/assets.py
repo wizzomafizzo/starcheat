@@ -53,6 +53,26 @@ def read_default_color(species_data):
         color.append([group, species_data[0][group]])
     return color
 
+def read_color_directives(data):
+    unpack_dir = data.split("?replace;")
+    directives = []
+    for directive in unpack_dir[1:]:
+        unpack_gr = directive.split(";")
+        groups = []
+        for group in unpack_gr:
+            groups.append(group.split("="))
+        directives.append(groups)
+    return directives
+
+def make_color_directives(colors):
+    string = ""
+    for directive in colors:
+        if len(directive) == 0:
+            continue
+        string += "?replace"
+        for group in directive:
+            string += ";%s=%s" % (group[0], group[1])
+    return string
 
 def asset_category(keyStr):
     """
@@ -64,7 +84,6 @@ def asset_category(keyStr):
         return ''
     else:
         return extension[1:]  # removes the . from the extension
-
 
 # from: http://stackoverflow.com/a/7548779
 def hex_to_rgb(value):
@@ -80,7 +99,6 @@ def hex_to_rgb(value):
         return tuple(int(value[i:i+int(lv/3)], 16) for i in range(0, lv, int(lv/3)))
     return None
 
-
 def unpack_color_directives(data):
     # won't grab fade directives
     replace_matches = replace_directive_re.findall(data)
@@ -94,7 +112,6 @@ def unpack_color_directives(data):
             if rgbkey is not None and rgbval is not None:
                 groups.append((rgbkey,rgbval))
     return dict(groups)
-
 
 def replace_colors(image, dict_colors):
     pixel_data = image.load()
@@ -999,8 +1016,14 @@ class Species():
         species_data = self.get_species(species)[1]
 
         def val(key):
-            if key in species_data:
-                return read_default_color(species_data[key])
+            if key in species_data.keys() and species_data[key] is not None:
+                default = read_default_color(species_data[key])
+                if default == []:
+                    return ""
+                else:
+                    replace = make_color_directives([default])
+                    print(replace)
+                    return replace
             else:
                 return ""
 
@@ -1052,7 +1075,10 @@ class Species():
         def grab_sprite(sheet_path, rect, directives):
             sheet = self.assets.read(sheet_path, asset_loc, True)
             img = Image.open(BytesIO(sheet)).convert("RGBA").crop(rect)
-            return replace_colors(img, unpack_color_directives(directives))
+            print(directives)
+            if directives != "":
+                img = replace_colors(img, unpack_color_directives(directives))
+            return img
 
         default_rect = (43, 0, 86, 43)
         # TODO: should use the .bbox to figure this out
