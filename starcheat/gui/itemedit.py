@@ -69,12 +69,17 @@ class ItemEditOptions():
         return self.ui.name.text(), json.loads(self.ui.options.toPlainText())
 
 class ImageBrowser():
-    def __init__(self, parent, assets):
+    def __init__(self, parent, assets, just_browse=True):
         self.dialog = QDialog(parent)
         self.ui = qt_imagebrowser.Ui_Dialog()
         self.ui.setupUi(self.dialog)
 
         self.assets = assets
+
+        if just_browse:
+            self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Close)
+        else:
+            self.ui.results.itemDoubleClicked.connect(self.dialog.accept)
 
         self.ui.search_button.clicked.connect(self.search)
         self.ui.results.currentItemChanged.connect(self.set_preview)
@@ -282,7 +287,7 @@ class ItemEdit():
             dialog.dialog.accepted.connect(save)
             dialog.dialog.exec()
         elif name in ["inventoryIcon", "image", "largeImage"] and type(value) is str:
-            dialog = ImageBrowser(self.dialog, self.assets)
+            dialog = ImageBrowser(self.dialog, self.assets, False)
             def save():
                 value = dialog.get_key()
                 self.item["parameters"][name] = value
