@@ -178,7 +178,6 @@ class MainWindow():
         equip_bags = "head", "chest", "legs", "back"
         for bag in equip_bags:
             logging.debug("Updating %s", bag)
-            # TODO: hide meta attributes in saves.py?
             items = []
             for x in getattr(self.player, "get_" + bag)():
                 if x is not None:
@@ -362,8 +361,8 @@ class MainWindow():
 
         def write_options():
             logging.info("Writing options to disk")
-            # TODO: reload icons on asset update?
             self.ui.statusbar.showMessage("Options have been updated", 3000)
+            self.update()
 
         self.options_dialog.dialog.accepted.connect(write_options)
         self.options_dialog.dialog.exec()

@@ -2,13 +2,6 @@
 Qt item edit dialog
 """
 
-# TODO: the variant editing stuff would work much better as a tree view,
-# especially considering the upcoming change
-
-# TODO: a function to convert from an asset item to a valid inventory item
-# once that's complete, work can be started on proper item generation. to begin,
-# we just wanna pull in all the default values of an item
-
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox, QMessageBox
 from PyQt5.QtWidgets import QInputDialog, QListWidgetItem, QFileDialog, QAction

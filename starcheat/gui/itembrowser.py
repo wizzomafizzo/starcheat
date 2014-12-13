@@ -185,11 +185,11 @@ class ItemBrowser():
         src_width = qpix.width()
         src_height = qpix.height()
 
-        if src_width == src_height and width == height: #square image and square bounds
+        if src_width == src_height and width == height: # square image and square bounds
             scaled_qpix = qpix.scaled(width,height)
-        elif src_width > src_height: #wider than tall needs width scaling to fit
+        elif src_width > src_height: # wider than tall needs width scaling to fit
             scaled_qpix = qpix.scaledToWidth(width)
-        elif src_height > src_width: #taller than wide needs height scaling to fit
+        elif src_height > src_width: # taller than wide needs height scaling to fit
             scaled_qpix = qpix.scaledToHeight(height)
         return scaled_qpix
 
@@ -200,8 +200,6 @@ class ItemBrowser():
         name = self.ui.filter.text()
         result = self.items.filter_items(category, name)
 
-        # TODO: i'd like this to set focus on the list when category is changed
-        #       but not when the edit box is changed (split this function)
         self.ui.items.clear()
         for item in result:
             self.ui.items.addItem(BrowserItem(item[4], item[5]))

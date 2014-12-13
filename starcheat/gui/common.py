@@ -50,7 +50,6 @@ def empty_slot():
 #       are easy enough to add then we'll just stick with the current method
 # TODO: swap items instead of overwriting
 #       apparently this is done by reimplementing the drag functions
-# TODO: some sort of icon painter so we can show a frame, rarity and count overlay
 class ItemWidget(QTableWidgetItem):
     """Custom table wiget item with icon support and extra item variables."""
     def __init__(self, item, assets=None):

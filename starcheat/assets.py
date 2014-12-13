@@ -30,8 +30,6 @@ replace_directive_re = re.compile(
 
 
 def parse_json(content, key):
-    if key.endswith(".grapplinghook"):
-        content = content.replace("[-.", "[-0.")
     decoder = json.JSONDecoder(strict=False)
     # Looking for comments
     # Allows for // inside of the " " JSON data
@@ -222,8 +220,8 @@ class Assets():
 
             logging.debug(files)
 
-            # TODO: would like to keep this idea but moved to modpak specific function
-            found_mod_info = False #will need more logic to handle .modpack with modinfo inside.
+            # TODO: will need more logic to handle .modpack with modinfo inside.
+            found_mod_info = False
 
             for f in files:
                 if f.endswith(".modinfo"):
@@ -371,17 +369,7 @@ class Assets():
 
 class Images():
     def __init__(self, assets):
-        """
-        For loading and searching image assets.
-
-        TODO: i want this for the most basic image stuff:
-        - loading an image and handling errors
-        - placeholder images if error
-        - color replace functions
-        - maybe some spritesheets (common ones)
-
-        probably leave out specific stuff like full player rendering
-        """
+        """For loading and searching image assets."""
         self.assets = assets
         self.starbound_folder = assets.starbound_folder
 

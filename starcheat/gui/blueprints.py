@@ -7,8 +7,6 @@ from PyQt5.QtWidgets import QDialog, QListWidgetItem
 import assets, qt_blueprints
 from config import Config
 
-# TODO: rework whole dialog with pretty icons and stuff like that
-
 def new_blueprint(name, data):
     bp = {
         "name": name,
@@ -85,7 +83,6 @@ class BlueprintLib():
             # don't add more than one of each blueprint
             if blueprint.text() in known:
                 continue
-            # TODO: we don't support data from asset blueprints yet'
             self.known_blueprints.append(new_blueprint(blueprint.text(), {}))
 
         # regenerate the list

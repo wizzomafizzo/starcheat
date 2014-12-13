@@ -146,7 +146,6 @@ def pack_variant1(var):
 
 # big endian double
 def unpack_variant2(data):
-    # TODO: can these be plain unpack()?
     return unpack_from(">d", data, 0)[0], 8
 
 

@@ -258,7 +258,6 @@ class OptionsDialog():
     def write(self):
         starbound_folder = self.ui.starbound_folder.text()
         self.config.set("starbound_folder", starbound_folder)
-        # TODO: remove these settings completely at some point
         self.config.set("assets_folder", os.path.join(starbound_folder, "assets"))
         self.config.set("player_folder", os.path.join(starbound_folder, "player"))
 
