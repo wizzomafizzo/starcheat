@@ -51,6 +51,9 @@
     <layout class="QGridLayout" name="gridLayout_3">
      <item row="0" column="0">
       <widget class="QToolButton" name="add_button">
+       <property name="toolTip">
+        <string>Learn Blueprint</string>
+       </property>
        <property name="text">
         <string>&lt;&lt;</string>
        </property>
@@ -62,6 +65,9 @@
      </item>
      <item row="1" column="0">
       <widget class="QToolButton" name="remove_button">
+       <property name="toolTip">
+        <string>Unlearn Blueprint</string>
+       </property>
        <property name="text">
         <string>&gt;&gt;</string>
        </property>
