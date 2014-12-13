@@ -487,6 +487,16 @@ class Blueprints():
         """Filter blueprints based on category and name."""
         return self.assets.filter("blueprint", category, name)
 
+    def get_blueprint(self, name):
+        c = self.assets.db.cursor()
+        c.execute("select key, path, desc from assets where type = 'blueprint' and name = ?", (name,))
+        meta = c.fetchone()
+        if meta is not None:
+            blueprint = self.assets.read(meta[0], meta[1])
+            return blueprint, meta[0], meta[1], meta[2]
+        else:
+            return None
+
 class Items():
     def __init__(self, assets):
         self.assets = assets
@@ -1022,7 +1032,6 @@ class Species():
                     return ""
                 else:
                     replace = make_color_directives([default])
-                    print(replace)
                     return replace
             else:
                 return ""
@@ -1075,7 +1084,6 @@ class Species():
         def grab_sprite(sheet_path, rect, directives):
             sheet = self.assets.read(sheet_path, asset_loc, True)
             img = Image.open(BytesIO(sheet)).convert("RGBA").crop(rect)
-            print(directives)
             if directives != "":
                 img = replace_colors(img, unpack_color_directives(directives))
             return img

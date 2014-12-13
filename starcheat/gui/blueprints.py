@@ -4,16 +4,11 @@ Qt blueprint/recipe management dialog
 
 from PyQt5.QtWidgets import QDialog, QListWidgetItem
 
-import assets, qt_blueprints
+import assets, qt_blueprints, saves
 from config import Config
 
 def new_blueprint(name, data):
-    bp = {
-        "name": name,
-        "count": 1,
-        "data": data
-    }
-    return bp
+    return saves.new_item_data(name, 1, data)
 
 class BlueprintItem(QListWidgetItem):
     def __init__(self, blueprint):
@@ -23,9 +18,6 @@ class BlueprintItem(QListWidgetItem):
 class BlueprintLib():
     def __init__(self, parent, known_blueprints):
         """Blueprint library management dialog."""
-        # BUG: some of the tier weapons are not importing correctly and showing
-        # as duplicates in the available list
-        # UPDATE: okay i think that's just caused by stripping the data?
         self.dialog = QDialog(parent)
         self.ui = qt_blueprints.Ui_Dialog()
         self.ui.setupUi(self.dialog)
@@ -58,7 +50,36 @@ class BlueprintLib():
         self.ui.filter.textChanged.connect(self.update_available_list)
         self.ui.category.currentTextChanged.connect(self.update_available_list)
 
+        self.ui.available_blueprints.itemSelectionChanged.connect(self.update_blueprint_info)
+
         self.ui.filter.setFocus()
+        self.update_blueprint_info()
+
+    def update_blueprint_info(self):
+        selected = self.ui.available_blueprints.selectedItems()
+        if len(selected) == 0:
+            # nothing selected
+            info = "<html><body><strong>Nothing Selected</strong></body></html>"
+            self.ui.blueprint_info.setText(info)
+            return
+
+        name = selected[0].text()
+        blueprint = self.assets.blueprints().get_blueprint(name)[0]
+        if blueprint is not None:
+            info = "<html><body>"
+            info += "<strong>Craftable in:</strong><br>"
+            info += ", ".join(blueprint["groups"])
+            info += "<br>"
+            info += "<strong>In:</strong><br>"
+            for i in blueprint["input"]:
+                info += "%s (%i)<br>" % (i["item"], i["count"])
+            info += "<strong>Out:</strong><br>"
+            info += "%s (%i)" % (blueprint["output"]["item"],
+                                 blueprint["output"]["count"])
+            info += "</body></html>"
+        else:
+            info = "<html><body><strong>Unknown Blueprint</strong></body></html>"
+        self.ui.blueprint_info.setText(info)
 
     def update_available_list(self):
         """Populate available blueprints list based on current filter details."""
