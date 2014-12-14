@@ -57,6 +57,10 @@ class MainWindow():
 
         logging.info("Main window init")
 
+        logging.debug("Loading assets database")
+        self.assets = assets.Assets(Config().read("assets_db"),
+                                    Config().read("starbound_folder"))
+
         # launch first setup if we need to
         if not new_setup_dialog(self.window):
             logging.error("Config/index creation failed")
@@ -69,10 +73,6 @@ class MainWindow():
             return
 
         self.filename = None
-
-        logging.debug("Loading assets database")
-        self.assets = assets.Assets(Config().read("assets_db"),
-                                    Config().read("starbound_folder"))
 
         self.items = self.assets.items()
 
@@ -408,7 +408,7 @@ class MainWindow():
             elif button == QMessageBox.Save:
                 self.save()
 
-        character_select = CharacterSelectDialog(self.window)
+        character_select = CharacterSelectDialog(self.window, self.assets)
         character_select.show()
 
         if character_select.selected is None:

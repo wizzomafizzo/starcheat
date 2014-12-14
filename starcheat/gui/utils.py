@@ -3,9 +3,13 @@ Utility dialogs for starcheat itself
 """
 
 import os, sys, platform, subprocess, shutil, hashlib
+import datetime
+
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from PyQt5.QtWidgets import QListWidgetItem, QProgressDialog
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5 import QtGui, QtCore
+from PIL.ImageQt import ImageQt
 
 import saves, assets, logging, config
 import qt_options, qt_openplayer, qt_about, qt_mods
@@ -301,9 +305,16 @@ class OptionsDialog():
 
         self.ui.total_indexed.setText(total + " indexed")
 
+
+class PlayerWidget(QListWidgetItem):
+    def __init__(self, text, name):
+        QListWidgetItem.__init__(self, text)
+        self.name = name
+
+
 # TODO: support stuff like sorting by date (needs to be a table widget)
 class CharacterSelectDialog():
-    def __init__(self, parent):
+    def __init__(self, parent, assets):
         self.dialog = QDialog(parent)
         self.ui = qt_openplayer.Ui_OpenPlayer()
         self.ui.setupUi(self.dialog)
@@ -311,10 +322,10 @@ class CharacterSelectDialog():
         self.player_folder = Config().read("player_folder")
         self.backup_folder = Config().read("backup_folder")
         self.selected = None
+        self.assets = assets
 
         self.dialog.rejected.connect(self.dialog.close)
         self.dialog.accepted.connect(self.accept)
-        # bizarre, if i set this to self.accept it just doesn't work...
         self.ui.player_list.itemDoubleClicked.connect(self.dialog.accept)
         self.ui.trash_button.clicked.connect(self.trash_player)
 
@@ -324,7 +335,7 @@ class CharacterSelectDialog():
 
     def accept(self):
         try:
-            player = self.ui.player_list.currentItem().text()
+            player = self.ui.player_list.currentItem().name
         except AttributeError:
             player = ""
 
@@ -351,12 +362,16 @@ class CharacterSelectDialog():
     def populate(self):
         total = 0
         self.ui.player_list.clear()
-        for player in self.players.keys():
-            list_item = QListWidgetItem(player)
-            race = self.players[player].get_race()
-            gender = self.players[player].get_gender()
-            list_item.setIcon(QtGui.QIcon(preview_icon(race, gender)))
+        for name in sorted(self.players.keys()):
+            player = self.players[name]
+            preview = self.assets.species().render_player(player)
+            pixmap = QPixmap.fromImage(ImageQt(preview))
+            played = datetime.timedelta(seconds=int(player.get_play_time()))
+            list_item = PlayerWidget("%s [%s]" % (name, played), name)
+
+            list_item.setIcon(QtGui.QIcon(pixmap))
             self.ui.player_list.addItem(list_item)
+
             total += 1
         self.ui.total_label.setText(str(total) + " total")
         self.ui.player_list.setCurrentRow(0)
