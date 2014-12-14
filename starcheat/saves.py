@@ -540,8 +540,20 @@ class PlayerSave():
     def get_tech_modules(self):
         return self.entity["techController"]["techModules"]
 
+    def get_visible_techs(self):
+        return self.entity["techs"]["visibleTechs"]
+
+    def get_enabled_techs(self):
+        return self.entity["techs"]["enabledTechs"]
+
+    def get_equipped_techs(self):
+        return self.entity["inventory"]["equipment"][8:12]
+
     def get_undy_color(self):
         return self.entity["identity"]["color"]
+
+    def get_movement(self):
+        return self.entity["movementController"]
 
     # here be setters
     def set_blueprints(self, blueprints):
@@ -671,6 +683,15 @@ class PlayerSave():
             equip_index += 1
 
         self.entity["techController"]["techModules"] = techs
+
+    def set_visible_techs(self, techs):
+        self.entity["techs"]["visibleTechs"] = techs
+
+    def set_enabled_techs(self, techs):
+        self.entity["techs"]["enabledTechs"] = techs
+
+    def set_movement(self, movement):
+        self.entity["movementController"] = movement
 
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])

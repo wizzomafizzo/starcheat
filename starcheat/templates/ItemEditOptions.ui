@@ -6,15 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>480</width>
+    <height>420</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Edit Item Option</string>
   </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="valid_label">
      <property name="styleSheet">
       <string notr="true">color: green</string>
@@ -30,7 +33,7 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="3" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -40,25 +43,11 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="0" column="0">
     <widget class="QLineEdit" name="name"/>
    </item>
-   <item row="3" column="0">
+   <item row="1" column="0">
     <widget class="QPlainTextEdit" name="options"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="name_label">
-     <property name="text">
-      <string>Option Name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="data_label">
-     <property name="text">
-      <string>Option Data</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

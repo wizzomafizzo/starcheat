@@ -304,7 +304,6 @@ class ItemEdit():
         # TODO: drawable images
         # TODO: status effects
         # TODO: color editing
-        # TODO: list?
 
         if new or raw:
             dialog = ItemEditOptions(self.dialog, name, value)

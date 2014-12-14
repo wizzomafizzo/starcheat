@@ -1301,14 +1301,14 @@ class Techs():
         c = self.assets.db.cursor()
         c.execute(q, (name,))
         tech = c.fetchone()
+        asset = self.assets.read(tech[0], tech[1])
         info = self.assets.read(tech[0]+"item", tech[1])
-
         icon = self.assets.read(info["inventoryIcon"], tech[1], image=True)
 
         if icon is None:
             icon = self.assets.items().missing_icon()
 
-        return info, Image.open(BytesIO(icon)).convert("RGBA"), tech[0]
+        return info, Image.open(BytesIO(icon)).convert("RGBA"), tech[0], asset
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
