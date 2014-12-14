@@ -163,6 +163,7 @@ class ItemEdit():
         self.ui.edit_option_button.clicked.connect(self.edit_option)
         self.ui.export_button.clicked.connect(self.export_item)
         self.ui.import_button.clicked.connect(self.import_item)
+        self.ui.count.valueChanged.connect(self.toggle_max)
 
         self.make_context_menu()
         self.ui.item_type.setFocus()
@@ -389,6 +390,10 @@ class ItemEdit():
         else:
             max = 1000
         self.ui.count.setValue(max)
+
+    def toggle_max(self):
+        value = self.ui.count.value()
+        self.ui.max_button.setEnabled(value != 1000)
 
     def export_item(self):
         json_data = json.dumps(self.item, sort_keys=True,
