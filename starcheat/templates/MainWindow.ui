@@ -2067,6 +2067,9 @@ border-radius: 4px;
           <property name="minimum">
            <number>1</number>
           </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -2133,6 +2136,9 @@ border-radius: 4px;
           </property>
           <property name="minimum">
            <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>100</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>

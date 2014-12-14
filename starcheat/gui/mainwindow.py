@@ -633,7 +633,9 @@ class MainWindow():
     def update_stat(self, name):
         try:
             current = int(getattr(self.player, "get_"+name)())
+            button = getattr(self.ui, name+"_button")
             getattr(self.ui, name).setValue(current)
+            button.setEnabled(current != 100)
             self.set_edited()
         except TypeError:
             logging.exception("Unable to set stat %s", name)
