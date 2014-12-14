@@ -379,10 +379,13 @@ class PlayerSave():
         try:
             save_ver = unpack_str(unpack_var(data_format[0], save_data)[0])
         except struct.error:
-                msg = "Save file is corrupt"
-                logging.exception(msg)
-                raise WrongSaveVer(msg)
+            save_file.close()
+            msg = "Save file is corrupt"
+            logging.exception(msg)
+            raise WrongSaveVer(msg)
+
         if save_ver != data_version:
+            save_file.close()
             msg = "Wrong save format version"
             logging.exception(msg)
             raise WrongSaveVer(msg)
@@ -400,6 +403,15 @@ class PlayerSave():
 
             self.data[var[0]] = unpacked[0]
             offset += unpacked[1]
+
+        # TODO: this is a temporary workaround to the save ver not being
+        # changed in nightly. it should be removed when nightly goes stable
+        # and people stop using those save files
+        if "statusController" not in self.data["save"]["data"]:
+            save_file.close()
+            msg = "Wrong save format version"
+            logging.exception(msg)
+            raise WrongSaveVer(msg)
 
         save_file.close()
 
