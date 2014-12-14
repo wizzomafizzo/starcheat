@@ -44,7 +44,7 @@ def build_assets_db(parent):
     assets_db = assets.Assets(assets_db_file, starbound_folder)
 
     def bad_asset_dialog():
-        dialog = QMessageBox()
+        dialog = QMessageBox(parent)
         dialog.setWindowTitle("No Assets Found")
         dialog.setText("Unable to index Starbound assets.")
         dialog.setInformativeText("Check that the Starbound folder was set correctly.")
@@ -109,11 +109,10 @@ def save_modified_dialog(parent):
     dialog.setIcon(QMessageBox.Question)
     return dialog.exec()
 
-def select_starbound_folder_dialog():
+def select_starbound_folder_dialog(parent):
     folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
     while not os.path.isfile(os.path.join(folder, "starbound.config")):
-        # TODO: parent?
-        dialog = QMessageBox()
+        dialog = QMessageBox(parent)
         dialog.setWindowTitle("Wrong Starbound Folder")
         dialog.setText("This is not your Starbound folder!")
         dialog.setInformativeText("Please try again and select your Starbound folder, which should contain the starbound.config file.")
@@ -121,7 +120,7 @@ def select_starbound_folder_dialog():
         dialog.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
         answer = dialog.exec()
         if answer == QMessageBox.Cancel:
-            dialog = QMessageBox()
+            dialog = QMessageBox(parent)
             dialog.setWindowTitle("Starbound Not Installed")
             dialog.setIcon(QMessageBox.Critical)
             dialog.setText("starcheat needs Starbound installed to work.")
@@ -142,7 +141,7 @@ def new_setup_dialog(parent):
 
         if not config_valid:
             logging.info("rebuild config and assets_db (config_version mismatch)")
-            dialog = QMessageBox()
+            dialog = QMessageBox(parent)
             dialog.setWindowTitle("Config Out-of-date")
             dialog.setText("Your starcheat settings are outdated.")
             dialog.setInformativeText("A new config file and assets index will be created...")
@@ -160,15 +159,15 @@ def new_setup_dialog(parent):
     # Starbound folder settings
     starbound_folder = Config().detect_starbound_folder()
     if starbound_folder == "":
-        dialog = QMessageBox()
+        dialog = QMessageBox(parent)
         dialog.setWindowTitle("Starbound Not Found")
         dialog.setText("Unable to detect the main Starbound folder.")
         dialog.setInformativeText("Please select it in the next dialog.")
         dialog.setIcon(QMessageBox.Warning)
         dialog.exec()
-        starbound_folder = select_starbound_folder_dialog()
+        starbound_folder = select_starbound_folder_dialog(parent)
     else:
-        dialog = QMessageBox()
+        dialog = QMessageBox(parent)
         dialog.setWindowTitle("Starbound Folder Found")
         dialog.setText("Detected the following folder as the location of Starbound. Is this correct?")
         dialog.setInformativeText(starbound_folder)
@@ -176,7 +175,7 @@ def new_setup_dialog(parent):
         dialog.setIcon(QMessageBox.Question)
         answer = dialog.exec()
         if answer == QMessageBox.No:
-            starbound_folder = select_starbound_folder_dialog()
+            starbound_folder = select_starbound_folder_dialog(parent)
 
     # looks okay enough, let's go
     Config().create_config(starbound_folder)
