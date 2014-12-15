@@ -126,6 +126,7 @@ class MainWindow():
         self.ui.energy.valueChanged.connect(lambda: self.set_stat_slider("energy"))
         self.ui.health_button.clicked.connect(lambda: self.max_stat("health"))
         self.ui.energy_button.clicked.connect(lambda: self.max_stat("energy"))
+        self.ui.name_button.clicked.connect(self.random_name)
 
         # launch open file dialog
         self.player = None
@@ -597,6 +598,11 @@ class MainWindow():
         self.player.set_gender(self.get_gender())
         self.update_player_preview()
         self.set_edited()
+
+    def random_name(self):
+        species_name = self.player.get_race()
+        name = self.assets.species().generate_name(species_name)
+        self.ui.name.setText(name)
 
     def set_game_mode(self):
         self.player.set_game_mode(self.assets.player().get_mode_type(self.ui.game_mode.currentText()))

@@ -1790,7 +1790,7 @@
         <item>
          <widget class="QToolButton" name="name_button">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text">
            <string>...</string>

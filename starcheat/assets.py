@@ -1188,6 +1188,20 @@ class Species():
             logging.exception("Missing hair image: %s", image_path)
             return
 
+    def generate_name(self, species_name):
+        # now sure how this format is intended to work, but files are consistent
+        # enough to cheat like this. may break in the future
+        species = self.get_species(species_name.lower())
+        namegen_config_path = "/species/" + species[1]["kind"] + "namegen.config"
+        namegen_config = self.assets.read(namegen_config_path,
+                                          species[0][1])
+        final_name = ""
+        names = namegen_config["names"][1][1:]
+        for group in names:
+            random_name = random.choice(group[1:])
+            final_name += random_name
+        return final_name
+
 
 class Player():
     def __init__(self, assets):
