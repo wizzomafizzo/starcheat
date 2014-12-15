@@ -3,13 +3,24 @@ Functions shared between GUI dialogs
 """
 
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem, QInputDialog, QLineEdit
 from PyQt5.QtGui import QPixmap, QImage
 
 from PIL.ImageQt import ImageQt
 
 import assets
 from config import Config
+
+
+def setup_color_menu(parent, widget):
+    def color_dialog():
+        color = QInputDialog.getItem(parent, "Select Color",
+                                     "Colors", assets.colors)
+        widget.insert(assets.string_color(color[0]))
+    widget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+    action = QAction("Insert Color...", widget)
+    action.triggered.connect(color_dialog)
+    widget.addAction(action)
 
 def inv_icon(item_name, item_data, assets):
     """Return a QPixmap object of the inventory icon of a given item (if possible)."""

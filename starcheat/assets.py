@@ -28,6 +28,12 @@ replace_directive_re = re.compile(
     "(?:\?replace((?:;[a-fA-F0-9]{1,6}=[a-fA-F0-9]{1,6}){1,}))"
 )
 
+# available colors for text
+colors = ["Red", "Orange", "Yellow", "Green", "Blue",
+          "Black", "White", "Magenta", "DarkMagenta",
+          "Gray", "LightGray", "DarkGray", "DarkGreen",
+          "Pink", "Clear"]
+
 
 def parse_json(content, key):
     decoder = json.JSONDecoder(strict=False)
@@ -128,6 +134,12 @@ def replace_colors(image, dict_colors):
                     elif result_img.mode == "RGB":
                         result_pixel_data[x,y] = value
     return result_img
+
+def string_color(name):
+    if name in colors:
+        return "^" + name + ";"
+    else:
+        return ""
 
 
 class Assets():
