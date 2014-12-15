@@ -399,7 +399,7 @@ class CharacterSelectDialog():
 
     def trash_player(self):
         """Move all player files to backup folder set in config file."""
-        player = self.ui.player_list.currentItem().text()
+        player = self.ui.player_list.currentItem().name
         uuid = self.players[player].get_uuid()
         player_files = []
 
