@@ -11,6 +11,7 @@ $ python ./save_file.py <.player file>
 import sys
 import logging
 import struct
+import os
 
 from pprint import pprint
 from struct import pack, unpack_from
@@ -362,13 +363,85 @@ class WrongSaveVer(Exception):
     pass
 
 
-class PlayerSave():
+class PlayerMetadata():
     def __init__(self, filename):
         self.data = {}
-        self.import_save(filename)
         self.filename = filename
-        # this is just to shorten variable names, we copy it back on export
-        self.entity = self.data["save"]["data"]
+        self.metadata = None
+        self.import_metadata()
+
+    def import_metadata(self):
+        metadata_file = open(self.filename, mode="rb")
+        metadata_data = metadata_file.read()
+
+        offset = 0
+        for var in data_format:
+            unpacked = unpack_var(var, metadata_data[offset:])
+            self.data[var[0]] = unpacked[0]
+            offset += unpacked[1]
+
+        metadata_file.close()
+        self.metadata = self.data["save"]["data"]
+
+    def export_save(self):
+        self.data["save"]["data"] = self.metadata
+        metadata_data = b""
+
+        for var in data_format:
+            metadata_data += pack_var(var, self.data[var[0]])
+
+        metadata_file = open(self.filename, "wb")
+        metadata_file.write(metadata_data)
+        metadata_file.close()
+
+        return self.filename
+
+    def get_timestamp(self):
+        # unix epoch
+        # convert to seconds so it works with python
+        return self.metadata["timestamp"] / 1000
+
+    def set_timestamp(self, seconds):
+        assert type(seconds) is int
+        self.metadata["timestamp"] = seconds * 1000
+
+    def get_ship_upgrades(self):
+        return self.metadata["shipUpgrades"]
+
+    def set_ship_upgrades(self, upgrades):
+        assert type(upgrades) is dict
+        assert type(upgrades["capabilities"]) is list
+        assert type(upgrades["maxFuel"]) is int
+        assert type(upgrades["shipLevel"]) is int
+        self.metadata["shipUpgrades"] = upgrades
+
+    def get_quests(self):
+        return self.metadata["quests"]
+
+    def set_quests(self, quests):
+        assert type(quests) is dict
+        self.metadata["quests"] = quests
+
+    def get_ai(self):
+        return self.metadata["ai"]
+
+    def set_ai(self, ai):
+        assert type(ai) is dict
+        assert type(ai["availableMissions"]) is list
+        assert type(ai["commandLevel"]) is int
+        assert type(ai["completedMissions"]) is list
+        assert type(ai["enabledCommands"]) is list
+        self.metadata["ai"] = ai
+
+class PlayerSave():
+    def __init__(self, filename):
+        self.metadata = None
+        self.data = {}
+        self.entity = None
+
+        self.filename = filename
+
+        self.import_save(filename)
 
     def import_save(self, filename=None):
         logging.debug("Init save import: " + filename)
@@ -415,6 +488,12 @@ class PlayerSave():
 
         save_file.close()
 
+        self.entity = self.data["save"]["data"]
+
+        metadata_filename = os.path.join(os.path.dirname(self.filename),
+                                         self.get_uuid() + ".metadata")
+        self.metadata = PlayerMetadata(metadata_filename)
+
     def export_save(self, filename=None):
         logging.debug("Init save export: " + self.filename)
         self.data["save"]["data"] = self.entity
@@ -428,6 +507,7 @@ class PlayerSave():
             save_file = open(filename, "wb")
             save_file.write(player_data)
             save_file.close()
+            self.metadata.export_save()
             return filename
         else:
             return player_data
