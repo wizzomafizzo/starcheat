@@ -21,7 +21,7 @@ comment_re = re.compile(
     re.DOTALL | re.MULTILINE
 )
 
-ignore_assets = re.compile(".*\.(db|ds_store|ini|psd)", re.IGNORECASE)
+ignore_assets = re.compile(".*\.(db|ds_store|ini|psd|patch)", re.IGNORECASE)
 ignore_items = re.compile(".*\.(png|config|frames)", re.IGNORECASE)
 
 replace_directive_re = re.compile(
