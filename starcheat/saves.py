@@ -253,8 +253,14 @@ def unpack_starsave(data):
     save["variant_version"] = variant_ver[0]
     offset += 4
 
-    save_data = unpack_variant6(data[offset:])
-    save["data"] = save_data[0][0]
+    sub_ver = unpack_vlq(data[offset:])
+    # TODO: not sure what this is really, best guess
+    save["variant_subversion"] = sub_ver[0]
+    offset += sub_ver[1]
+
+
+    save_data = unpack_variant(data[offset:])
+    save["data"] = save_data[0]
     offset += save_data[1]
 
     return save, offset
@@ -262,12 +268,19 @@ def unpack_starsave(data):
 
 def pack_starsave(var):
     data = b''
+
     entity_name = pack_vlq_str(var["entity_name"])
     data += entity_name
+
     variant_ver = pack("<i", var["variant_version"])
     data += variant_ver
-    save_data = pack_variant6([var["data"]])
+
+    sub_ver = pack_vlq(var["variant_subversion"])
+    data += sub_ver
+
+    save_data = pack_variant(var["data"])
     data += save_data
+
     return data
 
 
@@ -348,7 +361,7 @@ def new_item(name, count=1, data={}):
 
     item = {
         '__id': 'Item',
-        '__version': 1,
+        '__version': 2,
         '__content': new_item_data(name, count, data)
     }
 
@@ -466,7 +479,6 @@ class PlayerSave():
         # populate self.data with save data
         offset = 0
         for var in data_format:
-            # logging.debug("Unpacking " + var[0])
             try:
                 unpacked = unpack_var(var, save_data[offset:])
             except:
@@ -492,7 +504,10 @@ class PlayerSave():
 
         metadata_filename = os.path.join(os.path.dirname(self.filename),
                                          self.get_uuid() + ".metadata")
-        self.metadata = PlayerMetadata(metadata_filename)
+        if os.path.isfile(metadata_filename):
+            self.metadata = PlayerMetadata(metadata_filename)
+        else:
+            logging.warning("Missing metadata file")
 
     def export_save(self, filename=None):
         logging.debug("Init save export: " + self.filename)
@@ -507,7 +522,8 @@ class PlayerSave():
             save_file = open(filename, "wb")
             save_file.write(player_data)
             save_file.close()
-            self.metadata.export_save()
+            if self.metadata is not None:
+                self.metadata.export_save()
             return filename
         else:
             return player_data
