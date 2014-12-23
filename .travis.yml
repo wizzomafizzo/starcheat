@@ -2,8 +2,6 @@ language: objective-c
 before_install:
   - wget https://github.com/chrmoritz/starcheat/releases/download/4f7bd31/local_cache.tar.gz
   - unset PYTHONPATH
-env:
-  secure: "TcFU64a48wQO48pX3zME6b1A0WEhuiGSzfFX4++Y9irxPyvnk9x4PLLbwg2gN6z58GQ68POep9ZD3mcgJVs4VAGEJoxli4wAUCE6VnI/cIl7j98hYw/RoMM4x95r7I07QLL1m2DFBPxlJY9LSqZ+sKd/YoFFTme8oj1UXC0C2oI="
 install:
   - sudo tar xf local_cache.tar.gz -C /usr
 script:
@@ -11,3 +9,13 @@ script:
 branches:
   only:
     - /^v?(\d)+(\.\d+)*$/
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: a+NZtE1KQvLt/32kj9x23c78KJd5fVX/EhL0PexkrirlBI/mjqFD9fqmiHFqNM7fI24h9+Zd5c1qGU+pcmnkxTnb6e8ZCUTrn8lK0AoeNy2HDnBMbingda0cArRR7Rane7EbBkBZmVRW4JDuFxYbpm5ZUcBwaA1T4tLOoN971yQ=
+  file: build/starcheat-$TRAVIS_BRANCH-osx.tar.gz
+  on:
+    repo: wizzomafizzo/starcheat
+    tags: true
+    all_branches: true
