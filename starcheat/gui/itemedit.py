@@ -36,7 +36,7 @@ def import_json(parent):
             return False
         if "count" not in item_data:
             item_data["count"] = 1
-        if "data" not in item_data:
+        if "parameters" not in item_data:
             item_data["parameters"] = {}
         return item_data
 
