@@ -17,11 +17,11 @@ class Starcheat < Formula
   def install
     ENV["PYTHONPATH"] = lib/"python#{/\d\.\d/.match `python3 --version 2>&1`}/site-packages"
     system 'pip3', 'install', '--upgrade', 'setuptools'
-    system 'pip3', 'install', 'Pillow'
+    system 'pip3', 'install', 'Pillow==2.4.0'
     system 'python3', 'build.py', '-v'
 
     cd 'build' do
-      system 'pip3', 'install', 'py2app'
+      system 'pip3', 'install', '--upgrade', 'py2app'
 
       mv '../mac/setup.py', '.'
       # give write access to Qt's frameworks (fixes py2app permission errors)
