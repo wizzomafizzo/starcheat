@@ -1,4 +1,4 @@
-# starcheat [![Build Status](https://travis-ci.org/wizzomafizzo/starcheat.svg)](https://travis-ci.org/wizzomafizzo/starcheat)
+# starcheat [![Build Status](https://travis-ci.org/wizzomafizzo/starcheat.svg)](https://travis-ci.org/wizzomafizzo/starcheat) [![Build status](https://ci.appveyor.com/api/projects/status/j2rbv526aq4r64jl?svg=true)](https://ci.appveyor.com/project/chrmoritz/starcheat-354)
 
 starcheat is a [Starbound](http://playstarbound.com/) player save editor, you can get free pixels with this! (omg)
 

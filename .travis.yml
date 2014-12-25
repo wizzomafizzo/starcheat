@@ -8,7 +8,7 @@ script:
   - mac/travis.rb
 branches:
   only:
-    - /^v?(\d)+(\.\d+)*$/
+    - /^v?\d+(\.\d+)*$/
 deploy:
   provider: releases
   skip_cleanup: true

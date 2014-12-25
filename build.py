@@ -22,7 +22,7 @@ def main():
         from distutils.sysconfig import get_python_lib
         site_packages_dir = get_python_lib()
         pyqt5_dir = os.path.join(site_packages_dir, "PyQt5")
-        cx_freeze_Path = os.path.join(os.path.dirname(os.path.dirname(site_packages_dir)), "Scripts", "cxfreeze.bat")
+        cx_freeze_Path = os.path.join(os.path.dirname(os.path.dirname(site_packages_dir)), "Scripts", "cxfreeze")
         dist = os.path.expanduser(options.dist)
 
     if options.verbose:
@@ -80,7 +80,7 @@ def main():
         if options.verbose:
             print("Launching cx_freeze...")
         icon_path = os.path.join(src_dir, "starcheat", "images", "starcheat.ico")
-        os.system(cx_freeze_Path + " " + os.path.join(prefix, "starcheat.py") + " --target-dir=" + dist + " --base-name=Win32GUI --icon=" + icon_path)
+        os.system("python " + cx_freeze_Path + " " + os.path.join(prefix, "starcheat.py") + " --target-dir=" + dist + " --base-name=Win32GUI --icon=" + icon_path)
         shutil.copy(os.path.join(pyqt5_dir, "libEGL.dll"), dist)
 
         if options.verbose:
