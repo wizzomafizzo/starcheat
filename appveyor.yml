@@ -6,13 +6,13 @@ branches:
     
 environment:
   matrix:
-    - PYTHON: "C:\\Python33"
+    - PYTHON: "C:\\Python34"
       PYTHON_ARCH: "win32"
-      PyQT: "http://downloads.sourceforge.net/pyqt/PyQt5/PyQt-5.2.1/PyQt5-5.2.1-gpl-Py3.3-Qt5.2.0-x32.exe"
+      PyQT: "http://downloads.sourceforge.net/pyqt/PyQt5/PyQt-5.4/PyQt5-5.4-gpl-Py3.4-Qt5.4.0-x32.exe"
 
-    - PYTHON: "C:\\Python33-x64"
+    - PYTHON: "C:\\Python34-x64"
       PYTHON_ARCH: "win64"
-      PyQT: "http://downloads.sourceforge.net/pyqt/PyQt5/PyQt-5.2.1/PyQt5-5.2.1-gpl-Py3.3-Qt5.2.1-x64.exe"
+      PyQT: "http://downloads.sourceforge.net/pyqt/PyQt5/PyQt-5.4/PyQt5-5.4-gpl-Py3.4-Qt5.4.0-x64.exe"
 
 init:
   - ps: "ls -Name \"C:/\""
