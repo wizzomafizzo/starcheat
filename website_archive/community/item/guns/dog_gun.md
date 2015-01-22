@@ -1,6 +1,7 @@
 http://gfycat.com/SparklingUnlinedCrow
 
-<code - dog_gun.txt>
+#### code - dog_gun.txt
+```json
 {
     "count": 1,
     "data": {
@@ -78,4 +79,4 @@ http://gfycat.com/SparklingUnlinedCrow
     },
     "name": "generatedgun"
 }
-</code>
+```

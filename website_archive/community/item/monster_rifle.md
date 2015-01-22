@@ -1,6 +1,7 @@
 You'll have to update the ownerUuid key (search for it on this page) to your own player's UUID otherwise the monster may spawn hostile.
 
-<code - monster_rifle.json>
+#### code - monster_rifle.json
+```json
 {
     "count": 1,
     "data": {
@@ -108,4 +109,4 @@ You'll have to update the ownerUuid key (search for it on this page) to your own
     },
     "name": "generatedgun"
 }
-</code>
+```

@@ -1,0 +1,1 @@
+starcheat supports importing partial player JSON files and will merge them with the current player. If you add any player files to this section, just leave in the relevent keys.

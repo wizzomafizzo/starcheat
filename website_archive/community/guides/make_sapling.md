@@ -1,0 +1,6 @@
+(thanks to Kita on the forums)
+
+ 1.  Spawn a new sapling item
+ 2.  Then go into the assets and pick the type of foliage and stem type you want. They need to be in the same folders. No giant clouds on mushroom stalks.
+ 3.  Next, if you just want a plain tree, set the hues to 0. Otherwise, open up Photoshop and throw in an image of the leaves. adjust the image hue of it to match your taste. Before you accept it, take note of its increment. Should be anywhere between -100 and 100. That's the number you'll use to replace the foliage hue number in Starcheat. Do the same for the stem.
+ 4.  Once the four options are set, you're done. Go in the game, plant the sapling and watch your perfect tree blossom. 

@@ -1,6 +1,0 @@
-Everything in the community section can be edited. This is the place to put any cool stuff you've made in starcheat, ideas or whatever.
-
-  * [[community:guides|Guides]]: Guides/tutorials for using starcheat and editing Starbound assets
-  * [[community:items|Custom Items]]: Item files exported from starcheat
-  * [[community:players|Custom Players]]: JSON player files exported from starcheat
-  * [[community:suggestions|Suggestions]]: Any suggestions or feature requests for starcheat

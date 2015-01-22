@@ -6,10 +6,13 @@ The problem this solves is that offsets of animationParts or placement of object
  
 Some terms I will use that are important:
  
-  * **Object origin:** The {0,0} position for your *object*. This is the position that will be returned by entity.position()
-  * **Animation origin:** The {0,0} position for your *animation*, this is only used for offsets in the .animation file
+
+*  **Object origin:** The {0,0} position for your *object*. This is the position that will be returned by entity.position()
+
+*  **Animation origin:** The {0,0} position for your *animation*, this is only used for offsets in the .animation file
  
-====== Step 1 ======
+# Step 1
+
  
 First you have to determine where you want your object origin. I.e. where in the object you want your 0 position.
 
@@ -19,33 +22,35 @@ The importance of this is that it changes which position in your object that ent
  
 How you shift this is by using the imagePosition parameter. This will set an object origin in the bottom left:
 
-<code>
-"image" : "objectsprite.png",
-"imagePosition" : [0, 0]
-</code>
+```json
+	"image" : "objectsprite.png",
+	"imagePosition" : [0, 0]
+```
 
 This will set an object origin in the middle, if objectsprite.png is 16x16 pixels:
 
-<code>
-"image" : "objectsprite.png",
-"imagePosition" : [-8, -8]
-</code>
+```json	
+	"image" : "objectsprite.png",
+	"imagePosition" : [-8, -8]
+```
 
 Note that I use negative offsets, because you're shifting the *image* position, not the actual origin position.
  
-====== Step 2 ======
+# Step 2
+
  
 All animation parts that should flip nicely must be set to:
 
-<code>
-"centered" : true
-</code>
+```json	
+	"centered" : true
+```
 
 In the animation file.
  
-You should now consider your //animation// origin to be the middle center of your sprite, and set all your offsets relative to that.
+You should now consider your *animation* origin to be the middle center of your sprite, and set all your offsets relative to that.
  
-====== Step 3 ====== 
+#  Step 3
+
 Here's the (somewhat) tricky part. There's an animationPosition parameter in the .object file.
 
 This can be used to move the position of the visible object after you place it.
@@ -60,9 +65,9 @@ meaning it's probably halfway into the ground and shifted to the left.
  
 This is fixable by doing:
  
-<code>
-"animationPosition" : [8, 8]
-</code>
+ ```json
+	"animationPosition" : [8, 8]
+```
 
 Which moves the visual for the object 8 pixels (half the width) to the right, and 8 pixels (half the height) up.
 
@@ -72,14 +77,15 @@ If your object origin is in the middle of the object (you set [-8,-8] as your im
 and your animation origin is in the middle of your object, they should just match up.
 This means you do:
 
-<code>
-"animationPosition" : [0, 0]
-</code>
+```json
+	"animationPosition" : [0, 0]
+```
 
 And it should be placed correctly both in preview and when placed.
  
-====== TL;DR ======
-  - Make imagePosition what you want it to be. (changes where object origin is)
-  - Use centered : true unless you're sure you don't want to (srsly, just do it)
-  - Offset animationParts relative to the CENTER of the object in your .animation file
-  - Adjust animationPosition to make the placed position correct
+# TL;DR
+
+ 1.  Make imagePosition what you want it to be. (changes where object origin is)
+ 2.  Use centered : true unless you're sure you don't want to (srsly, just do it)
+ 3.  Offset animationParts relative to the CENTER of the object in your .animation file
+ 4.  Adjust animationPosition to make the placed position correct
