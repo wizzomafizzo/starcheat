@@ -48,7 +48,9 @@ class Techs():
         self.selected_tech = None
 
         self.ui.tech_list.currentItemChanged.connect(lambda: self.set_select(self.ui.tech_list))
+        self.ui.tech_list.itemDoubleClicked.connect(self.add_tech)
         self.ui.known_list.currentItemChanged.connect(lambda: self.set_select(self.ui.known_list))
+        self.ui.known_list.itemDoubleClicked.connect(self.remove_tech)
 
         self.techs = [None, None, None, None]
         self.equip = [None, None, None, None]
