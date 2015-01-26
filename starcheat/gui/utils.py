@@ -469,7 +469,8 @@ class ModsDialog():
             data += mod + "\n"
 
         filename = QFileDialog.getSaveFileName(self.dialog,
-                                               "Export Mod List As")
+                                               "Export Mod List As",
+                                               filter="Text (*.txt)")
 
         if filename[0] != "":
             json_file = open(filename[0], "w")
