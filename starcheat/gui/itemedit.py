@@ -51,12 +51,14 @@ def import_json(parent):
 
 
 class ItemEditOptions():
-    def __init__(self, parent, key, value):
+    def __init__(self, parent, key, value, title="Edit Item Option"):
         self.dialog = QDialog(parent)
         self.ui = qt_itemeditoptions.Ui_Dialog()
         self.ui.setupUi(self.dialog)
 
         self.option = key, value
+
+        self.dialog.setWindowTitle(title)
 
         self.ui.name.setText(key)
 
@@ -71,12 +73,12 @@ class ItemEditOptions():
         self.ui.name.setFocus()
 
     def validate_options(self):
-        valid = "Item option is valid."
-        invalid = "Item option invalid: %s"
+        valid = "JSON is valid."
+        invalid = "JSON is invalid: %s"
 
         if self.ui.name.text() == "":
             self.ui.valid_label.setStyleSheet("color: red")
-            self.ui.valid_label.setText(invalid % "Option name is empty")
+            self.ui.valid_label.setText("Name field is empty.")
             self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Cancel)
             return
 
@@ -88,7 +90,6 @@ class ItemEditOptions():
         except ValueError as err:
             self.ui.valid_label.setStyleSheet("color: red")
             self.ui.valid_label.setText(invalid % err)
-            # this would be nicer if it just disabled the save button
             self.ui.buttonBox.setStandardButtons(QDialogButtonBox.Cancel)
 
     def get_option(self):

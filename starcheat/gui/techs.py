@@ -94,7 +94,8 @@ class Techs():
     def edit_movement(self):
         edit = ItemEditOptions(self.dialog,
                                "movementController",
-                               self.player.get_movement())
+                               self.player.get_movement(),
+                               "Edit Default Movement")
 
         def save():
             name, value = edit.get_option()
