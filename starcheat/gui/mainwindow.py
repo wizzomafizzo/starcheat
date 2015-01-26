@@ -99,7 +99,7 @@ class MainWindow():
             self.ui.race.addItem(species)
 
         # populate game mode combobox
-        for mode in self.assets.player().mode_types.values():
+        for mode in sorted(self.assets.player().mode_types.values()):
             self.ui.game_mode.addItem(mode)
 
         # set up bag tables
