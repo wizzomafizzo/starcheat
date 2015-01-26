@@ -71,8 +71,8 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
-       <property name="statusTip">
-        <string>Remove Color</string>
+       <property name="toolTip">
+        <string>Remove Selected Replacement</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -88,8 +88,8 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
-       <property name="statusTip">
-        <string>Add Color</string>
+       <property name="toolTip">
+        <string>Add New Replacement</string>
        </property>
        <property name="text">
         <string>...</string>
