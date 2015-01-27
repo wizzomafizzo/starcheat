@@ -240,6 +240,10 @@ class MainWindow():
                 sort_type.triggered.connect(lambda: self.sort_bag(name, "category"))
                 widget.addAction(sort_type)
 
+    def update_title(self):
+        """Update window title with player name."""
+        self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
+
     def save(self):
         """Update internal player dict with GUI values and export to file."""
         logging.info("Saving player file %s", self.player.filename)
@@ -248,6 +252,7 @@ class MainWindow():
         logging.info("Writing file to disk")
         logging.debug(self.player.data)
         self.player.export_save(self.player.filename)
+        self.update_title()
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)
         self.window.setWindowModified(False)
 
@@ -396,6 +401,7 @@ class MainWindow():
         logging.info("Reloading file %s", self.player.filename)
         self.player = saves.PlayerSave(self.player.filename)
         self.update()
+        self.update_title()
         self.ui.statusbar.showMessage("Reloaded " + self.player.filename, 3000)
         self.window.setWindowModified(False)
 
@@ -418,8 +424,7 @@ class MainWindow():
             self.player = character_select.selected
 
         self.update()
-
-        self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
+        self.update_title()
         self.ui.statusbar.showMessage("Opened " + self.player.filename, 3000)
         self.window.setWindowModified(False)
         return True
