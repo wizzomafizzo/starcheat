@@ -6,10 +6,11 @@ starcheat is a [Starbound](http://playstarbound.com/) player save editor, you ca
 
 ## Downloads
 
-Starbound                | starcheat
------------------------- | ---------
-Nightly                  | [dev branch](#building-from-source)
-Enraged Koala (Update 8) | [0.16](https://github.com/wizzomafizzo/starcheat/releases/tag/0.16)
+Starbound          | starcheat
+------------------ | ---------
+Nightly            | [dev branch](#building-from-source)
+**Upbeat Giraffe** | [0.18](https://github.com/wizzomafizzo/starcheat/releases/tag/0.18)
+Enraged Koala      | [0.17](https://github.com/wizzomafizzo/starcheat/releases/tag/0.17)
 
 ## Building from source
 Here is how to build starcheat from source. Make sure everything in the dependencies section is installed before you do a build.
@@ -52,6 +53,8 @@ $ cd <starcheat top folder>
 $ ./build.py
 $ ./build/starcheat.py
 ```
+
+- [Arch Linux (AUR)](https://aur.archlinux.org/packages/starcheat/)
 
 ### Mac
 - Install [homebrew](http://brew.sh/)
