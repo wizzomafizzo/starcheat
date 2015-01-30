@@ -91,14 +91,14 @@ class Config():
             import winreg
             try:
                 starbound_uninstall = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                    "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 211820")
+                    "Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 211820")
                 starbound_path = winreg.QueryValueEx(starbound_uninstall, "InstallLocation")[0]
                 known_locations.append(os.path.normpath(starbound_path))
                 starbound_uninstall.Close()
             except OSError:
                 pass
             try:
-                steam = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\Valve\Steam")
+                steam = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\Valve\\Steam")
                 steam_path = os.path.normpath(winreg.QueryValueEx(steam, "SteamPath")[0])
                 known_locations.append(os.path.join(steam_path, "SteamApps", "common", "Starbound"))
                 steam.Close()
