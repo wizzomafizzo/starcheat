@@ -21,7 +21,7 @@ Here is how to build starcheat from source. Make sure everything in the dependen
 - [Qt 5](http://qt-project.org/downloads) (included in PyQt5 binaries on Windows)
 - [Pillow](https://pypi.python.org/pypi/Pillow/)
 - [py-starbound](https://github.com/blixt/py-starbound)
-- 
+
 **NOTE:** py-starbound is included as a [git submodule](http://git-scm.com/docs/git-submodule) and needs to be cloned with the following commands:
 
 - ```cd <starcheat top folder>```
