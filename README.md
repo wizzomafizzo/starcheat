@@ -18,15 +18,15 @@ Here is how to build starcheat from source. Make sure everything in the dependen
 ### Dependencies
 - [Python 3.3+](http://www.python.org/getit/)
 - [PyQt5](http://www.riverbankcomputing.com/software/pyqt/download5)
-- [Qt 5](http://qt-project.org/downloads) (don't need this on Windows)
+- [Qt 5](http://qt-project.org/downloads) (included in PyQt5 binaries on Windows)
 - [Pillow](https://pypi.python.org/pypi/Pillow/)
 - [py-starbound](https://github.com/blixt/py-starbound)
-
+- 
 **NOTE:** py-starbound is included as a [git submodule](http://git-scm.com/docs/git-submodule) and needs to be cloned with the following commands:
 
 - ```cd <starcheat top folder>```
-- ```git submodule init```
-- ```git submodule update```
+- ```git submodule sync```
+- ```git submodule update --init```
 
 Applications such as [Sourcetree](http://www.sourcetreeapp.com/) should offer to clone it automatically.
 
