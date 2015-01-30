@@ -111,7 +111,7 @@ def save_modified_dialog(parent):
 
 def select_starbound_folder_dialog(parent):
     folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
-    while not os.path.isfile(os.path.join(folder, "starbound.config")):
+    while not os.path.isfile(os.path.join(folder, "giraffe_storage", "starbound.config")):
         dialog = QMessageBox(parent)
         dialog.setWindowTitle("Wrong Starbound Folder")
         dialog.setText("This is not your Starbound folder!")
