@@ -45,8 +45,10 @@ class Config():
         if starbound_folder is None:
             starbound_folder = self.detect_starbound_folder()
 
+        storage_folder = "giraffe_storage"
+
         assets_folder = os.path.join(starbound_folder, "assets")
-        player_folder = os.path.join(starbound_folder, "player")
+        player_folder = os.path.join(starbound_folder, storage_folder, "player")
         backup_folder = os.path.join(config_folder, "backups")
         pak_hash = "none"
         make_backups = "no"
