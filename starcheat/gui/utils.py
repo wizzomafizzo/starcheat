@@ -111,11 +111,11 @@ def save_modified_dialog(parent):
 
 def select_starbound_folder_dialog(parent):
     folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
-    while not os.path.isfile(os.path.join(folder, "giraffe_storage", "starbound.config")):
+    while not os.path.isfile(os.path.join(folder, "assets", "packed.pak")):
         dialog = QMessageBox(parent)
         dialog.setWindowTitle("Wrong Starbound Folder")
         dialog.setText("This is not your Starbound folder!")
-        dialog.setInformativeText("Please try again and select your Starbound folder, which should contain the starbound.config file.")
+        dialog.setInformativeText("Please try again and select your Starbound folder, which should contain the assets folder.")
         dialog.setIcon(QMessageBox.Warning)
         dialog.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
         answer = dialog.exec()

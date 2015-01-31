@@ -105,7 +105,7 @@ class Config():
             except OSError:
                 pass
 
-        for filename in known_locations:
-            if os.path.isdir(filename):
-                return filename
+        for path in known_locations:
+            if os.path.isdir(path) and os.path.isfile(os.path.join(path, "assets", "packed.pak")):
+                return path
         return ""
