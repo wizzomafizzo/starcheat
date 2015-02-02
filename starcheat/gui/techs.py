@@ -206,7 +206,7 @@ class Techs():
         icon = QPixmap.fromImage(ImageQt(tech[1]))
         getattr(self.ui, "icon"+str(index+1)).setPixmap(icon.scaled(32,32))
         getattr(self.ui, "icon"+str(index+1)).setToolTip(tech[0]["shortdescription"])
-        self.techs[index] = saves.new_item(tech[0]["techModule"])
+        self.techs[index] = new_tech_slot(tech[0]["techModule"])
         self.equip[index] = tech[0]["itemName"]
         self.update_selection()
 
