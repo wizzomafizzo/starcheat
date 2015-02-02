@@ -57,13 +57,20 @@ $ ./build/starcheat.py
 - [Arch Linux (AUR)](https://aur.archlinux.org/packages/starcheat/)
 
 ### Mac
+
+##### Install
 - Install [homebrew](http://brew.sh/)
 - ```$ brew update```
-- ```$ brew install https://raw.github.com/wizzomafizzo/starcheat/master/mac/starcheat.rb``` (optionally pass ```--without-app``` (create no .app) or ```--without-binary``` (creates no binary linked into your prefix) )
-- ```brew linkapps``` (symlinks the .app into your Applications folder)
+- ```$ brew tap chrmoritz/starcheat```
+- ```$ brew install starcheat``` (optionally pass ```--without-app``` to not create a `.app`)
+- ```brew linkapps starcheat``` (symlinks the `.app` into your Applications folder)
+
+##### Update
+- ```$ brew update``` (check if starcheat is in the updated formula list)
+- ```$ brew upgrade starcheat``` (if its in the list above or in `brew outdated`)
 
 ## Release checklist
 - [ ] Update version string in [config.py](starcheat/config.py)
-- [ ] Update version string in [brew file](mac/starcheat.rb)
+- [ ] Update version string in starcheat tap's [brew file](https://github.com/chrmoritz/homebrew-starcheat/blob/master/starcheat.rb)
 - [ ] Update storage name in [config.py](starcheat/config.py) and [assets.py](starcheat/assets.py)
 - [ ] Tag release
