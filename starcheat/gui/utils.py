@@ -345,25 +345,16 @@ class CharacterSelectDialog():
     def get_players(self):
         players_found = {}
 
-        def get_folder(folder):
-            for f in os.listdir(folder):
+        try:
+            for f in os.listdir(self.player_folder):
                 if f.endswith(".player"):
                     try:
-                        player = saves.PlayerSave(os.path.join(folder, f))
+                        player = saves.PlayerSave(os.path.join(self.player_folder, f))
                         players_found[player.get_name()] = player
                     except saves.WrongSaveVer:
                         logging.info("Save file %s is not compatible", f)
-
-        scan_folders = [self.player_folder,
-                        os.path.join(Config().read("starbound_folder"),
-                                     "storage_unstable",
-                                     "player")]
-
-        for folder in scan_folders:
-            if os.path.isdir(folder):
-                get_folder(folder)
-            else:
-                logging.warning("Unable to open player dir: %s", folder)
+        except FileNotFoundError:
+            logging.exception("Could not open %s", self.player_folder)
 
         self.players = players_found
 
