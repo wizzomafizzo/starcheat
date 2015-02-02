@@ -145,6 +145,7 @@ def string_color(name):
 class Assets():
     def __init__(self, db_file, starbound_folder):
         self.starbound_folder = starbound_folder
+        self.mods_folder = os.path.join(self.starbound_folder, "giraffe_storage", "mods")
         self.db = sqlite3.connect(db_file)
         self.vanilla_assets = os.path.join(self.starbound_folder, "assets", "packed.pak")
 
@@ -214,7 +215,7 @@ class Assets():
         vanilla_assets = self.scan_asset_folder(vanilla_path)
         [index.append(x) for x in vanilla_assets]
 
-        mods_path = os.path.join(self.starbound_folder, "mods")
+        mods_path = self.mods_folder
         if not os.path.isdir(mods_path):
             return index
 

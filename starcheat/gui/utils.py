@@ -21,7 +21,7 @@ from gui.common import preview_icon
 
 def make_pak_hash():
     vanilla = os.path.join(Config().read("assets_folder"), "packed.pak")
-    mods = os.path.join(Config().read("starbound_folder"), "mods")
+    mods = Config().read("mods_folder")
     pak_list = [vanilla]
     timestamps = []
 
