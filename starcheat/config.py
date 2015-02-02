@@ -92,8 +92,10 @@ class Config():
         if platform.system() == "Windows":
             import winreg
             try:
-                starbound_uninstall = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                    "Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 211820")
+                key = "Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 211820"
+                if platform.machine().endswith('86'):
+                    key = "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 211820"
+                starbound_uninstall = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key)
                 starbound_path = winreg.QueryValueEx(starbound_uninstall, "InstallLocation")[0]
                 known_locations.append(os.path.normpath(starbound_path))
                 starbound_uninstall.Close()
