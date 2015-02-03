@@ -22,7 +22,7 @@ comment_re = re.compile(
 )
 
 ignore_assets = re.compile(".*\.(db|ds_store|ini|psd|patch)", re.IGNORECASE)
-ignore_items = re.compile(".*\.(png|config|frames)", re.IGNORECASE)
+ignore_items = re.compile(".*\.(png|config|frames|lua)", re.IGNORECASE)
 
 replace_directive_re = re.compile(
     "(?:\?replace((?:;[a-fA-F0-9]{1,6}=[a-fA-F0-9]{1,6}){1,}))"
