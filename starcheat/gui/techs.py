@@ -59,16 +59,15 @@ class Techs():
         current = 1
         for i in self.player.get_equipped_techs():
             try:
-                if i is not None:
-                    name = i["__content"]["name"].replace("Tech", "")
-                    tech = self.assets.techs().get_tech(name)
-                    icon = QPixmap.fromImage(ImageQt(tech[1]))
-                    getattr(self.ui, "icon"+str(current)).setPixmap(icon.scaled(32,32))
-                    getattr(self.ui, "icon"+str(current)).setToolTip(tech[0]["shortdescription"])
-                    self.techs[current-1] = i
-                    self.equip[current-1] = tech[0]["itemName"]
+                name = i["__content"]["name"].replace("Tech", "")
+                tech = self.assets.techs().get_tech(name)
+                icon = QPixmap.fromImage(ImageQt(tech[1]))
+                getattr(self.ui, "icon"+str(current)).setPixmap(icon.scaled(32,32))
+                getattr(self.ui, "icon"+str(current)).setToolTip(tech[0]["shortdescription"])
+                self.techs[current-1] = i
+                self.equip[current-1] = tech[0]["itemName"]
             except TypeError:
-                logging.exception("Couldn't load tech: %s", i["modulePath"])
+                logging.exception("Couldn't load tech")
                 pass
 
             current += 1
