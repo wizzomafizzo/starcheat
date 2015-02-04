@@ -260,9 +260,7 @@ class OptionsDialog():
 
     def write(self):
         starbound_folder = self.ui.starbound_folder.text()
-        self.config.set("starbound_folder", starbound_folder)
-        self.config.set("assets_folder", os.path.join(starbound_folder, "assets"))
-        self.config.set("player_folder", os.path.join(starbound_folder, "player"))
+        self.config.create_config(starbound_folder)
 
     def open_starbound(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
