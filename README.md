@@ -12,6 +12,9 @@ Nightly            | [dev branch](#building-from-source)
 **Upbeat Giraffe** | [0.18.2](https://github.com/wizzomafizzo/starcheat/releases/tag/0.18.2)
 Enraged Koala      | [0.17](https://github.com/wizzomafizzo/starcheat/releases/tag/0.17)
 
+## Reporting a Issue
+Please read and follow these [instructions](CONTRIBUTING.md) when reporting an issue. This will help us fix your issue faster, because we don't need to ask you for additional informations.
+
 ## Building from source
 Here is how to build starcheat from source. Make sure everything in the dependencies section is installed before you do a build.
 
