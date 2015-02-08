@@ -18,7 +18,7 @@ import saves, assets, qt_mainwindow
 from config import Config
 from gui.common import ItemWidget, empty_slot
 from gui.utils import CharacterSelectDialog, OptionsDialog, AboutDialog, ModsDialog
-from gui.utils import save_modified_dialog, new_setup_dialog, check_index_valid
+from gui.utils import save_modified_dialog, new_setup_dialog, check_index_valid, update_check
 from gui.itemedit import ItemEdit, ImageBrowser, import_json
 from gui.blueprints import BlueprintLib
 from gui.itembrowser import ItemBrowser
@@ -56,6 +56,8 @@ class MainWindow():
         self.ui.setupUi(self.window)
 
         logging.info("Main window init")
+
+        update_check(self.window)
 
         # launch first setup if we need to
         if not new_setup_dialog(self.window):
