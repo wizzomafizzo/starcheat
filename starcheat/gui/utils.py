@@ -4,12 +4,15 @@ Utility dialogs for starcheat itself
 
 import os, sys, platform, subprocess, shutil, hashlib
 import datetime
+import webbrowser
 
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from PyQt5.QtWidgets import QListWidgetItem, QProgressDialog
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5 import QtGui, QtCore
 from PIL.ImageQt import ImageQt
+from urllib.request import urlopen
+from urllib.error import URLError
 
 import saves, assets, logging, config
 import qt_options, qt_openplayer, qt_about, qt_mods
@@ -227,6 +230,25 @@ def unpack_assets():
         dialog.setIcon(QMessageBox.Warning)
         dialog.exec()
         sys.exit()
+
+def update_check(parent):
+    try:
+        latest_tag = urlopen("https://github.com/wizzomafizzo/starcheat/releases/latest").geturl()
+        if latest_tag.find("github.com/wizzomafizzo/starcheat/releases") >= 0:
+            if not latest_tag.endswith("tag/" + config.STARCHEAT_VERSION_TAG):
+                dialog = QMessageBox(parent)
+                dialog.setWindowTitle("Outdated starcheat version")
+                dialog.setText("A new version of starcheat is available! Do you want to update now?")
+                dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+                dialog.setDefaultButton(QMessageBox.Yes)
+                dialog.setIcon(QMessageBox.Question)
+                if dialog.exec() == QMessageBox.Yes:
+                    webbrowser.open(latest_tag, 2)
+                    sys.exit(0)
+        else:
+            logging.info("skipping update check because of failed redirect")
+    except URLError:
+        logging.info("skipping update check because of no internet connection")
 
 class AboutDialog():
     def __init__(self, parent):
