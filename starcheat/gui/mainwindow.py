@@ -252,7 +252,6 @@ class MainWindow():
         self.set_bags()
         # save and show status
         logging.info("Writing file to disk")
-        logging.debug(self.player.data)
         self.player.export_save(self.player.filename)
         self.update_title()
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)

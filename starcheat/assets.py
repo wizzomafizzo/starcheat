@@ -166,6 +166,7 @@ class Assets():
         return c.fetchone()[0]
 
     def create_index(self, asset_files=False):
+        logging.info("Creating new assets index...")
         if not asset_files:
             asset_files = self.find_assets()
 
@@ -203,6 +204,7 @@ class Assets():
                 c.execute(new_index_query, tmp_data)
 
         self.db.commit()
+        logging.info("Finished creating index")
 
     def find_assets(self):
         """Scan all Starbound assets and return key/file list.
@@ -212,6 +214,7 @@ class Assets():
         """
         index = []
         vanilla_path = os.path.join(self.starbound_folder, "assets")
+        logging.info("Scanning vanilla assets")
         vanilla_assets = self.scan_asset_folder(vanilla_path)
         [index.append(x) for x in vanilla_assets]
 
@@ -222,9 +225,11 @@ class Assets():
         for mod in os.listdir(mods_path):
             mod_folder = os.path.join(mods_path, mod)
             if os.path.isdir(mod_folder):
+                logging.info("Scanning mod folder: " + mod)
                 mod_assets = self.scan_asset_folder(mod_folder)
                 [index.append(x) for x in mod_assets]
             elif mod_folder.endswith(".modpak"):
+                logging.info("Scanning modpak: " + mod)
                 mod_assets = self.scan_modpak(mod_folder)
                 [index.append(x) for x in mod_assets]
         return index
@@ -248,8 +253,6 @@ class Assets():
             mod_assets = None
             files = os.listdir(folder)
 
-            logging.debug(files)
-
             # TODO: will need more logic to handle .modpack with modinfo inside.
             found_mod_info = False
 
@@ -268,7 +271,6 @@ class Assets():
                         folder = os.path.join(folder, "assets")
                         if os.path.isdir(folder):
                             mod_assets = folder
-            logging.debug(mod_assets)
 
             if mod_assets is None:
                 return index
@@ -577,6 +579,7 @@ class Items():
         Find the first hit in the DB for a given item name, return the
         parsed asset file and location.
         """
+        logging.debug("Lookup item: " + name)
         c = self.assets.db.cursor()
         c.execute("select key, path, desc from assets where type = 'item' and name = ?", (name,))
         meta = c.fetchone()
@@ -594,7 +597,6 @@ class Items():
 
     def get_item_icon(self, name):
         """Return the path and spritesheet offset of a given item name."""
-        logging.debug("Loading %s icon", name)
         try:
             item = self.get_item(name)
             icon_file = item[0]["inventoryIcon"]

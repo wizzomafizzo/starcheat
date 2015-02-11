@@ -208,7 +208,6 @@ def pack_variant7(var):
     total = len(var)
     dict_items = b""
     for k in var.keys():
-        # logging.debug(k)
         key = pack_vlq_str(k)
         value = pack_variant(var[k])
         dict_items += key + value
@@ -515,7 +514,6 @@ class PlayerSave():
         player_data = b""
 
         for var in data_format:
-            # logging.debug("Packing " + var[0])
             player_data += pack_var(var, self.data[var[0]])
 
         if filename is not None:
