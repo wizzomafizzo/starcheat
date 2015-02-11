@@ -431,14 +431,15 @@ class Images():
             else:
                 return None
 
-        def do_replace(item_key):
+        def do_replace(item_key, new_image):
             if type(item_key) is not str:
-                return
+                return new_image
 
             replace = get_replace(item_key)
             if replace is not None:
                 replace = unpack_color_directives(replace)
                 new_image = replace_colors(new_image, replace)
+            return new_image
 
         if "directives" in data_keys:
             replace = unpack_color_directives(item_data["directives"])
@@ -446,11 +447,11 @@ class Images():
         elif "colorOptions" in data_keys:
             pass
         elif "image" in data_keys:
-            do_replace(item_data["image"])
+            new_image = do_replace(item_data["image"], new_image)
         elif "largeImage" in data_keys:
-            do_replace(item_data["largeImage"])
+            new_image = do_replace(item_data["largeImage"], new_image)
         elif "inventoryIcon" in data_keys:
-            do_replace(item_data["inventoryIcon"])
+            new_image = do_replace(item_data["inventoryIcon"], new_image)
         elif "materialHueShift" in data_keys:
             pass
         elif "drawables" in data_keys:
