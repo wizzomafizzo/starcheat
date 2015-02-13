@@ -810,15 +810,17 @@ class Items():
             "primaryStances": item[0]["primaryStances"]
         }
 
-        generated_sword["primaryStances"]["projectileType"] = item[0]["primaryStances"]["projectileTypes"][0]
-        generated_sword["primaryStances"]["projectile"]["level"] = 1.0
-        generated_sword["primaryStances"]["projectile"]["power"] = 5.0
+        if "projectileTypes" in item[0]["primaryStances"]:
+            generated_sword["primaryStances"]["projectileType"] = item[0]["primaryStances"]["projectileTypes"][0]
+            generated_sword["primaryStances"]["projectile"]["level"] = 1.0
+            generated_sword["primaryStances"]["projectile"]["power"] = 5.0
 
         if "altStances" in item[0]:
             generated_sword["altStances"] = item[0]["altStances"]
-            generated_sword["altStances"]["projectileType"] = item[0]["altStances"]["projectileTypes"][0]
-            generated_sword["altStances"]["projectile"]["level"] = 1.0
-            generated_sword["altStances"]["projectile"]["power"] = 5.0
+            if "projectileTypes" in item[0]["altStances"]:
+                generated_sword["altStances"]["projectileType"] = item[0]["altStances"]["projectileTypes"][0]
+                generated_sword["altStances"]["projectile"]["level"] = 1.0
+                generated_sword["altStances"]["projectile"]["power"] = 5.0
 
         if "inspectionKind" in item[0]:
             generated_sword["inspectionKind"] = item[0]["inspectionKind"]
