@@ -252,19 +252,23 @@ class ItemEdit():
             "generatedsword": lambda: self.assets.items().generate_sword(item),
             "generatedshield": lambda: self.assets.items().generate_shield(item),
             "sapling": lambda: self.assets.items().generate_sapling(item),
-            "filledcapturepod": lambda: self.assets.items().generate_filledcapturepod(item,
-                                                                                      uuid)
+            "filledcapturepod": lambda: self.assets.items().generate_filledcapturepod(item, uuid)
         }
 
         if item is not None:
             category = re.search("\..+$", item[1])
+
             is_generated = (category is not None and
                             category.group()[1:] in generated_item.keys())
+            is_sapling = name == "sapling"
+
             if is_generated:
                 name = category.group()[1:]
                 self.ui.item_type.setText(name)
                 generated = generated_item[name]()
                 self.item = saves.new_item_data(name, 1, generated)
+            elif is_sapling:
+                self.item = saves.new_item_data(name, 1, generated_item["sapling"]())
             else:
                 self.item = saves.new_item_data(name, 1, item[0])
 
