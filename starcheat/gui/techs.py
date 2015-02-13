@@ -64,7 +64,7 @@ class Techs():
                 icon = QPixmap.fromImage(ImageQt(tech[1]))
                 getattr(self.ui, "icon"+str(current)).setPixmap(icon.scaled(32,32))
                 getattr(self.ui, "icon"+str(current)).setToolTip(tech[0]["shortdescription"])
-                self.techs[current-1] = i
+                self.techs[current-1] = new_tech_slot(name)
                 self.equip[current-1] = tech[0]["itemName"]
             except TypeError:
                 logging.exception("Couldn't load tech")
