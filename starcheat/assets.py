@@ -846,7 +846,7 @@ class Items():
             "inspectionKind": "",
             "knockbackDamageKind": "",
             "knockbackPower": 10,
-            "recoil": 0.2,
+            "recoilTime": 0.2,
             "damagePoly": [[-8,0], [8,18], [8,-18]],
             "shieldPoly": [[-8,0], [-8,12], [8,20], [8,-24], [-8,-12]],
             "statusEffects": [ { "amount": 30, "kind": "Shield" } ],
@@ -871,7 +871,7 @@ class Items():
             generated_shield["hitSound"] = item[0]["hitSound"]
 
         if "recoil" in item[0]["baseline"]:
-            generated_shield["recoil"] = item[0]["baseline"]["recoil"]
+            generated_shield["recoilTime"] = item[0]["baseline"]["recoil"]
 
         if "knockbackPower" in item[0]["baseline"]:
             generated_shield["knockbackPower"] = item[0]["baseline"]["knockbackPower"]
