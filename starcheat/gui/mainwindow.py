@@ -70,7 +70,7 @@ class MainWindow():
             logging.error("Index creation failed")
             return
 
-        self.player = {}
+        self.players = None
         self.filename = None
 
         logging.debug("Loading assets database")
@@ -257,6 +257,7 @@ class MainWindow():
         self.update_title()
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)
         self.window.setWindowModified(False)
+        self.players[self.player.get_uuid()] = self.player
 
     def new_item_edit(self, bag, do_import):
         """Display a new item edit dialog using the select cell in a given bag."""
@@ -418,6 +419,8 @@ class MainWindow():
 
         character_select = CharacterSelectDialog(self, self.assets)
         character_select.show()
+
+        self.players = character_select.players
 
         if character_select.selected is None:
             logging.warning("No player selected")

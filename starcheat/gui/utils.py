@@ -340,6 +340,11 @@ class CharacterSelectDialog():
 
         self.parent = parent
 
+        if self.parent.players is not None:
+            self.players = self.parent.players
+        else:
+            self.players = None
+
         self.player_folder = Config().read("player_folder")
         self.backup_folder = Config().read("backup_folder")
         self.selected = None
@@ -350,7 +355,9 @@ class CharacterSelectDialog():
         self.ui.player_list.itemDoubleClicked.connect(self.dialog.accept)
         self.ui.trash_button.clicked.connect(self.trash_player)
 
-        self.get_players()
+        if self.players is None:
+            self.get_players()
+
         self.populate()
         self.ui.player_list.setFocus()
 
