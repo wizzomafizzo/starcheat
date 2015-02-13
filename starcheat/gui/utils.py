@@ -232,6 +232,7 @@ def unpack_assets():
         sys.exit()
 
 def update_check(parent):
+    logging.info("Checking for updates")
     try:
         latest_tag = urlopen("https://github.com/wizzomafizzo/starcheat/releases/latest").geturl()
         if latest_tag.find("github.com/wizzomafizzo/starcheat/releases") >= 0:
@@ -358,8 +359,9 @@ class CharacterSelectDialog():
 
         if self.players is None:
             self.get_players()
+        else:
+            self.populate()
 
-        self.populate()
         self.ui.player_list.setFocus()
 
     def accept(self):
@@ -374,19 +376,32 @@ class CharacterSelectDialog():
 
     def get_players(self):
         players_found = {}
+        player_files = [x for x in os.listdir(self.player_folder) if x.endswith(".player")]
+
+        total = 0
+        progress = QProgressDialog("Reading player files...",
+                                   None, 0, len(player_files),
+                                   self.dialog)
+
+        progress.setWindowTitle("Reading...")
+        progress.setWindowModality(QtCore.Qt.ApplicationModal)
+        progress.forceShow()
+        progress.setValue(total)
 
         try:
-            for f in os.listdir(self.player_folder):
-                if f.endswith(".player"):
-                    try:
-                        player = saves.PlayerSave(os.path.join(self.player_folder, f))
-                        players_found[player.get_uuid()] = player
-                    except saves.WrongSaveVer:
-                        logging.info("Save file %s is not compatible", f)
+            for f in player_files:
+                try:
+                    player = saves.PlayerSave(os.path.join(self.player_folder, f))
+                    players_found[player.get_uuid()] = player
+                except saves.WrongSaveVer:
+                    logging.info("Save file %s is not compatible", f)
+                total += 1
+                progress.setValue(total)
         except FileNotFoundError:
             logging.exception("Could not open %s", self.player_folder)
 
         self.players = players_found
+        self.populate()
 
     def populate(self):
         total = 0
@@ -407,6 +422,7 @@ class CharacterSelectDialog():
             self.ui.player_list.addItem(list_item)
 
             total += 1
+
         self.ui.total_label.setText(str(total) + " total")
         self.ui.player_list.setCurrentRow(0)
 
@@ -470,7 +486,6 @@ class CharacterSelectDialog():
                 break
 
         self.get_players()
-        self.populate()
 
 class ModsDialog():
     def __init__(self, parent):
