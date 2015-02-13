@@ -257,18 +257,18 @@ class ItemEdit():
 
         if item is not None:
             category = re.search("\..+$", item[1])
+            gen_match_cat = (category is not None and
+                             category.group()[1:] in generated_item.keys())
+            gen_match_name = name in generated_item.keys()
 
-            is_generated = (category is not None and
-                            category.group()[1:] in generated_item.keys())
-            is_sapling = name == "sapling"
-
-            if is_generated:
+            if gen_match_cat:
                 name = category.group()[1:]
                 self.ui.item_type.setText(name)
                 generated = generated_item[name]()
                 self.item = saves.new_item_data(name, 1, generated)
-            elif is_sapling:
-                self.item = saves.new_item_data(name, 1, generated_item["sapling"]())
+            elif gen_match_name:
+                generated = generated_item[name]()
+                self.item = saves.new_item_data(name, 1, generated)
             else:
                 self.item = saves.new_item_data(name, 1, item[0])
 
