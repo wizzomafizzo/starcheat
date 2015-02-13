@@ -334,9 +334,11 @@ class PlayerWidget(QListWidgetItem):
 # TODO: support stuff like sorting by date (needs to be a table widget)
 class CharacterSelectDialog():
     def __init__(self, parent, assets):
-        self.dialog = QDialog(parent)
+        self.dialog = QDialog(parent.window)
         self.ui = qt_openplayer.Ui_OpenPlayer()
         self.ui.setupUi(self.dialog)
+
+        self.parent = parent
 
         self.player_folder = Config().read("player_folder")
         self.backup_folder = Config().read("backup_folder")
@@ -370,7 +372,7 @@ class CharacterSelectDialog():
                 if f.endswith(".player"):
                     try:
                         player = saves.PlayerSave(os.path.join(self.player_folder, f))
-                        players_found[player.get_name()] = player
+                        players_found[player.get_uuid()] = player
                     except saves.WrongSaveVer:
                         logging.info("Save file %s is not compatible", f)
         except FileNotFoundError:
@@ -381,12 +383,17 @@ class CharacterSelectDialog():
     def populate(self):
         total = 0
         self.ui.player_list.clear()
-        for name in sorted(self.players.keys()):
-            player = self.players[name]
+
+        names = {}
+        for uuid in self.players.keys():
+            names[self.players[uuid].get_name()] = uuid
+
+        for name in sorted(names.keys()):
+            player = self.players[names[name]]
             preview = self.assets.species().render_player(player)
             pixmap = QPixmap.fromImage(ImageQt(preview))
             played = datetime.timedelta(seconds=int(player.get_play_time()))
-            list_item = PlayerWidget("%s [%s]" % (name, played), name)
+            list_item = PlayerWidget("%s [%s]" % (name, played), names[name])
 
             list_item.setIcon(QtGui.QIcon(pixmap))
             self.ui.player_list.addItem(list_item)

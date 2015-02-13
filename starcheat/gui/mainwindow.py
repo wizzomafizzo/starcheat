@@ -70,6 +70,7 @@ class MainWindow():
             logging.error("Index creation failed")
             return
 
+        self.player = {}
         self.filename = None
 
         logging.debug("Loading assets database")
@@ -415,7 +416,7 @@ class MainWindow():
             elif button == QMessageBox.Save:
                 self.save()
 
-        character_select = CharacterSelectDialog(self.window, self.assets)
+        character_select = CharacterSelectDialog(self, self.assets)
         character_select.show()
 
         if character_select.selected is None:
