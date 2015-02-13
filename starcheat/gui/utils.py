@@ -354,6 +354,7 @@ class CharacterSelectDialog():
         self.dialog.accepted.connect(self.accept)
         self.ui.player_list.itemDoubleClicked.connect(self.dialog.accept)
         self.ui.trash_button.clicked.connect(self.trash_player)
+        self.ui.refresh_button.clicked.connect(self.get_players)
 
         if self.players is None:
             self.get_players()

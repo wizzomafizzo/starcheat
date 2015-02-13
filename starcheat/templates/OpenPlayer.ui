@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>310</width>
+    <width>400</width>
     <height>300</height>
    </rect>
   </property>
@@ -95,6 +95,20 @@
        <property name="icon">
         <iconset resource="../resources.qrc">
          <normaloff>:/starcheat/images/icons/glyphicons_halflings_019_trash.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_019_trash.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="refresh_button">
+       <property name="toolTip">
+        <string>Refresh Players</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/starcheat/images/icons/glyphicons_halflings_030_refresh.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_030_refresh.png</iconset>
        </property>
       </widget>
      </item>
