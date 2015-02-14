@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>765</width>
-    <height>595</height>
+    <width>762</width>
+    <height>599</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1239,13 +1239,13 @@
           <property name="minimumSize">
            <size>
             <width>388</width>
-            <height>180</height>
+            <height>184</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>390</width>
-            <height>190</height>
+            <height>186</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -1634,16 +1634,8 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>7</pointsize>
-           </font>
-          </property>
           <property name="text">
            <string>Save Ver</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -2077,11 +2069,6 @@ border-radius: 4px;
             <property name="enabled">
              <bool>false</bool>
             </property>
-            <property name="font">
-             <font>
-              <pointsize>7</pointsize>
-             </font>
-            </property>
             <property name="text">
              <string>UUID</string>
             </property>
@@ -2245,7 +2232,7 @@ border-radius: 4px;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>765</width>
+     <width>762</width>
      <height>31</height>
     </rect>
    </property>

@@ -81,11 +81,6 @@
            <height>0</height>
           </size>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
          <property name="text">
           <string>&lt;html&gt;&lt;body&gt;&lt;strong&gt;Empty Slot&lt;/strong&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
