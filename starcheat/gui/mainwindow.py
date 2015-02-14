@@ -337,6 +337,7 @@ class MainWindow():
         self.window.setWindowModified(True)
 
     def sort_bag(self, bag_name, sort_by):
+        self.set_bags()
         bag = getattr(self.player, "get_" + bag_name)()
         sorted_bag = self.assets.player().sort_bag(bag, sort_by)
         getattr(self.player, "set_" + bag_name)(sorted_bag)
