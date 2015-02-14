@@ -4,3 +4,5 @@ starcheat/__pycache__/
 .projectile
 .DS_Store
 *.org
+*.org_archive
+*.json
