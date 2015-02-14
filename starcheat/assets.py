@@ -148,6 +148,7 @@ class Assets():
         self.mods_folder = os.path.join(self.starbound_folder, "giraffe_storage", "mods")
         self.db = sqlite3.connect(db_file)
         self.vanilla_assets = os.path.join(self.starbound_folder, "assets", "packed.pak")
+        self.image_cache = {}
 
     def init_db(self):
         c = self.db.cursor()
@@ -308,16 +309,24 @@ class Assets():
             key = key.lower()
             db = starbound.open_file(path)
 
+            # try the cache first
+            if image and key in self.image_cache:
+                return self.image_cache[key]
+
             try:
                 data = db.get(key)
             except KeyError:
                 if image and path != self.vanilla_assets:
-                    return self.read(key, self.vanilla_assets, image)
+                    img = self.read(key, self.vanilla_assets, image)
+                    self.image_cache[key] = img
+                    return img
                 else:
                     logging.exception("Unable to read db asset '%s' from '%s'" % (key, path))
                     return None
             if image:
-                return data
+                img = data
+                self.image_cache[key] = img
+                return img
             else:
                 try:
                     asset = parse_json(data.decode("utf-8"), key)
@@ -329,16 +338,22 @@ class Assets():
             asset_file = os.path.join(path, key[1:])
             try:
                 if image:
-                    return open(asset_file, "rb").read()
+                    img = open(asset_file, "rb").read()
+                    self.image_cache[key] = img
+                    return img
                 else:
                     asset = load_asset_file(asset_file)
                     return asset
             except (FileNotFoundError, ValueError):
                 if image and path != self.vanilla_assets:
                     if self.is_packed_file(self.vanilla_assets):
-                        return self.read(key.replace("\\", "/"), self.vanilla_assets, image)
+                        img = self.read(key.replace("\\", "/"), self.vanilla_assets, image)
+                        self.image_cache[key] = img
+                        return img
                     else:
-                        return self.read(key, self.vanilla_assets, image)
+                        img = self.read(key, self.vanilla_assets, image)
+                        self.image_cache[key] = img
+                        return img
                 else:
                     logging.exception("Unable to read asset file '%s' from '%s'" % (key, path))
                     return None
