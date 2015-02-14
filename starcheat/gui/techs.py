@@ -58,6 +58,9 @@ class Techs():
         # populate equipped techs
         current = 1
         for i in self.player.get_equipped_techs():
+            if i is None:
+                continue
+
             try:
                 name = i["__content"]["name"].replace("Tech", "")
                 tech = self.assets.techs().get_tech(name)
