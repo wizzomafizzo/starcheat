@@ -603,6 +603,9 @@ class PlayerSave():
     def get_blueprints(self):
         return self.entity["blueprints"]["knownBlueprints"]
 
+    def get_new_blueprints(self):
+        return self.entity["blueprints"]["newBlueprints"]
+
     def get_personality(self):
         # these don't seem to be used yet
         # self.entity["identity"]["personalityArmIdle"]
@@ -664,6 +667,9 @@ class PlayerSave():
     # here be setters
     def set_blueprints(self, blueprints):
         self.entity["blueprints"]["knownBlueprints"] = blueprints
+
+    def set_new_blueprints(self, blueprints):
+        self.entity["blueprints"]["newBlueprints"] = blueprints
 
     def set_name(self, name):
         self.entity["identity"]["name"] = name
@@ -776,6 +782,9 @@ class PlayerSave():
         }
         self.entity["inventory"]["primaryHeldSlot"] = empty
         self.entity["inventory"]["altHeldSlot"] = empty
+
+    def clear_new_blueprints(self):
+        self.entity["blueprints"]["newBlueprints"] = []
 
     def set_tech_modules(self, techs, equip):
         # this works similar to the equip items in that it needs to be set

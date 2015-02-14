@@ -353,11 +353,14 @@ class MainWindow():
     def new_blueprint_edit(self):
         """Launch a new blueprint management dialog."""
         logging.debug("New blueprint dialog")
-        blueprint_lib = BlueprintLib(self.window, self.player.get_blueprints())
+        blueprint_lib = BlueprintLib(self.window,
+                                     self.player.get_blueprints(),
+                                     self.player.get_new_blueprints())
 
         def update_blueprints():
             logging.debug("Writing blueprints")
             self.player.set_blueprints(blueprint_lib.get_known_list())
+            self.player.set_new_blueprints(blueprint_lib.new_blueprints)
             blueprint_lib.dialog.close()
             self.set_edited()
 

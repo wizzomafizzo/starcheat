@@ -16,7 +16,7 @@ class BlueprintItem(QListWidgetItem):
         self.blueprint = blueprint
 
 class BlueprintLib():
-    def __init__(self, parent, known_blueprints):
+    def __init__(self, parent, known_blueprints, new_blueprints):
         """Blueprint library management dialog."""
         self.dialog = QDialog(parent)
         self.ui = qt_blueprints.Ui_Dialog()
@@ -28,6 +28,7 @@ class BlueprintLib():
 
         self.blueprints = self.assets.blueprints()
         self.known_blueprints = known_blueprints
+        self.new_blueprints = new_blueprints
 
         # populate known list
         self.ui.known_blueprints.clear()
@@ -44,6 +45,9 @@ class BlueprintLib():
         for cat in self.blueprints.get_categories():
             self.ui.category.addItem(cat)
 
+        if len(self.new_blueprints) == 0:
+            self.ui.clear_new_button.setEnabled(False)
+
         self.ui.add_button.clicked.connect(self.add_blueprint)
         self.ui.remove_button.clicked.connect(self.remove_blueprint)
 
@@ -52,6 +56,9 @@ class BlueprintLib():
 
         self.ui.available_blueprints.itemSelectionChanged.connect(self.update_blueprint_info)
 
+        self.ui.clear_new_button.clicked.connect(self.clear_new_blueprints)
+
+        self.ui.available_blueprints.setCurrentRow(0)
         self.ui.filter.setFocus()
         self.update_blueprint_info()
 
@@ -129,3 +136,7 @@ class BlueprintLib():
 
     def get_known_list(self):
         return self.known_blueprints
+
+    def clear_new_blueprints(self):
+        self.new_blueprints = []
+        self.ui.clear_new_button.setEnabled(False)
