@@ -321,13 +321,13 @@ class MainWindow():
     def trash_slot(self, dialog, bag, standalone=False):
         row = bag.currentRow()
         column = bag.currentColumn()
-        dialog = QMessageBox(dialog)
-        dialog.setWindowTitle("Trash Item")
-        dialog.setText("Are you sure?")
-        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        dialog.setDefaultButton(QMessageBox.No)
-        dialog.setIcon(QMessageBox.Question)
-        if dialog.exec() == QMessageBox.Yes:
+        ask_dialog = QMessageBox(dialog)
+        ask_dialog.setWindowTitle("Trash Item")
+        ask_dialog.setText("Are you sure?")
+        ask_dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        ask_dialog.setDefaultButton(QMessageBox.No)
+        ask_dialog.setIcon(QMessageBox.Question)
+        if ask_dialog.exec() == QMessageBox.Yes:
             bag.setItem(row, column, empty_slot())
             if not standalone:
                 dialog.close()
