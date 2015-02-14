@@ -200,6 +200,14 @@ class ItemEdit():
         remove_action.triggered.connect(self.remove_option)
         self.ui.variant.addAction(remove_action)
 
+        sep_action = QAction(self.ui.variant)
+        sep_action.setSeparator(True)
+        self.ui.variant.addAction(sep_action)
+
+        remove_action = QAction("Remove All", self.ui.variant)
+        remove_action.triggered.connect(self.clear_item_options)
+        self.ui.variant.addAction(remove_action)
+
     def update_item_info(self, name, data):
         item_info = "<html><body>"
         item_info += generate_item_info(data)
