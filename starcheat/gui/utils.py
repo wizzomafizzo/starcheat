@@ -65,6 +65,7 @@ def build_assets_db(parent):
     progress.setWindowTitle("Indexing...")
     progress.setWindowModality(QtCore.Qt.ApplicationModal)
     progress.forceShow()
+    progress.setValue(total)
 
     for i in assets_db.create_index():
         total += 1
