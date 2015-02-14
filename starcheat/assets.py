@@ -1257,7 +1257,11 @@ class Player():
     def sort_bag(self, bag, sort_by):
         def get_category(slot):
             name = slot["__content"]["name"]
-            return self.assets.items().get_item_index(name)[3]
+            item = self.assets.items().get_item_index(name)
+            if item is not None:
+                return item[3]
+            else:
+                return ""
 
         sort_map = {
             "name": lambda x: x["__content"]["name"],
