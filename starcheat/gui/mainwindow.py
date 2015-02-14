@@ -10,7 +10,7 @@ import pprint
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QAction
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QAction, QProgressDialog
 from PyQt5.QtGui import QPixmap, QCursor
 from PIL.ImageQt import ImageQt
 
@@ -177,6 +177,15 @@ class MainWindow():
         self.update_stat("health")
         self.update_stat("energy")
 
+        total = 0
+        progress = QProgressDialog("Updating item slots...",
+                                   None, 0, 10, self.window)
+
+        progress.setWindowTitle("Updating...")
+        progress.setWindowModality(QtCore.Qt.ApplicationModal)
+        progress.forceShow()
+        progress.setValue(total)
+
         # equipment
         equip_bags = "head", "chest", "legs", "back"
         for bag in equip_bags:
@@ -190,16 +199,13 @@ class MainWindow():
 
             getattr(self.ui, bag).setItem(0, 0, items[0])
             getattr(self.ui, bag).setItem(0, 1, items[1])
+            total += 1
+            progress.setValue(total)
 
-        # wielded
-        self.update_bag("wieldable")
-
-        # bags
-        self.update_bag("main_bag")
-        self.update_bag("tile_bag")
-        self.update_bag("action_bar")
-        self.update_bag("essentials")
-        self.update_bag("mouse")
+        for bag in "wieldable", "main_bag", "tile_bag", "action_bar", "essentials", "mouse":
+            self.update_bag(bag)
+            total += 1
+            progress.setValue(total)
 
         self.update_player_preview()
 
