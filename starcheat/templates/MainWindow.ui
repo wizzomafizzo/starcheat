@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>765</width>
-    <height>595</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <normaloff>:/starcheat/images/starcheat_64_single.png</normaloff>:/starcheat/images/starcheat_64_single.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <layout class="QHBoxLayout" name="horizontalLayout_7">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_6">
       <item>
@@ -458,7 +458,7 @@
           <property name="maximumSize">
            <size>
             <width>118</width>
-            <height>16777215</height>
+            <height>160</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -1623,6 +1623,9 @@
      <layout class="QVBoxLayout" name="verticalLayout_7">
       <item>
        <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        </property>
         <property name="labelAlignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -1638,24 +1641,6 @@
           </property>
           <property name="text">
            <string>Save Ver</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLabel" name="uuid_label">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>7</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>UUID</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1688,6 +1673,12 @@
             <property name="icon">
              <iconset resource="../resources.qrc">
               <normaloff>:/starcheat/images/icons/glyphicons_322_playing_dices.png</normaloff>:/starcheat/images/icons/glyphicons_322_playing_dices.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -1723,8 +1714,8 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>20</width>
-            <height>60</height>
+            <width>220</width>
+            <height>75</height>
            </size>
           </property>
          </spacer>
@@ -1753,8 +1744,8 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>20</width>
-            <height>60</height>
+            <width>220</width>
+            <height>75</height>
            </size>
           </property>
          </spacer>
@@ -1804,8 +1795,8 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>20</width>
-            <height>60</height>
+            <width>220</width>
+            <height>75</height>
            </size>
           </property>
          </spacer>
@@ -1905,8 +1896,8 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>20</width>
-            <height>60</height>
+            <width>220</width>
+            <height>75</height>
            </size>
           </property>
          </spacer>
@@ -1976,6 +1967,12 @@ border-radius: 4px;
             <property name="icon">
              <iconset resource="../resources.qrc">
               <normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -2050,6 +2047,12 @@ border-radius: 4px;
              <iconset resource="../resources.qrc">
               <normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_097_plus.png</iconset>
             </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
            </widget>
           </item>
          </layout>
@@ -2061,11 +2064,53 @@ border-radius: 4px;
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>20</width>
-            <height>60</height>
+            <width>220</width>
+            <height>75</height>
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QLabel" name="uuid_label">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>UUID</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="toolButton">
+            <property name="toolTip">
+             <string>Copy UUID</string>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/starcheat/images/icons/glyphicons_halflings_094_share-alt.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_094_share-alt.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -2192,6 +2237,8 @@ border-radius: 4px;
    <zorder></zorder>
    <zorder>verticalSpacer_3</zorder>
    <zorder></zorder>
+   <zorder>uuid_label</zorder>
+   <zorder>toolButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
