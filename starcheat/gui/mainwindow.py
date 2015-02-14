@@ -250,6 +250,9 @@ class MainWindow():
                 sort_type = QAction("Sort By Type", widget)
                 sort_type.triggered.connect(lambda: self.sort_bag(name, "category"))
                 widget.addAction(sort_type)
+                sort_count = QAction("Sort By Count", widget)
+                sort_count.triggered.connect(lambda: self.sort_bag(name, "count"))
+                widget.addAction(sort_count)
 
     def update_title(self):
         """Update window title with player name."""
