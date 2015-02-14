@@ -412,7 +412,8 @@ class Assets():
         """Return a list of all unique mod paths."""
         c = self.db.cursor()
         c.execute("select distinct path from assets order by category")
-        return [x[0].replace(self.starbound_folder,"") for x in c.fetchall()][1:]
+        all_assets = [x[0].replace(self.starbound_folder,"") for x in c.fetchall()]
+        return [x for x in all_assets if not x.endswith("packed.pak")]
 
 class Images():
     def __init__(self, assets):
