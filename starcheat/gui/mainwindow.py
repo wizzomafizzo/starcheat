@@ -129,7 +129,9 @@ class MainWindow():
         self.ui.energy.valueChanged.connect(lambda: self.set_stat_slider("energy"))
         self.ui.health_button.clicked.connect(lambda: self.max_stat("health"))
         self.ui.energy_button.clicked.connect(lambda: self.max_stat("energy"))
+
         self.ui.name_button.clicked.connect(self.random_name)
+        self.ui.copy_uuid_button.clicked.connect(self.copy_uuid)
 
         # launch open file dialog
         self.player = None
@@ -366,6 +368,11 @@ class MainWindow():
 
         blueprint_lib.ui.buttonBox.rejected.connect(update_blueprints)
         blueprint_lib.dialog.exec()
+
+    def copy_uuid(self):
+        clipboard = self.app.clipboard()
+        clipboard.setText(self.player.get_uuid())
+        self.ui.statusbar.showMessage("UUID copied to clipboard", 3000)
 
     def new_item_browser(self):
         """Launch a standalone item browser dialog that does write any changes."""

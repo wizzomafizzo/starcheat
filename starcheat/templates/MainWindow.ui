@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>765</width>
-    <height>600</height>
+    <height>595</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -2091,7 +2091,7 @@ border-radius: 4px;
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="toolButton">
+           <widget class="QToolButton" name="copy_uuid_button">
             <property name="toolTip">
              <string>Copy UUID</string>
             </property>
@@ -2238,7 +2238,7 @@ border-radius: 4px;
    <zorder>verticalSpacer_3</zorder>
    <zorder></zorder>
    <zorder>uuid_label</zorder>
-   <zorder>toolButton</zorder>
+   <zorder>copy_uuid_button</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
