@@ -90,7 +90,10 @@ class Techs():
 
         self.update_lists()
         self.ui.tech_list.setFocus()
-        self.ui.tech_list.setCurrentRow(0)
+        if self.ui.tech_list.count() > 0:
+            self.ui.tech_list.setCurrentRow(0)
+        else:
+            self.ui.known_list.setCurrentRow(0)
 
     def edit_movement(self):
         edit = ItemEditOptions(self.dialog,
@@ -183,6 +186,8 @@ class Techs():
         self.update_selection()
 
     def remove_tech(self):
+        if self.selected_tech is None:
+            return
         item = self.selected_tech + "Tech"
         visible = [x["name"] for x in self.player.get_visible_techs()]
         enabled = [x["name"] for x in self.player.get_enabled_techs()]
@@ -200,6 +205,8 @@ class Techs():
         self.update_selection()
 
     def set_tech(self, index):
+        if self.selected_tech is None:
+            return
         tech_name = self.selected_tech
         tech = self.assets.techs().get_tech(tech_name)
         icon = QPixmap.fromImage(ImageQt(tech[1]))
