@@ -48,9 +48,9 @@ def main():
         temp = os.path.join(src_dir, "starcheat", "templates", t)
         pyname = "qt_"+t.lower().replace(".ui", ".py")
         if platform.system() == "Windows":
-            os.system(os.path.join(pyqt5_dir, "pyuic5.bat") + " " + temp + " > " + os.path.join(prefix, pyname))
+            os.system(os.path.join(pyqt5_dir, "pyuic5.bat") + " \"" + temp + "\" > " + os.path.join(prefix, pyname))
         else:
-            os.system("pyuic5 " + temp + " > " + os.path.join(prefix, pyname))
+            os.system("pyuic5 \"" + temp + "\" > " + os.path.join(prefix, pyname))
         if options.verbose:
             print("Generated " + pyname)
 
@@ -59,9 +59,9 @@ def main():
     res_file = os.path.join(src_dir, "starcheat", "resources.qrc")
     pyname = "resources_rc.py"
     if platform.system() == "Windows":
-        os.system(os.path.join(pyqt5_dir, "pyrcc5.exe") + " " + res_file + " > " + os.path.join(prefix, pyname))
+        os.system(os.path.join(pyqt5_dir, "pyrcc5.exe") + " \"" + res_file + "\" > " + os.path.join(prefix, pyname))
     else:
-        os.system("pyrcc5 " + res_file + " > " + os.path.join(prefix, pyname))
+        os.system("pyrcc5 \"" + res_file + "\" > " + os.path.join(prefix, pyname))
     if options.verbose:
         print("Generated " + pyname)
 
@@ -80,7 +80,7 @@ def main():
         if options.verbose:
             print("Launching cx_freeze...")
         icon_path = os.path.join(src_dir, "starcheat", "images", "starcheat.ico")
-        os.system("python " + cx_freeze_Path + " " + os.path.join(prefix, "starcheat.py") + " --target-dir=" + dist + " --base-name=Win32GUI --icon=" + icon_path)
+        os.system("python " + cx_freeze_Path + " \"" + os.path.join(prefix, "starcheat.py") + "\" --target-dir=\"" + dist + "\" --base-name=Win32GUI --icon=\"" + icon_path +"\"")
         shutil.copy(os.path.join(pyqt5_dir, "libEGL.dll"), dist)
 
         if options.verbose:
