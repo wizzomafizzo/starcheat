@@ -280,8 +280,6 @@ class OptionsDialog():
         self.ui.starbound_folder_button.clicked.connect(self.open_starbound)
         self.ui.rebuild_button.clicked.connect(self.rebuild_db)
 
-        self.ui.buttonBox.accepted.connect(self.write)
-
     def write(self):
         starbound_folder = self.ui.starbound_folder.text()
         self.config.create_config(starbound_folder)

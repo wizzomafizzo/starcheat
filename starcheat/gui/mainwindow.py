@@ -375,10 +375,10 @@ class MainWindow():
 
         def write_options():
             logging.info("Writing options to disk")
-            self.ui.statusbar.showMessage("Options have been updated", 3000)
+            self.options_dialog.write()
             self.update()
 
-        self.options_dialog.dialog.accepted.connect(write_options)
+        self.options_dialog.dialog.rejected.connect(write_options)
         self.options_dialog.dialog.exec()
 
     def new_about_dialog(self):
