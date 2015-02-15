@@ -1352,7 +1352,11 @@ class Techs():
         q = "select key, path from assets where type = 'tech' and name = ?"
         c = self.assets.db.cursor()
         c.execute(q, (name,))
+
         tech = c.fetchone()
+        if tech is None:
+            return
+
         asset = self.assets.read(tech[0], tech[1])
         info = self.assets.read(tech[0]+"item", tech[1])
         icon = self.assets.read(info["inventoryIcon"], tech[1], image=True)

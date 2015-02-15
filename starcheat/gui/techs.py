@@ -130,9 +130,18 @@ class Techs():
             self.ui.known_list.addItem(item)
 
     def update_selection(self):
+        tech = self.assets.techs().get_tech(self.selected_tech)
+
+        # this is only used if player has corrupt/missing modded techs known
+        if tech is None:
+            self.ui.tech_info.setText("Unknown Tech")
+            self.ui.current_icon.setPixmap(QPixmap())
+            self.ui.add_button.setEnabled(False)
+            self.ui.remove_button.setEnabled(True)
+            return
+
         enabled = [x["name"] for x in self.player.get_enabled_techs()]
         visible = [x["name"].replace("Tech", "") for x in self.player.get_visible_techs()]
-        tech = self.assets.techs().get_tech(self.selected_tech)
 
         tech_info = "<strong>%s (%s)</strong><br><br>" % (tech[0]["shortdescription"],
                                                           tech[0]["itemName"])
@@ -210,8 +219,13 @@ class Techs():
     def set_tech(self, index):
         if self.selected_tech is None:
             return
+
         tech_name = self.selected_tech
         tech = self.assets.techs().get_tech(tech_name)
+
+        if tech is None:
+            return
+
         icon = QPixmap.fromImage(ImageQt(tech[1]))
         getattr(self.ui, "icon"+str(index+1)).setPixmap(icon.scaled(32,32))
         getattr(self.ui, "icon"+str(index+1)).setToolTip(tech[0]["shortdescription"])
