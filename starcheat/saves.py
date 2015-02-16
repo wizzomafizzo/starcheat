@@ -34,7 +34,7 @@ data_format = (
 
 def unpack_str(bytes):
     """Convert a list of bytes to a string."""
-    return "".join(map(chr, map(ord, bytes)))
+    return b''.join(bytes).decode("utf-8")
 
 
 def pack_str(var):
@@ -111,8 +111,8 @@ def unpack_vlq_str(data):
 def pack_vlq_str(var):
     if var == "":
         return b"\x00"
-    vlq = pack_vlq(len(var))
     string = pack_str(var)
+    vlq = pack_vlq(len(string))
     return vlq + string
 
 
