@@ -575,8 +575,8 @@ class MainWindow():
 
         for slot in range(len(bag)):
             item = bag[slot]
-            if item is not None:
-                widget = ItemWidget(bag[slot]["__content"], self.assets)
+            if item is not None and "__content" in item:
+                widget = ItemWidget(item["__content"], self.assets)
             else:
                 widget = ItemWidget(None, self.assets)
 
