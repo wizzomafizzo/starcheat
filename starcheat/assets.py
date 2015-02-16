@@ -1109,10 +1109,14 @@ class Species():
 
     def render_player(self, player):
         """Return an Image of a fully rendered player from a save."""
-
         name = player.get_race()
         gender = player.get_gender()
-        asset_loc = self.get_species(name)[0][1]
+        species = self.get_species(name.lower())
+
+        if species is None:
+            return Image.open(BytesIO(self.assets.items().missing_icon()))
+
+        asset_loc = species[0][1]
 
         # crop the spritesheets and replace colours
         def grab_sprite(sheet_path, rect, directives):
