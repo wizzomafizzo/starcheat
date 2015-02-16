@@ -54,7 +54,6 @@ def build_assets_db(parent):
         dialog.setIcon(QMessageBox.Critical)
         dialog.exec()
         assets_db.db.close()
-        os.remove(assets_db_file)
 
     assets_db.init_db()
     asset_files = assets_db.find_assets()
@@ -72,7 +71,6 @@ def build_assets_db(parent):
         progress.setValue(total)
         if progress.wasCanceled():
             assets_db.db.close()
-            os.remove(assets_db_file)
             return False
 
     progress.hide()
