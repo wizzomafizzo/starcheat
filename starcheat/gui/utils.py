@@ -323,7 +323,7 @@ class OptionsDialog():
         try:
             rebuild = build_assets_db(self.dialog)
         except FileNotFoundError:
-            bad_asset_dialog()
+            rebuild = False
 
         assets_db_file = Config().read("assets_db")
         starbound_folder = Config().read("starbound_folder")
