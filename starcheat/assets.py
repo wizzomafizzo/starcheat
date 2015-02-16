@@ -554,6 +554,9 @@ class Items():
         asset_data = self.assets.read(key, path)
 
         if asset_data is None: return
+        if type(asset_data) is list:
+            logging.debug("Skipping mod patch file %s in %s" % (key, path))
+            return
 
         name = False
         item_name_keys = ["itemName", "name", "objectName"]
