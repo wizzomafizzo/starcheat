@@ -18,7 +18,7 @@ if not os.path.isdir(config_folder):
 
 STARCHEAT_VERSION = "0.19.1 (Upbeat Giraffe)"
 STARCHEAT_VERSION_TAG = "0.19.1"
-CONFIG_VERSION = 12
+CONFIG_VERSION = 13
 ini_file = os.path.join(config_folder, "starcheat.ini")
 
 class Config():
@@ -54,6 +54,7 @@ class Config():
         backup_folder = os.path.join(config_folder, "backups")
         pak_hash = "none"
         make_backups = "no"
+        check_updates = "yes"
         assets_db = os.path.join(config_folder, "assets.db")
 
         defaults = {
@@ -64,6 +65,7 @@ class Config():
             "backup_folder": backup_folder,
             "pak_hash": pak_hash,
             "assets_db": assets_db,
+            "check_updates": check_updates,
             "config_version": CONFIG_VERSION
         }
 

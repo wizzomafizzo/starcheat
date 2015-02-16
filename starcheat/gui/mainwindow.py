@@ -57,13 +57,14 @@ class MainWindow():
 
         logging.info("Main window init")
 
-        update_check(self.window)
-
         # launch first setup if we need to
         if not new_setup_dialog(self.window):
             logging.error("Config/index creation failed")
             return
         logging.info("Starbound folder: %s", Config().read("starbound_folder"))
+
+        # check for new starcheat version online
+        update_check(self.window)
 
         logging.info("Checking assets hash")
         if not check_index_valid(self.window):

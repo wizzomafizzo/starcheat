@@ -233,6 +233,11 @@ def unpack_assets():
         sys.exit()
 
 def update_check(parent):
+    check_updates = Config().read("check_updates") == "yes"
+    if not check_updates:
+        logging.info("Skipping update check")
+        return
+
     logging.info("Checking for updates")
     try:
         latest_tag = urlopen("https://github.com/wizzomafizzo/starcheat/releases/latest").geturl()
@@ -272,17 +277,32 @@ class OptionsDialog():
         self.db = assets.Assets(assets_db_file, starbound_folder)
 
         self.config = Config()
+        self.current_folder = self.config.read("starbound_folder")
 
         # read the current config and prefill everything
         self.ui.starbound_folder.setText(self.config.read("starbound_folder"))
         self.ui.total_indexed.setText(str(self.db.total_indexed()) + " indexed")
+        self.ui.update_checkbox.setChecked(self.config.read("check_updates") == "yes")
 
         self.ui.starbound_folder_button.clicked.connect(self.open_starbound)
         self.ui.rebuild_button.clicked.connect(self.rebuild_db)
+        self.ui.update_checkbox.toggled.connect(self.write_update_check)
 
     def write(self):
         starbound_folder = self.ui.starbound_folder.text()
-        self.config.create_config(starbound_folder)
+        if self.current_folder != starbound_folder:
+            self.config.create_config(starbound_folder)
+
+    def write_update_check(self):
+        do_check = self.ui.update_checkbox.isChecked()
+        # configparser has a getbool method but it's not much smarter than this
+        # and will complicate the config class. move this to a separate method
+        # if we need more bools
+        if do_check:
+            conf_val = "yes"
+        else:
+            conf_val = "no"
+        self.config.set("check_updates", conf_val)
 
     def open_starbound(self):
         filename = QFileDialog.getExistingDirectory(self.dialog,
