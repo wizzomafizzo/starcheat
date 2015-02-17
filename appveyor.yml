@@ -44,7 +44,7 @@ artifacts:
 deploy:
   provider: GitHub
   auth_token:
-    secure: DUZQbCQFI4HKfOcnF+S9Krti2Kz1agHaSLFUJv8mK8Ov/DjeOhR9YyEkqLGY/I9J
+    secure: ZtfwMzuwFmGDrJhj3T3Nz3s+Nhz7Tw2mLhG15mE0BxDdDZCjwF5qzl9ZMKg20ILK
   artifact: dist/starcheat-$(APPVEYOR_REPO_TAG_NAME)-$(PYTHON_ARCH).zip
   on:
     appveyor_repo_tag: true
