@@ -203,7 +203,7 @@ def new_setup_dialog(parent):
         return True
 
 
-def update_check(parent):
+def update_check_worker(a, result):
     check_updates = Config().read("check_updates") == "yes"
     if not check_updates:
         logging.info("Skipping update check")
@@ -214,20 +214,26 @@ def update_check(parent):
         latest_tag = urlopen("https://github.com/wizzomafizzo/starcheat/releases/latest").geturl()
         if latest_tag.find("github.com/wizzomafizzo/starcheat/releases") >= 0:
             if not latest_tag.endswith("tag/" + config.STARCHEAT_VERSION_TAG):
-                dialog = QMessageBox(parent)
-                dialog.setWindowModality(QtCore.Qt.WindowModal)
-                dialog.setWindowTitle("Outdated starcheat version")
-                dialog.setText("A new version of starcheat is available! Do you want to update now?")
-                dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-                dialog.setDefaultButton(QMessageBox.Yes)
-                dialog.setIcon(QMessageBox.Question)
-                if dialog.exec() == QMessageBox.Yes:
-                    webbrowser.open(latest_tag, 2)
-                    sys.exit(0)
+                result[0] = latest_tag
+                logging.info("update check: found new starcheat version")
+                return
         else:
-            logging.info("skipping update check because of failed redirect")
+            logging.info("update check: skipping update check because of failed redirect")
     except URLError:
-        logging.info("skipping update check because of no internet connection")
+        logging.info("update check: skipping update check because of no internet connection")
+    result[0] = False
+
+def update_check_dialog(parent, latest_tag):
+    dialog = QMessageBox(parent)
+    dialog.setWindowModality(QtCore.Qt.WindowModal)
+    dialog.setWindowTitle("Outdated starcheat version")
+    dialog.setText("A new version of starcheat is available! Do you want to update now?")
+    dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+    dialog.setDefaultButton(QMessageBox.Yes)
+    dialog.setIcon(QMessageBox.Question)
+    if dialog.exec() == QMessageBox.Yes:
+        webbrowser.open(latest_tag, 2)
+        sys.exit(0)
 
 
 class AboutDialog():

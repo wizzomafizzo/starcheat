@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QProgressDialog
 from PyQt5.QtGui import QPixmap
 from PIL.ImageQt import ImageQt
+from threading import Thread
 
 import saves
 import assets
@@ -31,7 +32,8 @@ from gui.utils import ModsDialog
 from gui.utils import save_modified_dialog
 from gui.utils import new_setup_dialog
 from gui.utils import check_index_valid
-from gui.utils import update_check
+from gui.utils import update_check_worker
+from gui.utils import update_check_dialog
 from gui.itemedit import ItemEdit
 from gui.itemedit import ImageBrowser
 from gui.itemedit import import_json
@@ -64,6 +66,11 @@ class StarcheatMainWindow(QMainWindow):
 
 class MainWindow():
     def __init__(self):
+        # check for new starcheat version online in seperate thread
+        update_result = [None]
+        update_thread = Thread(target=update_check_worker, args=(1, update_result), daemon=True)
+        update_thread.start()
+
         """Display the main starcheat window."""
         self.app = QApplication(sys.argv)
         self.window = StarcheatMainWindow(self)
@@ -125,9 +132,6 @@ class MainWindow():
         logging.debug("Showing main window")
         self.window.show()
 
-        # check for new starcheat version online
-        update_check(self.window)
-
         # launch first setup if we need to
         if not new_setup_dialog(self.window):
             logging.error("Config/index creation failed")
@@ -164,6 +168,12 @@ class MainWindow():
             return
 
         self.ui.name.setFocus()
+
+        # block for update check result (should be ready now)
+        update_thread.join()
+        print(update_result)
+        if update_result[0]:
+            update_check_dialog(self.window, update_result[0])
 
         sys.exit(self.app.exec_())
 
