@@ -104,16 +104,16 @@ class CharacterSelectDialog():
         total = 0
         self.ui.player_list.clear()
 
-        names = {}
+        names = []
         for uuid in self.players.keys():
-            names[self.players[uuid].get_name()] = uuid
+            names.append((uuid, self.players[uuid].get_name()))
 
-        for name in sorted(names.keys()):
-            player = self.players[names[name]]
+        for name in sorted(names, key=lambda x: x[1]):
+            player = self.players[name[0]]
             preview = self.assets.species().render_player(player)
             pixmap = QPixmap.fromImage(ImageQt(preview))
             played = datetime.timedelta(seconds=int(player.get_play_time()))
-            list_item = PlayerWidget("%s [%s]" % (name, played), names[name])
+            list_item = PlayerWidget("%s [%s]" % (name[1], played), name[0])
 
             list_item.setIcon(QtGui.QIcon(pixmap))
             self.ui.player_list.addItem(list_item)
