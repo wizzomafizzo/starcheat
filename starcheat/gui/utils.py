@@ -203,7 +203,7 @@ def new_setup_dialog(parent):
         return True
 
 
-def update_check_worker(a, result):
+def update_check_worker(result):
     check_updates = Config().read("check_updates") == "yes"
     if not check_updates:
         logging.info("Skipping update check")

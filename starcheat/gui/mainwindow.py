@@ -68,7 +68,7 @@ class MainWindow():
     def __init__(self):
         # check for new starcheat version online in seperate thread
         update_result = [None]
-        update_thread = Thread(target=update_check_worker, args=(1, update_result), daemon=True)
+        update_thread = Thread(target=update_check_worker, args=[update_result], daemon=True)
         update_thread.start()
 
         """Display the main starcheat window."""
