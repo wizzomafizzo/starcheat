@@ -12,6 +12,7 @@ import sys
 import logging
 import struct
 import os
+import math
 
 from pprint import pprint
 from struct import pack, unpack_from
@@ -538,11 +539,19 @@ class PlayerSave():
 
     def get_health(self):
         status = self.entity["statusController"]
-        return status["resourcePercentages"]["health"] * 100
+        health = status["resourcePercentages"]["health"]
+        if math.isnan(health):
+            return 100
+        else:
+            return health * 100
 
     def get_energy(self):
         status = self.entity["statusController"]
-        return status["resourcePercentages"]["energy"] * 100
+        energy = status["resourcePercentages"]["energy"]
+        if math.isnan(energy):
+            return 100
+        else:
+            return energy * 100
 
     def get_gender(self):
         return self.entity["identity"]["gender"]
