@@ -2,25 +2,31 @@
 Utility dialogs for starcheat itself
 """
 
-import os, sys, platform, subprocess, shutil, hashlib
-import datetime
+import os
+import sys
+import hashlib
 import webbrowser
 
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
-from PyQt5.QtWidgets import QListWidgetItem, QProgressDialog
-from PyQt5.QtGui import QPixmap, QImage
-from PyQt5 import QtGui, QtCore
-from PIL.ImageQt import ImageQt
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QProgressDialog
+from PyQt5 import QtCore
+
 from urllib.request import urlopen
 from urllib.error import URLError
 
-import saves, assets, logging, config
-import qt_options, qt_openplayer, qt_about, qt_mods
+import assets
+import logging
+import config
+import qt_options
+import qt_about
+import qt_mods
 from config import Config
-from gui.common import preview_icon
 
 # TODO: there are way too many html templates and message text in here now
 # it should all be moved to a templates file or something
+
 
 def make_pak_hash():
     vanilla = os.path.join(Config().read("assets_folder"), "packed.pak")
@@ -40,6 +46,7 @@ def make_pak_hash():
     final_hash.update("_".join(timestamps).encode())
 
     return final_hash.hexdigest()
+
 
 def build_assets_db(parent):
     assets_db_file = Config().read("assets_db")
@@ -81,6 +88,7 @@ def build_assets_db(parent):
         Config().set("pak_hash", make_pak_hash())
         return True
 
+
 def check_index_valid(parent):
     old_hash = Config().read("pak_hash")
     new_hash = make_pak_hash()
@@ -100,6 +108,7 @@ def check_index_valid(parent):
     else:
         return True
 
+
 def save_modified_dialog(parent):
     """Display a prompt asking user what to do about a modified file. Return button clicked."""
     dialog = QMessageBox(parent)
@@ -110,6 +119,7 @@ def save_modified_dialog(parent):
     dialog.setDefaultButton(QMessageBox.Save)
     dialog.setIcon(QMessageBox.Question)
     return dialog.exec()
+
 
 def select_starbound_folder_dialog(parent):
     folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
@@ -131,6 +141,7 @@ def select_starbound_folder_dialog(parent):
             sys.exit()
         folder = QFileDialog.getExistingDirectory(caption="Select Starbound Folder")
     return os.path.normpath(folder)
+
 
 def new_setup_dialog(parent):
     """Run through an initial setup dialog for starcheat if it's required."""
@@ -181,7 +192,6 @@ def new_setup_dialog(parent):
 
     # looks okay enough, let's go
     Config().create_config(starbound_folder)
-    assets_db_file = Config().read("assets_db")
 
     if not build_assets_db(parent):
         os.remove(Config().ini_file)
@@ -189,46 +199,6 @@ def new_setup_dialog(parent):
     else:
         return True
 
-def unpack_assets():
-    unpack_test_file = os.path.join(starbound_folder, "assets", "species", "human.species")
-    dialog = QMessageBox()
-    dialog.setText("No unpacked assets found!")
-    dialog.setInformativeText("""<html><body>
-    <p>starcheat needs to unpack your Starbound assets to work. This only happens once.</p>
-    <p>Do you want to unpack the assets now?
-    <i>(this requires ~410MB of disk space and takes 1-5 mins)</i></p></body></html>""")
-    dialog.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
-    dialog.setIcon(QMessageBox.Question)
-    answer = dialog.exec()
-    if answer == QMessageBox.No:
-        sys.exit()
-
-    if platform.system() == "Windows":
-        asset_unpacker = os.path.join(starbound_folder, "win32", "asset_unpacker.exe")
-    elif platform.system() == "Darwin":
-        asset_unpacker = os.path.join(starbound_folder, "Starbound.app", "Contents",
-                                      "MacOS", "asset_unpacker")
-    elif sys.maxsize > 2**32: # 64-bit Linux
-        asset_unpacker = os.path.join(starbound_folder, "linux64", "asset_unpacker")
-    else: # 32-bit Linux
-        asset_unpacker = os.path.join(starbound_folder, "linux32", "asset_unpacker")
-
-    unpack_cmd = '"{0}" "{1}" "{2}"'.format(asset_unpacker,
-                                            os.path.join(starbound_folder, "assets", "packed.pak"),
-                                            os.path.join(starbound_folder, "assets"))
-    # just so the cmd window isn't totally empty
-    print("Unpacking Starbound vanilla assets...")
-    subprocess.call(unpack_cmd, shell=True)
-
-    if not os.path.isfile(unpack_test_file):
-        dialog = QMessageBox()
-        dialog.setText("Unable to unpack the Starbound assets.")
-        dialog.setInformativeText("""<html><body>Please follow
-        <a href="https://github.com/wizzomafizzo/starcheat#unpacking-starbound-assets">this guide</a>
-        to do it yourself.</body></html>""")
-        dialog.setIcon(QMessageBox.Warning)
-        dialog.exec()
-        sys.exit()
 
 def update_check(parent):
     check_updates = Config().read("check_updates") == "yes"
@@ -255,6 +225,7 @@ def update_check(parent):
     except URLError:
         logging.info("skipping update check because of no internet connection")
 
+
 class AboutDialog():
     def __init__(self, parent):
         self.dialog = QDialog(parent)
@@ -263,6 +234,7 @@ class AboutDialog():
         set_ver = self.ui.header_info.text().replace("STARCHEAT_VERSION",
                                                      config.STARCHEAT_VERSION)
         self.ui.header_info.setText(set_ver)
+
 
 class OptionsDialog():
     def __init__(self, parent):
@@ -342,167 +314,6 @@ class OptionsDialog():
 
         self.ui.total_indexed.setText(total + " indexed")
 
-
-class PlayerWidget(QListWidgetItem):
-    def __init__(self, text, name):
-        QListWidgetItem.__init__(self, text)
-        self.name = name
-
-
-# TODO: support stuff like sorting by date (needs to be a table widget)
-class CharacterSelectDialog():
-    def __init__(self, parent, assets):
-        self.dialog = QDialog(parent.window)
-        self.ui = qt_openplayer.Ui_OpenPlayer()
-        self.ui.setupUi(self.dialog)
-
-        self.parent = parent
-
-        if self.parent.players is not None:
-            self.players = self.parent.players
-        else:
-            self.players = None
-
-        self.player_folder = Config().read("player_folder")
-        self.backup_folder = Config().read("backup_folder")
-        self.selected = None
-        self.assets = assets
-
-        self.dialog.rejected.connect(self.dialog.close)
-        self.dialog.accepted.connect(self.accept)
-        self.ui.player_list.itemDoubleClicked.connect(self.dialog.accept)
-        self.ui.trash_button.clicked.connect(self.trash_player)
-        self.ui.refresh_button.clicked.connect(self.get_players)
-
-        if self.players is None:
-            self.get_players()
-        else:
-            self.populate()
-
-        self.ui.player_list.setFocus()
-
-    def accept(self):
-        try:
-            player = self.ui.player_list.currentItem().name
-        except AttributeError:
-            player = ""
-
-        if player != "":
-            self.selected = self.players[player]
-            self.dialog.close()
-
-    def get_players(self):
-        players_found = {}
-        player_files = [x for x in os.listdir(self.player_folder) if x.endswith(".player")]
-
-        total = 0
-        progress = QProgressDialog("Reading player files...",
-                                   None, 0, len(player_files),
-                                   self.dialog)
-
-        progress.setWindowTitle("Reading...")
-        progress.setWindowModality(QtCore.Qt.ApplicationModal)
-        progress.forceShow()
-        progress.setValue(total)
-
-        try:
-            for f in player_files:
-                try:
-                    player = saves.PlayerSave(os.path.join(self.player_folder, f))
-                    players_found[player.get_uuid()] = player
-                except saves.WrongSaveVer:
-                    logging.info("Save file %s is not compatible", f)
-                total += 1
-                progress.setValue(total)
-        except FileNotFoundError:
-            logging.exception("Could not open %s", self.player_folder)
-
-        self.players = players_found
-        self.populate()
-
-    def populate(self):
-        total = 0
-        self.ui.player_list.clear()
-
-        names = {}
-        for uuid in self.players.keys():
-            names[self.players[uuid].get_name()] = uuid
-
-        for name in sorted(names.keys()):
-            player = self.players[names[name]]
-            preview = self.assets.species().render_player(player)
-            pixmap = QPixmap.fromImage(ImageQt(preview))
-            played = datetime.timedelta(seconds=int(player.get_play_time()))
-            list_item = PlayerWidget("%s [%s]" % (name, played), names[name])
-
-            list_item.setIcon(QtGui.QIcon(pixmap))
-            self.ui.player_list.addItem(list_item)
-
-            total += 1
-
-        self.ui.total_label.setText(str(total) + " total")
-        self.ui.player_list.setCurrentRow(0)
-
-    def show(self):
-        # quit if there are no players
-        if len(self.players) == 0:
-            dialog = QMessageBox(self.dialog)
-            dialog.setWindowTitle("No Player Files")
-            dialog.setText("No player files detected. Reselect the Starbound folder?")
-            dialog.setInformativeText(self.player_folder)
-            dialog.setIcon(QMessageBox.Warning)
-            dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
-            answer = dialog.exec()
-
-            if answer == QMessageBox.Yes:
-                Config().remove_config()
-                new_setup_dialog(self.dialog)
-                dialog = QMessageBox(self.dialog)
-                dialog.setWindowTitle("Restart starcheat")
-                dialog.setText("Please restart starcheat to see changes.")
-                dialog.setIcon(QMessageBox.Information)
-                dialog.exec()
-        else:
-            self.dialog.exec()
-
-    def trash_player(self):
-        """Move all player files to backup folder set in config file."""
-        player = self.ui.player_list.currentItem().name
-        uuid = self.players[player].get_uuid()
-        player_files = []
-
-        # are you sure?
-        dialog = QMessageBox(self.dialog)
-        dialog.setWindowTitle("Trash Player")
-        dialog.setText("Trash this player?")
-        dialog.setInformativeText("Player files will be moved to: %s" % self.backup_folder)
-        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
-        dialog.setDefaultButton(QMessageBox.Cancel)
-        dialog.setIcon(QMessageBox.Question)
-
-        answer = dialog.exec()
-        if answer != QMessageBox.Yes:
-            return
-
-        # find files
-        for f in os.listdir(self.player_folder):
-            if f.startswith(uuid):
-                player_files.append(f)
-
-        # move em
-        for f in player_files:
-            logging.info("Moving player file %s", f)
-            try:
-                # using shutil cause of a problem with os.rename not working
-                # across filesystems. trust me to be the only person on earth
-                # with that setup
-                shutil.move(os.path.join(self.player_folder, f),
-                            os.path.join(self.backup_folder, f))
-            except OSError:
-                logging.exception("Unable to move file %s", f)
-                break
-
-        self.get_players()
 
 class ModsDialog():
     def __init__(self, parent):

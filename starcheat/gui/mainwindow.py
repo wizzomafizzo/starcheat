@@ -5,21 +5,36 @@ Main application window for starcheat GUI
 import sys
 import logging
 import json
-import pprint
 
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QAction, QProgressDialog
-from PyQt5.QtGui import QPixmap, QCursor
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QProgressDialog
+from PyQt5.QtGui import QPixmap
 from PIL.ImageQt import ImageQt
 
-import saves, assets, qt_mainwindow
+import saves
+import assets
+import qt_mainwindow
 from config import Config
-from gui.common import ItemWidget, empty_slot
-from gui.utils import CharacterSelectDialog, OptionsDialog, AboutDialog, ModsDialog
-from gui.utils import save_modified_dialog, new_setup_dialog, check_index_valid, update_check
-from gui.itemedit import ItemEdit, ImageBrowser, import_json
+from gui.common import ItemWidget
+from gui.common import empty_slot
+from gui.openplayer import CharacterSelectDialog
+from gui.utils import OptionsDialog
+from gui.utils import AboutDialog
+from gui.utils import ModsDialog
+from gui.utils import save_modified_dialog
+from gui.utils import new_setup_dialog
+from gui.utils import check_index_valid
+from gui.utils import update_check
+from gui.itemedit import ItemEdit
+from gui.itemedit import ImageBrowser
+from gui.itemedit import import_json
 from gui.blueprints import BlueprintLib
 from gui.itembrowser import ItemBrowser
 from gui.appearance import Appearance
@@ -284,7 +299,7 @@ class MainWindow():
 
         if do_import:
             imported = import_json(self.window)
-            if imported == False:
+            if imported is False:
                 self.ui.statusbar.showMessage("Error importing item, see starcheat log for details", 3000)
                 return
             elif imported is None:
