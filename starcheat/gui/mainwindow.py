@@ -72,27 +72,8 @@ class MainWindow():
 
         logging.info("Main window init")
 
-        # launch first setup if we need to
-        if not new_setup_dialog(self.window):
-            logging.error("Config/index creation failed")
-            return
-        logging.info("Starbound folder: %s", Config().read("starbound_folder"))
-
-        # check for new starcheat version online
-        update_check(self.window)
-
-        logging.info("Checking assets hash")
-        if not check_index_valid(self.window):
-            logging.error("Index creation failed")
-            return
-
         self.players = None
         self.filename = None
-
-        logging.debug("Loading assets database")
-        self.assets = assets.Assets(Config().read("assets_db"),
-                                    Config().read("starbound_folder"))
-        self.items = self.assets.items()
 
         self.item_browser = None
         # remember the last selected item browser category
@@ -113,14 +94,6 @@ class MainWindow():
         self.ui.actionMods.triggered.connect(self.new_mods_dialog)
         self.ui.actionImageBrowser.triggered.connect(self.new_image_browser_dialog)
 
-        # populate species combobox
-        for species in self.assets.species().get_species_list():
-            self.ui.race.addItem(species)
-
-        # populate game mode combobox
-        for mode in sorted(self.assets.player().mode_types.values()):
-            self.ui.game_mode.addItem(mode)
-
         # set up bag tables
         bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
                 "action_bar", "tile_bag", "essentials", "mouse")
@@ -128,19 +101,17 @@ class MainWindow():
             logging.debug("Setting up %s bag", bag)
             self.bag_setup(getattr(self.ui, bag), bag)
 
+        # signals
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.appearance_button.clicked.connect(self.new_appearance_dialog)
         self.ui.techs_button.clicked.connect(self.new_techs_dialog)
 
         self.ui.name.textChanged.connect(self.set_name)
-        self.ui.race.currentTextChanged.connect(self.update_species)
         self.ui.male.clicked.connect(self.set_gender)
         self.ui.female.clicked.connect(self.set_gender)
         self.ui.description.textChanged.connect(self.set_description)
         self.ui.pixels.valueChanged.connect(self.set_pixels)
-        self.ui.game_mode.currentTextChanged.connect(self.set_game_mode)
 
-        # set up stat signals
         self.ui.health.valueChanged.connect(lambda: self.set_stat_slider("health"))
         self.ui.energy.valueChanged.connect(lambda: self.set_stat_slider("energy"))
         self.ui.health_button.clicked.connect(lambda: self.max_stat("health"))
@@ -148,6 +119,40 @@ class MainWindow():
 
         self.ui.name_button.clicked.connect(self.random_name)
         self.ui.copy_uuid_button.clicked.connect(self.copy_uuid)
+
+        self.window.setWindowModified(False)
+
+        # check for new starcheat version online
+        update_check(self.window)
+
+        logging.debug("Showing main window")
+        self.window.show()
+
+        # launch first setup if we need to
+        if not new_setup_dialog(self.window):
+            logging.error("Config/index creation failed")
+            return
+        logging.info("Starbound folder: %s", Config().read("starbound_folder"))
+
+        logging.info("Checking assets hash")
+        if not check_index_valid(self.window):
+            logging.error("Index creation failed")
+            return
+
+        logging.info("Loading assets database")
+        self.assets = assets.Assets(Config().read("assets_db"),
+                                    Config().read("starbound_folder"))
+        self.items = self.assets.items()
+
+        # populate species combobox
+        for species in self.assets.species().get_species_list():
+            self.ui.race.addItem(species)
+        self.ui.race.currentTextChanged.connect(self.update_species)
+
+        # populate game mode combobox
+        for mode in sorted(self.assets.player().mode_types.values()):
+            self.ui.game_mode.addItem(mode)
+        self.ui.game_mode.currentTextChanged.connect(self.set_game_mode)
 
         # launch open file dialog
         self.player = None
@@ -159,10 +164,7 @@ class MainWindow():
             return
 
         self.ui.name.setFocus()
-        self.window.setWindowModified(False)
 
-        logging.debug("Showing main window")
-        self.window.show()
         sys.exit(self.app.exec_())
 
     def update(self):
