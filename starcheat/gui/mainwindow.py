@@ -122,11 +122,11 @@ class MainWindow():
 
         self.window.setWindowModified(False)
 
-        # check for new starcheat version online
-        update_check(self.window)
-
         logging.debug("Showing main window")
         self.window.show()
+
+        # check for new starcheat version online
+        update_check(self.window)
 
         # launch first setup if we need to
         if not new_setup_dialog(self.window):
