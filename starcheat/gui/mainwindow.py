@@ -171,7 +171,6 @@ class MainWindow():
 
         # block for update check result (should be ready now)
         update_thread.join()
-        print(update_result)
         if update_result[0]:
             update_check_dialog(self.window, update_result[0])
 
