@@ -79,7 +79,6 @@ class Techs():
         self.ui.add_button.clicked.connect(self.add_tech)
         self.ui.remove_button.clicked.connect(self.remove_tech)
         self.ui.unlock_button.clicked.connect(self.learn_all_techs)
-        self.ui.movement_button.clicked.connect(self.edit_movement)
 
         self.ui.icon1_clear.clicked.connect(lambda: self.clear_tech(0))
         self.ui.icon2_clear.clicked.connect(lambda: self.clear_tech(1))
@@ -97,20 +96,6 @@ class Techs():
             self.ui.tech_list.setCurrentRow(0)
         else:
             self.ui.known_list.setCurrentRow(0)
-
-    def edit_movement(self):
-        edit = ItemEditOptions(self.dialog,
-                               "movementController",
-                               self.player.get_movement(),
-                               "Edit Default Movement")
-
-        def save():
-            name, value = edit.get_option()
-            self.player.set_movement(value)
-
-        edit.dialog.accepted.connect(save)
-        edit.ui.name.setEnabled(False)
-        edit.dialog.exec()
 
     def update_lists(self):
         visible_items = [x["name"] for x in self.player.get_visible_techs()]
