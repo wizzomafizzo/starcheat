@@ -2,23 +2,18 @@
 Qt techs management dialog
 """
 
-import os, logging
+import logging
 
-from PyQt5.QtWidgets import QDialog, QListWidgetItem
-from PyQt5.QtGui import QPixmap, QBrush, QColor
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QBrush
+from PyQt5.QtGui import QColor
 from PIL.ImageQt import ImageQt
 
-import assets, qt_techs
+import qt_techs
 import saves
-from config import Config
 
-from gui.itemedit import ItemEditOptions
-
-# TODO: right now this dialog converts from techs to items by adding and
-# removing the Tech suffix. if this is not a strict requirement for tech
-# assets, this will all fail, but it makes lookups significantly faster.
-# ideally this information should be indexed
-# TODO: use proper tech names in lists, needs above mentioned index
 
 def new_tech_slot(tech_asset):
     module = {
@@ -27,11 +22,13 @@ def new_tech_slot(tech_asset):
     }
     return module
 
+
 def make_tech_list(tech_names):
     techs = []
     for i in tech_names:
         techs.append(saves.new_item_data(i))
     return techs
+
 
 class Techs():
     def __init__(self, main_window):
@@ -40,9 +37,7 @@ class Techs():
         self.ui.setupUi(self.dialog)
         self.main_window = main_window
 
-        starbound_folder = Config().read("starbound_folder")
-        self.assets = assets.Assets(Config().read("assets_db"),
-                                    starbound_folder)
+        self.assets = main_window.assets
         self.player = main_window.player
 
         self.selected_tech = None
@@ -55,25 +50,7 @@ class Techs():
         self.techs = [None, None, None, None]
         self.equip = [None, None, None, None]
 
-        # populate equipped techs
-        current = 1
-        for i in self.player.get_equipped_techs():
-            if i is None:
-                continue
-
-            try:
-                name = i["__content"]["name"].replace("Tech", "")
-                tech = self.assets.techs().get_tech(name)
-                icon = QPixmap.fromImage(ImageQt(tech[1]))
-                getattr(self.ui, "icon"+str(current)).setPixmap(icon.scaled(32,32))
-                getattr(self.ui, "icon"+str(current)).setToolTip(tech[0]["shortdescription"])
-                self.techs[current-1] = new_tech_slot(name)
-                self.equip[current-1] = tech[0]["itemName"]
-            except TypeError:
-                logging.exception("Couldn't load tech")
-                pass
-
-            current += 1
+        self.populate_equipped()
 
         self.ui.toggle_button.clicked.connect(self.toggle_tech)
         self.ui.add_button.clicked.connect(self.add_tech)
@@ -97,9 +74,28 @@ class Techs():
         else:
             self.ui.known_list.setCurrentRow(0)
 
+    def populate_equipped(self):
+        current = 1
+        for i in self.player.get_equipped_techs():
+            if i is None:
+                continue
+
+            try:
+                name = i["__content"]["name"]
+                tech = self.assets.techs().get_tech(name)
+                icon = QPixmap.fromImage(ImageQt(tech[1]))
+                getattr(self.ui, "icon"+str(current)).setPixmap(icon.scaled(32,32))
+                getattr(self.ui, "icon"+str(current)).setToolTip(tech[0]["shortdescription"])
+                self.techs[current-1] = new_tech_slot(tech[0]["techModule"])
+                self.equip[current-1] = tech[0]["itemName"]
+            except TypeError:
+                logging.exception("Couldn't load tech")
+                pass
+
+            current += 1
+
     def update_lists(self):
-        visible_items = [x["name"] for x in self.player.get_visible_techs()]
-        visible_techs = [x.replace("Tech", "") for x in visible_items]
+        visible_techs = [x["name"] for x in self.player.get_visible_techs()]
         self.ui.tech_list.clear()
         for tech in sorted(self.assets.techs().all()):
             if tech not in visible_techs:
@@ -108,8 +104,8 @@ class Techs():
 
         enabled = [x["name"] for x in self.player.get_enabled_techs()]
         self.ui.known_list.clear()
-        for tech in sorted(visible_items):
-            item = QListWidgetItem(tech.replace("Tech", ""))
+        for tech in sorted(visible_techs):
+            item = QListWidgetItem(tech)
             if tech in enabled:
                 item.setBackground(QBrush(QColor("lightBlue")))
             self.ui.known_list.addItem(item)
@@ -125,8 +121,7 @@ class Techs():
             self.ui.remove_button.setEnabled(True)
             return
 
-        enabled = [x["name"] for x in self.player.get_enabled_techs()]
-        visible = [x["name"].replace("Tech", "") for x in self.player.get_visible_techs()]
+        visible = [x["name"] for x in self.player.get_visible_techs()]
 
         tech_info = "<strong>%s (%s)</strong><br><br>" % (tech[0]["shortdescription"],
                                                           tech[0]["itemName"])
@@ -164,7 +159,7 @@ class Techs():
 
     def toggle_tech(self):
         enabled = [x["name"] for x in self.player.get_enabled_techs()]
-        item = self.selected_tech + "Tech"
+        item = self.selected_tech
         if item in enabled:
             new_techs = [x for x in enabled if x != item]
             self.player.set_enabled_techs(make_tech_list(new_techs))
@@ -175,7 +170,7 @@ class Techs():
         self.update_selection()
 
     def add_tech(self):
-        item = self.selected_tech + "Tech"
+        item = self.selected_tech
         visible = [x["name"] for x in self.player.get_visible_techs()]
         visible.append(item)
         self.player.set_visible_techs(make_tech_list(visible))
@@ -185,7 +180,7 @@ class Techs():
     def remove_tech(self):
         if self.selected_tech is None:
             return
-        item = self.selected_tech + "Tech"
+        item = self.selected_tech
         visible = [x["name"] for x in self.player.get_visible_techs()]
         enabled = [x["name"] for x in self.player.get_enabled_techs()]
         self.player.set_visible_techs(make_tech_list([x for x in visible if x != item]))
@@ -195,9 +190,8 @@ class Techs():
 
     def learn_all_techs(self):
         all_techs = self.assets.techs().all()
-        items = [x + "Tech" for x in all_techs]
-        self.player.set_visible_techs(make_tech_list(items))
-        self.player.set_enabled_techs(make_tech_list(items))
+        self.player.set_visible_techs(make_tech_list(all_techs))
+        self.player.set_enabled_techs(make_tech_list(all_techs))
         self.update_lists()
         self.update_selection()
 
@@ -228,7 +222,6 @@ class Techs():
     def write_techs(self):
         techs = []
         equip = [None, None, None, None]
-        enabled = []
 
         # tech list can't have empty spaces in it
         for i in self.techs:

@@ -1347,18 +1347,23 @@ class Techs():
         if asset_data is None:
             return
 
-        return (key, path, "tech", "", name, "")
+        item = self.assets.read(asset[0]+"item", asset[1])
+        if item is None or not "itemName" in item:
+            logging.warning("No techitem for %s in %s" % asset)
+            return
+
+        return (key, path, "tech", "", name, item["itemName"])
 
     def all(self):
         """Return a list of all techs."""
         c = self.assets.db.cursor()
-        c.execute("select name from assets where type = 'tech' order by name")
+        c.execute("select desc from assets where type = 'tech' order by desc")
         return [x[0] for x in c.fetchall()]
 
     def get_tech(self, name):
-        q = "select key, path from assets where type = 'tech' and name = ?"
+        q = "select key, path from assets where type = 'tech' and (name = ? or desc = ?)"
         c = self.assets.db.cursor()
-        c.execute(q, (name,))
+        c.execute(q, (name, name))
 
         tech = c.fetchone()
         if tech is None:
