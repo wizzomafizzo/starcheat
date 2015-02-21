@@ -34,7 +34,10 @@ class Config():
 
     def has_key(self, option):
         self.config.read(self.ini_file)
-        return option in self.config["starcheat"]
+        if "starcheat" in self.config:
+            return option in self.config["starcheat"]
+        else:
+            return False
 
     def set(self, option, value):
         self.config.read(ini_file)

@@ -204,7 +204,11 @@ def new_setup_dialog(parent):
 
 
 def update_check_worker(result):
-    check_updates = Config().read("check_updates") == "yes"
+    if Config().has_key("check_updates"):
+        check_updates = Config().read("check_updates") == "yes"
+    else:
+        check_updates = True
+
     if not check_updates:
         logging.info("Skipping update check")
         return
@@ -226,7 +230,7 @@ def update_check_worker(result):
 def update_check_dialog(parent, latest_tag):
     dialog = QMessageBox(parent)
     dialog.setWindowModality(QtCore.Qt.WindowModal)
-    dialog.setWindowTitle("Outdated starcheat version")
+    dialog.setWindowTitle("Outdated starcheat Version")
     dialog.setText("A new version of starcheat is available! Do you want to update now?")
     dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
     dialog.setDefaultButton(QMessageBox.Yes)
