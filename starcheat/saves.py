@@ -396,7 +396,7 @@ class PlayerMetadata():
         metadata_file.close()
         self.metadata = self.data["save"]["data"]
 
-    def export_save(self):
+    def export_metadata(self):
         self.data["save"]["data"] = self.metadata
         metadata_data = b""
 
@@ -408,6 +408,9 @@ class PlayerMetadata():
         metadata_file.close()
 
         return self.filename
+
+    def dump(self):
+        pprint(self.metadata)
 
     def get_timestamp(self):
         # unix epoch
@@ -819,5 +822,6 @@ class PlayerSave():
 
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])
+    metadata = PlayerMetadata(sys.argv[1].replace(".player", ".metadata"))
     player.dump()
-    # print(player.export_save())
+    metadata.dump()
