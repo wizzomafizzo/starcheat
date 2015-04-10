@@ -106,6 +106,8 @@ def hex_to_rgb(value):
     return None
 
 def unpack_color_directives(data):
+    if data is None:
+        return {}
     # won't grab fade directives
     replace_matches = replace_directive_re.findall(data)
     groups = []
