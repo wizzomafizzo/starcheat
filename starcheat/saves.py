@@ -525,7 +525,7 @@ class PlayerSave():
             save_file.write(player_data)
             save_file.close()
             if self.metadata is not None:
-                self.metadata.export_save()
+                self.metadata.export_metadata()
             return filename
         else:
             return player_data

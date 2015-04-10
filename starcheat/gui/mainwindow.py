@@ -41,6 +41,7 @@ from gui.blueprints import BlueprintLib
 from gui.itembrowser import ItemBrowser
 from gui.appearance import Appearance
 from gui.techs import Techs
+from gui.quests import Quests
 
 
 class StarcheatMainWindow(QMainWindow):
@@ -112,6 +113,7 @@ class MainWindow():
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
         self.ui.appearance_button.clicked.connect(self.new_appearance_dialog)
         self.ui.techs_button.clicked.connect(self.new_techs_dialog)
+        self.ui.quests_button.clicked.connect(self.new_quests_dialog)
 
         self.ui.name.textChanged.connect(self.set_name)
         self.ui.male.clicked.connect(self.set_gender)
@@ -437,6 +439,11 @@ class MainWindow():
         techs_dialog = Techs(self)
         techs_dialog.dialog.rejected.connect(techs_dialog.write_techs)
         techs_dialog.dialog.exec()
+
+    def new_quests_dialog(self):
+        quests_dialog = Quests(self)
+        quests_dialog.dialog.rejected.connect(quests_dialog.write_quests)
+        quests_dialog.dialog.exec()
 
     def new_mods_dialog(self):
         mods_dialog = ModsDialog(self.window)
