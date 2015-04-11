@@ -3,12 +3,20 @@ Qt item browser dialog
 """
 
 import logging
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox, QListWidgetItem
-from PyQt5.QtGui import QPixmap, QImage
+
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QDialogButtonBox
+from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QImage
 from PIL.ImageQt import ImageQt
 
-import assets, qt_itembrowser
+import assets
+import qt_itembrowser
+
 from config import Config
+from gui.common import text_to_html
 
 def format_status_effects(data):
     info = "<b>Status Effects:</b><br>"
@@ -72,7 +80,7 @@ def generate_item_info(item_data):
         if fmt[0] in item_data:
             try:
                 if type(fmt[1]) is str:
-                    info += fmt[1] % str(item_data[fmt[0]])
+                    info += fmt[1] % text_to_html(str(item_data[fmt[0]]))
                 else:
                     info += fmt[1](item_data[fmt[0]])
             except:
