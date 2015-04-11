@@ -47,7 +47,7 @@ class Quests():
     def update_statuses(self):
         """Refresh quest status combo box."""
         self.ui.quest_status.clear()
-        for status in self.quests.keys():
+        for status in sorted(self.quests.keys()):
             self.ui.quest_status.addItem(status.capitalize())
 
     def get_status(self):
