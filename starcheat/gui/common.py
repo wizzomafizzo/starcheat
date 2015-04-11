@@ -2,6 +2,8 @@
 Functions shared between GUI dialogs
 """
 
+import re
+
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QTableWidgetItem, QInputDialog, QLineEdit
 from PyQt5.QtGui import QPixmap, QImage
@@ -11,6 +13,27 @@ from PIL.ImageQt import ImageQt
 import assets
 from config import Config
 
+
+def find_color(text):
+    match = re.search("\^(\w+);", text)
+    if match is not None:
+        return match.groups()[0]
+
+def replace_color(name, text):
+    span_template = '<span style="color: %s">'
+    return text.replace("^%s;" % name,
+                        span_template % name)
+
+def text_to_html(text):
+    """Convert Starbound text to colored HTML."""
+    colored = text
+    match = find_color(colored)
+    if match is None:
+        return text
+    while match is not None:
+        colored = replace_color(match, colored)
+        match = find_color(colored)
+    return colored + ("</span>" * colored.count("<span"))
 
 def setup_color_menu(parent, widget):
     def color_dialog():

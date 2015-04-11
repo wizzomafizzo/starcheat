@@ -5,14 +5,23 @@ Qt quests management dialog
 import logging
 
 from gui.itemedit import ItemEditOptions
+from gui.common import text_to_html
 
 import qt_quests
 
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtWidgets import QMessageBox
 
-def parse_quest(name, data):
-    return "<b>%s</b>" % name
+
+def make_quest_info(name, data):
+    """Return an HTML summary of a quest from its data."""
+    print(data)
+    info = ""
+    info += "<b>%s</b><br>" % name
+    info += "%s<br><br>" % text_to_html(data["title"])
+    info += "%s<br><br>" % text_to_html(data["fullText"])
+    info += "<b>Pixels:</b> %s" % data["money"]
+    return info
 
 
 class Quests():
@@ -98,7 +107,7 @@ class Quests():
         selected = self.selected_quest()
         self.ui.trash_button.setEnabled(True)
         self.ui.edit_button.setEnabled(True)
-        self.ui.quest_info_label.setText(parse_quest(*selected))
+        self.ui.quest_info_label.setText(make_quest_info(*selected))
 
     def filter_quests(self):
         """Filter quest list based on selected status."""
