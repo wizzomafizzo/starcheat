@@ -39,7 +39,11 @@ class Quests():
         """Refresh quest status combo box."""
         self.ui.quest_status.clear()
         for status in self.quests.keys():
-            self.ui.quest_status.addItem(status)
+            self.ui.quest_status.addItem(status.capitalize())
+
+    def get_status(self):
+        status = self.ui.quest_status.currentText()
+        return status.lower()
 
     def edit_quest(self):
         """Launch JSON edit dialog for selected quest."""
@@ -53,7 +57,7 @@ class Quests():
 
         def save():
             name, value = edit.get_option()
-            status = self.ui.quest_status.currentText()
+            status = self.get_status()
             self.quests[status][name] = value
 
         edit.dialog.accepted.connect(save)
@@ -64,7 +68,7 @@ class Quests():
         """Confirm with user and delete selected quest."""
         if self.ui.quest_list.currentItem() is None:
             return
-        status = self.ui.quest_status.currentText()
+        status = self.get_status()
         quest_name = self.ui.quest_list.currentItem().text()
         ask_dialog = QMessageBox(self.dialog)
         ask_dialog.setWindowTitle("Trash Quest")
@@ -80,7 +84,7 @@ class Quests():
 
     def selected_quest(self):
         """Return selected quest name and data."""
-        status = self.ui.quest_status.currentText()
+        status = self.get_status()
         quest_name = self.ui.quest_list.currentItem().text()
         return quest_name, self.quests[status][quest_name]
 
@@ -98,7 +102,7 @@ class Quests():
 
     def filter_quests(self):
         """Filter quest list based on selected status."""
-        status = self.ui.quest_status.currentText()
+        status = self.get_status()
         self.ui.quest_list.clear()
         # no quests
         if not status in self.quests:

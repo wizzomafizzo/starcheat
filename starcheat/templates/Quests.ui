@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>505</width>
+    <width>500</width>
     <height>280</height>
    </rect>
   </property>
@@ -82,7 +82,7 @@
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/starcheat/images/icons/glyphicons_halflings_135_wrench.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_135_wrench.png</iconset>
+         <normaloff>:/starcheat/images/icons/glyphicons_halflings_060_pencil.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_060_pencil.png</iconset>
        </property>
       </widget>
      </item>
