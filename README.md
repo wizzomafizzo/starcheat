@@ -6,11 +6,12 @@ starcheat is a [Starbound](http://playstarbound.com/) player save editor, you ca
 
 ## Downloads
 
-Starbound          | starcheat
------------------- | ---------
-Nightly            | [dev branch](#building-from-source)
-**Upbeat Giraffe** | [0.21](https://github.com/wizzomafizzo/starcheat/releases/tag/0.21)
-Enraged Koala      | [0.17](https://github.com/wizzomafizzo/starcheat/releases/tag/0.17)
+Starbound            | starcheat
+-------------------- | ---------
+Nightly              | [dev branch](#building-from-source)
+**Spirited Giraffe** | [0.22](https://github.com/wizzomafizzo/starcheat/releases/tag/0.22)
+Upbeat Giraffe       | [0.21](https://github.com/wizzomafizzo/starcheat/releases/tag/0.21)
+Enraged Koala        | [0.17](https://github.com/wizzomafizzo/starcheat/releases/tag/0.17)
 
 ## Reporting a Issue
 Please read and follow these [instructions](CONTRIBUTING.md) when reporting an issue. This will help us fix your issue faster, because we don't need to ask you for additional informations.
