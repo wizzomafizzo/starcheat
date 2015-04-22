@@ -601,7 +601,6 @@ class Items():
         Find the first hit in the DB for a given item name, return the
         parsed asset file and location.
         """
-        logging.debug("Lookup item: " + name)
         c = self.assets.db.cursor()
         c.execute("select key, path, desc from assets where type = 'item' and name = ?", (name,))
         meta = c.fetchone()

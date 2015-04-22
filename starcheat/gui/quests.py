@@ -15,7 +15,6 @@ from PyQt5.QtWidgets import QMessageBox
 
 def make_quest_info(name, data):
     """Return an HTML summary of a quest from its data."""
-    print(data)
     info = ""
     info += "<b>%s</b><br>" % name
     info += "%s<br><br>" % text_to_html(data["title"])
