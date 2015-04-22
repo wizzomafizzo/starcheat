@@ -208,6 +208,12 @@ class MainWindow():
         self.update_stat("health")
         self.update_stat("energy")
 
+        # quests
+        can_edit_quests = (self.player.metadata is not None and
+                           "quests" in self.player.metadata.metadata)
+        self.ui.quests_button.setEnabled(can_edit_quests)
+
+        # items
         total = 0
         progress = QProgressDialog("Updating item slots...",
                                    None, 0, 10, self.window)
