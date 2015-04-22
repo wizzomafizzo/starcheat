@@ -1654,7 +1654,7 @@
           <item>
            <widget class="QToolButton" name="name_button">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="toolTip">
              <string>Random Name</string>

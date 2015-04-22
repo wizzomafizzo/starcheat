@@ -126,7 +126,7 @@ class MainWindow():
         self.ui.health_button.clicked.connect(lambda: self.max_stat("health"))
         self.ui.energy_button.clicked.connect(lambda: self.max_stat("energy"))
 
-        self.ui.name_button.clicked.connect(self.random_name)
+        #self.ui.name_button.clicked.connect(self.random_name)
         self.ui.copy_uuid_button.clicked.connect(self.copy_uuid)
 
         self.window.setWindowModified(False)
