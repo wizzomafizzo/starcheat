@@ -1651,29 +1651,6 @@
           <item>
            <widget class="QLineEdit" name="name"/>
           </item>
-          <item>
-           <widget class="QToolButton" name="name_button">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="toolTip">
-             <string>Random Name</string>
-            </property>
-            <property name="text">
-             <string>...</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/starcheat/images/icons/glyphicons_322_playing_dices.png</normaloff>:/starcheat/images/icons/glyphicons_322_playing_dices.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
         <item row="2" column="0">
@@ -2270,13 +2247,38 @@ border-radius: 4px;
     <property name="title">
      <string>File</string>
     </property>
+    <widget class="QMenu" name="menuImport">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../resources.qrc">
+       <normaloff>:/starcheat/images/icons/glyphicons_halflings_168_import.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_168_import.png</iconset>
+     </property>
+     <addaction name="actionImportPlayerBinary"/>
+     <addaction name="actionImportPlayerJSON"/>
+     <addaction name="actionImportMetadataBinary"/>
+     <addaction name="actionImportMetadataJSON"/>
+    </widget>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../resources.qrc">
+       <normaloff>:/starcheat/images/icons/glyphicons_halflings_169_export.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_169_export.png</iconset>
+     </property>
+     <addaction name="actionExportPlayerBinary"/>
+     <addaction name="actionExportPlayerJSON"/>
+     <addaction name="actionExportMetadataBinary"/>
+     <addaction name="actionExportMetadataJSON"/>
+    </widget>
     <addaction name="actionOpen"/>
     <addaction name="actionReload"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
-    <addaction name="actionExport"/>
-    <addaction name="actionExportJSON"/>
-    <addaction name="actionImportJSON"/>
+    <addaction name="menuImport"/>
+    <addaction name="menuExport"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -2548,10 +2550,73 @@ border-radius: 4px;
     <string>Search indexed Starbound images</string>
    </property>
   </action>
+  <action name="actionImportPlayerBinary">
+   <property name="text">
+    <string>Player Binary...</string>
+   </property>
+   <property name="statusTip">
+    <string>Import Starbound player file</string>
+   </property>
+  </action>
+  <action name="actionImportPlayerJSON">
+   <property name="text">
+    <string>Player JSON...</string>
+   </property>
+   <property name="statusTip">
+    <string>Import starcheat JSON file</string>
+   </property>
+  </action>
+  <action name="actionExportPlayerBinary">
+   <property name="text">
+    <string>Player Binary...</string>
+   </property>
+   <property name="statusTip">
+    <string>Export as Starbound player file</string>
+   </property>
+  </action>
+  <action name="actionExportPlayerJSON">
+   <property name="text">
+    <string>Player JSON...</string>
+   </property>
+   <property name="statusTip">
+    <string>Export as starcheat JSON file</string>
+   </property>
+  </action>
+  <action name="actionImportMetadataBinary">
+   <property name="text">
+    <string>Metadata Binary...</string>
+   </property>
+   <property name="statusTip">
+    <string>Import Starbound metadata file</string>
+   </property>
+  </action>
+  <action name="actionImportMetadataJSON">
+   <property name="text">
+    <string>Metadata JSON...</string>
+   </property>
+   <property name="statusTip">
+    <string>Import starcheat JSON file</string>
+   </property>
+  </action>
+  <action name="actionExportMetadataBinary">
+   <property name="text">
+    <string>Metadata Binary...</string>
+   </property>
+   <property name="statusTip">
+    <string>Export as Starbound metadata file</string>
+   </property>
+  </action>
+  <action name="actionExportMetadataJSON">
+   <property name="text">
+    <string>Metadata JSON...</string>
+   </property>
+   <property name="statusTip">
+    <string>Export as starcheat JSON file</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>name</tabstop>
-  <tabstop>name_button</tabstop>
   <tabstop>description</tabstop>
   <tabstop>race</tabstop>
   <tabstop>male</tabstop>
