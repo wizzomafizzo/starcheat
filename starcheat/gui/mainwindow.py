@@ -37,6 +37,7 @@ from gui.utils import update_check_dialog
 from gui.itemedit import ItemEdit
 from gui.itemedit import ImageBrowser
 from gui.itemedit import import_json
+from gui.itemedit import ItemEditOptions
 from gui.blueprints import BlueprintLib
 from gui.itembrowser import ItemBrowser
 from gui.appearance import Appearance
@@ -267,6 +268,9 @@ class MainWindow():
         edit_action = QAction("Edit...", widget)
         edit_action.triggered.connect(lambda: item_edit(False))
         widget.addAction(edit_action)
+        edit_json_action = QAction("Edit JSON...", widget)
+        edit_json_action.triggered.connect(lambda: item_edit(False, True))
+        widget.addAction(edit_json_action)
         import_json = QAction("Import...", widget)
         import_json.triggered.connect(lambda: item_edit(True))
         widget.addAction(import_json)
@@ -311,7 +315,7 @@ class MainWindow():
         self.window.setWindowModified(False)
         self.players[self.player.get_uuid()] = self.player
 
-    def new_item_edit(self, bag, do_import):
+    def new_item_edit(self, bag, do_import, json_edit=False):
         """Display a new item edit dialog using the select cell in a given bag."""
         logging.debug("New item edit dialog")
         row = bag.currentRow()
@@ -336,32 +340,46 @@ class MainWindow():
         if valid_slot:
             item.update(current.item)
 
-        item_edit = ItemEdit(self.window, item,
-                             self.player, self.assets,
-                             self.remember_browser)
+        if not json_edit:
+            item_edit = ItemEdit(self.window, item,
+                                 self.player, self.assets,
+                                 self.remember_browser)
+        else:
+            item_edit = ItemEditOptions(self.window,
+                                        item["name"],
+                                        item,
+                                        "Edit Item Data")
 
         def update_slot():
             logging.debug("Writing changes to slot")
             try:
-                new_slot = ItemWidget(item_edit.get_item(), self.assets)
+                if not json_edit:
+                    data = item_edit.get_item()
+                else:
+                    name, data = item_edit.get_option()
+
+                new_slot = ItemWidget(data, self.assets)
+
                 if new_slot.item["name"] != "":
                     bag.setItem(row, column, new_slot)
-                    self.remember_browser = item_edit.remember_browser
+                    if not json_edit:
+                        self.remember_browser = item_edit.remember_browser
                     self.set_edited()
             except TypeError:
-                dialog = QMessageBox(item_edit.dialog)
-                dialog.setWindowTitle("Invalid Item ID")
-                dialog.setText("That item ID does not exist in the Starbound assets.")
-                dialog.setStandardButtons(QMessageBox.Close)
-                dialog.setIcon(QMessageBox.Critical)
-                dialog.exec()
-
-        trash_slot = lambda: self.trash_slot(item_edit.dialog, bag)
+                logging.exception("Error updating item slot")
+                self.ui.statusbar.showMessage("Error updating item slot, see starcheat log for details", 3000)
 
         item_edit.dialog.accepted.connect(update_slot)
-        item_edit.ui.trash_button.clicked.connect(trash_slot)
-        got_item = item_edit.launch()
-        if got_item:
+
+        if not json_edit:
+            trash_slot = lambda: self.trash_slot(item_edit.dialog, bag)
+
+            item_edit.ui.trash_button.clicked.connect(trash_slot)
+            got_item = item_edit.launch()
+            if got_item:
+                item_edit.dialog.exec()
+        else:
+            item_edit.ui.name.setEnabled(False)
             item_edit.dialog.exec()
 
     def trash_slot(self, dialog, bag, standalone=False):
@@ -773,23 +791,23 @@ class MainWindow():
             logging.exception("Unable to set stat %s", name)
 
     # these are used for connecting the item edit dialog to bag tables
-    def new_main_bag_item_edit(self, do_import):
-        self.new_item_edit(self.ui.main_bag, do_import)
-    def new_tile_bag_item_edit(self, do_import):
-        self.new_item_edit(self.ui.tile_bag, do_import)
-    def new_action_bar_item_edit(self, do_import):
-        self.new_item_edit(self.ui.action_bar, do_import)
-    def new_head_item_edit(self, do_import):
-        self.new_item_edit(self.ui.head, do_import)
-    def new_chest_item_edit(self, do_import):
-        self.new_item_edit(self.ui.chest, do_import)
-    def new_legs_item_edit(self, do_import):
-        self.new_item_edit(self.ui.legs, do_import)
-    def new_back_item_edit(self, do_import):
-        self.new_item_edit(self.ui.back, do_import)
-    def new_wieldable_item_edit(self, do_import):
-        self.new_item_edit(self.ui.wieldable, do_import)
-    def new_essentials_item_edit(self, do_import):
-        self.new_item_edit(self.ui.essentials, do_import)
-    def new_mouse_item_edit(self, do_import):
-        self.new_item_edit(self.ui.mouse, do_import)
+    def new_main_bag_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.main_bag, do_import, json_edit)
+    def new_tile_bag_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.tile_bag, do_import, json_edit)
+    def new_action_bar_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.action_bar, do_import, json_edit)
+    def new_head_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.head, do_import, json_edit)
+    def new_chest_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.chest, do_import, json_edit)
+    def new_legs_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.legs, do_import, json_edit)
+    def new_back_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.back, do_import, json_edit)
+    def new_wieldable_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.wieldable, do_import, json_edit)
+    def new_essentials_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.essentials, do_import, json_edit)
+    def new_mouse_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.mouse, do_import, json_edit)
