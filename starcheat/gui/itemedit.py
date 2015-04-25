@@ -3,18 +3,33 @@ Qt item edit dialog
 """
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox, QMessageBox
-from PyQt5.QtWidgets import QInputDialog, QListWidgetItem, QFileDialog, QAction
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QDialogButtonBox
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QInputDialog
+from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QAction
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QImage
 from PIL.ImageQt import ImageQt
 
-import json, copy, logging
+import json
+import copy
+import logging
 import re
 
-import assets, qt_itemedit, qt_itemeditoptions, saves
+import assets
+import qt_itemedit
+import qt_itemeditoptions
+import saves
 import qt_imagebrowser
-from gui.common import inv_icon, empty_slot
-from gui.itembrowser import ItemBrowser, generate_item_info
+from gui.common import inv_icon
+from gui.common import empty_slot
+from gui.common import ListEdit
+from gui.itembrowser import ItemBrowser
+from gui.itembrowser import generate_item_info
 from config import Config
 
 
@@ -308,6 +323,7 @@ class ItemEdit():
         self.ui.variant.setRowCount(0)
         if self.item is not None:
             self.item["parameters"] = {}
+            self.update()
 
     def new_item_edit_options(self, new=False, raw=False):
         """Edit the selected item option with custom dialog."""
@@ -373,13 +389,14 @@ class ItemEdit():
         if current is None:
             return
         self.item["parameters"].pop(current.option[0])
-        self.populate_options()
+        self.update()
 
     def edit_option(self):
         """Edit currently selected item option."""
         current = self.ui.variant.currentItem()
         if current is not None:
             self.new_item_edit_options()
+            self.update()
 
     def new_item_browser(self):
         self.item_browser = ItemBrowser(self.dialog, category=self.remember_browser)

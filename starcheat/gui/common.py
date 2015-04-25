@@ -139,7 +139,7 @@ class ListEdit():
         self.update()
 
     def new_item(self, text):
-        widget = QListWidgetItem(text)
+        widget = QListWidgetItem(str(text))
         widget.setFlags(QtCore.Qt.ItemIsEditable |
                         QtCore.Qt.ItemIsEnabled |
                         QtCore.Qt.ItemIsSelectable)
