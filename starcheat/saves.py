@@ -381,10 +381,11 @@ class PlayerMetadata():
         self.data = {}
         self.filename = filename
         self.metadata = None
-        self.import_metadata()
 
-    def import_metadata(self):
-        metadata_file = open(self.filename, mode="rb")
+        self.import_metadata(self.filename)
+
+    def import_metadata(self, filename):
+        metadata_file = open(filename, mode="rb")
         metadata_data = metadata_file.read()
 
         offset = 0
@@ -396,14 +397,14 @@ class PlayerMetadata():
         metadata_file.close()
         self.metadata = self.data["save"]["data"]
 
-    def export_metadata(self):
+    def export_metadata(self, filename):
         self.data["save"]["data"] = self.metadata
         metadata_data = b""
 
         for var in data_format:
             metadata_data += pack_var(var, self.data[var[0]])
 
-        metadata_file = open(self.filename, "wb")
+        metadata_file = open(filename, "wb")
         metadata_file.write(metadata_data)
         metadata_file.close()
 
@@ -524,8 +525,6 @@ class PlayerSave():
             save_file = open(filename, "wb")
             save_file.write(player_data)
             save_file.close()
-            if self.metadata is not None:
-                self.metadata.export_metadata()
             return filename
         else:
             return player_data

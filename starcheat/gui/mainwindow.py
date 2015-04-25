@@ -96,11 +96,17 @@ class MainWindow():
         self.ui.actionOptions.triggered.connect(self.new_options_dialog)
         self.ui.actionItemBrowser.triggered.connect(self.new_item_browser)
         self.ui.actionAbout.triggered.connect(self.new_about_dialog)
-        self.ui.actionExport.triggered.connect(self.export_save)
-        self.ui.actionExportJSON.triggered.connect(self.export_json)
-        self.ui.actionImportJSON.triggered.connect(self.import_json)
         self.ui.actionMods.triggered.connect(self.new_mods_dialog)
         self.ui.actionImageBrowser.triggered.connect(self.new_image_browser_dialog)
+
+        self.ui.actionExportPlayerBinary.triggered.connect(self.export_save)
+        self.ui.actionExportPlayerJSON.triggered.connect(self.export_json)
+        self.ui.actionExportMetadataBinary.triggered.connect(lambda: self.export_save("metadata"))
+        self.ui.actionExportMetadataJSON.triggered.connect(lambda: self.export_json("metadata"))
+        self.ui.actionImportPlayerBinary.triggered.connect(self.import_save)
+        self.ui.actionImportPlayerJSON.triggered.connect(self.import_json)
+        self.ui.actionImportMetadataBinary.triggered.connect(lambda: self.import_save("metadata"))
+        self.ui.actionImportMetadataJSON.triggered.connect(lambda: self.import_json("metadata"))
 
         # set up bag tables
         bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
@@ -299,6 +305,7 @@ class MainWindow():
         # save and show status
         logging.info("Writing file to disk")
         self.player.export_save(self.player.filename)
+        self.player.metadata.export_metadata(self.player.metadata.filename)
         self.update_title()
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)
         self.window.setWindowModified(False)
@@ -493,50 +500,105 @@ class MainWindow():
         self.window.setWindowModified(False)
         return True
 
-    def export_save(self):
-        """Save a copy of the current player file to another location.
+    # export save stuff
+    def export_save(self, kind="player"):
+        """Save a copy of the current metadata/player file to another location.
         Doesn't change the current filename."""
-        filename = QFileDialog.getSaveFileName(self.window,
-                                               "Export Save File As",
-                                               filter="Player (*.player);;All Files (*)")
+        if kind == "metadata":
+            export_func = lambda: self.player.metadata.export_metadata(filename[0])
+            title = "Export Metadata File As"
+            filetype = "Player (*.metadata);;All Files (*)"
+            status = "Exported metadata file to "
+        else:
+            export_func = lambda: self.player.export_save(filename[0])
+            title = "Export Player File As"
+            filetype = "Player (*.player);;All Files (*)"
+            status = "Exported player file to "
+
+        filename = QFileDialog.getSaveFileName(self.window, title, filter=filetype)
+
         if filename[0] != "":
             self.set_bags()
-            self.player.export_save(filename[0])
-            self.ui.statusbar.showMessage("Exported save file to " + filename[0], 3000)
+            export_func()
+            self.ui.statusbar.showMessage(status + filename[0], 3000)
 
-    def export_json(self):
+    def export_json(self, kind="player"):
         """Export player entity as json."""
-        self.set_bags()
-        entity = self.player.entity
-        json_data = json.dumps(entity, sort_keys=True,
-                               indent=4, separators=(',', ': '))
-        filename = QFileDialog.getSaveFileName(self.window,
-                                               "Export JSON File As",
-                                               filter="JSON (*.json);;All Files (*)")
+        if kind == "metadata":
+            data = self.player.metadata.metadata
+            title = "Export Metadata JSON File As"
+            filetype = "JSON (*.json);;All Files (*)"
+            status = "Exported metadata JSON file to "
+        else:
+            data = self.player.entity
+            title = "Export Player JSON File As"
+            filetype = "JSON (*.json);;All Files (*)"
+            status = "Exported player JSON file to "
+
+        filename = QFileDialog.getSaveFileName(self.window, title, filter=filetype)
+
         if filename[0] != "":
+            self.set_bags()
+            json_data = json.dumps(data, sort_keys=True,
+                                   indent=4, separators=(',', ': '))
             json_file = open(filename[0], "w")
             json_file.write(json_data)
             json_file.close()
-            self.ui.statusbar.showMessage("Exported JSON file to " + filename[0], 3000)
+            self.ui.statusbar.showMessage(status + filename[0], 3000)
 
-    def import_json(self):
-        """Import an exported JSON player entity and merge/update with open player."""
-        filename = QFileDialog.getOpenFileName(self.window,
-                                               "Import JSON Player File",
-                                               filter="JSON (*.json);;All Files (*)")
+    # import save stuff
+    def import_save(self, kind="player"):
+        """Import a .player file over the top of current player."""
+        if kind == "metadata":
+            import_func = self.player.metadata.import_metadata
+            title = "Import Metadata File"
+            filetype = "Player (*.metadata);;All Files (*)"
+            status = "Imported metadata file from "
+        else:
+            import_func = self.player.import_save
+            title = "Import Player File"
+            filetype = "Player (*.player);;All Files (*)"
+            status = "Imported player file from "
+
+        filename = QFileDialog.getOpenFileName(self.window, title, filter=filetype)
 
         if filename[0] == "":
-            logging.debug("No player file selected to import")
             return
 
         try:
-            player_data = json.load(open(filename[0], "r"))
-            self.player.entity.update(player_data)
+            import_func(filename[0])
             self.update()
-            self.ui.statusbar.showMessage("Imported player file " + filename[0], 3000)
+            self.ui.statusbar.showMessage(status + filename[0], 3000)
         except:
-            logging.exception("Error parsing player: %s", filename[0])
-            self.ui.statusbar.showMessage("Error importing player, see starcheat log for details", 3000)
+            logging.exception("Error reading file: %s", filename[0])
+            self.ui.statusbar.showMessage("Error reading file, see starcheat log for details", 3000)
+
+    def import_json(self, kind="player"):
+        """Import an exported JSON file and merge/update with open player/metadata."""
+        if kind == "metadata":
+            update_func = lambda: self.player.metadata.metadata.update(data)
+            title = "Import JSON Metadata File"
+            status = "Imported metadata file "
+        else:
+            update_func = lambda: self.player.entity.update(data)
+            title = "Import JSON Player File"
+            status = "Imported player file "
+
+        filename = QFileDialog.getOpenFileName(self.window, title,
+                                               filter="JSON (*.json);;All Files (*)")
+
+        if filename[0] == "":
+            logging.debug("No file selected to import")
+            return
+
+        try:
+            data = json.load(open(filename[0], "r"))
+            update_func()
+            self.update()
+            self.ui.statusbar.showMessage(status + filename[0], 3000)
+        except:
+            logging.exception("Error reading file: %s", filename[0])
+            self.ui.statusbar.showMessage("Error importing file, see starcheat log for details", 3000)
 
     def get_gender(self):
         if self.ui.male.isChecked():

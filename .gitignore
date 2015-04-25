@@ -6,3 +6,5 @@ starcheat/__pycache__/
 *.org
 *.org_archive
 *.json
+*.metadata
+*.player

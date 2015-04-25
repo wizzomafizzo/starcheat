@@ -67,6 +67,7 @@ class Quests():
             name, value = edit.get_option()
             status = self.get_status()
             self.quests[status][name] = value
+            self.lookup_quest()
 
         edit.dialog.accepted.connect(save)
         edit.ui.name.setEnabled(False)
