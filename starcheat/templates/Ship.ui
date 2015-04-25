@@ -67,6 +67,9 @@
        </item>
        <item>
         <widget class="QToolButton" name="capabilities_button">
+         <property name="toolTip">
+          <string>Edit Capabilities</string>
+         </property>
          <property name="text">
           <string>...</string>
          </property>
@@ -126,6 +129,9 @@
         </item>
         <item>
          <widget class="QToolButton" name="available_missions_button">
+          <property name="toolTip">
+           <string>Edit Available Missions</string>
+          </property>
           <property name="text">
            <string>...</string>
           </property>
@@ -164,6 +170,9 @@
         </item>
         <item>
          <widget class="QToolButton" name="completed_missions_button">
+          <property name="toolTip">
+           <string>Edit Completed Missions</string>
+          </property>
           <property name="text">
            <string>...</string>
           </property>
@@ -202,6 +211,9 @@
         </item>
         <item>
          <widget class="QToolButton" name="enabled_commands_button">
+          <property name="toolTip">
+           <string>Edit Enabled Commands</string>
+          </property>
           <property name="text">
            <string>...</string>
           </property>

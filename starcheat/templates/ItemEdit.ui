@@ -320,7 +320,7 @@
            <item>
             <widget class="QToolButton" name="edit_option_button">
              <property name="toolTip">
-              <string>Edit Selected Option</string>
+              <string>Edit Selected Parameter</string>
              </property>
              <property name="text">
               <string>...</string>
@@ -350,7 +350,7 @@
               <bool>true</bool>
              </property>
              <property name="toolTip">
-              <string>Add New Option</string>
+              <string>Add New Parameter</string>
              </property>
              <property name="text">
               <string>...</string>
@@ -367,7 +367,7 @@
               <bool>true</bool>
              </property>
              <property name="toolTip">
-              <string>Remove Selected Option</string>
+              <string>Remove Selected Parameter</string>
              </property>
              <property name="text">
               <string>...</string>

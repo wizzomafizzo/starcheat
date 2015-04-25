@@ -51,7 +51,7 @@ def import_json(parent):
 
 
 class ItemEditOptions():
-    def __init__(self, parent, key, value, title="Edit Item Option"):
+    def __init__(self, parent, key, value, title="Edit Item Parameter"):
         self.dialog = QDialog(parent)
         self.ui = qt_itemeditoptions.Ui_Dialog()
         self.ui.setupUi(self.dialog)
@@ -304,7 +304,7 @@ class ItemEdit():
 
     def clear_item_options(self):
         self.ui.variant.clear()
-        self.ui.variant.setHorizontalHeaderLabels(["Options"])
+        self.ui.variant.setHorizontalHeaderLabels(["Parameters"])
         self.ui.variant.setRowCount(0)
         if self.item is not None:
             self.item["parameters"] = {}
@@ -396,7 +396,7 @@ class ItemEdit():
 
     def populate_options(self):
         self.ui.variant.setRowCount(len(self.item["parameters"]))
-        self.ui.variant.setHorizontalHeaderLabels(["Options"])
+        self.ui.variant.setHorizontalHeaderLabels(["Parameters"])
         row = 0
         for k in sorted(self.item["parameters"].keys()):
             variant = ItemOptionWidget(k, self.item["parameters"][k])
