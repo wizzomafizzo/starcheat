@@ -209,10 +209,14 @@ class ItemEdit():
         self.ui.variant.addAction(remove_action)
 
     def update_item_info(self, name, data):
-        defaults = self.assets.items().get_item(name)[0]
-        defaults.update(data)
+        merged = {}
+        defaults = self.assets.items().get_item(name)
+        if defaults is not None:
+            merged.update(defaults[0])
+        merged.update(data)
+
         item_info = "<html><body>"
-        item_info += generate_item_info(defaults)
+        item_info += generate_item_info(merged)
         item_info += "</body></html>"
         self.ui.desc.setText(item_info)
 

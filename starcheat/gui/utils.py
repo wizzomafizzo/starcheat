@@ -24,9 +24,6 @@ import qt_about
 import qt_mods
 from config import Config
 
-# TODO: there are way too many html templates and message text in here now
-# it should all be moved to a templates file or something
-
 
 def make_pak_hash():
     vanilla = os.path.join(Config().read("assets_folder"), "packed.pak")

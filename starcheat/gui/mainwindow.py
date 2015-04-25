@@ -43,6 +43,7 @@ from gui.itembrowser import ItemBrowser
 from gui.appearance import Appearance
 from gui.techs import Techs
 from gui.quests import Quests
+from gui.ship import Ship
 
 
 class StarcheatMainWindow(QMainWindow):
@@ -121,6 +122,7 @@ class MainWindow():
         self.ui.appearance_button.clicked.connect(self.new_appearance_dialog)
         self.ui.techs_button.clicked.connect(self.new_techs_dialog)
         self.ui.quests_button.clicked.connect(self.new_quests_dialog)
+        self.ui.ship_button.clicked.connect(self.new_ship_dialog)
 
         self.ui.name.textChanged.connect(self.set_name)
         self.ui.male.clicked.connect(self.set_gender)
@@ -218,6 +220,11 @@ class MainWindow():
         can_edit_quests = (self.player.metadata is not None and
                            "quests" in self.player.metadata.metadata)
         self.ui.quests_button.setEnabled(can_edit_quests)
+
+        # ship
+        can_edit_ship = (self.player.metadata is not None and
+                         "shipUpgrades" in self.player.metadata.metadata)
+        self.ui.ship_button.setEnabled(can_edit_ship)
 
         # items
         total = 0
@@ -474,6 +481,11 @@ class MainWindow():
         quests_dialog = Quests(self)
         quests_dialog.dialog.rejected.connect(quests_dialog.write_quests)
         quests_dialog.dialog.exec()
+
+    def new_ship_dialog(self):
+        ship_dialog = Ship(self)
+        ship_dialog.dialog.rejected.connect(ship_dialog.write_ship)
+        ship_dialog.dialog.exec()
 
     def new_mods_dialog(self):
         mods_dialog = ModsDialog(self.window)

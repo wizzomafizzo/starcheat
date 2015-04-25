@@ -2226,6 +2226,41 @@ border-radius: 4px;
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QPushButton" name="ship_button">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Manage Ship</string>
+          </property>
+          <property name="statusTip">
+           <string>Manage your ship and AI</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/starcheat/images/icons/glyphicons_233_direction.png</normaloff>:/starcheat/images/icons/glyphicons_233_direction.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>

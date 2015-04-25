@@ -4,13 +4,20 @@ Functions shared between GUI dialogs
 
 import re
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QTableWidgetItem, QInputDialog, QLineEdit
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5.QtWidgets import QInputDialog
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QImage
 
 from PIL.ImageQt import ImageQt
 
 import assets
+import qt_listedit
 from config import Config
 
 
@@ -117,3 +124,46 @@ class ItemWidget(QTableWidgetItem):
 
         if type(icon) is QPixmap:
             self.setText("")
+
+class ListEdit():
+    def __init__(self, parent, list_data):
+        self.dialog = QDialog(parent)
+        self.ui = qt_listedit.Ui_Dialog()
+        self.ui.setupUi(self.dialog)
+
+        self.ui.add_button.clicked.connect(self.add_item)
+        self.ui.remove_button.clicked.connect(self.remove_item)
+
+        self.data = list_data
+
+        self.update()
+
+    def new_item(self, text):
+        widget = QListWidgetItem(text)
+        widget.setFlags(QtCore.Qt.ItemIsEditable |
+                        QtCore.Qt.ItemIsEnabled |
+                        QtCore.Qt.ItemIsSelectable)
+        return widget
+
+    def update(self):
+        self.ui.list.clear()
+        for i in self.data:
+            widget = self.new_item(i)
+            self.ui.list.addItem(widget)
+
+    def get_list(self):
+        list_data = []
+
+        for i in range(self.ui.list.count()):
+            list_data.append(self.ui.list.item(i).text())
+
+        self.data = list_data
+        return self.data
+
+    def add_item(self):
+        self.ui.list.addItem(self.new_item("teleport"))
+
+    def remove_item(self):
+        selected = self.ui.list.currentRow()
+        if selected is not None:
+            self.ui.list.takeItem(selected)
