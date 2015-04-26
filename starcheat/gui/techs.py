@@ -84,7 +84,7 @@ class Techs():
                 name = i["__content"]["name"]
                 tech = self.assets.techs().get_tech(name)
                 icon = QPixmap.fromImage(ImageQt(tech[1]))
-                getattr(self.ui, "icon"+str(current)).setPixmap(icon.scaled(32,32))
+                getattr(self.ui, "icon"+str(current)).setPixmap(icon.scaled(32, 32))
                 getattr(self.ui, "icon"+str(current)).setToolTip(tech[0]["shortdescription"])
                 self.techs[current-1] = new_tech_slot(tech[0]["techModule"])
                 self.equip[current-1] = tech[0]["itemName"]
@@ -131,7 +131,7 @@ class Techs():
         tech_info += tech[0]["description"]+"<br>"
 
         self.ui.tech_info.setText(tech_info)
-        self.ui.current_icon.setPixmap(QPixmap.fromImage(ImageQt(tech[1])).scaled(32,32))
+        self.ui.current_icon.setPixmap(QPixmap.fromImage(ImageQt(tech[1])).scaled(32, 32))
 
         slots = ["head", "body", "legs", "suit"]
         index = 1
@@ -206,7 +206,7 @@ class Techs():
             return
 
         icon = QPixmap.fromImage(ImageQt(tech[1]))
-        getattr(self.ui, "icon"+str(index+1)).setPixmap(icon.scaled(32,32))
+        getattr(self.ui, "icon"+str(index+1)).setPixmap(icon.scaled(32, 32))
         getattr(self.ui, "icon"+str(index+1)).setToolTip(tech[0]["shortdescription"])
         self.techs[index] = new_tech_slot(tech[0]["techModule"])
         self.equip[index] = tech[0]["itemName"]

@@ -2,8 +2,6 @@
 Qt quests management dialog
 """
 
-import logging
-
 from gui.itemedit import ItemEditOptions
 from gui.common import text_to_html
 
@@ -114,7 +112,7 @@ class Quests():
         status = self.get_status()
         self.ui.quest_list.clear()
         # no quests
-        if not status in self.quests:
+        if status not in self.quests:
             return
         for quest_id in self.quests[status].keys():
             self.ui.quest_list.addItem(quest_id)
@@ -128,7 +126,7 @@ class Quests():
 
         for k, v in raw_quests.items():
             status = v["status"]
-            if not status in quests:
+            if status not in quests:
                 quests[status] = {}
             quests[status][k] = v
 

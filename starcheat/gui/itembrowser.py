@@ -18,6 +18,7 @@ import qt_itembrowser
 from config import Config
 from gui.common import text_to_html
 
+
 def format_status_effects(data):
     info = "<b>Status Effects:</b><br>"
     for status in data:
@@ -30,6 +31,7 @@ def format_status_effects(data):
         else:
             info += "%s<br>" % status["stat"]
     return info
+
 
 def format_effects(data):
     info = "<b>Effects:</b><br>"
@@ -51,6 +53,7 @@ def format_effects(data):
 
     return info
 
+
 data_format = (
     # (key name, format/func)
     # key name is name of the key in item data it corresponds to
@@ -68,6 +71,7 @@ data_format = (
     ("effects", format_effects),
     ("blockRadius", "<b>Mining Radius:</b> %s blocks")
 )
+
 
 def generate_item_info(item_data):
     """Takes inventory item data and makes a detailed description (HTML)."""
@@ -94,10 +98,11 @@ class BrowserItem(QListWidgetItem):
         if desc == "":
             display = name
         else:
-            #display = "%s (%s)" % (desc, name)
+            # display = "%s (%s)" % (desc, name)
             display = desc
         QListWidgetItem.__init__(self, display)
         self.name = name
+
 
 class ItemBrowser():
     def __init__(self, parent, just_browse=False, category="<all>"):
@@ -162,7 +167,7 @@ class ItemBrowser():
 
         # last ditch
         try:
-            icon = self.scale_image_icon(icon,64,64)
+            icon = self.scale_image_icon(icon, 64, 64)
             self.ui.item_icon.setPixmap(icon)
         except TypeError:
             logging.warning("Unable to load item image: "+selected)
@@ -193,11 +198,11 @@ class ItemBrowser():
         src_width = qpix.width()
         src_height = qpix.height()
 
-        if src_width == src_height and width == height: # square image and square bounds
-            scaled_qpix = qpix.scaled(width,height)
-        elif src_width > src_height: # wider than tall needs width scaling to fit
+        if src_width == src_height and width == height:  # square image and square bounds
+            scaled_qpix = qpix.scaled(width, height)
+        elif src_width > src_height:  # wider than tall needs width scaling to fit
             scaled_qpix = qpix.scaledToWidth(width)
-        elif src_height > src_width: # taller than wide needs height scaling to fit
+        elif src_height > src_width:  # taller than wide needs height scaling to fit
             scaled_qpix = qpix.scaledToHeight(height)
         return scaled_qpix
 

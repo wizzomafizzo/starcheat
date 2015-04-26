@@ -16,21 +16,15 @@ from PyQt5.QtGui import QImage
 from PIL.ImageQt import ImageQt
 
 import json
-import copy
 import logging
 import re
 
-import assets
 import qt_itemedit
 import qt_itemeditoptions
 import saves
 import qt_imagebrowser
-from gui.common import inv_icon
-from gui.common import empty_slot
-from gui.common import ListEdit
 from gui.itembrowser import ItemBrowser
 from gui.itembrowser import generate_item_info
-from config import Config
 
 
 def import_json(parent):
@@ -110,6 +104,7 @@ class ItemEditOptions():
     def get_option(self):
         return self.ui.name.text(), json.loads(self.ui.options.toPlainText())
 
+
 class ImageBrowser():
     def __init__(self, parent, assets, just_browse=True):
         self.dialog = QDialog(parent)
@@ -150,12 +145,14 @@ class ImageBrowser():
         else:
             return self.ui.results.currentItem().text()
 
+
 class ItemOptionWidget(QTableWidgetItem):
     def __init__(self, key, value):
         self.option = key, value
         item_text = key + ": " + str(value)
         QTableWidgetItem.__init__(self, item_text)
         self.setToolTip(str(value))
+
 
 class ItemEdit():
     def __init__(self, parent, item, player, assets, browser_category="<all>"):
@@ -260,7 +257,7 @@ class ItemEdit():
 
         if src_width == src_height and width == height:
             # square image and square bounds
-            scaled_qpix = qpix.scaled(width,height)
+            scaled_qpix = qpix.scaled(width, height)
         elif src_width > src_height:
             # wider than tall needs width scaling to fit
             scaled_qpix = qpix.scaledToWidth(width)
@@ -333,7 +330,6 @@ class ItemEdit():
         else:
             selected = self.ui.variant.currentItem()
 
-        generic = False
         dialog = None
         name, value = selected.option
 
@@ -343,16 +339,20 @@ class ItemEdit():
 
         if new or raw:
             dialog = ItemEditOptions(self.dialog, name, value)
+
             def save():
                 name, value = dialog.get_option()
                 self.item["parameters"][name] = value
+
             dialog.dialog.accepted.connect(save)
             dialog.dialog.exec()
         elif name in ["inventoryIcon", "image", "largeImage"] and type(value) is str:
             dialog = ImageBrowser(self.dialog, self.assets, False)
+
             def save():
                 value = dialog.get_key()
                 self.item["parameters"][name] = value
+
             dialog.dialog.accepted.connect(save)
             dialog.dialog.exec()
         elif type(value) is str:
@@ -375,9 +375,11 @@ class ItemEdit():
             self.item["parameters"][name] = value
         else:
             dialog = ItemEditOptions(self.dialog, name, value)
+
             def save():
                 name, value = dialog.get_option()
                 self.item["parameters"][name] = value
+
             dialog.dialog.accepted.connect(save)
             dialog.dialog.exec()
 
@@ -444,7 +446,7 @@ class ItemEdit():
 
     def import_item(self):
         item = import_json(self.dialog)
-        if item == False:
+        if item is False:
             dialog = QMessageBox(self.dialog)
             dialog.setWindowTitle("Import Error")
             dialog.setText("Could not import requested item file.")

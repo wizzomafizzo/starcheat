@@ -10,6 +10,7 @@ import qt_ship
 
 from PyQt5.QtWidgets import QDialog
 
+
 class Ship():
     def __init__(self, main_window):
         self.dialog = QDialog(main_window.window)

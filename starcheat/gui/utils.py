@@ -224,6 +224,7 @@ def update_check_worker(result):
         logging.info("update check: skipping update check because of no internet connection")
     result[0] = False
 
+
 def update_check_dialog(parent, latest_tag):
     dialog = QMessageBox(parent)
     dialog.setWindowModality(QtCore.Qt.WindowModal)
