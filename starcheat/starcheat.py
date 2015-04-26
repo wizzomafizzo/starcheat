@@ -1,23 +1,30 @@
 #!/usr/bin/env python3
 
-import logging, logging.handlers, os, sys, traceback, platform
+import logging
+import logging.handlers
+import os
+import sys
+import traceback
+import platform
 from PyQt5.QtWidgets import QMessageBox
 
-import config, gui.mainwindow
+import config
+import gui.mainwindow
 
 # set up starcheat internal logging
 log_file = os.path.join(config.config_folder, "starcheat.log")
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 rotate = logging.handlers.RotatingFileHandler(log_file,
-                                               maxBytes=1024*1000,
-                                               backupCount=5)
+                                              maxBytes=1024*1000,
+                                              backupCount=5)
 rotate.setFormatter(logging.Formatter("%(asctime)s %(levelname)-8s %(message)s"))
 logger.addHandler(rotate)
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
 console.setFormatter(logging.Formatter("%(levelname)-8s %(message)s"))
 logger.addHandler(console)
+
 
 # set up Qt crash dialog
 def crash_gui(error):
@@ -33,6 +40,7 @@ def crash_gui(error):
     dialog.setStandardButtons(QMessageBox.Ok)
     dialog.setDetailedText(error)
     dialog.exec()
+
 
 def exception_handler(type, value, tb):
     for err in traceback.format_exception(type, value, tb):
@@ -58,6 +66,7 @@ def exception_handler(type, value, tb):
     crash_gui(msg)
 
 sys.excepthook = exception_handler
+
 
 # go starcheat!
 def main():
