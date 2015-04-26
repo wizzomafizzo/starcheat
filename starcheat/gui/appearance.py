@@ -16,7 +16,6 @@ import logging
 import assets
 import qt_appearance
 import qt_coloredit
-from config import Config
 
 
 class Appearance():
@@ -68,13 +67,15 @@ class Appearance():
             for option in group_data:
                 group_widget.addItem(option)
             group_widget.setCurrentText(current_appearance[value][0])
-            if len(group_data) < 2: group_widget.setEnabled(False)
+            if len(group_data) < 2:
+                group_widget.setEnabled(False)
 
             type_widget = getattr(self.ui, value+"_type")
             for option in type_data:
                 type_widget.addItem(option)
             type_widget.setCurrentText(current_appearance[value][1])
-            if len(type_data) < 2: type_widget.setEnabled(False)
+            if len(type_data) < 2:
+                type_widget.setEnabled(False)
 
             group_widget.currentTextChanged.connect(self.write_appearance_values)
             type_widget.currentTextChanged.connect(self.write_appearance_values)
@@ -157,11 +158,13 @@ class Appearance():
     def new_emote_color_edit(self):
         self.new_color_edit("emote")
 
+
 class ColorItem(QTableWidgetItem):
     def __init__(self, color):
         QTableWidgetItem.__init__(self, color.upper())
         self.setTextAlignment(QtCore.Qt.AlignCenter)
         self.setBackground(QBrush(QColor("#" + color.upper())))
+
 
 class ColorEdit():
     def __init__(self, parent, directives, color_type):
