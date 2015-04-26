@@ -2,18 +2,24 @@
 Qt blueprint/recipe management dialog
 """
 
-from PyQt5.QtWidgets import QDialog, QListWidgetItem
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QListWidgetItem
 
-import assets, qt_blueprints, saves
+import assets
+import qt_blueprints
+import saves
 from config import Config
+
 
 def new_blueprint(name, data):
     return saves.new_item_data(name, 1, data)
+
 
 class BlueprintItem(QListWidgetItem):
     def __init__(self, blueprint):
         QListWidgetItem.__init__(self, blueprint["name"])
         self.blueprint = blueprint
+
 
 class BlueprintLib():
     def __init__(self, parent, known_blueprints, new_blueprints):
