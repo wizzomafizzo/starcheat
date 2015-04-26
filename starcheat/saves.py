@@ -258,7 +258,6 @@ def unpack_starsave(data):
     save["variant_subversion"] = sub_ver[0]
     offset += sub_ver[1]
 
-
     save_data = unpack_variant(data[offset:])
     save["data"] = save_data[0]
     offset += save_data[1]
@@ -449,6 +448,7 @@ class PlayerMetadata():
         assert type(ai["completedMissions"]) is list
         assert type(ai["enabledCommands"]) is list
         self.metadata["ai"] = ai
+
 
 class PlayerSave():
     def __init__(self, filename):
