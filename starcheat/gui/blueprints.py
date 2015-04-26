@@ -5,9 +5,11 @@ Qt blueprint/recipe management dialog
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtWidgets import QListWidgetItem
 
-import assets
 import qt_blueprints
 import saves
+
+# TODO: use assets from parent
+from assets.core import Assets
 from config import Config
 
 
@@ -30,7 +32,7 @@ class BlueprintLib():
 
         assets_db_file = Config().read("assets_db")
         starbound_folder = Config().read("starbound_folder")
-        self.assets = assets.Assets(assets_db_file, starbound_folder)
+        self.assets = Assets(assets_db_file, starbound_folder)
 
         self.blueprints = self.assets.blueprints()
         self.known_blueprints = known_blueprints

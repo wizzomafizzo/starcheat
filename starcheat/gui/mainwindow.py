@@ -22,8 +22,8 @@ from PIL.ImageQt import ImageQt
 from threading import Thread
 
 import saves
-import assets
 import qt_mainwindow
+from assets.core import Assets
 from config import Config
 from gui.common import ItemWidget
 from gui.common import empty_slot
@@ -160,8 +160,8 @@ class MainWindow():
             return
 
         logging.info("Loading assets database")
-        self.assets = assets.Assets(Config().read("assets_db"),
-                                    Config().read("starbound_folder"))
+        self.assets = Assets(Config().read("assets_db"),
+                             Config().read("starbound_folder"))
         self.items = self.assets.items()
 
         # populate species combobox

@@ -12,9 +12,10 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QImage
 from PIL.ImageQt import ImageQt
 
-import assets
 import qt_itembrowser
 
+# TODO: use parent assets
+from assets.core import Assets
 from config import Config
 from gui.common import text_to_html
 
@@ -113,7 +114,7 @@ class ItemBrowser():
 
         assets_db_file = Config().read("assets_db")
         starbound_folder = Config().read("starbound_folder")
-        self.assets = assets.Assets(assets_db_file, starbound_folder)
+        self.assets = Assets(assets_db_file, starbound_folder)
 
         self.remember_category = category
 

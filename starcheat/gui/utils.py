@@ -16,13 +16,14 @@ from PyQt5 import QtCore
 from urllib.request import urlopen
 from urllib.error import URLError
 
-import assets
 import logging
 import config
 import qt_options
 import qt_about
 import qt_mods
+
 from config import Config
+from assets.core import Assets
 
 
 def make_pak_hash():
@@ -48,7 +49,7 @@ def make_pak_hash():
 def build_assets_db(parent):
     assets_db_file = Config().read("assets_db")
     starbound_folder = Config().read("starbound_folder")
-    assets_db = assets.Assets(assets_db_file, starbound_folder)
+    assets_db = Assets(assets_db_file, starbound_folder)
 
     def bad_asset_dialog():
         dialog = QMessageBox(parent)
@@ -256,7 +257,7 @@ class OptionsDialog():
 
         assets_db_file = Config().read("assets_db")
         starbound_folder = Config().read("starbound_folder")
-        self.db = assets.Assets(assets_db_file, starbound_folder)
+        self.db = Assets(assets_db_file, starbound_folder)
 
         self.config = Config()
         self.current_folder = self.config.read("starbound_folder")
@@ -311,7 +312,7 @@ class OptionsDialog():
 
         assets_db_file = Config().read("assets_db")
         starbound_folder = Config().read("starbound_folder")
-        self.db = assets.Assets(assets_db_file, starbound_folder)
+        self.db = Assets(assets_db_file, starbound_folder)
         total = str(self.db.total_indexed())
 
         if not rebuild or total == 0:
@@ -334,8 +335,8 @@ class ModsDialog():
         self.ui.setupUi(self.dialog)
 
         starbound_folder = Config().read("starbound_folder")
-        self.assets = assets.Assets(Config().read("assets_db"),
-                                    starbound_folder)
+        self.assets = Assets(Config().read("assets_db"),
+                             starbound_folder)
 
         mods = self.assets.get_mods()
         self.ui.mods_total.setText(str(len(mods))+" total")
