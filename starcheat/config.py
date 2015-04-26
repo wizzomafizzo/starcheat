@@ -18,7 +18,7 @@ if not os.path.isdir(config_folder):
 
 STARCHEAT_VERSION = "0.22 (Spirited Giraffe)"
 STARCHEAT_VERSION_TAG = "0.22"
-CONFIG_VERSION = 14
+CONFIG_VERSION = 15
 ini_file = os.path.join(config_folder, "starcheat.ini")
 
 class Config():

@@ -675,6 +675,24 @@ class PlayerSave():
     def get_movement(self):
         return self.entity["movementController"]
 
+    def get_visible(self, equipment):
+        slots = None
+        if equipment == "head":
+            slots = self.get_head()
+        elif equipment == "chest":
+            slots = self.get_chest()
+        elif equipment == "legs":
+            slots = self.get_legs()
+        elif equipment == "back":
+            slots = self.get_back()
+
+        if slots is not None:
+            main, glamor = slots
+            if glamor is not None:
+                return glamor["__content"]
+            elif main is not None:
+                return main["__content"]
+
     # here be setters
     def set_blueprints(self, blueprints):
         self.entity["blueprints"]["knownBlueprints"] = blueprints

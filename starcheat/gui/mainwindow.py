@@ -15,6 +15,8 @@ from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QProgressDialog
+from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtGui import QColor
 from PyQt5.QtGui import QPixmap
 from PIL.ImageQt import ImageQt
 from threading import Thread
@@ -89,6 +91,8 @@ class MainWindow():
         # remember the last selected item browser category
         self.remember_browser = "<all>"
         self.options_dialog = None
+        self.preview_armor = True
+        self.preview_bg = "#ffffff"
 
         # connect action menu
         self.ui.actionSave.triggered.connect(self.save)
@@ -116,6 +120,8 @@ class MainWindow():
         for bag in bags:
             logging.debug("Setting up %s bag", bag)
             self.bag_setup(getattr(self.ui, bag), bag)
+
+        self.preview_setup()
 
         # signals
         self.ui.blueprints_button.clicked.connect(self.new_blueprint_edit)
@@ -305,6 +311,27 @@ class MainWindow():
                 sort_count.triggered.connect(lambda: self.sort_bag(name, "count"))
                 widget.addAction(sort_count)
 
+    def toggle_preview_armor(self):
+        self.preview_armor = not self.preview_armor
+        self.update_player_preview()
+
+    def change_preview_background(self):
+        qcolor = QColorDialog().getColor(QColor(self.preview_bg),
+                                         self.window)
+
+        if qcolor.isValid():
+            self.preview_bg = qcolor.name()
+            self.update_player_preview()
+
+    def preview_setup(self):
+        button = self.ui.preview_config_button
+        toggle_armor = QAction("Toggle Armor", button)
+        toggle_armor.triggered.connect(self.toggle_preview_armor)
+        button.addAction(toggle_armor)
+        change_bg = QAction("Change Background...", button)
+        change_bg.triggered.connect(self.change_preview_background)
+        button.addAction(change_bg)
+
     def update_title(self):
         """Update window title with player name."""
         self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
@@ -371,6 +398,8 @@ class MainWindow():
                     bag.setItem(row, column, new_slot)
                     if not json_edit:
                         self.remember_browser = item_edit.remember_browser
+                    self.set_bags()
+                    self.update_player_preview()
                     self.set_edited()
             except (TypeError, KeyError):
                 logging.exception("Error updating item slot")
@@ -402,6 +431,8 @@ class MainWindow():
             bag.setItem(row, column, empty_slot())
             if not standalone:
                 dialog.close()
+            self.set_bags()
+            self.update_player_preview()
             self.set_edited()
 
     def set_edited(self):
@@ -720,7 +751,8 @@ class MainWindow():
 
     def update_player_preview(self):
         try:
-            image = self.assets.species().render_player(self.player)
+            image = self.assets.species().render_player(self.player,
+                                                        self.preview_armor)
             pixmap = QPixmap.fromImage(ImageQt(image))
         except (OSError, TypeError, AttributeError):
             # TODO: more specific error handling. may as well except all errors
@@ -728,6 +760,7 @@ class MainWindow():
             logging.exception("Couldn't load species images")
             pixmap = QPixmap()
 
+        self.ui.player_preview.setStyleSheet("background-color: %s;" % self.preview_bg)
         self.ui.player_preview.setPixmap(pixmap)
         self.window.setWindowModified(True)
 

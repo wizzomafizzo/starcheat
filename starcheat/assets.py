@@ -178,6 +178,7 @@ class Assets():
         species = Species(self)
         monsters = Monsters(self)
         techs = Techs(self)
+        frames = Frames(self)
 
         new_index_query = "insert into assets values (?, ?, ?, ?, ?, ?)"
         c = self.db.cursor()
@@ -200,6 +201,8 @@ class Assets():
                     tmp_data = monsters.index_data(asset)
                 elif techs.is_tech(asset[0]):
                     tmp_data = techs.index_data(asset)
+                elif frames.is_frames(asset[0]):
+                    tmp_data = frames.index_data(asset)
             else:
                 logging.warning("Skipping invalid asset (no file extension) %s in %s" % (asset[0], asset[1]))
 
@@ -381,6 +384,9 @@ class Assets():
     def images(self):
         return Images(self)
 
+    def frames(self):
+        return Frames(self)
+
     def get_all(self, asset_type):
         c = self.assets.db.cursor()
         c.execute("select * from assets where type = ? order by name collate nocase", (asset_type,))
@@ -416,6 +422,84 @@ class Assets():
         c.execute("select distinct path from assets order by category")
         all_assets = [x[0].replace(self.starbound_folder,"") for x in c.fetchall()]
         return [x for x in all_assets if not x.endswith("packed.pak")]
+
+class Frames():
+    def __init__(self, assets):
+        self.assets = assets
+        self.starbound_folder = assets.starbound_folder
+
+    def is_frames(self, key):
+        if key.endswith(".frames"):
+            return True
+        else:
+            return False
+
+    def index_data(self, asset):
+        key = asset[0]
+        path = asset[1]
+        name = os.path.basename(key).split(".")[0]
+        asset_type = "frames"
+
+        asset_data = self.assets.read(key, path)
+
+        if asset_data is None:
+            return
+
+        if "frameList" in asset_data:
+            category = "list"
+        elif "frameGrid" in asset_data:
+            category = "grid"
+        else:
+            return
+
+        return (key, path, asset_type, category, name, "")
+
+    def get_all_frames(self):
+        """Return a list of every indexed blueprints."""
+        c = self.assets.db.cursor()
+        q = "select * from assets where type = 'frames' order by name collate nocase"
+        c.execute(q)
+        return c.fetchall()
+
+    def get_frames(self, name):
+        """Return indexed frames data from name."""
+        c = self.assets.db.cursor()
+        q = "select key, path, category from assets where type = 'frames' and name = ?"
+        c.execute(q, (name,))
+        meta = c.fetchone()
+        if meta is not None:
+            frames = self.assets.read(meta[0], meta[1])
+            return frames, meta[0], meta[1], meta[2]
+        else:
+            return None
+
+    def lookup_frame(self, name, frame):
+        """Return bounding box for given frame in frames file, allows aliases."""
+        frames = self.get_frames(name)
+        if frames is None: return
+        data = frames[0]
+
+        if "aliases" in data and frame in data["aliases"]:
+            key = data["aliases"][frame]
+        else:
+            key = frame
+
+        if frames[3] == "list":
+            if key in data["frameList"]:
+                return data["frameList"][key]
+            else:
+                return
+        elif frames[3] == "grid":
+            size = data["frameGrid"]["size"]
+            dimensions = data["frameGrid"]["dimensions"]
+            tiles = data["frameGrid"]["names"]
+
+            for y in range(dimensions[1]):
+                for x in range(dimensions[0]):
+                    if tiles[y][x] == key:
+                        rx = x * size[0]
+                        ry = y * size[1]
+                        return [rx, ry, rx+size[0], ry+size[1]]
 
 class Images():
     def __init__(self, assets):
@@ -1111,7 +1195,78 @@ class Species():
             logging.warning("No race set on player")
             return None
 
-    def render_player(self, player):
+    def render_part(self, player, player_image, part, slot):
+        """Lookup, crop and color given item slot and apply to player render."""
+        gender = player.get_gender()
+        stance = player.get_personality()
+
+        if part == "head":
+            frame_key = "head", "normal"
+        elif part == "legs":
+            frame_key = "pants"+gender[0], stance
+        elif part == "back":
+            frame_key = "back", stance
+
+        frame = self.assets.frames().lookup_frame(*frame_key)
+
+        if slot is None:
+            return player_image
+
+        item = self.assets.items().get_item(slot["name"])
+        item_img_path = item[0][gender + "Frames"]
+
+        if item_img_path[0] != "/":
+            item_img_path = os.path.dirname(item[1]) + "/" + item_img_path
+
+        item_img = self.assets.images().get_image(item_img_path)
+        item_img = item_img.crop(frame)
+        item_img = self.assets.images().color_image(item_img, slot["parameters"])
+
+        player_image.paste(item_img, mask=item_img)
+
+        return player_image
+
+    def render_chest(self, player, player_image, slot, part):
+        """Lookup, crop and color given chest slot and apply to player render."""
+        gender = player.get_gender()
+        stance = player.get_personality()
+
+        if slot is None:
+            return player_image
+
+        item = self.assets.items().get_item(slot["name"])
+        frame_paths = item[0][gender + "Frames"]
+        for k, v in frame_paths.items():
+            if v[0] != "/":
+                frame_paths[k] = os.path.dirname(item[1]) + "/" + v
+
+        files = ["fsleeve", "chestm", "bsleeve"]
+        if gender == "female":
+            files = ["fsleevef", "chestf", "bsleevef"]
+
+        color = lambda x: self.assets.images().color_image(x, slot["parameters"])
+        if part == "fsleeve":
+            fsleeve = self.assets.images().get_image(frame_paths["frontSleeve"])
+            fsleeve_frame = self.assets.frames().lookup_frame(files[0], stance)
+            fsleeve = fsleeve.crop(fsleeve_frame)
+            fsleeve = color(fsleeve)
+            player_image.paste(fsleeve, mask=fsleeve)
+        elif part == "bsleeve":
+            bsleeve = self.assets.images().get_image(frame_paths["backSleeve"])
+            bsleeve_frame = self.assets.frames().lookup_frame(files[2], stance)
+            bsleeve = bsleeve.crop(bsleeve_frame)
+            bsleeve = color(bsleeve)
+            player_image.paste(bsleeve, mask=bsleeve)
+        elif part == "body":
+            body = self.assets.images().get_image(frame_paths["body"])
+            body_frame = self.assets.frames().lookup_frame(files[1], stance)
+            body = body.crop(body_frame)
+            body = color(body)
+            player_image.paste(body, mask=body)
+
+        return player_image
+
+    def render_player(self, player, armor=True):
         """Return an Image of a fully rendered player from a save."""
         name = player.get_race()
         gender = player.get_gender()
@@ -1176,19 +1331,32 @@ class Species():
                 player.get_facial_mask_directives()
             )
 
+        head_slot = player.get_visible("head")
+        chest_slot = player.get_visible("chest")
+        legs_slot = player.get_visible("legs")
+        back_slot = player.get_visible("back")
+        do_head = armor and head_slot is not None
+
         # new blank canvas!
         base_size = 43
         base = Image.new("RGBA", (base_size, base_size))
 
         # the order of these is important!
 
-        # back arm first
+        # back arm
         base.paste(backarm_img)
+        if armor and chest_slot is not None:
+            base = self.render_chest(player, base, chest_slot, "bsleeve")
+
+        # backpack
+        if armor and back_slot is not None:
+            base = self.render_part(player, base, "back", back_slot)
+
         # then the head
         base.paste(head_img, mask=head_img)
 
-        # hair if set
-        if hair_img is not None:
+        # no hair if wearing helmet
+        if not do_head and hair_img is not None:
             try:
                 base.paste(hair_img, mask=hair_img)
             except ValueError:
@@ -1196,7 +1364,15 @@ class Species():
 
         # body
         base.paste(body_img, mask=body_img)
+        if armor and legs_slot is not None:
+            base = self.render_part(player, base, "legs", legs_slot)
+        if armor and chest_slot is not None:
+            base = self.render_chest(player, base, chest_slot, "body")
+
+        # front arm
         base.paste(frontarm_img, mask=frontarm_img)
+        if armor and chest_slot is not None:
+            base = self.render_chest(player, base, chest_slot, "fsleeve")
 
         # facial mask if set
         if facial_mask_img is not None:
@@ -1213,6 +1389,9 @@ class Species():
             except ValueError:
                 logging.exception("Bad facial hair image: %s, %s",
                                   facial_hair[0], facial_hair[1])
+
+        if do_head:
+            base = self.render_part(player, base, "head", head_slot)
 
         return base.resize((base_size*3, base_size*3))
 

@@ -3,13 +3,19 @@ Qt appearance management dialog
 """
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QDialog, QColorDialog, QTableWidgetItem
-from PyQt5.QtGui import QColor, QBrush, QPixmap
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QBrush
+from PyQt5.QtGui import QPixmap
 from PIL.ImageQt import ImageQt
 
 import logging
 
-import assets, qt_appearance, qt_coloredit
+import assets
+import qt_appearance
+import qt_coloredit
 from config import Config
 
 
@@ -20,16 +26,14 @@ class Appearance():
         self.ui.setupUi(self.dialog)
         self.main_window = main_window
 
-        assets_db_file = Config().read("assets_db")
-        starbound_folder = Config().read("starbound_folder")
-        self.assets = assets.Assets(assets_db_file, starbound_folder)
+        self.assets = self.main_window.assets
         self.species = self.assets.species()
         # need to think of a new approach here. player rendering on the fly
         # will not work if we also want to maintain the save/cancel functions
         # it will probably be easier to ditch that entirely across all dialogs
-        self.player = main_window.player
+        self.player = self.main_window.player
 
-        race = main_window.ui.race.currentText()
+        race = self.main_window.ui.race.currentText()
         self.player.set_race(race)
         self.player.set_gender(main_window.get_gender())
 
@@ -92,7 +96,7 @@ class Appearance():
         self.ui.favorite_color.clicked.connect(self.new_undy_edit)
 
         # player image
-        image = self.assets.species().render_player(self.player)
+        image = self.assets.species().render_player(self.player, False)
         pixmap = QPixmap.fromImage(ImageQt(image))
         self.ui.player_preview.setPixmap(pixmap)
 
@@ -116,7 +120,7 @@ class Appearance():
 
         # render player preview
         try:
-            image = self.assets.species().render_player(self.player)
+            image = self.assets.species().render_player(self.player, False)
             pixmap = QPixmap.fromImage(ImageQt(image))
         except (OSError, TypeError, AttributeError):
             logging.exception("Couldn't load species images")

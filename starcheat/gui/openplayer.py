@@ -68,7 +68,7 @@ class CharacterSelectDialog():
             player = ""
 
         if player != "":
-            self.selected = self.players[player]
+            self.selected = self.players[player]["player"]
             self.dialog.close()
 
     def get_players(self):
@@ -89,7 +89,11 @@ class CharacterSelectDialog():
             for f in player_files:
                 try:
                     player = saves.PlayerSave(os.path.join(self.player_folder, f))
-                    players_found[player.get_uuid()] = player
+                    uuid = player.get_uuid()
+                    preview = self.assets.species().render_player(player)
+                    players_found[uuid] = {}
+                    players_found[uuid]["player"] = player
+                    players_found[uuid]["preview"] = preview
                 except saves.WrongSaveVer:
                     logging.info("Save file %s is not compatible", f)
                 total += 1
@@ -106,11 +110,11 @@ class CharacterSelectDialog():
 
         names = []
         for uuid in self.players.keys():
-            names.append((uuid, self.players[uuid].get_name()))
+            names.append((uuid, self.players[uuid]["player"].get_name()))
 
         for name in sorted(names, key=lambda x: x[1]):
-            player = self.players[name[0]]
-            preview = self.assets.species().render_player(player)
+            player = self.players[name[0]]["player"]
+            preview = self.players[name[0]]["preview"]
             pixmap = QPixmap.fromImage(ImageQt(preview))
             played = datetime.timedelta(seconds=int(player.get_play_time()))
             list_item = PlayerWidget("%s [%s]" % (name[1], played), name[0])
@@ -148,7 +152,7 @@ class CharacterSelectDialog():
     def trash_player(self):
         """Move all player files to backup folder set in config file."""
         player = self.ui.player_list.currentItem().name
-        uuid = self.players[player].get_uuid()
+        uuid = self.players[player]["player"].get_uuid()
         player_files = []
 
         # are you sure?
