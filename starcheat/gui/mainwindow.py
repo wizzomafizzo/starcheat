@@ -372,7 +372,7 @@ class MainWindow():
                     if not json_edit:
                         self.remember_browser = item_edit.remember_browser
                     self.set_edited()
-            except TypeError:
+            except (TypeError, KeyError):
                 logging.exception("Error updating item slot")
                 self.ui.statusbar.showMessage("Error updating item slot, see starcheat log for details", 3000)
 
