@@ -4,7 +4,9 @@ Config file module
 Config and environment stuff goes here, try keep OS-specific functions here too
 """
 
-import configparser, os, platform
+import configparser
+import os
+import platform
 
 if platform.system() == "Windows":
     config_folder = os.path.join(os.path.expandvars("%APPDATA%"), "starcheat")
@@ -20,6 +22,7 @@ STARCHEAT_VERSION = "0.22 (Spirited Giraffe)"
 STARCHEAT_VERSION_TAG = "0.22"
 CONFIG_VERSION = 15
 ini_file = os.path.join(config_folder, "starcheat.ini")
+
 
 class Config():
     def __init__(self):
@@ -56,7 +59,6 @@ class Config():
         mods_folder = os.path.join(starbound_folder, storage_folder, "mods")
         backup_folder = os.path.join(config_folder, "backups")
         pak_hash = "none"
-        make_backups = "no"
         check_updates = "yes"
         assets_db = os.path.join(config_folder, "assets.db")
 
