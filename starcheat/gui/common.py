@@ -9,10 +9,10 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtWidgets import QListWidgetItem
 from PyQt5.QtWidgets import QInputDialog
-from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QImage
+from PyQt5.QtGui import QAction
 
 from PIL.ImageQt import ImageQt
 
@@ -26,10 +26,12 @@ def find_color(text):
     if match is not None:
         return match.groups()[0]
 
+
 def replace_color(name, text):
     span_template = '<span style="color: %s">'
     return text.replace("^%s;" % name,
                         span_template % name)
+
 
 def text_to_html(text):
     """Convert Starbound text to colored HTML."""
@@ -42,6 +44,7 @@ def text_to_html(text):
         match = find_color(colored)
     return colored + ("</span>" * colored.count("<span"))
 
+
 def setup_color_menu(parent, widget):
     def color_dialog():
         color = QInputDialog.getItem(parent, "Select Color",
@@ -51,6 +54,7 @@ def setup_color_menu(parent, widget):
     action = QAction("Insert Color...", widget)
     action.triggered.connect(color_dialog)
     widget.addAction(action)
+
 
 def inv_icon(item_name, item_data, assets):
     """Return a QPixmap object of the inventory icon of a given item (if possible)."""
@@ -71,6 +75,7 @@ def inv_icon(item_name, item_data, assets):
     except AttributeError:
         return missing
 
+
 def preview_icon(race, gender):
     """Return an icon image for player race/gender previews."""
     assets_db_file = Config().read("assets_db")
@@ -82,9 +87,11 @@ def preview_icon(race, gender):
     else:
         return QPixmap.fromImage(QImage.fromData(icon_file)).scaledToHeight(48)
 
+
 def empty_slot():
     """Return an empty bag slot widget."""
     return ItemWidget(None)
+
 
 # TODO: a decision needs to be made here whether to continue with the custom
 #       widget item or an entirely new custom table view. if the features below
@@ -124,6 +131,7 @@ class ItemWidget(QTableWidgetItem):
 
         if type(icon) is QPixmap:
             self.setText("")
+
 
 class ListEdit():
     def __init__(self, parent, list_data):
