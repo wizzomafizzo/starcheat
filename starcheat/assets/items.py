@@ -4,11 +4,35 @@ import logging
 
 from io import BytesIO
 from PIL import Image
+from PIL import ImageChops
 
 from assets.common import asset_category
 
 
 ignore_items = re.compile(".*\.(png|config|frames|lua)", re.IGNORECASE)
+
+
+def trim(im):
+    """Trim whitespace from image."""
+    bg = Image.new(im.mode, im.size, im.getpixel((0,0)))
+    diff = ImageChops.difference(im, bg)
+    diff = ImageChops.add(diff, diff, 2.0, -100)
+    bbox = diff.getbbox()
+    if bbox:
+        return im.crop(bbox)
+
+def trim_and_square(icon):
+    """Trim whitespace and pad icon to be square."""
+    icon = trim(icon)
+    larger = icon.size[0]
+    if icon.size[1] > larger:
+        larger = icon.size[1]
+    new_icon = Image.new("RGBA", (larger, larger))
+    try:
+        new_icon.paste(icon, icon.getbbox())
+    except ValueError:
+        return icon
+    return new_icon
 
 
 class Items():
@@ -99,45 +123,39 @@ class Items():
 
     def get_item_icon(self, name):
         """Return the path and spritesheet offset of a given item name."""
-        try:
-            item = self.get_item(name)
-            icon_file = item[0]["inventoryIcon"]
-            icon = icon_file.split(':')
-            if len(icon) < 2:
-                icon = [icon[0], 0]
-        except (TypeError, KeyError):
-            return None
 
-        if icon[0][0] != "/":
-            icon[0] = os.path.dirname(item[1]) + "/" + icon[0]
+        item = self.get_item(name)
+        if item is None or "inventoryIcon" not in item[0]:
+            return
 
-        icon_data = self.assets.read(icon[0], item[2], image=True)
+        icon_file = item[0]["inventoryIcon"]
+        icon_name = icon_file.split(':')
+        if len(icon_name) < 2:
+            icon_name = [icon_name[0], 0]
+
+        if icon_name[0][0] != "/":
+            icon_name[0] = os.path.dirname(item[1]) + "/" + icon_name[0]
+
+        icon_data = self.assets.read(icon_name[0], item[2], image=True)
         if icon_data is None:
             return None
 
-        item_icon = Image.open(BytesIO(icon_data))
-        orig_size = item_icon.size
+        icon = Image.open(BytesIO(icon_data))
 
-        icon_type = str(icon[1])
+        icon_type = str(icon_name[1])
         if icon_type.startswith("chest"):
-            item_icon = item_icon.crop((16, 0, 16+16, 16))
-            size = (16, 16)
+            icon = icon.crop((16, 0, 16+16, 16))
         elif icon_type.startswith("pants"):
-            item_icon = item_icon.crop((32, 0, 32+16, 16))
-            size = (16, 16)
+            icon = icon.crop((32, 0, 32+16, 16))
         elif icon_type.startswith("back"):
-            item_icon = item_icon.crop((48, 0, 48+16, 16))
-            size = (16, 16)
+            icon = icon.crop((48, 0, 48+16, 16))
         elif icon_type.startswith("head"):
-            item_icon = item_icon.crop((0, 0, 16, 16))
-            size = (16, 16)
-        else:
-            size = orig_size
+            icon = icon.crop((0, 0, 16, 16))
 
-        inv_icon = Image.new("RGBA", size)
-        inv_icon.paste(item_icon)
+        if icon.size[0] != icon.size[1]:
+            icon = trim_and_square(icon)
 
-        return inv_icon
+        return icon.convert("RGBA")
 
     def get_item_image(self, name):
         """Return a vaild item image path for given item name."""
@@ -152,14 +170,13 @@ class Items():
         elif name == "sapling":
             return Image.open(BytesIO(self.sapling_icon())).convert("RGBA")
 
-        try:
-            item = self.get_item(name)
-            icon_file = item[0]["image"]
-            icon = icon_file.split(':')
-            icon = icon[0]
-        except (KeyError, TypeError):
-            logging.warning("No image key for "+name)
-            return None
+        item = self.get_item(name)
+        if item is None or "image" not in item[0]:
+            return
+
+        icon_file = item[0]["image"]
+        icon = icon_file.split(':')
+        icon = icon[0]
 
         if icon[0] != "/":
             icon = os.path.dirname(item[1]) + "/" + icon
@@ -168,11 +185,14 @@ class Items():
 
         if icon_data is None:
             logging.warning("Unable to read %s from %s" % (icon, item[2]))
-            return None
+            return
 
-        item_image = Image.open(BytesIO(icon_data)).convert("RGBA")
+        icon = Image.open(BytesIO(icon_data)).convert("RGBA")
 
-        return item_image
+        if icon.size[0] != icon.size[1]:
+            icon = trim_and_square(icon)
+
+        return icon
 
     def missing_icon(self):
         """Return the image data for the default inventory placeholder icon."""

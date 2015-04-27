@@ -60,21 +60,19 @@ def setup_color_menu(parent, widget):
 def inv_icon(item_name, item_data, assets):
     """Return a QPixmap object of the inventory icon of a given item (if possible)."""
     missing = QPixmap.fromImage(QImage.fromData(assets.items().missing_icon())).scaled(32, 32)
-    icon_file = assets.items().get_item_icon(item_name)
+    icon = assets.items().get_item_icon(item_name)
 
-    if icon_file is None:
-        try:
-            image_file = assets.items().get_item_image(item_name)
-            image_file = assets.images().color_image(image_file, item_data)
-            return QPixmap.fromImage(ImageQt(image_file)).scaledToHeight(64)
-        except (TypeError, AttributeError):
-            return missing
+    if icon is None:
+        # try image key instead
+        image = assets.items().get_item_image(item_name)
+        if image is not None:
+            image = assets.images().color_image(image, item_data)
+            return QPixmap.fromImage(ImageQt(image)).scaled(32, 32)
+    else:
+        icon = assets.images().color_image(icon, item_data)
+        return QPixmap.fromImage(ImageQt(icon)).scaled(32, 32)
 
-    icon_file = assets.images().color_image(icon_file, item_data)
-    try:
-        return QPixmap.fromImage(ImageQt(icon_file)).scaled(32, 32)
-    except AttributeError:
-        return missing
+    return missing
 
 
 def empty_slot():
@@ -90,7 +88,10 @@ def empty_slot():
 class ItemWidget(QTableWidgetItem):
     """Custom table wiget item with icon support and extra item variables."""
     def __init__(self, item, assets=None):
-        if item is None or assets is None or "name" not in item:
+        is_empty = (item is None or
+                    assets is None or
+                    "name" not in item)
+        if is_empty:
             # empty slot
             self.item = None
             QTableWidgetItem.__init__(self)
