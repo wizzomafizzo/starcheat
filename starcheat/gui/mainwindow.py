@@ -229,7 +229,8 @@ class MainWindow():
 
         # ship
         can_edit_ship = (self.player.metadata is not None and
-                         "shipUpgrades" in self.player.metadata.metadata)
+                         "shipUpgrades" in self.player.metadata.metadata and
+                         "ai" in self.player.metadata.metadata)
         self.ui.ship_button.setEnabled(can_edit_ship)
 
         # items
