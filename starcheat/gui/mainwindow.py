@@ -416,7 +416,6 @@ class MainWindow():
             if got_item:
                 item_edit.dialog.exec()
         else:
-            item_edit.ui.name.setEnabled(False)
             item_edit.dialog.exec()
 
     def trash_slot(self, dialog, bag, standalone=False):
