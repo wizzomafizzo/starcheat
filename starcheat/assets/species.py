@@ -199,6 +199,11 @@ class Species():
             return player_image
 
         item = self.assets.items().get_item(slot["name"])
+
+        if (item is None or
+            not gender + "Frames" in item[0]):
+            return player_image
+
         item_img_path = item[0][gender + "Frames"]
 
         if item_img_path[0] != "/":
@@ -221,6 +226,11 @@ class Species():
             return player_image
 
         item = self.assets.items().get_item(slot["name"])
+
+        if (item is None or
+            not gender + "Frames" in item[0]):
+            return player_image
+
         frame_paths = item[0][gender + "Frames"]
         for k, v in frame_paths.items():
             if v[0] != "/":
