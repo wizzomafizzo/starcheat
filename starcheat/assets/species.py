@@ -352,7 +352,7 @@ class Species():
         base.paste(head_img, mask=head_img)
 
         # no hair if wearing helmet
-        if not do_head and hair_img is not None:
+        if hair_img is not None:
             try:
                 base.paste(hair_img, mask=hair_img)
             except ValueError:
