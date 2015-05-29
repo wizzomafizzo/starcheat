@@ -110,7 +110,10 @@ class CharacterSelectDialog():
 
         names = []
         for uuid in self.players.keys():
-            names.append((uuid, self.players[uuid]["player"].get_name()))
+            try:
+                names.append((uuid, self.players[uuid]["player"].get_name()))
+            except TypeError:
+                logging.exception("Could not read %s", uuid)
 
         for name in sorted(names, key=lambda x: x[1]):
             player = self.players[name[0]]["player"]

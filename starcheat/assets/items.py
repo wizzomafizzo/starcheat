@@ -1,6 +1,7 @@
 import re
 import os
 import logging
+import random
 
 from io import BytesIO
 from PIL import Image
@@ -166,7 +167,7 @@ class Items():
         elif name == "generatedshield":
             return Image.open(BytesIO(self.shield_icon())).convert("RGBA")
         elif name == "generatedgun":
-            return Image.open(BytesIO(self.sword_icon())).convert("RGBA")
+            return Image.open(BytesIO(self.gun_icon())).convert("RGBA")
         elif name == "sapling":
             return Image.open(BytesIO(self.sapling_icon())).convert("RGBA")
 
@@ -203,6 +204,10 @@ class Items():
         return self.assets.read("/interface/inventory/sword.png",
                                 self.assets.vanilla_assets, image=True)
 
+    def gun_icon(self):
+        return self.assets.read("/interface/inventory/gun.png",
+                                self.assets.vanilla_assets, image=True)
+
     def shield_icon(self):
         return self.assets.read("/interface/inventory/shield.png",
                                 self.assets.vanilla_assets, image=True)
@@ -213,206 +218,219 @@ class Items():
                                 image=True)
 
     def generate_gun(self, item):
-        image_folder = item[0]["name"].replace(item[0]["rarity"].lower(), "")
-        image_folder = image_folder.replace("plasma", "")
-        generated_gun = {
+        d = item[0]
+
+        # seems to be a newish key
+        if "directories" in d and len(d["directories"]) > 0:
+            image_folder = d["directories"][0]
+        else:
+            image_folder = d["name"].replace(d["rarity"].lower(), "")
+            image_folder = image_folder.replace("plasma", "")
+            image_folder = "/items/guns/randomgenerated/" + image_folder + "/"
+
+        gun = {
             "itemName": "generatedgun",
-            "level": 1.0,
-            "levelScale": 2.0,
-            "projectileType": "piercingbullet",
-            "rarity": "common",
-            "recoilTime": 0.1,
-            "shortdescription": "Cheater's Remorse",
-            "spread": 2,
-            "twoHanded": True,
-            "weaponType": "Sniper Rifle",
-            "classMultiplier": 1.0,
-            "projectile": { "level": 1.0, "power": 2.0 },
-            "firePosition": [0.0, 0.0],
-            "fireTime": 0.5,
             "generated": True,
-            "handPosition": [-5.0, -2.0],
-            "inspectionKind": "gun",
-            "muzzleEffect": {
-                "animation": "/animations/muzzleflash/bulletmuzzle3/bulletmuzzle3.animation",
-                "fireSound": [ { "file": "/sfx/gun/sniper3.wav" } ]
-            },
-            "drawables": [
-                {
-                    "image": "/items/guns/randomgenerated/%s/butt/1.png" % image_folder,
-                    "position": [ -8.0, 0.0 ]
-                },
-                {
-                    "image": "/items/guns/randomgenerated/%s/middle/1.png" % image_folder,
-                    "position": [ 0.0, 0.0 ]
-                },
-                {
-                    "image": "/items/guns/randomgenerated/%s/barrel/1.png" % image_folder,
-                    "position": [ 12.0, 0.0 ]
-                }
-            ],
-            "inventoryIcon": [
-                {
-                    "image": "/items/guns/randomgenerated/%s/butt/1.png" % image_folder,
-                    "position": [ -8.0, 0.0 ]
-                },
-                {
-                    "image": "/items/guns/randomgenerated/%s/middle/1.png" % image_folder,
-                    "position": [ 0.0, 0.0 ]
-                },
-                {
-                    "image": "/items/guns/randomgenerated/%s/barrel/1.png" % image_folder,
-                    "position": [ 12.0, 0.0 ]
-                }
+            "maxStack": 1,
+            "tooltipKind": "gun",
+            "level": 1.0,
+            "levelScale": 1.0,
+            "projectile": {"level": 1.0, "power": 1.0},
+            "projectileCount": random.randint(1,10),
+            "projectileSeparation": random.uniform(0.0, 1.0),
+            "drawables": [ # TODO: pick random, read widths, palettes
+                {"image": "%sbutt/1.png" % image_folder,
+                 "position": [ -8.0, 0.0 ]},
+                {"image": "%smiddle/1.png" % image_folder,
+                 "position": [ 0.0, 0.0 ]},
+                {"image": "%sbarrel/1.png" % image_folder,
+                 "position": [ 12.0, 0.0 ]}
             ]
         }
 
-        if "rarity" in item[0]:
-            generated_gun["rarity"] = item[0]["rarity"]
+        gun["inventoryIcon"] = gun["drawables"]
 
-        if "inspectionKind" in item[0]:
-            generated_gun["inspectionKind"] = item[0]["inspectionKind"]
+        # this is made up, dunno how it really figures it
+        if "rateOfFire" in d and len(d["rateOfFire"]) == 2:
+            gun["fireTime"] = random.uniform(d["rateOfFire"][0] / 5,
+                                             d["rateOfFire"][1] / 5)
 
-        if "handPosition" in item[0]:
-            generated_gun["handPosition"] = [float(item[0]["handPosition"][0]),
-                                             float(item[0]["handPosition"][1])]
+        if "multiplier" in d:
+            gun["multiplier"] = d["multiplier"]
+            gun["classMultiplier"] = d["multiplier"]
 
-        # if "firePosition" in item[0]:
-        #     generated_gun["firePosition"] = [float(item[0]["firePosition"][0]),
-        #                                      float(item[0]["firePosition"][1])]
+        if "handPosition" in d and len(d["handPosition"]) == 2:
+            gun["handPosition"] = [-d["handPosition"][0],
+                                   -d["handPosition"][1]]
 
-        if "rateOfFire" in item[0]:
-            generated_gun["fireTime"] = float(item[0]["rateOfFire"][0])
-
-        if "recoilTime" in item[0]:
-            generated_gun["fireTime"] = float(item[0]["recoilTime"])
-
-        if "weaponType" in item[0]:
-            generated_gun["weaponType"] = item[0]["weaponType"]
-            generated_gun["shortdescription"] = "Cheater's " + item[0]["weaponType"]
-
-        if "spread" in item[0]:
-            generated_gun["spread"] = float(item[0]["spread"][0])
-
-        if "muzzleFlashes" in item[0] and "fireSound" in item[0]:
-            generated_gun["muzzleEffect"] = {
-                "animation": item[0]["muzzleFlashes"][0],
-                "fireSound": [ { "file": item[0]["fireSound"][0] } ]
+        if ("muzzleFlashes" in d and len(d["muzzleFlashes"]) > 0 and
+            "fireSound" in d and len(d["fireSound"]) > 0):
+            gun["muzzleEffect"] = {
+                "animation": random.choice(d["muzzleFlashes"]),
+                "fireSound": [{"file": random.choice(d["fireSound"])}]
             }
 
-        if "projectileTypes" in item[0]:
-            generated_gun["projectileType"] = item[0]["projectileTypes"][0]
+        if ("projectileTypes" in d and len(d["projectileTypes"]) > 0):
+            gun["projectileType"] = random.choice(d["projectileTypes"])
 
-        return generated_gun
+        if "weaponType" in d:
+            gun["shortdescription"] = "Cheater's " + d["weaponType"]
+
+        if "hands" in d and len(d["hands"]) > 0 and d["hands"][0] == 2:
+            gun["twoHanded"] = True
+        else:
+            gun["twoHanded"] = False
+
+        def copy_key(name):
+            if name in d:
+                gun[name] = d[name]
+
+        copy_key("baseDps")
+        copy_key("directories")
+        copy_key("firePosition")
+        copy_key("fireSound")
+        copy_key("hands")
+        copy_key("inaccuracy")
+        copy_key("muzzleFlashes")
+        copy_key("name")
+        copy_key("nameGenerator")
+        copy_key("palette")
+        copy_key("projectileTypes")
+        copy_key("rarity")
+        copy_key("rateOfFire")
+        copy_key("recoilTime")
+        copy_key("weaponType")
+
+        return gun
 
     def generate_sword(self, item):
-        try:
-            image_folder = item[0]["name"].replace(item[0]["rarity"].lower(), "")
-        except KeyError:
-            image_folder = item[0]["name"]
-        image_folder = re.sub("(uncommon|common|crappy)", "", image_folder)
-        generated_sword = {
+        d = item[0]
+
+        if "rarity" in d:
+            image_folder = d["name"].replace(d["rarity"].lower(), "")
+        else:
+            image_folder = d["name"]
+        image_folder = re.sub("(uncommon|common|crappy|new)", "", image_folder)
+        image_folder = "/items/swords/randomgenerated/" + image_folder
+
+        sword = {
             "generated": True,
-            "inspectionKind": "sword",
             "itemName": "generatedsword",
-            "shortdescription": "Immersion Ruiner",
-            "fireAfterWindup": True,
-            "fireTime": 0.5,
-            "level": 1.0,
-            "levelScale": 2.0,
-            "rarity": "common",
-            "firePosition": [ 12.5, 3.0 ],
-            "soundEffect": { "fireSound": [ { "file": "/sfx/melee/swing_hammer.wav" } ] },
-            "weaponType": "uncommontier2hammer",
-            "drawables": [ { "image": "/items/swords/randomgenerated/%s/handle/1.png" % image_folder },
-                           { "image": "/items/swords/randomgenerated/%s/blade/1.png" % image_folder } ],
-            "inventoryIcon": [ { "image": "/items/swords/randomgenerated/%s/handle/1.png" % image_folder },
-                               { "image": "/items/swords/randomgenerated/%s/blade/1.png" % image_folder } ],
-            "primaryStances": item[0]["primaryStances"]
+            "tooltipKind": "sword",
+            "parrySound": "",
+            "level": 1,
+            # TODO: pick random, palette
+            "drawables": [{"image": "%s/handle/1.png" % image_folder},
+                          {"image": "%s/blade/1.png" % image_folder}]
         }
 
-        if "projectileTypes" in item[0]["primaryStances"]:
-            generated_sword["primaryStances"]["projectileType"] = item[0]["primaryStances"]["projectileTypes"][0]
-            generated_sword["primaryStances"]["projectile"]["level"] = 1.0
-            generated_sword["primaryStances"]["projectile"]["power"] = 5.0
+        sword["inventoryIcon"] = sword["drawables"]
 
-        if "altStances" in item[0]:
-            generated_sword["altStances"] = item[0]["altStances"]
-            if "projectileTypes" in item[0]["altStances"]:
-                generated_sword["altStances"]["projectileType"] = item[0]["altStances"]["projectileTypes"][0]
-                generated_sword["altStances"]["projectile"]["level"] = 1.0
-                generated_sword["altStances"]["projectile"]["power"] = 5.0
+        ps = "primaryStances"
+        if ps in d:
+            sword[ps] = d[ps]
+            sword[ps]["projectile"] = {
+                "level": 1.0,
+                "power": 1.0
+            }
+            if ("projectileTypes" in d[ps] and
+                len(d[ps]["projectileTypes"]) > 0):
+                sword[ps]["projectileType"] = random.choice(d[ps]["projectileTypes"])
 
-        if "inspectionKind" in item[0]:
-            generated_sword["inspectionKind"] = item[0]["inspectionKind"]
+        als = "altStances"
+        if als in d:
+            sword[als] = d[als]
+            sword[als]["projectile"] = sword[ps]["projectile"]
+            if ("projectileTypes" in d[als] and
+                len(d[als]["projectileTypes"] > 0)):
+                sword[als]["projectileType"] = random.choice(d[als]["projectileTypes"])
+        else:
+            sword[als] = sword[ps]
 
-        if "rateOfFire" in item[0]:
-            generated_sword["fireTime"] = float(item[0]["rateOfFire"][0])
+        if "rateOfSwing" in d and len(d["rateOfSwing"]) == 2:
+            sword["fireTime"] = random.uniform(d["rateOfSwing"][0],
+                                               d["rateOfSwing"][1])
 
-        generated_sword["weaponType"] = item[0]["name"]
-        generated_sword["shortdescription"] = "Cheater's " + item[0]["name"]
+        if "rarity" in d:
+            sword["rarity"] = d["rarity"]
+        else:
+            sword["rarity"] = "common"
 
-        return generated_sword
+        if "weaponType" in d:
+            sword["shortdescription"] = "Cheater's " + d["weaponType"]
+
+        if "soundEffect" in d and len(d["soundEffect"]) > 0:
+            sword["soundEffect"] = {
+                "fireSound": [{"file": random.choice(d["soundEffect"])}]
+            }
+
+        def copy_key(name):
+            if name in d:
+                sword[name] = d[name]
+
+        copy_key("fireAfterWindup")
+        copy_key("firePosition")
+        copy_key("weaponType")
+
+        return sword
 
     def generate_shield(self, item):
-        generated_shield = {
+        d = item[0]
+
+        if "kind" in d:
+            image_path = "%s/%s/images" % (os.path.dirname(item[1]),
+                                           d["kind"])
+
+        shield = {
             "generated": True,
             "itemName": "generatedshield",
-            "rarity": "common",
-            "shortdescription": "Cheater's Shield",
-            "level": 1.0,
-            "levelScale": 2.0,
             "maxStack": 1,
-            "hitSound": "/sfx/melee/shield_block_metal2.wav",
-            "inspectionKind": "",
-            "knockbackDamageKind": "",
-            "knockbackPower": 10,
-            "recoilTime": 0.2,
-            "damagePoly": [[-8,0], [8,18], [8,-18]],
-            "shieldPoly": [[-8,0], [-8,12], [8,20], [8,-24], [-8,-12]],
-            "statusEffects": [ { "amount": 30, "kind": "Shield" } ],
-            "drawables": [
-                { "image": "/items/shields/randomgenerated/tieredshields/tier1/images/1.png" }
-            ],
-            "inventoryIcon": [
-                { "image": "/items/shields/randomgenerated/tieredshields/tier1/images/1.png:icon" }
-            ]
+            "tooltipKind": "shield",
+            "level": 1.0,
+            "levelScale": 1.0,
+            "healthStuckAtZeroTime": 5.0,
+            "perfectBlockTime": 0.15,
+            "shieldSuppressedAfterDamageTime": 0.15,
+            # TODO: pick random
+            "drawables": [{"image": "%s/1.png" % image_path}],
+            "inventoryIcon": [{"image": "%s/1.png:icon" % image_path}]
         }
 
-        # if "kind" in item[0]:
-        #     generated_shield["inspectionKind"] = item[0]["kind"]
+        if "rarity" in d:
+            shield["rarity"] = d["rarity"]
+        else:
+            shield["rarity"] = "common"
 
-        if "shortdescription" in item[0]:
-            generated_shield["shortdescription"] = item[0]["shortdescription"]
+        if "kind" in d:
+            shield["shortdescription"] = "Cheater's " + d["kind"] + " Shield"
 
-        if "rarity" in item[0]:
-            generated_shield["rarity"] = item[0]["rarity"]
+        def copy_key(name):
+            if name in d:
+                shield[name] = d[name]
 
-        if "hitSound" in item[0]:
-            generated_shield["hitSound"] = item[0]["hitSound"]
+        def copy_base(name):
+            if name in d["baseline"]:
+                shield[name] = d["baseline"][name]
 
-        if "recoil" in item[0]["baseline"]:
-            generated_shield["recoilTime"] = item[0]["baseline"]["recoil"]
+        copy_key("breakParticle")
+        copy_key("breakSound")
+        copy_key("health")
+        copy_key("healthRegen")
+        copy_key("hitSound")
+        copy_key("perfectBlockParticle")
+        copy_key("perfectHitSound")
+        copy_base("damagePoly")
+        copy_base("knockbackDamageKind")
+        copy_base("knockbackPower")
+        copy_base("recoilTime")
+        copy_base("shieldPoly")
+        copy_base("statusEffects")
 
-        if "knockbackPower" in item[0]["baseline"]:
-            generated_shield["knockbackPower"] = item[0]["baseline"]["knockbackPower"]
-
-        if "knockbackDamageKind" in item[0]["baseline"]:
-            generated_shield["knockbackDamageKind"] = item[0]["baseline"]["knockbackDamageKind"]
-
-        if "statusEffects" in item[0]["baseline"]:
-            generated_shield["statusEffects"] = item[0]["baseline"]["statusEffects"]
-
-        if "shieldPoly" in item[0]["baseline"]:
-            generated_shield["shieldPoly"] = item[0]["baseline"]["shieldPoly"]
-
-        if "damagePoly" in item[0]["baseline"]:
-            generated_shield["damagePoly"] = item[0]["baseline"]["damagePoly"]
-
-        return generated_shield
+        return shield
 
     def generate_sapling(self, item):
         sapling = {
+            # TODO: pick random for all
             "foliageHueShift": -0.0,
             "foliageName": "brains",
             "stemHueShift": -0.0,
@@ -423,28 +441,25 @@ class Items():
 
     def generate_filledcapturepod(self, item, player_uuid):
         filledcapturepod = {
-            "projectileConfig": {
-                "actionOnReap": [
-                    {
-                        "action": "spawnmonster",
-                        "arguments": {
-                            "aggressive": True,
-                            "damageTeam": 0,
-                            "damageTeamType": "friendly",
-                            "familyIndex": 0,
-                            "killCount": None,
-                            "level": 1.0,
-                            "ownerUuid": player_uuid,
-                            "persistent": True,
-                            "seed": self.assets.monsters().monster_seed()
-                        },
-                        "offset": [0,2],
-                        "type": self.assets.monsters().random_monster()
-                    }
-                ],
-                "level": 7,
-                "speed": 70
-            }
+            "actionOnReap": [{
+                "action": "spawnmonster",
+                "arguments": {
+                    "aggressive": True,
+                    "damageTeam": 0,
+                    "damageTeamType": "friendly",
+                    "familyIndex": 0,
+                    "killCount": None,
+                    "level": 1,
+                    "ownerUuid": player_uuid,
+                    "persistent": True,
+                    "seed": self.assets.monsters().monster_seed()
+                },
+                "level": 1,
+                "offset": [0, 2],
+                "type": self.assets.monsters().random_monster()
+            }],
+            "level": 7,
+            "speed": 40
         }
 
         return filledcapturepod

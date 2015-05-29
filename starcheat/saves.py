@@ -360,7 +360,7 @@ def new_item(name, count=1, data={}):
 
     item = {
         '__id': 'Item',
-        '__version': 2,
+        '__version': 3,
         '__content': new_item_data(name, count, data)
     }
 

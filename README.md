@@ -74,6 +74,7 @@ $ ./build/starcheat.py
 - ```$ brew upgrade starcheat``` (if its in the list above or in `brew outdated`)
 
 ## Release checklist
+- [ ] Update item metadata to match current Starbound version in [saves.py](starcheat/saves.py)
 - [ ] Update version string in [config.py](starcheat/config.py)
 - [ ] Update version string in starcheat tap's [brew file](https://github.com/chrmoritz/homebrew-starcheat/blob/master/starcheat.rb)
 - [ ] Update storage name in [config.py](starcheat/config.py) and [assets.py](starcheat/assets.py)
