@@ -351,7 +351,7 @@ class Species():
         # then the head
         base.paste(head_img, mask=head_img)
 
-        # no hair if wearing helmet
+        # TODO: support mask on head items
         if hair_img is not None:
             try:
                 base.paste(hair_img, mask=hair_img)
