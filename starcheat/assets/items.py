@@ -228,6 +228,29 @@ class Items():
             image_folder = image_folder.replace("plasma", "")
             image_folder = "/items/guns/randomgenerated/" + image_folder + "/"
 
+        butts = self.assets.images().filter_images(image_folder + "butt/")
+        middles = self.assets.images().filter_images(image_folder + "middle/")
+        barrels = self.assets.images().filter_images(image_folder + "barrel/")
+
+        if len(butts) > 0:
+            butt = random.choice(butts)[0]
+            butt_width = self.assets.images().get_image(butt).size[0]
+        else:
+            butt = ""
+            butt_width = 0.0
+
+        if len(middles) > 0:
+            middle = random.choice(middles)[0]
+            middle_width = self.assets.images().get_image(middle).size[0]
+        else:
+            middle = ""
+            middle_width = 0.0
+
+        if len(barrels) > 0:
+            barrel = random.choice(barrels)[0]
+        else:
+            barrel = ""
+
         gun = {
             "itemName": "generatedgun",
             "generated": True,
@@ -238,13 +261,10 @@ class Items():
             "projectile": {"level": 1.0, "power": 1.0},
             "projectileCount": random.randint(1,10),
             "projectileSeparation": random.uniform(0.0, 1.0),
-            "drawables": [ # TODO: pick random, read widths, palettes
-                {"image": "%sbutt/1.png" % image_folder,
-                 "position": [ -8.0, 0.0 ]},
-                {"image": "%smiddle/1.png" % image_folder,
-                 "position": [ 0.0, 0.0 ]},
-                {"image": "%sbarrel/1.png" % image_folder,
-                 "position": [ 12.0, 0.0 ]}
+            "drawables": [ # TODO: palettes, some inv icons offset wrong
+                {"image": butt, "position": [-(float(butt_width)), 0.0]},
+                {"image": middle, "position": [0.0, 0.0]},
+                {"image": barrel, "position": [float(middle_width), 0.0]}
             ]
         }
 
@@ -287,7 +307,7 @@ class Items():
 
         copy_key("baseDps")
         copy_key("directories")
-        copy_key("firePosition")
+        copy_key("firePosition") # TODO: not correct
         copy_key("fireSound")
         copy_key("hands")
         copy_key("inaccuracy")
@@ -313,15 +333,28 @@ class Items():
         image_folder = re.sub("(uncommon|common|crappy|new)", "", image_folder)
         image_folder = "/items/swords/randomgenerated/" + image_folder
 
+        handles = self.assets.images().filter_images(image_folder + "/handle/")
+        blades = self.assets.images().filter_images(image_folder + "/blade/")
+
+        if len(handles) > 0:
+            handle = random.choice(handles)[0]
+        else:
+            handle = ""
+
+        if len(blades) > 0:
+            blade = random.choice(blades)[0]
+        else:
+            blade = ""
+
         sword = {
             "generated": True,
             "itemName": "generatedsword",
             "tooltipKind": "sword",
             "parrySound": "",
             "level": 1,
-            # TODO: pick random, palette
-            "drawables": [{"image": "%s/handle/1.png" % image_folder},
-                          {"image": "%s/blade/1.png" % image_folder}]
+            # TODO: palette
+            "drawables": [{"image": handle},
+                          {"image": blade}]
         }
 
         sword["inventoryIcon"] = sword["drawables"]
@@ -380,6 +413,13 @@ class Items():
         if "kind" in d:
             image_path = "%s/%s/images" % (os.path.dirname(item[1]),
                                            d["kind"])
+            images = self.assets.images().filter_images(image_path)
+            if len(images) > 0:
+                image = random.choice(images)[0]
+            else:
+                image = ""
+        else:
+            image = ""
 
         shield = {
             "generated": True,
@@ -391,9 +431,8 @@ class Items():
             "healthStuckAtZeroTime": 5.0,
             "perfectBlockTime": 0.15,
             "shieldSuppressedAfterDamageTime": 0.15,
-            # TODO: pick random
-            "drawables": [{"image": "%s/1.png" % image_path}],
-            "inventoryIcon": [{"image": "%s/1.png:icon" % image_path}]
+            "drawables": [{"image": image}],
+            "inventoryIcon": [{"image": image + ":icon"}]
         }
 
         if "rarity" in d:
