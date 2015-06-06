@@ -24,7 +24,10 @@ class Images():
     def get_image(self, name):
         """Find an image asset from its key, return PIL Image."""
         # only care about the first hit
-        asset = self.filter_images(name)[0]
+        try:
+            asset = self.filter_images(name)[0]
+        except IndexError:
+            return
         data = self.assets.read(asset[0], asset[1], True)
         return Image.open(BytesIO(data)).convert("RGBA")
 

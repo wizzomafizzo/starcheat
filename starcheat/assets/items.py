@@ -25,14 +25,22 @@ def trim(im):
 def trim_and_square(icon):
     """Trim whitespace and pad icon to be square."""
     icon = trim(icon)
+
+    if icon is None:
+        return
+
     larger = icon.size[0]
+
     if icon.size[1] > larger:
         larger = icon.size[1]
+
     new_icon = Image.new("RGBA", (larger, larger))
+
     try:
         new_icon.paste(icon, icon.getbbox())
     except ValueError:
         return icon
+
     return new_icon
 
 
@@ -156,7 +164,10 @@ class Items():
         if icon.size[0] != icon.size[1]:
             icon = trim_and_square(icon)
 
-        return icon.convert("RGBA")
+        if icon is None:
+            return
+        else:
+            return icon.convert("RGBA")
 
     def get_item_image(self, name):
         """Return a vaild item image path for given item name."""

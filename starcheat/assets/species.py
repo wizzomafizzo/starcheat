@@ -210,6 +210,9 @@ class Species():
             item_img_path = os.path.dirname(item[1]) + "/" + item_img_path
 
         item_img = self.assets.images().get_image(item_img_path)
+        if item_img is None:
+            return player_image
+
         item_img = item_img.crop(frame)
         item_img = self.assets.images().color_image(item_img, slot["parameters"])
 
@@ -227,8 +230,7 @@ class Species():
 
         item = self.assets.items().get_item(slot["name"])
 
-        if (item is None or
-            not gender + "Frames" in item[0]):
+        if (item is None or not (gender + "Frames") in item[0]):
             return player_image
 
         frame_paths = item[0][gender + "Frames"]
@@ -243,18 +245,24 @@ class Species():
         color = lambda x: self.assets.images().color_image(x, slot["parameters"])
         if part == "fsleeve":
             fsleeve = self.assets.images().get_image(frame_paths["frontSleeve"])
+            if fsleeve is None:
+                return player_image
             fsleeve_frame = self.assets.frames().lookup_frame(files[0], stance)
             fsleeve = fsleeve.crop(fsleeve_frame)
             fsleeve = color(fsleeve)
             player_image.paste(fsleeve, mask=fsleeve)
         elif part == "bsleeve":
             bsleeve = self.assets.images().get_image(frame_paths["backSleeve"])
+            if bsleeve is None:
+                return player_image
             bsleeve_frame = self.assets.frames().lookup_frame(files[2], stance)
             bsleeve = bsleeve.crop(bsleeve_frame)
             bsleeve = color(bsleeve)
             player_image.paste(bsleeve, mask=bsleeve)
         elif part == "body":
             body = self.assets.images().get_image(frame_paths["body"])
+            if body is None:
+                return player_image
             body_frame = self.assets.frames().lookup_frame(files[1], stance)
             body = body.crop(body_frame)
             body = color(body)
