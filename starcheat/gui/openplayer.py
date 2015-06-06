@@ -73,7 +73,21 @@ class CharacterSelectDialog():
 
     def get_players(self):
         players_found = {}
-        player_files = [x for x in os.listdir(self.player_folder) if x.endswith(".player")]
+
+        try:
+            file_list = os.listdir(self.player_folder)
+        except FileNotFoundError:
+            dialog = QMessageBox(self.dialog)
+            dialog.setWindowTitle("Missing Player Folder")
+            dialog.setText("Starbound player folder does not exist.")
+            dialog.setInformativeText("You may need to run Starbound for the first time.")
+            dialog.setStandardButtons(QMessageBox.Close)
+            dialog.setIcon(QMessageBox.Critical)
+            dialog.exec()
+            self.players = []
+            return
+
+        player_files = [x for x in file_list if x.endswith(".player")]
 
         total = 0
         progress = QProgressDialog("Reading player files...",
