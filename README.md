@@ -9,7 +9,7 @@ starcheat is a [Starbound](http://playstarbound.com/) player save editor, you ca
 Starbound            | starcheat
 -------------------- | ---------
 Nightly              | [dev branch](#building-from-source)
-**Spirited Giraffe** | [0.24](https://github.com/wizzomafizzo/starcheat/releases/tag/0.24)
+**Spirited Giraffe** | [0.25](https://github.com/wizzomafizzo/starcheat/releases/tag/0.25)
 Upbeat Giraffe       | [0.21](https://github.com/wizzomafizzo/starcheat/releases/tag/0.21)
 Enraged Koala        | [0.17](https://github.com/wizzomafizzo/starcheat/releases/tag/0.17)
 
@@ -75,7 +75,7 @@ $ ./build/starcheat.py
 
 ## Release checklist
 - [ ] Update item metadata to match current Starbound version in [saves.py](starcheat/saves.py)
+- [ ] Update storage name in [config.py](starcheat/config.py) and [assets.py](starcheat/assets.py)
 - [ ] Update version string in [config.py](starcheat/config.py)
 - [ ] Update version string in starcheat tap's [brew file](https://github.com/chrmoritz/homebrew-starcheat/blob/master/starcheat.rb)
-- [ ] Update storage name in [config.py](starcheat/config.py) and [assets.py](starcheat/assets.py)
 - [ ] Tag release
