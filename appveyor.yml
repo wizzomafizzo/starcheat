@@ -1,5 +1,5 @@
 os: Windows Server 2012 R2
-version: 0.{build}
+version: {build}
 branches:
   only:
     - /^v?\d+(\.\d+)*$/
@@ -36,17 +36,17 @@ build_script:
   - "python build.py --verbose --with-exe"
   - ps: "cp LICENSE dist/"
   - cd dist
-  - ps: "& 7z a -r starcheat-$env:APPVEYOR_BUILD_VERSION-$env:PYTHON_ARCH.zip ."
+  - ps: "& 7z a -r starcheat-$env:APPVEYOR_REPO_TAG_NAME-$env:PYTHON_ARCH.zip ."
 
 test: off
 
 artifacts:
-  - path: dist/starcheat-$(APPVEYOR_BUILD_VERSION)-$(PYTHON_ARCH).zip
+  - path: dist/starcheat-$(APPVEYOR_REPO_TAG_NAME)-$(PYTHON_ARCH).zip
 
 deploy:
   provider: GitHub
   auth_token:
     secure: ZtfwMzuwFmGDrJhj3T3Nz3s+Nhz7Tw2mLhG15mE0BxDdDZCjwF5qzl9ZMKg20ILK
-  artifact: dist/starcheat-$(APPVEYOR_BUILD_VERSION)-$(PYTHON_ARCH).zip
+  artifact: dist/starcheat-$(APPVEYOR_REPO_TAG_NAME)-$(PYTHON_ARCH).zip
   on:
     appveyor_repo_tag: true
