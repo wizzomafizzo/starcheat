@@ -19,7 +19,7 @@ init:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
 install:
-  - REG ADD HKCU\Software\Python\PythonCore\3.4\InstallPath /f /ve /t REG_SZ /d C:\Python34
+  - REG ADD HKCU\Software\Python\PythonCore\3.4\InstallPath /f /ve /t REG_SZ /d %PYTHON%
   - git submodule update --init --recursive
   - ps: Start-FileDownload $env:PyQT -FileName $env:temp/pyqt5_install.exe
   - ps: "& $env:temp/pyqt5_install.exe /S"
