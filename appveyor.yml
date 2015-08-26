@@ -8,17 +8,18 @@ environment:
   matrix:
     - PYTHON: "C:\\Python34"
       PYTHON_ARCH: "win32"
-      PyQT: "http://kent.dl.sourceforge.net/project/pyqt/PyQt5/PyQt-5.5/PyQt5-5.5-gpl-Py3.4-Qt5.5.0-x32.exe"
+      PyQT: "http://download.sourceforge.net/project/pyqt/PyQt5/PyQt-5.5/PyQt5-5.5-gpl-Py3.4-Qt5.5.0-x32.exe"
 
     - PYTHON: "C:\\Python34-x64"
       PYTHON_ARCH: "win64"
-      PyQT: "http://vorboss.dl.sourceforge.net/project/pyqt/PyQt5/PyQt-5.5/PyQt5-5.5-gpl-Py3.4-Qt5.5.0-x64.exe"
+      PyQT: "http://download.sourceforge.net/project/pyqt/PyQt5/PyQt-5.5/PyQt5-5.5-gpl-Py3.4-Qt5.5.0-x64.exe"
 
 init:
   - ps: "ls -Name \"C:/\""
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
 install:
+  - REG ADD HKCU\Software\Python\PythonCore\3.4\InstallPath /f /ve /t REG_SZ /d C:\Python34
   - git submodule update --init --recursive
   - ps: Start-FileDownload $env:PyQT -FileName $env:temp/pyqt5_install.exe
   - ps: "& $env:temp/pyqt5_install.exe /S"
