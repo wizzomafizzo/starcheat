@@ -8,11 +8,11 @@ environment:
   matrix:
     - PYTHON: "C:\\Python34"
       PYTHON_ARCH: "win32"
-      PyQT: "http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.5/PyQt5-5.5-gpl-Py3.4-Qt5.5.0-x32.exe"
+      PyQT: "http://kent.dl.sourceforge.net/project/pyqt/PyQt5/PyQt-5.5/PyQt5-5.5-gpl-Py3.4-Qt5.5.0-x32.exe"
 
     - PYTHON: "C:\\Python34-x64"
       PYTHON_ARCH: "win64"
-      PyQT: "http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.5/PyQt5-5.5-gpl-Py3.4-Qt5.5.0-x64.exe"
+      PyQT: "http://vorboss.dl.sourceforge.net/project/pyqt/PyQt5/PyQt-5.5/PyQt5-5.5-gpl-Py3.4-Qt5.5.0-x64.exe"
 
 init:
   - ps: "ls -Name \"C:/\""
