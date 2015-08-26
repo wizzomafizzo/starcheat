@@ -121,7 +121,7 @@ class Species():
             return groups
 
     def get_personality(self):
-        return self.humanoid_config["charGen"]["personalities"]
+        return self.humanoid_config["personalities"]
 
     def get_gender_data(self, species_data, gender):
         if gender == "male":

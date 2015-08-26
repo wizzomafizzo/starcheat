@@ -545,7 +545,7 @@ class PlayerSave():
         if math.isnan(health):
             return 100
         else:
-            return health * 100
+            return health
 
     def get_energy(self):
         status = self.entity["statusController"]
@@ -553,7 +553,7 @@ class PlayerSave():
         if math.isnan(energy):
             return 100
         else:
-            return energy * 100
+            return energy
 
     def get_gender(self):
         return self.entity["identity"]["gender"]
@@ -721,11 +721,11 @@ class PlayerSave():
         self.entity["identity"]["gender"] = gender.lower()
 
     def set_health(self, current):
-        new = current / 100
+        new = current
         self.entity["statusController"]["resourceValues"]["health"] = new
 
     def set_energy(self, current):
-        new = current / 100
+        new = current
         self.entity["statusController"]["resourceValues"]["energy"] = new
 
     def set_main_bag(self, bag):
