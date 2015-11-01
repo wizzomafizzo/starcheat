@@ -577,6 +577,9 @@ class PlayerSave():
     def get_main_bag(self):
         return self.entity["inventory"]["bag"]
 
+    def get_object_bag(self):
+        return self.entity["inventory"]["objectBag"]
+
     def get_tile_bag(self):
         return self.entity["inventory"]["tileBag"]
 
@@ -730,6 +733,9 @@ class PlayerSave():
 
     def set_main_bag(self, bag):
         self.entity["inventory"]["bag"] = bag
+
+    def set_object_bag(self, bag):
+        self.entity["inventory"]["objectBag"] = bag
 
     def set_tile_bag(self, bag):
         self.entity["inventory"]["tileBag"] = bag

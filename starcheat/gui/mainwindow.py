@@ -116,7 +116,7 @@ class MainWindow():
 
         # set up bag tables
         bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
-                "action_bar", "tile_bag", "essentials", "mouse")
+                "action_bar", "object_bag", "tile_bag", "essentials", "mouse", "object_bag")
         for bag in bags:
             logging.debug("Setting up %s bag", bag)
             self.bag_setup(getattr(self.ui, bag), bag)
@@ -236,7 +236,7 @@ class MainWindow():
         # items
         total = 0
         progress = QProgressDialog("Updating item slots...",
-                                   None, 0, 10, self.window)
+                                   None, 0, 11, self.window)
 
         progress.setWindowTitle("Updating...")
         progress.setWindowModality(QtCore.Qt.ApplicationModal)
@@ -259,7 +259,7 @@ class MainWindow():
             total += 1
             progress.setValue(total)
 
-        for bag in "wieldable", "main_bag", "tile_bag", "action_bar", "essentials", "mouse":
+        for bag in "wieldable", "main_bag", "tile_bag", "object_bag", "action_bar", "essentials", "mouse":
             self.update_bag(bag)
             total += 1
             progress.setValue(total)
@@ -276,7 +276,7 @@ class MainWindow():
 
         widget.cellDoubleClicked.connect(lambda: item_edit(False))
 
-        sortable = ("main_bag", "tile_bag")
+        sortable = ("main_bag", "tile_bag", "object_bag")
         clearable = ("wieldable", "action_bar", "essentials")
 
         edit_action = QAction("Edit...", widget)
@@ -806,7 +806,7 @@ class MainWindow():
             bag = self.get_equip(b)
             getattr(self.player, "set_" + b)(bag[0], bag[1])
         # bags
-        bags = "wieldable", "main_bag", "tile_bag", "action_bar", "essentials", "mouse"
+        bags = "wieldable", "main_bag", "tile_bag", "action_bar", "essentials", "mouse", "object_bag"
         for b in bags:
             getattr(self.player, "set_" + b)(self.get_bag(b))
 
@@ -840,6 +840,8 @@ class MainWindow():
         self.new_item_edit(self.ui.main_bag, do_import, json_edit)
     def new_tile_bag_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.tile_bag, do_import, json_edit)
+    def new_object_bag_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.object_bag, do_import, json_edit)
     def new_action_bar_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.action_bar, do_import, json_edit)
     def new_head_item_edit(self, do_import, json_edit=False):
