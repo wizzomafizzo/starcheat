@@ -116,7 +116,7 @@ class MainWindow():
 
         # set up bag tables
         bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
-                "action_bar", "object_bag", "tile_bag", "essentials", "mouse", "object_bag")
+                "action_bar", "object_bag", "tile_bag", "essentials", "mouse")
         for bag in bags:
             logging.debug("Setting up %s bag", bag)
             self.bag_setup(getattr(self.ui, bag), bag)
