@@ -1,4 +1,4 @@
-# starcheat [![Travis build (OS X)](https://img.shields.io/travis/wizzomafizzo/starcheat.svg?label=Travis build (OS X))](https://travis-ci.org/wizzomafizzo/starcheat) [![AppVeyor build (Windows)](https://img.shields.io/appveyor/ci/wizzomafizzo/starcheat.svg?label=AppVeyor build (Windows))](https://ci.appveyor.com/project/wizzomafizzo/starcheat)
+# starcheat [![Build Status](https://travis-ci.org/wizzomafizzo/starcheat.svg?branch=master)](https://travis-ci.org/wizzomafizzo/starcheat) [![Build status](https://ci.appveyor.com/api/projects/status/raaumvqaeryq08tf/branch/master?svg=true)](https://ci.appveyor.com/project/wizzomafizzo/starcheat/branch/master)
 
 starcheat is a [Starbound](http://playstarbound.com/) player save editor, you can get free pixels with this! (omg)
 
@@ -8,12 +8,27 @@ starcheat is a [Starbound](http://playstarbound.com/) player save editor, you ca
 
 Starbound            | starcheat
 -------------------- | ---------
-Nightly              | [dev branch](#building-from-source)
 **Glad Giraffe**     | [0.27.1](https://github.com/wizzomafizzo/starcheat/releases/tag/0.27.1)
 Pleased Giraffe | [0.26](https://github.com/wizzomafizzo/starcheat/releases/tag/0.26)
 Spirited Giraffe | [0.25](https://github.com/wizzomafizzo/starcheat/releases/tag/0.25)
 Upbeat Giraffe       | [0.21](https://github.com/wizzomafizzo/starcheat/releases/tag/0.21)
 Enraged Koala        | [0.17](https://github.com/wizzomafizzo/starcheat/releases/tag/0.17)
+
+### Nightlies
+
+You can try out the latest in development version (which may not be stable) by following these steps.
+
+#### Windows: Appveyor artifacts
+
+You can download prebuild nightlies for the latest commit from our Appveyor build bot. Go to https://ci.appveyor.com/project/wizzomafizzo/starcheat choose the build matching your architecture (win32 or win64) and download the latest snapshot from the Artifacts tab.
+
+#### Mac: Homebrew HEAD build
+
+Follow [the steps below](#mac) to set up our Homebrew tap but instead of installing the stable version run `brew install chrmoritz/starcheat/starcheat --HEAD` to install the latest nightly.
+
+#### Linux + all Platforms: Build from source
+
+Follow [the steps below](#building-from-source) to build the dev branch from source.
 
 ## Reporting an issue
 Please read and follow these [instructions](CONTRIBUTING.md) when reporting an issue. This will help us fix your issue faster, because we don't need to ask you for additional information.
@@ -67,8 +82,7 @@ $ ./build/starcheat.py
 ##### Install
 - Install [homebrew](http://brew.sh/)
 - ```$ brew update```
-- ```$ brew tap chrmoritz/starcheat```
-- ```$ brew install starcheat``` (optionally pass ```--without-app``` to not create a `.app`)
+- ```$ brew install chrmoritz/starcheat/starcheat``` (optionally pass ```--without-app``` to not create a `.app` or pass ```--HEAD``` to build the nightly version instead of the latest stable release)
 - ```brew linkapps starcheat``` (symlinks the `.app` into your Applications folder)
 
 ##### Update

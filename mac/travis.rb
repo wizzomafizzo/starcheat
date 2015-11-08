@@ -11,9 +11,9 @@ end
 system 'python3', 'build.py', '-v'
 # Run some tests
 FileUtils.cd 'build'
-system './starcheat.py', '-v' 
-# ToDo: run some other unit test here
-unless ENV['TRAVIS_BUILD_ID'].nil? || "#{ENV['TRAVIS_BRANCH']}" !~ /^v?(\d)+(\.\d+)*$/
+system './starcheat.py', '-v'
+# TODO: run some other unit test here
+unless ENV['TRAVIS_BUILD_ID'].nil? || ENV['TRAVIS_TAG'].to_s.empty?
   # Build OS X .app
   FileUtils.mv '../mac/setup.py', '.'
   system 'python3', 'setup.py', 'py2app'
@@ -21,5 +21,5 @@ unless ENV['TRAVIS_BUILD_ID'].nil? || "#{ENV['TRAVIS_BRANCH']}" !~ /^v?(\d)+(\.\
   # Test OS X .app + tar
   FileUtils.mv 'dist/starcheat.app', 'StarCheat.app'
   system 'StarCheat.app/Contents/MacOS/starcheat', '-v'
-  system 'tar', 'czf', "starcheat-#{ENV['TRAVIS_BRANCH']}-osx.tar.gz", 'StarCheat.app'
+  system 'tar', 'czf', "starcheat-#{ENV['TRAVIS_TAG']}-osx.tar.gz", 'StarCheat.app'
 end
