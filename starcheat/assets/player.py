@@ -1,4 +1,4 @@
-class Player():
+class Player(object):
     def __init__(self, assets):
         self.assets = assets
         self.starbound_folder = assets.starbound_folder

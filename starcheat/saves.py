@@ -374,7 +374,8 @@ def empty_slot():
 class WrongSaveVer(Exception):
     pass
 
-class PlayerSave():
+
+class PlayerSave(object):
     def __init__(self, filename):
         self.data = {}
         self.entity = None

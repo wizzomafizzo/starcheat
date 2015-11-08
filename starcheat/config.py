@@ -24,7 +24,7 @@ CONFIG_VERSION = 15
 ini_file = os.path.join(config_folder, "starcheat.ini")
 
 
-class Config():
+class Config(object):
     def __init__(self):
         self.config = configparser.ConfigParser()
         self.config_folder = config_folder

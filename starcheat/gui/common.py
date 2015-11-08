@@ -123,7 +123,7 @@ class ItemWidget(QTableWidgetItem):
             self.setText("")
 
 
-class ListEdit():
+class ListEdit(object):
     def __init__(self, parent, list_data):
         self.dialog = QDialog(parent)
         self.ui = qt_listedit.Ui_Dialog()

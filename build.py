@@ -8,11 +8,14 @@ def main():
     if platform.system() == "Windows":
         desc += " (with cx_freeze if --with-exe is passed)"
     parser = OptionParser(description=desc)
-    parser.add_option("-p", "--prefix", "-b", "--build", "--build-dir", dest="prefix", default="build", help="build and install starboud to this prefix (default to build)")
+    parser.add_option("-p", "--prefix", "-b", "--build", "--build-dir", dest="prefix", default="build",
+                      help="build and install starboud to this prefix (default to build)")
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true", help="print status messages to stdout")
     if platform.system() == "Windows":
-        parser.add_option("-e", "--exe", "--with-exe", "--enable-exe", action="store_true", dest="exe", help="generates .exe (windows only)")
-        parser.add_option("-d", "--dist", "--dist-dir", dest="dist", default="dist", help="generates .exe to this dir (default to dist)")
+        parser.add_option("-e", "--exe", "--with-exe", "--enable-exe", action="store_true", dest="exe",
+                          help="generates .exe (windows only)")
+        parser.add_option("-d", "--dist", "--dist-dir", dest="dist", default="dist",
+                          help="generates .exe to this dir (default to dist)")
     (options, args) = parser.parse_args()
 
     src_dir = os.path.dirname(os.path.realpath(__file__));
@@ -35,7 +38,8 @@ def main():
 
     if options.verbose:
         print("Copying starcheat python scripts")
-    shutil.copytree(os.path.join(src_dir, "starcheat"), prefix, ignore=shutil.ignore_patterns("templates", "starbound", "images", "*.qrc"))
+    shutil.copytree(os.path.join(src_dir, "starcheat"), prefix,
+                    ignore=shutil.ignore_patterns("templates", "starbound", "images", "*.qrc"))
 
     if options.verbose:
         print("Copying py-starbound module")
@@ -80,7 +84,8 @@ def main():
         if options.verbose:
             print("Launching cx_freeze...")
         icon_path = os.path.join(src_dir, "starcheat", "images", "starcheat.ico")
-        os.system("python " + cx_freeze_Path + " \"" + os.path.join(prefix, "starcheat.py") + "\" --target-dir=\"" + dist + "\" --base-name=Win32GUI --icon=\"" + icon_path +"\"")
+        os.system("python " + cx_freeze_Path + " \"" + os.path.join(prefix, "starcheat.py") + "\" --target-dir=\"" +
+                  dist + "\" --base-name=Win32GUI --icon=\"" + icon_path +"\"")
         shutil.copy(os.path.join(pyqt5_dir, "libEGL.dll"), dist)
 
         if options.verbose:

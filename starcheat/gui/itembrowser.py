@@ -105,7 +105,7 @@ class BrowserItem(QListWidgetItem):
         self.name = name
 
 
-class ItemBrowser():
+class ItemBrowser(object):
     def __init__(self, parent, just_browse=False, category="<all>"):
         """Dialog for viewing/searching indexed items and returning selection."""
         self.dialog = QDialog(parent)

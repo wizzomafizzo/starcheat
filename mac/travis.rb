@@ -2,7 +2,7 @@
 
 require 'fileutils'
 
-def system cmd, *args
+def system(cmd, *args)
   print "==> ", cmd, " ", *args.join(' '), "\n"
   raise "error" unless Kernel.system cmd, *args
 end

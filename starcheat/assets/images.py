@@ -7,7 +7,7 @@ from assets.common import replace_colors
 from assets.common import unpack_color_directives
 
 
-class Images():
+class Images(object):
     def __init__(self, assets):
         """For loading and searching image assets."""
         self.assets = assets

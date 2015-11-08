@@ -220,7 +220,7 @@ class MainWindow():
 
         # quests
         # TODO: re-enable when quests are supported again
-        #can_edit_quests = "quests" in self.player.entity
+        # can_edit_quests = "quests" in self.player.entity
         can_edit_quests = False
         self.ui.quests_button.setEnabled(can_edit_quests)
 
@@ -810,23 +810,33 @@ class MainWindow():
     # these are used for connecting the item edit dialog to bag tables
     def new_main_bag_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.main_bag, do_import, json_edit)
+
     def new_tile_bag_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.tile_bag, do_import, json_edit)
+
     def new_object_bag_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.object_bag, do_import, json_edit)
+
     def new_action_bar_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.action_bar, do_import, json_edit)
+
     def new_head_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.head, do_import, json_edit)
+
     def new_chest_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.chest, do_import, json_edit)
+
     def new_legs_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.legs, do_import, json_edit)
+
     def new_back_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.back, do_import, json_edit)
+
     def new_wieldable_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.wieldable, do_import, json_edit)
+
     def new_essentials_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.essentials, do_import, json_edit)
+
     def new_mouse_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.mouse, do_import, json_edit)
