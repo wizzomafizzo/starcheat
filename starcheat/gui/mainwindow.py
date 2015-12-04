@@ -250,7 +250,7 @@ class MainWindow():
             items = []
             for x in getattr(self.player, "get_" + bag)():
                 if x is not None:
-                    items.append(ItemWidget(x["__content"], self.assets))
+                    items.append(ItemWidget(x["content"], self.assets))
                 else:
                     items.append(ItemWidget(None, self.assets))
 
@@ -344,7 +344,7 @@ class MainWindow():
         # save and show status
         logging.info("Writing file to disk")
         self.player.export_save(self.player.filename)
-        self.player.metadata.export_metadata(self.player.metadata.filename)
+        # self.player.metadata.export_metadata(self.player.metadata.filename) doesn't seem like anything gets written to metadata anymore
         self.update_title()
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)
         self.window.setWindowModified(False)
@@ -737,8 +737,8 @@ class MainWindow():
 
         for slot in range(len(bag)):
             item = bag[slot]
-            if item is not None and "__content" in item:
-                widget = ItemWidget(item["__content"], self.assets)
+            if item is not None and "content" in item:
+                widget = ItemWidget(item["content"], self.assets)
             else:
                 widget = ItemWidget(None, self.assets)
 
