@@ -81,7 +81,7 @@ class Techs():
                 continue
 
             try:
-                name = i["__content"]["name"]
+                name = i["content"]["name"]
                 tech = self.assets.techs().get_tech(name)
                 icon = QPixmap.fromImage(ImageQt(tech[1]))
                 getattr(self.ui, "icon"+str(current)).setPixmap(icon.scaled(32, 32))

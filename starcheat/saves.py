@@ -506,12 +506,12 @@ class PlayerSave():
 
         self.entity = self.data["save"]["data"]
 
-        metadata_filename = os.path.join(os.path.dirname(self.filename),
-                                         self.get_uuid() + ".metadata")
-        if os.path.isfile(metadata_filename):
-            self.metadata = PlayerMetadata(metadata_filename)
-        else:
-            logging.warning("Missing metadata file")
+        #metadata_filename = os.path.join(os.path.dirname(self.filename),
+        #                                 self.get_uuid() + ".metadata")
+        #if os.path.isfile(metadata_filename):
+        #    self.metadata = PlayerMetadata(metadata_filename)
+        #else:
+        #    logging.warning("Missing metadata file")
 
     def export_save(self, filename=None):
         logging.debug("Init save export: " + self.filename)

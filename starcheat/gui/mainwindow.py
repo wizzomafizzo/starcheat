@@ -107,12 +107,12 @@ class MainWindow():
 
         self.ui.actionExportPlayerBinary.triggered.connect(self.export_save)
         self.ui.actionExportPlayerJSON.triggered.connect(self.export_json)
-        self.ui.actionExportMetadataBinary.triggered.connect(lambda: self.export_save("metadata"))
-        self.ui.actionExportMetadataJSON.triggered.connect(lambda: self.export_json("metadata"))
+        #self.ui.actionExportMetadataBinary.triggered.connect(lambda: self.export_save("metadata"))
+        #self.ui.actionExportMetadataJSON.triggered.connect(lambda: self.export_json("metadata"))
         self.ui.actionImportPlayerBinary.triggered.connect(self.import_save)
         self.ui.actionImportPlayerJSON.triggered.connect(self.import_json)
-        self.ui.actionImportMetadataBinary.triggered.connect(lambda: self.import_save("metadata"))
-        self.ui.actionImportMetadataJSON.triggered.connect(lambda: self.import_json("metadata"))
+        #self.ui.actionImportMetadataBinary.triggered.connect(lambda: self.import_save("metadata"))
+        #self.ui.actionImportMetadataJSON.triggered.connect(lambda: self.import_json("metadata"))
 
         # set up bag tables
         bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
@@ -344,7 +344,7 @@ class MainWindow():
         # save and show status
         logging.info("Writing file to disk")
         self.player.export_save(self.player.filename)
-        # self.player.metadata.export_metadata(self.player.metadata.filename) doesn't seem like anything gets written to metadata anymore
+        #self.player.metadata.export_metadata(self.player.metadata.filename)
         self.update_title()
         self.ui.statusbar.showMessage("Saved " + self.player.filename, 3000)
         self.window.setWindowModified(False)
