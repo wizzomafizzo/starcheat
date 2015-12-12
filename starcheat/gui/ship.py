@@ -21,8 +21,8 @@ class Ship():
         self.assets = main_window.assets
         self.player = main_window.player
 
-        self.ship_upgrades = self.player.metadata.get_ship_upgrades()
-        self.ai = self.player.metadata.get_ai()
+        self.ship_upgrades = self.player.get_ship_upgrades()
+        self.ai = self.player.get_ai()
 
         self.ui.capabilities_button.clicked.connect(self.edit_capabilities)
         self.ui.available_missions_button.clicked.connect(self.edit_available)
@@ -73,7 +73,7 @@ class Ship():
         self.ship_upgrades["maxFuel"] = self.ui.max_fuel.value()
         self.ship_upgrades["shipLevel"] = self.ui.upgrade_level.value()
         self.ai["commandLevel"] = self.ui.command_level.value()
-        self.player.metadata.set_ship_upgrades(self.ship_upgrades)
-        self.player.metadata.set_ai(self.ai)
+        self.player.set_ship_upgrades(self.ship_upgrades)
+        self.player.set_ai(self.ai)
         logging.debug("Wrote ship/ai")
         self.main_window.window.setWindowModified(True)
