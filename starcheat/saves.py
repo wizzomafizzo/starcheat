@@ -359,9 +359,9 @@ def new_item(name, count=1, data={}):
         return None
 
     item = {
-        'id': 'Item',
-        'version': 7,
-        'content': new_item_data(name, count, data)
+        '__id': 'Item',
+        '__version': 5,
+        '__content': new_item_data(name, count, data)
     }
 
     return item
@@ -506,12 +506,12 @@ class PlayerSave():
 
         self.entity = self.data["save"]["data"]
 
-        #metadata_filename = os.path.join(os.path.dirname(self.filename),
-        #                                 self.get_uuid() + ".metadata")
-        #if os.path.isfile(metadata_filename):
-        #    self.metadata = PlayerMetadata(metadata_filename)
-        #else:
-        #    logging.warning("Missing metadata file")
+        metadata_filename = os.path.join(os.path.dirname(self.filename),
+                                         self.get_uuid() + ".metadata")
+        if os.path.isfile(metadata_filename):
+            self.metadata = PlayerMetadata(metadata_filename)
+        else:
+            logging.warning("Missing metadata file")
 
     def export_save(self, filename=None):
         logging.debug("Init save export: " + self.filename)
@@ -692,9 +692,9 @@ class PlayerSave():
         if slots is not None:
             main, glamor = slots
             if glamor is not None:
-                return glamor["content"]
+                return glamor["__content"]
             elif main is not None:
-                return main["content"]
+                return main["__content"]
 
     # here be setters
     def set_blueprints(self, blueprints):
