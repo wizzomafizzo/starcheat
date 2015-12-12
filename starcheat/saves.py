@@ -359,9 +359,9 @@ def new_item(name, count=1, data={}):
         return None
 
     item = {
-        '__id': 'Item',
-        '__version': 5,
-        '__content': new_item_data(name, count, data)
+        'id': 'Item',
+        'version': 7,
+        'content': new_item_data(name, count, data)
     }
 
     return item
@@ -577,6 +577,9 @@ class PlayerSave():
     def get_main_bag(self):
         return self.entity["inventory"]["bag"]
 
+    def get_object_bag(self):
+        return self.entity["inventory"]["objectBag"]
+
     def get_tile_bag(self):
         return self.entity["inventory"]["tileBag"]
 
@@ -689,9 +692,9 @@ class PlayerSave():
         if slots is not None:
             main, glamor = slots
             if glamor is not None:
-                return glamor["__content"]
+                return glamor["content"]
             elif main is not None:
-                return main["__content"]
+                return main["content"]
 
     # here be setters
     def set_blueprints(self, blueprints):
@@ -730,6 +733,9 @@ class PlayerSave():
 
     def set_main_bag(self, bag):
         self.entity["inventory"]["bag"] = bag
+
+    def set_object_bag(self, bag):
+        self.entity["inventory"]["objectBag"] = bag
 
     def set_tile_bag(self, bag):
         self.entity["inventory"]["tileBag"] = bag
