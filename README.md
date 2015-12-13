@@ -9,7 +9,8 @@ starcheat is a [Starbound](http://playstarbound.com/) player save editor, you ca
 Starbound            | starcheat
 -------------------- | ---------
 Nightly              | [dev branch](#building-from-source)
-**Pleased Giraffe** | [0.26](https://github.com/wizzomafizzo/starcheat/releases/tag/0.26)
+**Glad Giraffe**     | [0.27](https://github.com/wizzomafizzo/starcheat/releases/tag/0.27)
+Pleased Giraffe | [0.26](https://github.com/wizzomafizzo/starcheat/releases/tag/0.26)
 Spirited Giraffe | [0.25](https://github.com/wizzomafizzo/starcheat/releases/tag/0.25)
 Upbeat Giraffe       | [0.21](https://github.com/wizzomafizzo/starcheat/releases/tag/0.21)
 Enraged Koala        | [0.17](https://github.com/wizzomafizzo/starcheat/releases/tag/0.17)
