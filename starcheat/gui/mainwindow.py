@@ -219,7 +219,9 @@ class MainWindow():
         self.update_stat("energy")
 
         # quests
-        can_edit_quests = "quests" in self.player.entity
+        # TODO: re-enable when quests are supported again
+        #can_edit_quests = "quests" in self.player.entity
+        can_edit_quests = False
         self.ui.quests_button.setEnabled(can_edit_quests)
 
         # ship
