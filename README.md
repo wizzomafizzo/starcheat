@@ -20,7 +20,7 @@ You can try out the latest in development version (which may not be stable) by f
 
 #### Windows: Appveyor artifacts
 
-You can download prebuild nightlies for the latest commit from our Appveyor build bot. Go to https://ci.appveyor.com/project/wizzomafizzo/starcheat choose the build matching your architecture (win32 or win64) and download the latest snapshot from the Artifacts tab.
+You can download prebuild nightlies for the latest commit from our Appveyor build bot. Go to https://ci.appveyor.com/project/wizzomafizzo/starcheat/branch/dev choose the build matching your architecture (win32 or win64) and download the latest snapshot from the Artifacts tab.
 
 #### Mac: Homebrew HEAD build
 
