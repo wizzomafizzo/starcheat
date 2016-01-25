@@ -42,7 +42,7 @@ def parse_json(content, key):
 
 
 def load_asset_file(filename):
-    with open(filename) as f:
+    with open(filename, encoding="utf-8") as f:
         content = ''.join(f.readlines())
         return parse_json(content, filename)
 

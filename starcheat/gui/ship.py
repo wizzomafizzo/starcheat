@@ -36,7 +36,10 @@ class Ship():
         self.ui.max_fuel.setValue(self.ship_upgrades["maxFuel"])
         self.ui.capabilities.setText(", ".join(self.ship_upgrades["capabilities"]))
 
-        self.ui.command_level.setValue(self.ai["commandLevel"])
+        if self.ai["commandLevel"] is not None:
+            self.ui.command_level.setValue(self.ai["commandLevel"])
+        else:
+            self.ui.command_level.setValue(0)
         self.ui.available_missions.setText(", ".join(self.ai["availableMissions"]))
         self.ui.completed_missions.setText(", ".join(self.ai["completedMissions"]))
         self.ui.enabled_commands.setText(", ".join(self.ai["enabledCommands"]))

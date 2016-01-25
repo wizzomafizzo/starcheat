@@ -409,7 +409,7 @@ class PlayerSave():
             try:
                 unpacked = unpack_var(var, save_data[offset:])
             except:
-                msg = "Save file is corrupt"
+                msg = "Save file is corrupt: {}".format(filename)
                 logging.exception(msg)
                 raise WrongSaveVer(msg)
 

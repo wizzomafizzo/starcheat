@@ -25,6 +25,9 @@ console.setLevel(logging.INFO)
 console.setFormatter(logging.Formatter("%(levelname)-8s %(message)s"))
 logger.addHandler(console)
 
+# tone down pillow log output
+logging.getLogger("PIL").setLevel(logging.ERROR)
+logging.getLogger("PIL.Image").setLevel(logging.ERROR)
 
 # set up Qt crash dialog
 def crash_gui(error):
