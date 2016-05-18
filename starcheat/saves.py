@@ -584,7 +584,10 @@ class PlayerSave(object):
         return self.entity["modeType"]
 
     def get_play_time(self):
-        return self.entity["playTime"]
+        try:
+            return self.entity["playTime"]
+        except:
+            return self.entity["log"]["playTime"]
 
     def get_tech_modules(self):
         return self.entity["techController"]["techModules"]
