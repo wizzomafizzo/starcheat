@@ -4,8 +4,8 @@ Reporting starcheat bugs
 
 * Please make sure you're running the [latest version of starcheat](https://github.com/wizzomafizzo/starcheat/releases/latest). If not try updating starcheat and see if this already fixes your issue.
 * Search all open issues for issues similar to yours. If you find a issue matching yours consider commenting in this issue rather then opening a new one.
-* If you think your issues isn't already reporting please open a new one and try to include as much details as possible descriping your issue including these things:
-* the starcheat version 
+* If you think your issues isn't already reporting please open a new one and try to include as much details as possible describing your issue including these things:
+* the starcheat version
 * the starbound version and branch (stable / unstable / nightly)
 * the error message your a getting if any
 * the starcheat logs

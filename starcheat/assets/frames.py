@@ -1,7 +1,7 @@
 import os
 
 
-class Frames():
+class Frames(object):
     def __init__(self, assets):
         self.assets = assets
         self.starbound_folder = assets.starbound_folder

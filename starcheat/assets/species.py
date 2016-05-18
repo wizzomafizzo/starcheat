@@ -19,7 +19,7 @@ def read_default_color(species_data):
     return color
 
 
-class Species():
+class Species(object):
     def __init__(self, assets):
         self.assets = assets
         self.starbound_folder = assets.starbound_folder
@@ -201,7 +201,7 @@ class Species():
         item = self.assets.items().get_item(slot["name"])
 
         if (item is None or
-            not gender + "Frames" in item[0]):
+                not gender + "Frames" in item[0]):
             return player_image
 
         item_img_path = item[0][gender + "Frames"]

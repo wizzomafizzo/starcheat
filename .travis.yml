@@ -11,14 +11,10 @@ install:
 script:
   - mac/travis.rb
 
-branches:
-  only:
-    - /^v?\d+(\.\d+)*$/
-
 deploy:
   provider: releases
   skip_cleanup: true
   api_key: $GITHUB_OAUTH_TOKEN
-  file: build/starcheat-$TRAVIS_BRANCH-osx.tar.gz
+  file: build/starcheat-$TRAVIS_TAG-osx.tar.gz
   on:
     tags: true

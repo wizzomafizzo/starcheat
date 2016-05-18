@@ -30,7 +30,7 @@ def make_tech_list(tech_names):
     return techs
 
 
-class Techs():
+class Techs(object):
     def __init__(self, main_window):
         self.dialog = QDialog(main_window.window)
         self.ui = qt_techs.Ui_Dialog()
@@ -81,7 +81,7 @@ class Techs():
                 continue
 
             try:
-                name = i["__content"]["name"]
+                name = i["content"]["name"]
                 tech = self.assets.techs().get_tech(name)
                 icon = QPixmap.fromImage(ImageQt(tech[1]))
                 getattr(self.ui, "icon"+str(current)).setPixmap(icon.scaled(32, 32))
@@ -90,7 +90,6 @@ class Techs():
                 self.equip[current-1] = tech[0]["itemName"]
             except TypeError:
                 logging.exception("Couldn't load tech")
-                pass
 
             current += 1
 

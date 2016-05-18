@@ -23,7 +23,7 @@ class BlueprintItem(QListWidgetItem):
         self.blueprint = blueprint
 
 
-class BlueprintLib():
+class BlueprintLib(object):
     def __init__(self, parent, known_blueprints, new_blueprints):
         """Blueprint library management dialog."""
         self.dialog = QDialog(parent)

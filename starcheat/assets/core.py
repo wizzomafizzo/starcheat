@@ -47,7 +47,7 @@ def load_asset_file(filename):
         return parse_json(content, filename)
 
 
-class Assets():
+class Assets(object):
     def __init__(self, db_file, starbound_folder):
         self.starbound_folder = starbound_folder
         self.mods_folder = os.path.join(self.starbound_folder, "giraffe_storage", "mods")

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>762</width>
+    <width>830</width>
     <height>599</height>
    </rect>
   </property>
@@ -2461,8 +2461,8 @@ border-radius: 4px;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>762</width>
-     <height>31</height>
+     <width>830</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -2479,8 +2479,6 @@ border-radius: 4px;
      </property>
      <addaction name="actionImportPlayerBinary"/>
      <addaction name="actionImportPlayerJSON"/>
-     <addaction name="actionImportMetadataBinary"/>
-     <addaction name="actionImportMetadataJSON"/>
     </widget>
     <widget class="QMenu" name="menuExport">
      <property name="title">
@@ -2492,8 +2490,6 @@ border-radius: 4px;
      </property>
      <addaction name="actionExportPlayerBinary"/>
      <addaction name="actionExportPlayerJSON"/>
-     <addaction name="actionExportMetadataBinary"/>
-     <addaction name="actionExportMetadataJSON"/>
     </widget>
     <addaction name="actionOpen"/>
     <addaction name="actionReload"/>

@@ -1,8 +1,5 @@
 os: Visual Studio 2015
 version: '{branch}-b{build}'
-branches:
-  only:
-    - /^v?\d+(\.\d+)*$/
 
 environment:
   matrix:
@@ -34,8 +31,10 @@ install:
 build_script:
   - cd /D %APPVEYOR_BUILD_FOLDER%
   - "python build.py --verbose --with-exe"
+  - "python build/starcheat.py -v"
   - ps: "cp LICENSE dist/"
   - cd dist
+  - IF NOT DEFINED APPVEYOR_REPO_TAG_NAME set APPVEYOR_REPO_TAG_NAME=%APPVEYOR_REPO_COMMIT:~0,7%
   - ps: "& 7z a -r starcheat-$env:APPVEYOR_REPO_TAG_NAME-$env:PYTHON_ARCH.zip ."
 
 test: off

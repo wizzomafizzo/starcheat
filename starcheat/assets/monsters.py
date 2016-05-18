@@ -2,7 +2,7 @@ import logging
 import random
 
 
-class Monsters():
+class Monsters(object):
     def __init__(self, assets):
         self.assets = assets
         self.starbound_folder = assets.starbound_folder

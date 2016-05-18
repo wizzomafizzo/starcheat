@@ -120,8 +120,8 @@ class Quests():
         self.ui.quest_list.setCurrentRow(0)
 
     def read_quests(self):
-        """Read quests from metadata and return dict sorted by status."""
-        raw_quests = self.player.metadata.get_quests()
+        """Read quests from player and return dict sorted by status."""
+        raw_quests = self.player.get_quests()
         quests = {}
 
         for k, v in raw_quests.items():
@@ -133,12 +133,12 @@ class Quests():
         return quests
 
     def write_quests(self):
-        """Convert and write sorted quest dict to metadata."""
+        """Convert and write sorted quest dict to player."""
         quests = {}
 
         for status_k, status_v in self.quests.items():
             for quest_k, quest_v in status_v.items():
                 quests[quest_k] = quest_v
 
-        self.player.metadata.set_quests(quests)
+        self.player.set_quests(quests)
         self.main_window.window.setWindowModified(True)

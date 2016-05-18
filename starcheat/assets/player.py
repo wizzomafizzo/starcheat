@@ -1,4 +1,4 @@
-class Player():
+class Player(object):
     def __init__(self, assets):
         self.assets = assets
         self.starbound_folder = assets.starbound_folder
@@ -18,7 +18,7 @@ class Player():
 
     def sort_bag(self, bag, sort_by):
         def get_category(slot):
-            name = slot["__content"]["name"]
+            name = slot["content"]["name"]
             item = self.assets.items().get_item_index(name)
             if item is not None:
                 return item[3]
@@ -26,8 +26,8 @@ class Player():
                 return ""
 
         sort_map = {
-            "name": lambda x: x["__content"]["name"],
-            "count": lambda x: x["__content"]["count"],
+            "name": lambda x: x["content"]["name"],
+            "count": lambda x: x["content"]["count"],
             "category": get_category
         }
 

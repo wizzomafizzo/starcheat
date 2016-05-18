@@ -151,12 +151,16 @@ class Appearance():
     # for color button signals
     def new_body_color_edit(self):
         self.new_color_edit("body")
+
     def new_hair_color_edit(self):
         self.new_color_edit("hair")
+
     def new_facial_hair_color_edit(self):
         self.new_color_edit("facial_hair")
+
     def new_facial_mask_color_edit(self):
         self.new_color_edit("facial_mask")
+
     def new_emote_color_edit(self):
         self.new_color_edit("emote")
 

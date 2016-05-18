@@ -375,84 +375,8 @@ class WrongSaveVer(Exception):
     pass
 
 
-class PlayerMetadata():
+class PlayerSave(object):
     def __init__(self, filename):
-        self.data = {}
-        self.filename = filename
-        self.metadata = None
-
-        self.import_metadata(self.filename)
-
-    def import_metadata(self, filename):
-        metadata_file = open(filename, mode="rb")
-        metadata_data = metadata_file.read()
-
-        offset = 0
-        for var in data_format:
-            unpacked = unpack_var(var, metadata_data[offset:])
-            self.data[var[0]] = unpacked[0]
-            offset += unpacked[1]
-
-        metadata_file.close()
-        self.metadata = self.data["save"]["data"]
-
-    def export_metadata(self, filename):
-        self.data["save"]["data"] = self.metadata
-        metadata_data = b""
-
-        for var in data_format:
-            metadata_data += pack_var(var, self.data[var[0]])
-
-        metadata_file = open(filename, "wb")
-        metadata_file.write(metadata_data)
-        metadata_file.close()
-
-        return self.filename
-
-    def dump(self):
-        pprint(self.metadata)
-
-    def get_timestamp(self):
-        # unix epoch
-        # convert to seconds so it works with python
-        return self.metadata["timestamp"] / 1000
-
-    def set_timestamp(self, seconds):
-        assert type(seconds) is int
-        self.metadata["timestamp"] = seconds * 1000
-
-    def get_ship_upgrades(self):
-        return self.metadata["shipUpgrades"]
-
-    def set_ship_upgrades(self, upgrades):
-        assert type(upgrades) is dict
-        assert type(upgrades["capabilities"]) is list
-        assert type(upgrades["maxFuel"]) is int
-        assert type(upgrades["shipLevel"]) is int
-        self.metadata["shipUpgrades"] = upgrades
-
-    def get_quests(self):
-        return self.metadata["quests"]
-
-    def set_quests(self, quests):
-        assert type(quests) is dict
-        self.metadata["quests"] = quests
-
-    def get_ai(self):
-        return self.metadata["ai"]
-
-    def set_ai(self, ai):
-        assert type(ai) is dict
-        assert type(ai["availableMissions"]) is list
-        assert type(ai["commandLevel"]) is int
-        assert type(ai["completedMissions"]) is list
-        assert type(ai["enabledCommands"]) is list
-        self.metadata["ai"] = ai
-
-
-class PlayerSave():
-    def __init__(self, filename):
-        self.metadata = None
         self.data = {}
         self.entity = None
 
@@ -506,13 +430,6 @@ class PlayerSave():
 
         self.entity = self.data["save"]["data"]
 
-        metadata_filename = os.path.join(os.path.dirname(self.filename),
-                                         self.get_uuid() + ".metadata")
-        if os.path.isfile(metadata_filename):
-            self.metadata = PlayerMetadata(metadata_filename)
-        else:
-            logging.warning("Missing metadata file")
-
     def export_save(self, filename=None):
         logging.debug("Init save export: " + self.filename)
         self.data["save"]["data"] = self.entity
@@ -538,6 +455,15 @@ class PlayerSave():
 
     def get_uuid(self):
         return self.entity["uuid"]
+
+    def get_ship_upgrades(self):
+        return self.entity["shipUpgrades"]
+
+    def get_quests(self):
+        return self.entity["quests"]
+
+    def get_ai(self):
+        return self.entity["aiState"]
 
     def get_health(self):
         status = self.entity["statusController"]
@@ -697,6 +623,25 @@ class PlayerSave():
                 return main["content"]
 
     # here be setters
+    def set_ship_upgrades(self, upgrades):
+        assert type(upgrades) is dict
+        assert type(upgrades["capabilities"]) is list
+        assert type(upgrades["maxFuel"]) is int
+        assert type(upgrades["shipLevel"]) is int
+        self.entity["shipUpgrades"] = upgrades
+
+    def set_quests(self, quests):
+        assert type(quests) is dict
+        self.entity["quests"] = quests
+
+    def set_ai(self, ai):
+        assert type(ai) is dict
+        assert type(ai["availableMissions"]) is list
+        assert type(ai["commandLevel"]) is int
+        assert type(ai["completedMissions"]) is list
+        assert type(ai["enabledCommands"]) is list
+        self.entity["aiState"] = ai
+
     def set_blueprints(self, blueprints):
         self.entity["blueprints"]["knownBlueprints"] = blueprints
 
@@ -845,6 +790,4 @@ class PlayerSave():
 
 if __name__ == '__main__':
     player = PlayerSave(sys.argv[1])
-    metadata = PlayerMetadata(sys.argv[1].replace(".player", ".metadata"))
     player.dump()
-    metadata.dump()

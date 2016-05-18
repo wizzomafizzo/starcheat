@@ -15,12 +15,13 @@ ignore_items = re.compile(".*\.(png|config|frames|lua)", re.IGNORECASE)
 
 def trim(im):
     """Trim whitespace from image."""
-    bg = Image.new(im.mode, im.size, im.getpixel((0,0)))
+    bg = Image.new(im.mode, im.size, im.getpixel((0, 0)))
     diff = ImageChops.difference(im, bg)
     diff = ImageChops.add(diff, diff, 2.0, -100)
     bbox = diff.getbbox()
     if bbox:
         return im.crop(bbox)
+
 
 def trim_and_square(icon):
     """Trim whitespace and pad icon to be square."""
@@ -44,7 +45,7 @@ def trim_and_square(icon):
     return new_icon
 
 
-class Items():
+class Items(object):
     def __init__(self, assets):
         self.assets = assets
         self.starbound_folder = assets.starbound_folder
@@ -270,9 +271,9 @@ class Items():
             "level": 1.0,
             "levelScale": 1.0,
             "projectile": {"level": 1.0, "power": 1.0},
-            "projectileCount": random.randint(1,10),
+            "projectileCount": random.randint(1, 10),
             "projectileSeparation": random.uniform(0.0, 1.0),
-            "drawables": [ # TODO: palettes, some inv icons offset wrong
+            "drawables": [  # TODO: palettes, some inv icons offset wrong
                 {"image": butt, "position": [-(float(butt_width)), 0.0]},
                 {"image": middle, "position": [0.0, 0.0]},
                 {"image": barrel, "position": [float(middle_width), 0.0]}
@@ -295,7 +296,7 @@ class Items():
                                    -d["handPosition"][1]]
 
         if ("muzzleFlashes" in d and len(d["muzzleFlashes"]) > 0 and
-            "fireSound" in d and len(d["fireSound"]) > 0):
+                "fireSound" in d and len(d["fireSound"]) > 0):
             gun["muzzleEffect"] = {
                 "animation": random.choice(d["muzzleFlashes"]),
                 "fireSound": [{"file": random.choice(d["fireSound"])}]
@@ -318,7 +319,7 @@ class Items():
 
         copy_key("baseDps")
         copy_key("directories")
-        copy_key("firePosition") # TODO: not correct
+        copy_key("firePosition")  # TODO: not correct
         copy_key("fireSound")
         copy_key("hands")
         copy_key("inaccuracy")
@@ -378,7 +379,7 @@ class Items():
                 "power": 1.0
             }
             if ("projectileTypes" in d[ps] and
-                len(d[ps]["projectileTypes"]) > 0):
+                    len(d[ps]["projectileTypes"]) > 0):
                 sword[ps]["projectileType"] = random.choice(d[ps]["projectileTypes"])
 
         als = "altStances"
@@ -386,7 +387,7 @@ class Items():
             sword[als] = d[als]
             sword[als]["projectile"] = sword[ps]["projectile"]
             if ("projectileTypes" in d[als] and
-                len(d[als]["projectileTypes"] > 0)):
+                    len(d[als]["projectileTypes"] > 0)):
                 sword[als]["projectileType"] = random.choice(d[als]["projectileTypes"])
         else:
             sword[als] = sword[ps]
