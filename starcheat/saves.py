@@ -508,6 +508,9 @@ class PlayerSave(object):
 
     def get_tile_bag(self):
         return self.entity["inventory"]["tileBag"]
+        
+    def get_reagent_bag(self):
+        return self.entity["inventory"]["reagentBag"]
 
     def get_action_bar(self):
         return self.entity["inventory"]["actionBar"]
@@ -584,10 +587,7 @@ class PlayerSave(object):
         return self.entity["modeType"]
 
     def get_play_time(self):
-        try:
-            return self.entity["playTime"]
-        except:
-            return self.entity["log"]["playTime"]
+        return self.entity["log"]["playTime"]
 
     def get_tech_modules(self):
         return self.entity["techController"]["techModules"]
@@ -687,6 +687,9 @@ class PlayerSave(object):
 
     def set_tile_bag(self, bag):
         self.entity["inventory"]["tileBag"] = bag
+
+    def set_reagent_bag(self, bag):
+        self.entity["inventory"]["reagentBag"] = bag
 
     def set_action_bar(self, bag):
         self.entity["inventory"]["actionBar"] = bag

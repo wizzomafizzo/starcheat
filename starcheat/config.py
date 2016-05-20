@@ -52,7 +52,7 @@ class Config(object):
         if starbound_folder is None:
             starbound_folder = self.detect_starbound_folder()
 
-        storage_folder = "giraffe_storage"
+        storage_folder = "storage"
 
         assets_folder = os.path.join(starbound_folder, "assets")
         player_folder = os.path.join(starbound_folder, storage_folder, "player")
