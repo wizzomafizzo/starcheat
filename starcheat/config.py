@@ -56,7 +56,7 @@ class Config(object):
 
         assets_folder = os.path.join(starbound_folder, "assets")
         player_folder = os.path.join(starbound_folder, storage_folder, "player")
-        mods_folder = os.path.join(starbound_folder, storage_folder, "mods")
+        mods_folder = os.path.join(starbound_folder, "mods")
         backup_folder = os.path.join(config_folder, "backups")
         pak_hash = "none"
         check_updates = "yes"

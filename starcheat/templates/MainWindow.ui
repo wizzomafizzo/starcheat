@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>830</width>
-    <height>599</height>
+    <width>778</width>
+    <height>576</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,27 +23,45 @@
      <layout class="QVBoxLayout" name="verticalLayout_6">
       <item>
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="0" column="0" rowspan="2">
+        <item row="0" column="2">
+         <widget class="QLabel" name="player_preview">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>118</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: white;</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Box</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" rowspan="2">
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="0" rowspan="4">
-           <spacer name="horizontalSpacer_8">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>18</width>
-              <height>238</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
+          <property name="spacing">
+           <number>6</number>
+          </property>
           <item row="0" column="1">
            <layout class="QVBoxLayout" name="verticalLayout">
             <property name="spacing">
              <number>3</number>
             </property>
-            <item>
+            <item alignment="Qt::AlignHCenter|Qt::AlignBottom">
              <widget class="QLabel" name="backpack_label">
               <property name="minimumSize">
                <size>
@@ -59,7 +77,7 @@
               </property>
              </widget>
             </item>
-            <item>
+            <item alignment="Qt::AlignHCenter|Qt::AlignTop">
              <widget class="QTableWidget" name="back">
               <property name="maximumSize">
                <size>
@@ -158,163 +176,34 @@
               </column>
              </widget>
             </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </item>
-          <item row="0" column="2" rowspan="4">
-           <spacer name="horizontalSpacer_9">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>18</width>
-              <height>238</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="1" column="1">
-           <layout class="QVBoxLayout" name="verticalLayout_2">
-            <property name="spacing">
+           <layout class="QGridLayout" name="gridLayout_4">
+            <property name="verticalSpacing">
              <number>3</number>
             </property>
-            <item>
-             <widget class="QLabel" name="left_hand_label_2">
+            <item row="0" column="0" colspan="3" alignment="Qt::AlignHCenter|Qt::AlignBottom">
+             <widget class="QLabel" name="mouse_label">
               <property name="minimumSize">
                <size>
                 <width>0</width>
                 <height>19</height>
                </size>
               </property>
-              <property name="text">
-               <string>Wielded</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QTableWidget" name="wieldable">
-              <property name="maximumSize">
-               <size>
-                <width>78</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>7</pointsize>
-               </font>
-              </property>
-              <property name="acceptDrops">
-               <bool>true</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">selection-background-color: white;</string>
-              </property>
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="autoScroll">
-               <bool>false</bool>
-              </property>
-              <property name="editTriggers">
-               <set>QAbstractItemView::NoEditTriggers</set>
-              </property>
-              <property name="tabKeyNavigation">
-               <bool>false</bool>
-              </property>
-              <property name="dragEnabled">
-               <bool>true</bool>
-              </property>
-              <property name="dragDropOverwriteMode">
-               <bool>false</bool>
-              </property>
-              <property name="dragDropMode">
-               <enum>QAbstractItemView::DragDrop</enum>
-              </property>
-              <property name="defaultDropAction">
-               <enum>Qt::MoveAction</enum>
-              </property>
-              <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>32</width>
-                <height>32</height>
-               </size>
-              </property>
-              <property name="cornerButtonEnabled">
-               <bool>false</bool>
-              </property>
-              <attribute name="horizontalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="horizontalHeaderMinimumSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <attribute name="verticalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="verticalHeaderDefaultSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="verticalHeaderMinimumSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="verticalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <row>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </row>
-              <column>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>2</string>
-               </property>
-              </column>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="1">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>77</width>
-              <height>13</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="3" column="1">
-           <layout class="QGridLayout" name="gridLayout_4">
-            <property name="verticalSpacing">
-             <number>3</number>
-            </property>
-            <item row="0" column="0" colspan="3">
-             <widget class="QLabel" name="mouse_label">
               <property name="text">
                <string>Mouse</string>
               </property>
@@ -323,20 +212,7 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <spacer name="horizontalSpacer_10">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>3</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="1">
+            <item row="1" column="1" alignment="Qt::AlignHCenter|Qt::AlignTop">
              <widget class="QTableWidget" name="mouse">
               <property name="maximumSize">
                <size>
@@ -430,483 +306,16 @@
               </column>
              </widget>
             </item>
-            <item row="1" column="2">
-             <spacer name="horizontalSpacer_11">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>3</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
            </layout>
           </item>
          </layout>
         </item>
-        <item row="0" column="1">
-         <widget class="QLabel" name="player_preview">
-          <property name="minimumSize">
-           <size>
-            <width>100</width>
-            <height>160</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>118</width>
-            <height>160</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color: white;</string>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::Box</enum>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2" rowspan="2">
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0" rowspan="5">
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>18</width>
-              <height>238</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="2" rowspan="5">
-           <spacer name="horizontalSpacer_7">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>18</width>
-              <height>238</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="1">
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <property name="spacing">
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="head_label">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>19</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Head</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QTableWidget" name="head">
-              <property name="maximumSize">
-               <size>
-                <width>78</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>7</pointsize>
-               </font>
-              </property>
-              <property name="acceptDrops">
-               <bool>true</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">selection-background-color: white;</string>
-              </property>
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="autoScroll">
-               <bool>false</bool>
-              </property>
-              <property name="editTriggers">
-               <set>QAbstractItemView::NoEditTriggers</set>
-              </property>
-              <property name="tabKeyNavigation">
-               <bool>false</bool>
-              </property>
-              <property name="dragEnabled">
-               <bool>true</bool>
-              </property>
-              <property name="dragDropOverwriteMode">
-               <bool>false</bool>
-              </property>
-              <property name="dragDropMode">
-               <enum>QAbstractItemView::DragDrop</enum>
-              </property>
-              <property name="defaultDropAction">
-               <enum>Qt::MoveAction</enum>
-              </property>
-              <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>32</width>
-                <height>32</height>
-               </size>
-              </property>
-              <property name="cornerButtonEnabled">
-               <bool>false</bool>
-              </property>
-              <attribute name="horizontalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="horizontalHeaderMinimumSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <attribute name="verticalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="verticalHeaderDefaultSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="verticalHeaderMinimumSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="verticalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <row>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </row>
-              <column>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>2</string>
-               </property>
-              </column>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="1">
-           <layout class="QVBoxLayout" name="verticalLayout_5">
-            <property name="spacing">
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="chest_label">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>19</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Chest</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QTableWidget" name="chest">
-              <property name="maximumSize">
-               <size>
-                <width>78</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>7</pointsize>
-               </font>
-              </property>
-              <property name="acceptDrops">
-               <bool>true</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">selection-background-color: white;</string>
-              </property>
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="autoScroll">
-               <bool>false</bool>
-              </property>
-              <property name="editTriggers">
-               <set>QAbstractItemView::NoEditTriggers</set>
-              </property>
-              <property name="tabKeyNavigation">
-               <bool>false</bool>
-              </property>
-              <property name="dragEnabled">
-               <bool>true</bool>
-              </property>
-              <property name="dragDropOverwriteMode">
-               <bool>false</bool>
-              </property>
-              <property name="dragDropMode">
-               <enum>QAbstractItemView::DragDrop</enum>
-              </property>
-              <property name="defaultDropAction">
-               <enum>Qt::MoveAction</enum>
-              </property>
-              <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>32</width>
-                <height>32</height>
-               </size>
-              </property>
-              <property name="cornerButtonEnabled">
-               <bool>false</bool>
-              </property>
-              <attribute name="horizontalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="horizontalHeaderMinimumSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <attribute name="verticalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="verticalHeaderDefaultSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="verticalHeaderMinimumSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="verticalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <row>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </row>
-              <column>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>2</string>
-               </property>
-              </column>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="1">
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <property name="spacing">
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="legs_label">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>19</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Legs</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QTableWidget" name="legs">
-              <property name="maximumSize">
-               <size>
-                <width>78</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>7</pointsize>
-               </font>
-              </property>
-              <property name="acceptDrops">
-               <bool>true</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">selection-background-color: white;</string>
-              </property>
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="autoScroll">
-               <bool>false</bool>
-              </property>
-              <property name="editTriggers">
-               <set>QAbstractItemView::NoEditTriggers</set>
-              </property>
-              <property name="tabKeyNavigation">
-               <bool>false</bool>
-              </property>
-              <property name="dragEnabled">
-               <bool>true</bool>
-              </property>
-              <property name="dragDropOverwriteMode">
-               <bool>false</bool>
-              </property>
-              <property name="dragDropMode">
-               <enum>QAbstractItemView::DragDrop</enum>
-              </property>
-              <property name="defaultDropAction">
-               <enum>Qt::MoveAction</enum>
-              </property>
-              <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>32</width>
-                <height>32</height>
-               </size>
-              </property>
-              <property name="cornerButtonEnabled">
-               <bool>false</bool>
-              </property>
-              <attribute name="horizontalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="horizontalHeaderMinimumSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <attribute name="verticalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="verticalHeaderDefaultSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="verticalHeaderMinimumSectionSize">
-               <number>38</number>
-              </attribute>
-              <attribute name="verticalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <row>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </row>
-              <column>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>2</string>
-               </property>
-              </column>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="4" column="1">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="3" column="1">
-           <widget class="QToolButton" name="preview_config_button">
-            <property name="toolTip">
-             <string>Configure Player Preview</string>
-            </property>
-            <property name="text">
-             <string>...</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/starcheat/images/icons/glyphicons_halflings_135_wrench.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_135_wrench.png</iconset>
-            </property>
-            <property name="popupMode">
-             <enum>QToolButton::InstantPopup</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="1" column="1">
+        <item row="1" column="2">
          <layout class="QVBoxLayout" name="verticalLayout_9">
           <property name="spacing">
            <number>3</number>
           </property>
-          <item>
+          <item alignment="Qt::AlignBottom">
            <widget class="QLabel" name="essentials_label">
             <property name="minimumSize">
              <size>
@@ -928,7 +337,7 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item alignment="Qt::AlignHCenter|Qt::AlignTop">
            <widget class="QTableWidget" name="essentials">
             <property name="maximumSize">
              <size>
@@ -1034,198 +443,812 @@
           </item>
          </layout>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QGridLayout" name="gridLayout_5">
-        <property name="verticalSpacing">
-         <number>3</number>
-        </property>
-        <item row="0" column="1">
-         <widget class="QLabel" name="action_bar_label">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Action Bar</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
+        <item row="0" column="3" rowspan="2">
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <property name="spacing">
+             <number>3</number>
+            </property>
+            <item alignment="Qt::AlignBottom">
+             <widget class="QLabel" name="head_label">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>19</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Head</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QTableWidget" name="head">
+              <property name="maximumSize">
+               <size>
+                <width>78</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="acceptDrops">
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">selection-background-color: white;</string>
+              </property>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="autoScroll">
+               <bool>false</bool>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="tabKeyNavigation">
+               <bool>false</bool>
+              </property>
+              <property name="dragEnabled">
+               <bool>true</bool>
+              </property>
+              <property name="dragDropOverwriteMode">
+               <bool>false</bool>
+              </property>
+              <property name="dragDropMode">
+               <enum>QAbstractItemView::DragDrop</enum>
+              </property>
+              <property name="defaultDropAction">
+               <enum>Qt::MoveAction</enum>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="cornerButtonEnabled">
+               <bool>false</bool>
+              </property>
+              <attribute name="horizontalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="horizontalHeaderMinimumSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderDefaultSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="verticalHeaderMinimumSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="verticalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <row>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </row>
+              <column>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>2</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <property name="spacing">
+             <number>3</number>
+            </property>
+            <item alignment="Qt::AlignBottom">
+             <widget class="QLabel" name="legs_label">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>19</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Legs</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QTableWidget" name="legs">
+              <property name="maximumSize">
+               <size>
+                <width>78</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="acceptDrops">
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">selection-background-color: white;</string>
+              </property>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="autoScroll">
+               <bool>false</bool>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="tabKeyNavigation">
+               <bool>false</bool>
+              </property>
+              <property name="dragEnabled">
+               <bool>true</bool>
+              </property>
+              <property name="dragDropOverwriteMode">
+               <bool>false</bool>
+              </property>
+              <property name="dragDropMode">
+               <enum>QAbstractItemView::DragDrop</enum>
+              </property>
+              <property name="defaultDropAction">
+               <enum>Qt::MoveAction</enum>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="cornerButtonEnabled">
+               <bool>false</bool>
+              </property>
+              <attribute name="horizontalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="horizontalHeaderMinimumSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderDefaultSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="verticalHeaderMinimumSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="verticalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <row>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </row>
+              <column>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>2</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <property name="spacing">
+             <number>3</number>
+            </property>
+            <item alignment="Qt::AlignBottom">
+             <widget class="QLabel" name="chest_label">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>19</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Chest</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QTableWidget" name="chest">
+              <property name="maximumSize">
+               <size>
+                <width>78</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>7</pointsize>
+               </font>
+              </property>
+              <property name="acceptDrops">
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">selection-background-color: white;</string>
+              </property>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="autoScroll">
+               <bool>false</bool>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="tabKeyNavigation">
+               <bool>false</bool>
+              </property>
+              <property name="dragEnabled">
+               <bool>true</bool>
+              </property>
+              <property name="dragDropOverwriteMode">
+               <bool>false</bool>
+              </property>
+              <property name="dragDropMode">
+               <enum>QAbstractItemView::DragDrop</enum>
+              </property>
+              <property name="defaultDropAction">
+               <enum>Qt::MoveAction</enum>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="cornerButtonEnabled">
+               <bool>false</bool>
+              </property>
+              <attribute name="horizontalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="horizontalHeaderMinimumSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderDefaultSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="verticalHeaderMinimumSectionSize">
+               <number>38</number>
+              </attribute>
+              <attribute name="verticalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <row>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </row>
+              <column>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>2</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="6" column="0">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="0">
+           <widget class="QToolButton" name="preview_config_button">
+            <property name="toolTip">
+             <string>Configure Player Preview</string>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/starcheat/images/icons/glyphicons_halflings_135_wrench.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_135_wrench.png</iconset>
+            </property>
+            <property name="popupMode">
+             <enum>QToolButton::InstantPopup</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
-        <item row="1" column="0">
+        <item row="0" column="4">
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>13</width>
+            <width>40</width>
             <height>20</height>
            </size>
           </property>
          </spacer>
         </item>
-        <item row="1" column="2">
-         <spacer name="horizontalSpacer_2">
+        <item row="0" column="0">
+         <spacer name="horizontalSpacer_7">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>13</width>
+            <width>40</width>
             <height>20</height>
            </size>
           </property>
          </spacer>
         </item>
-        <item row="1" column="1">
-         <widget class="QTableWidget" name="action_bar">
+       </layout>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <property name="verticalSpacing">
+         <number>8</number>
+        </property>
+        <item row="0" column="0" colspan="2" alignment="Qt::AlignHCenter">
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
-            <width>382</width>
-            <height>0</height>
+            <width>464</width>
+            <height>67</height>
            </size>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>0</width>
-            <height>40</height>
-           </size>
+          <property name="currentIndex">
+           <number>0</number>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>7</pointsize>
-           </font>
-          </property>
-          <property name="acceptDrops">
-           <bool>true</bool>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">selection-background-color: white;</string>
-          </property>
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="autoScroll">
-           <bool>false</bool>
-          </property>
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="tabKeyNavigation">
-           <bool>false</bool>
-          </property>
-          <property name="dragEnabled">
-           <bool>true</bool>
-          </property>
-          <property name="dragDropOverwriteMode">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::DragDrop</enum>
-          </property>
-          <property name="defaultDropAction">
-           <enum>Qt::MoveAction</enum>
-          </property>
-          <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>32</width>
-            <height>32</height>
-           </size>
-          </property>
-          <property name="cornerButtonEnabled">
-           <bool>false</bool>
-          </property>
-          <attribute name="horizontalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>38</number>
-          </attribute>
-          <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>38</number>
-          </attribute>
-          <attribute name="horizontalHeaderStretchLastSection">
-           <bool>true</bool>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderDefaultSectionSize">
-           <number>38</number>
-          </attribute>
-          <attribute name="verticalHeaderMinimumSectionSize">
-           <number>38</number>
-          </attribute>
-          <attribute name="verticalHeaderStretchLastSection">
-           <bool>true</bool>
-          </attribute>
-          <row>
-           <property name="text">
-            <string>1</string>
-           </property>
-          </row>
-          <column>
-           <property name="text">
-            <string>1</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>2</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>3</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>4</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>5</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>6</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>7</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>8</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>9</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>10</string>
-           </property>
-          </column>
+          <widget class="QWidget" name="tab_11">
+           <attribute name="title">
+            <string>Hotbar 1</string>
+           </attribute>
+           <widget class="QTableWidget" name="action_bar_1">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>458</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>458</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="acceptDrops">
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">selection-background-color: white;</string>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="autoScroll">
+             <bool>false</bool>
+            </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="tabKeyNavigation">
+             <bool>false</bool>
+            </property>
+            <property name="dragEnabled">
+             <bool>true</bool>
+            </property>
+            <property name="dragDropOverwriteMode">
+             <bool>false</bool>
+            </property>
+            <property name="dragDropMode">
+             <enum>QAbstractItemView::DragDrop</enum>
+            </property>
+            <property name="defaultDropAction">
+             <enum>Qt::MoveAction</enum>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="cornerButtonEnabled">
+             <bool>false</bool>
+            </property>
+            <property name="columnCount">
+             <number>12</number>
+            </property>
+            <attribute name="horizontalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="horizontalHeaderMinimumSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderDefaultSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="verticalHeaderMinimumSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="verticalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <row>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </row>
+            <column>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>2</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>3</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>4</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>5</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>6</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>7</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>8</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>9</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>10</string>
+             </property>
+            </column>
+            <column/>
+            <column/>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="tab_12">
+           <attribute name="title">
+            <string>Hotbar 2</string>
+           </attribute>
+           <widget class="QTableWidget" name="action_bar_2">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>458</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>458</width>
+              <height>41</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="acceptDrops">
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">selection-background-color: white;</string>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="autoScroll">
+             <bool>false</bool>
+            </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="tabKeyNavigation">
+             <bool>false</bool>
+            </property>
+            <property name="dragEnabled">
+             <bool>true</bool>
+            </property>
+            <property name="dragDropOverwriteMode">
+             <bool>false</bool>
+            </property>
+            <property name="dragDropMode">
+             <enum>QAbstractItemView::DragDrop</enum>
+            </property>
+            <property name="defaultDropAction">
+             <enum>Qt::MoveAction</enum>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="cornerButtonEnabled">
+             <bool>false</bool>
+            </property>
+            <property name="columnCount">
+             <number>12</number>
+            </property>
+            <attribute name="horizontalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="horizontalHeaderMinimumSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderDefaultSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="verticalHeaderMinimumSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="verticalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <row>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </row>
+            <column>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>2</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>3</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>4</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>5</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>6</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>7</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>8</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>9</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>10</string>
+             </property>
+            </column>
+            <column/>
+            <column/>
+           </widget>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -1240,6 +1263,22 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>13</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>26</width>
             <height>20</height>
            </size>
           </property>
@@ -1787,7 +1826,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="tab_4">
+          <widget class="QWidget" name="tab_5">
            <attribute name="title">
             <string>Reagent Bag</string>
            </attribute>
@@ -1957,7 +1996,185 @@
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="tab_6">
+           <attribute name="title">
+            <string>Food Bag</string>
+           </attribute>
+           <widget class="QTableWidget" name="food_bag">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>382</width>
+              <height>159</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="acceptDrops">
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">selection-background-color: white;</string>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="autoScroll">
+             <bool>false</bool>
+            </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="tabKeyNavigation">
+             <bool>false</bool>
+            </property>
+            <property name="dragEnabled">
+             <bool>true</bool>
+            </property>
+            <property name="dragDropOverwriteMode">
+             <bool>false</bool>
+            </property>
+            <property name="dragDropMode">
+             <enum>QAbstractItemView::DragDrop</enum>
+            </property>
+            <property name="defaultDropAction">
+             <enum>Qt::MoveAction</enum>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="cornerButtonEnabled">
+             <bool>false</bool>
+            </property>
+            <property name="columnCount">
+             <number>10</number>
+            </property>
+            <attribute name="horizontalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="horizontalHeaderMinimumSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderDefaultSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="verticalHeaderMinimumSectionSize">
+             <number>38</number>
+            </attribute>
+            <attribute name="verticalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <row>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>2</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>3</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>4</string>
+             </property>
+            </row>
+            <column>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>2</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>3</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>4</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>5</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>6</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>7</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>8</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>9</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>10</string>
+             </property>
+            </column>
+           </widget>
+          </widget>
          </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>26</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <spacer name="horizontalSpacer_3">
@@ -1995,6 +2212,43 @@
            <string>Save Ver</string>
           </property>
          </widget>
+        </item>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QLabel" name="uuid_label">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>UUID</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="copy_uuid_button">
+            <property name="toolTip">
+             <string>Copy UUID</string>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/starcheat/images/icons/glyphicons_halflings_094_share-alt.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_094_share-alt.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="name_label">
@@ -2215,27 +2469,14 @@
           </layout>
          </widget>
         </item>
-        <item row="10" column="1">
-         <spacer name="verticalSpacer_8">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>220</width>
-            <height>75</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="11" column="0">
+        <item row="10" column="0">
          <widget class="QLabel" name="health_label">
           <property name="text">
            <string>Health</string>
           </property>
          </widget>
         </item>
-        <item row="11" column="1">
+        <item row="10" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QSlider" name="health">
@@ -2304,14 +2545,14 @@ border-radius: 4px;
           </item>
          </layout>
         </item>
-        <item row="12" column="0">
+        <item row="11" column="0">
          <widget class="QLabel" name="energy_label">
           <property name="text">
            <string>Energy</string>
           </property>
          </widget>
         </item>
-        <item row="12" column="1">
+        <item row="11" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
            <widget class="QSlider" name="energy">
@@ -2383,7 +2624,7 @@ border-radius: 4px;
           </item>
          </layout>
         </item>
-        <item row="13" column="1">
+        <item row="12" column="1">
          <spacer name="verticalSpacer_3">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -2395,43 +2636,6 @@ border-radius: 4px;
            </size>
           </property>
          </spacer>
-        </item>
-        <item row="0" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <item>
-           <widget class="QLabel" name="uuid_label">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>UUID</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="copy_uuid_button">
-            <property name="toolTip">
-             <string>Copy UUID</string>
-            </property>
-            <property name="text">
-             <string>...</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/starcheat/images/icons/glyphicons_halflings_094_share-alt.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_094_share-alt.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
        </layout>
       </item>
@@ -2631,8 +2835,8 @@ border-radius: 4px;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>830</width>
-     <height>22</height>
+     <width>778</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -3012,12 +3216,9 @@ border-radius: 4px;
   <tabstop>energy</tabstop>
   <tabstop>energy_button</tabstop>
   <tabstop>head</tabstop>
-  <tabstop>wieldable</tabstop>
   <tabstop>back</tabstop>
   <tabstop>inv_tabs</tabstop>
   <tabstop>techs_button</tabstop>
-  <tabstop>action_bar</tabstop>
-  <tabstop>main_bag</tabstop>
   <tabstop>chest</tabstop>
   <tabstop>legs</tabstop>
   <tabstop>tile_bag</tabstop>

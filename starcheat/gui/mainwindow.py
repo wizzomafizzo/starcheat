@@ -111,8 +111,7 @@ class MainWindow():
         self.ui.actionImportPlayerJSON.triggered.connect(self.import_json)
 
         # set up bag tables
-        bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
-                "action_bar", "object_bag", "tile_bag", "reagent_bag", "essentials", "mouse")
+        bags = ("head", "chest", "legs", "back", "main_bag", "object_bag", "tile_bag", "reagent_bag", "food_bag", "essentials", "mouse")
         for bag in bags:
             logging.debug("Setting up %s bag", bag)
             self.bag_setup(getattr(self.ui, bag), bag)
@@ -232,7 +231,7 @@ class MainWindow():
         # items
         total = 0
         progress = QProgressDialog("Updating item slots...",
-                                   None, 0, 12, self.window)
+                                   None, 0, 10, self.window)
 
         progress.setWindowTitle("Updating...")
         progress.setWindowModality(QtCore.Qt.ApplicationModal)
@@ -255,7 +254,7 @@ class MainWindow():
             total += 1
             progress.setValue(total)
 
-        for bag in "wieldable", "main_bag", "tile_bag", "object_bag", "reagent_bag", "action_bar", "essentials", "mouse":
+        for bag in "main_bag", "tile_bag", "object_bag", "reagent_bag", "food_bag", "essentials", "mouse":
             self.update_bag(bag)
             total += 1
             progress.setValue(total)
@@ -272,8 +271,8 @@ class MainWindow():
 
         widget.cellDoubleClicked.connect(lambda: item_edit(False))
 
-        sortable = ("main_bag", "tile_bag", "object_bag", "reagent_bag")
-        clearable = ("wieldable", "action_bar", "essentials")
+        sortable = ("main_bag", "tile_bag", "object_bag", "reagent_bag", "food_bag")
+        clearable = ("essentials")
 
         edit_action = QAction("Edit...", widget)
         edit_action.triggered.connect(lambda: item_edit(False))
@@ -657,7 +656,6 @@ class MainWindow():
                 item = saves.new_item(widget["name"],
                                       widget["count"],
                                       widget["parameters"])
-
             bag[i] = item
 
             # so far all non-equip bags are 10 cols long
@@ -778,7 +776,7 @@ class MainWindow():
             bag = self.get_equip(b)
             getattr(self.player, "set_" + b)(bag[0], bag[1])
         # bags
-        bags = "wieldable", "main_bag", "tile_bag", "action_bar", "essentials", "mouse", "object_bag", "reagent_bag"
+        bags = "main_bag", "tile_bag", "essentials", "mouse", "object_bag", "reagent_bag", "food_bag"
         for b in bags:
             getattr(self.player, "set_" + b)(self.get_bag(b))
 
@@ -820,9 +818,9 @@ class MainWindow():
     def new_reagent_bag_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.reagent_bag, do_import, json_edit)
 
-    def new_action_bar_item_edit(self, do_import, json_edit=False):
-        self.new_item_edit(self.ui.action_bar, do_import, json_edit)
-
+    def new_food_bag_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.food_bag, do_import, json_edit)
+        
     def new_head_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.head, do_import, json_edit)
 
@@ -834,9 +832,6 @@ class MainWindow():
 
     def new_back_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.back, do_import, json_edit)
-
-    def new_wieldable_item_edit(self, do_import, json_edit=False):
-        self.new_item_edit(self.ui.wieldable, do_import, json_edit)
 
     def new_essentials_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.essentials, do_import, json_edit)
