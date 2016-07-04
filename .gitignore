@@ -8,3 +8,4 @@ starcheat/__pycache__/
 *.json
 *.metadata
 *.player
+*.pyc

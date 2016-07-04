@@ -545,7 +545,8 @@ class PlayerSave(object):
         beamaxe = self.entity["inventory"]["beamAxe"]
         wiretool = self.entity["inventory"]["wireTool"]
         painttool = self.entity["inventory"]["paintTool"]
-        return beamaxe, wiretool, painttool
+        inspectiontool = self.entity["inventory"]["inspectionTool"]
+        return beamaxe, wiretool, painttool, inspectiontool
 
     def get_mouse(self):
         # pretend it's a regular bag
@@ -740,6 +741,7 @@ class PlayerSave(object):
         self.entity["inventory"]["beamAxe"] = bag[0]
         self.entity["inventory"]["wireTool"] = bag[1]
         self.entity["inventory"]["paintTool"] = bag[2]
+        self.entity["inventory"]["inspectionTool"] = bag[3]
 
     def set_mouse(self, bag):
         self.entity["inventory"]["swapSlot"] = bag[0]
