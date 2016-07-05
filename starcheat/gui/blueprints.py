@@ -41,7 +41,8 @@ class BlueprintLib(object):
         # populate known list
         self.ui.known_blueprints.clear()
         for blueprint in self.known_blueprints:
-            self.ui.known_blueprints.addItem(BlueprintItem(blueprint))
+            if blueprint is not None:
+                self.ui.known_blueprints.addItem(BlueprintItem(blueprint))
         self.ui.known_blueprints.sortItems(0)
 
         # populate initial available list
@@ -124,7 +125,8 @@ class BlueprintLib(object):
         # regenerate the list
         self.ui.known_blueprints.clear()
         for blueprint in self.known_blueprints:
-            self.ui.known_blueprints.addItem(BlueprintItem(blueprint))
+            if blueprint is not None:
+                self.ui.known_blueprints.addItem(BlueprintItem(blueprint))
         self.ui.known_blueprints.sortItems(0)
         self.ui.known_blueprints.setCurrentRow(0)
 
@@ -140,7 +142,8 @@ class BlueprintLib(object):
 
         self.ui.known_blueprints.clear()
         for blueprint in self.known_blueprints:
-            self.ui.known_blueprints.addItem(BlueprintItem(blueprint))
+            if blueprint is not None:
+                self.ui.known_blueprints.addItem(BlueprintItem(blueprint))
 
     def get_known_list(self):
         return self.known_blueprints

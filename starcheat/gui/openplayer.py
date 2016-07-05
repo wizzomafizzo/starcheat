@@ -109,7 +109,7 @@ class CharacterSelectDialog():
                     players_found[uuid]["player"] = player
                     players_found[uuid]["preview"] = preview
                 except:
-                    logging.exception("Save file %s is not compatible", f)
+                    logging.exception("Save file not compatible: %s", f)
                 total += 1
                 progress.setValue(total)
         except FileNotFoundError:
