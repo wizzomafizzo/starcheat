@@ -656,8 +656,13 @@ class MainWindow():
                 item = saves.new_item(widget["name"],
                                       widget["count"],
                                       widget["parameters"])
-            bag[i] = item
-
+            try:
+                bag[i] = item
+            except TypeError:
+                baglist = list(bag)
+                baglist[i] = item
+                del bag
+                bag = baglist
             # so far all non-equip bags are 10 cols long
             column += 1
             if (column % 10) == 0:

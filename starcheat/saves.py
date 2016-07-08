@@ -658,6 +658,7 @@ class PlayerSave(object):
         assert type(upgrades["capabilities"]) is list
         assert type(upgrades["maxFuel"]) is int
         assert type(upgrades["shipLevel"]) is int
+        assert type(upgrades["crewSize"]) is int
         self.entity["shipUpgrades"] = upgrades
 
     def set_quests(self, quests):
@@ -667,9 +668,7 @@ class PlayerSave(object):
     def set_ai(self, ai):
         assert type(ai) is dict
         assert type(ai["availableMissions"]) is list
-        assert type(ai["commandLevel"]) is int
         assert type(ai["completedMissions"]) is list
-        assert type(ai["enabledCommands"]) is list
         self.entity["aiState"] = ai
 
     def set_blueprints(self, blueprints):
@@ -802,7 +801,7 @@ class PlayerSave(object):
         self.entity["modeType"] = mode
 
     def set_play_time(self, time):
-        self.entity["playTime"] = float(time)
+        self.entity["log"]["playTime"] = float(time)
 
     def clear_held_slots(self):
         empty = {
