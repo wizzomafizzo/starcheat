@@ -23,8 +23,6 @@ class Species(object):
     def __init__(self, assets):
         self.assets = assets
         self.starbound_folder = assets.starbound_folder
-        self.humanoid_config = self.assets.read("/humanoid.config",
-                                                self.assets.vanilla_assets)
 
     def is_species(self, key):
         if key.endswith(".species"):
@@ -37,7 +35,7 @@ class Species(object):
         path = asset[1]
         offset = asset[2]
         length = asset[3]
-        asset_data = self.assets.read(key, path)
+        asset_data = self.assets.read(key, path, False, offset, length)
 
         if asset_data is None:
             return
@@ -123,7 +121,9 @@ class Species(object):
             return groups
 
     def get_personality(self):
-        return self.humanoid_config["personalities"]
+        config = self.assets.read("/humanoid.config",
+                                  self.assets.vanilla_assets)
+        return config["personalities"]
 
     def get_gender_data(self, species_data, gender):
         if gender == "male":
@@ -193,10 +193,11 @@ class Species(object):
         elif part == "legs":
             frame_key = "pants"+gender[0], stance
         elif part == "back":
-            frame_key = "items/armors/back", stance
+            frame_key = "/items/armors/back.frames", stance
         
         frame = self.assets.frames().lookup_frame(*frame_key)
-        print(frame)
+        if frame is None:
+            frame = [0, 0, 43, 43]
         if slot is None:
             return player_image
 

@@ -213,7 +213,7 @@ class Assets(object):
         """
         return os.path.isfile(path)
 
-    def read(self, key, path, image=False):
+    def read(self, key, path, image=False, offset=None, length=None):
         if self.is_packed_file(path):
             key = key.lower()
             # db = starbound.open_file(path)
@@ -225,8 +225,11 @@ class Assets(object):
             try:
                 with open(path, "rb") as pak:
                     c = self.db.cursor()
-                    c.execute("select offset, length from assets where key = ? and path = ?", (key,path,))
-                    info = c.fetchone()
+                    if offset is not None:
+                        info = (offset, length)
+                    else:
+                        c.execute("select offset, length from assets where key = ? and path = ?", (key,path,))
+                        info = c.fetchone()
                     if info is not None:
                         data = assets.sb_asset.get_file(pak, info[0], info[1])
                     else:

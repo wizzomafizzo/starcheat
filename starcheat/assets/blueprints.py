@@ -19,7 +19,7 @@ class Blueprints():
         length = asset[3]
         name = os.path.basename(asset[0]).split(".")[0]
         asset_type = "blueprint"
-        asset_data = self.assets.read(key, path)
+        asset_data = self.assets.read(key, path, False, offset, length)
 
         if asset_data is None:
             return

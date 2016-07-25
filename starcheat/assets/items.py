@@ -69,14 +69,12 @@ class Items(object):
         length = asset[3]
         asset_type = "item"
         category = asset_category(key)
-        asset_data = self.assets.read(key, path)
-
+        asset_data = self.assets.read(key, path, False, offset, length)
         if asset_data is None:
             return
         if type(asset_data) is list:
             logging.debug("Skipping mod patch file %s in %s" % (key, path))
             return
-
         name = False
         item_name_keys = ["itemName", "name", "objectName"]
         for item_name in item_name_keys:
@@ -121,7 +119,6 @@ class Items(object):
         c = self.assets.db.cursor()
         c.execute("select key, path, desc from assets where type = 'item' and name = ?", (name,))
         meta = c.fetchone()
-        print(meta)
         if meta is not None:
             item = self.assets.read(meta[0], meta[1])
             return item, meta[0], meta[1], meta[2]
@@ -136,7 +133,6 @@ class Items(object):
 
     def get_item_icon(self, name):
         """Return the path and spritesheet offset of a given item name."""
-
         item = self.get_item(name)
         if item is None or "inventoryIcon" not in item[0]:
             return

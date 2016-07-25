@@ -18,7 +18,7 @@ class Monsters(object):
         path = asset[1]
         offset = asset[2]
         length = asset[3]
-        asset_data = self.assets.read(key, path)
+        asset_data = self.assets.read(key, path, False, offset, length)
 
         if asset_data is None:
             return
