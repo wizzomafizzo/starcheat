@@ -15,9 +15,11 @@ class Blueprints():
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
+        offset = asset[2]
+        length = asset[3]
         name = os.path.basename(asset[0]).split(".")[0]
         asset_type = "blueprint"
-        asset_data = self.assets.read(key, path)
+        asset_data = self.assets.read(key, path, False, offset, length)
 
         if asset_data is None:
             return
@@ -27,7 +29,7 @@ class Blueprints():
         except (KeyError, IndexError):
             category = "other"
 
-        return (key, path, asset_type, category, name, "")
+        return (key, path, offset, length, asset_type, category, name, "")
 
     def get_all_blueprints(self):
         """Return a list of every indexed blueprints."""
@@ -47,6 +49,7 @@ class Blueprints():
 
     def get_blueprint(self, name):
         c = self.assets.db.cursor()
+        print(name)
         c.execute("select key, path, desc from assets where type = 'blueprint' and name = ?", (name,))
         meta = c.fetchone()
         if meta is not None:

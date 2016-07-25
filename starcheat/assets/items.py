@@ -65,16 +65,16 @@ class Items(object):
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
+        offset = asset[2]
+        length = asset[3]
         asset_type = "item"
         category = asset_category(key)
-        asset_data = self.assets.read(key, path)
-
+        asset_data = self.assets.read(key, path, False, offset, length)
         if asset_data is None:
             return
         if type(asset_data) is list:
             logging.debug("Skipping mod patch file %s in %s" % (key, path))
             return
-
         name = False
         item_name_keys = ["itemName", "name", "objectName"]
         for item_name in item_name_keys:
@@ -93,7 +93,7 @@ class Items(object):
         else:
             if key.endswith(".techitem"):
                 name = name + "-chip"
-            return (key, path, asset_type, category, name, desc)
+            return (key, path, offset, length, asset_type, category, name, desc)
 
     def filter_items(self, category, name):
         """Search for indexed items based on name and category."""
@@ -133,7 +133,6 @@ class Items(object):
 
     def get_item_icon(self, name):
         """Return the path and spritesheet offset of a given item name."""
-
         item = self.get_item(name)
         if item is None or "inventoryIcon" not in item[0]:
             return

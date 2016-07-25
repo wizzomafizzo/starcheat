@@ -216,7 +216,7 @@ class ItemBrowser(object):
 
         self.ui.items.clear()
         for item in result:
-            self.ui.items.addItem(BrowserItem(item[4], item[5]))
+            self.ui.items.addItem(BrowserItem(item[6], item[7]))
         self.ui.items.setCurrentRow(0)
 
     def get_selection(self):

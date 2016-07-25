@@ -48,7 +48,7 @@ class BlueprintLib(object):
         # populate initial available list
         self.ui.available_blueprints.clear()
         for blueprint in self.blueprints.get_all_blueprints():
-            self.ui.available_blueprints.addItem(blueprint[4])
+            self.ui.available_blueprints.addItem(blueprint[6])
 
         # populate category combobox
         for cat in self.blueprints.get_categories():
@@ -104,7 +104,7 @@ class BlueprintLib(object):
         result = self.blueprints.filter_blueprints(category, name)
         self.ui.available_blueprints.clear()
         for blueprint in result:
-            self.ui.available_blueprints.addItem(blueprint[4])
+            self.ui.available_blueprints.addItem(blueprint[6])
         self.ui.available_blueprints.setCurrentRow(0)
 
     def add_blueprint(self):
