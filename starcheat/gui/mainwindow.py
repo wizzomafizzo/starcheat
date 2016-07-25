@@ -222,7 +222,9 @@ class MainWindow():
         # can_edit_quests = "quests" in self.player.entity
         can_edit_quests = False
         self.ui.quests_button.setEnabled(can_edit_quests)
-
+        
+        # TODO: re-enable when techs work
+        self.ui.techs_button.setEnabled(False)
         # ship
         can_edit_ship = ("shipUpgrades" in self.player.entity and
                          "aiState" in self.player.entity)
@@ -231,7 +233,7 @@ class MainWindow():
         # items
         total = 0
         progress = QProgressDialog("Updating item slots...",
-                                   None, 0, 10, self.window)
+                                   None, 0, 11, self.window)
 
         progress.setWindowTitle("Updating...")
         progress.setWindowModality(QtCore.Qt.ApplicationModal)

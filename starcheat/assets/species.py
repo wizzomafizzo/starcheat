@@ -123,6 +123,7 @@ class Species(object):
     def get_personality(self):
         config = self.assets.read("/humanoid.config",
                                   self.assets.vanilla_assets)
+        print(config)
         return config["personalities"]
 
     def get_gender_data(self, species_data, gender):

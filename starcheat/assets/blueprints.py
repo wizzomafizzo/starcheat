@@ -49,6 +49,7 @@ class Blueprints():
 
     def get_blueprint(self, name):
         c = self.assets.db.cursor()
+        print(name)
         c.execute("select key, path, desc from assets where type = 'blueprint' and name = ?", (name,))
         meta = c.fetchone()
         if meta is not None:

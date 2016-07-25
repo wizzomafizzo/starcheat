@@ -103,6 +103,8 @@ class Assets(object):
                     tmp_data = techs.index_data(asset)
                 elif frames.is_frames(asset[0]):
                     tmp_data = frames.index_data(asset)
+                elif asset[0] == "/humanoid.config":
+                    tmp_data = (asset[0], asset[1], asset[2], asset[3], "other", "", "", "")
             else:
                 logging.warning("Skipping invalid asset (no file extension) %s in %s" % (asset[0], asset[1]))
 
