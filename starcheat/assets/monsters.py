@@ -16,13 +16,15 @@ class Monsters(object):
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
+        offset = asset[2]
+        length = asset[3]
         asset_data = self.assets.read(key, path)
 
         if asset_data is None:
             return
 
         if "type" in asset_data:
-            return (key, path, "monster", "", asset_data["type"], "")
+            return (key, path, offset, length, "monster", "", asset_data["type"], "")
         else:
             logging.warning("Invalid monster: %s" % key)
 

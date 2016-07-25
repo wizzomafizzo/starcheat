@@ -35,13 +35,15 @@ class Species(object):
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
+        offset = asset[2]
+        length = asset[3]
         asset_data = self.assets.read(key, path)
 
         if asset_data is None:
             return
 
         if "kind" in asset_data:
-            return (key, path, "species", "", asset_data["kind"].lower(), "")
+            return (key, path, offset, length, "species", "", asset_data["kind"].lower(), "")
         else:
             logging.warning("Species missing kind key: %s in %s" % (key, path))
 
@@ -191,10 +193,10 @@ class Species(object):
         elif part == "legs":
             frame_key = "pants"+gender[0], stance
         elif part == "back":
-            frame_key = "back", stance
-
+            frame_key = "items/armors/back", stance
+        
         frame = self.assets.frames().lookup_frame(*frame_key)
-
+        print(frame)
         if slot is None:
             return player_image
 
@@ -240,7 +242,7 @@ class Species(object):
 
         files = ["fsleeve", "chestm", "bsleeve"]
         if gender == "female":
-            files = ["fsleevef", "chestf", "bsleevef"]
+            files = ["fsleeve", "chestf", "bsleeve"]
 
         color = lambda x: self.assets.images().color_image(x, slot["parameters"])
         if part == "fsleeve":

@@ -19,18 +19,20 @@ class Techs():
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
+        offset = asset[2]
+        length = asset[3]
         name = os.path.basename(asset[0]).split(".")[0]
         asset_data = self.assets.read(key, path)
 
         if asset_data is None:
             return
+        # TODO: Switch over to new tech system
+        # item = self.assets.read(asset[0]+"item", asset[1])
+        # if item is None or "itemName" not in item:
+        #     logging.warning("No techitem for %s in %s" % asset[0], asset[1])
+        #     return
 
-        item = self.assets.read(asset[0]+"item", asset[1])
-        if item is None or "itemName" not in item:
-            logging.warning("No techitem for %s in %s" % asset)
-            return
-
-        return (key, path, "tech", "", name, item["itemName"])
+        return (key, path, offset, length, "tech", "", name, "")
 
     def all(self):
         """Return a list of all techs."""

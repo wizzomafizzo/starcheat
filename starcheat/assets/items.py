@@ -65,6 +65,8 @@ class Items(object):
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
+        offset = asset[2]
+        length = asset[3]
         asset_type = "item"
         category = asset_category(key)
         asset_data = self.assets.read(key, path)
@@ -93,7 +95,7 @@ class Items(object):
         else:
             if key.endswith(".techitem"):
                 name = name + "-chip"
-            return (key, path, asset_type, category, name, desc)
+            return (key, path, offset, length, asset_type, category, name, desc)
 
     def filter_items(self, category, name):
         """Search for indexed items based on name and category."""
@@ -119,6 +121,7 @@ class Items(object):
         c = self.assets.db.cursor()
         c.execute("select key, path, desc from assets where type = 'item' and name = ?", (name,))
         meta = c.fetchone()
+        print(meta)
         if meta is not None:
             item = self.assets.read(meta[0], meta[1])
             return item, meta[0], meta[1], meta[2]

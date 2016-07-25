@@ -15,6 +15,8 @@ class Frames(object):
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
+        offset = asset[2]
+        length = asset[3]
         name = os.path.basename(key).split(".")[0]
         asset_type = "frames"
 
@@ -29,8 +31,8 @@ class Frames(object):
             category = "grid"
         else:
             return
-
-        return (key, path, asset_type, category, name, "")
+        print(key, path, offset, length, asset_type, category, name)
+        return (key, path, offset, length, asset_type, category, name, "")
 
     def get_all_frames(self):
         """Return a list of every indexed blueprints."""
@@ -45,6 +47,7 @@ class Frames(object):
         q = "select key, path, category from assets where type = 'frames' and name = ?"
         c.execute(q, (name,))
         meta = c.fetchone()
+        print(meta)
         if meta is not None:
             frames = self.assets.read(meta[0], meta[1])
             return frames, meta[0], meta[1], meta[2]
@@ -53,6 +56,7 @@ class Frames(object):
 
     def lookup_frame(self, name, frame):
         """Return bounding box for given frame in frames file, allows aliases."""
+        print(name, frame)
         frames = self.get_frames(name)
         if frames is None:
             return

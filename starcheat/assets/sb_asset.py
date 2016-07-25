@@ -14,57 +14,31 @@ def get_pak_info(pak):
     pak.seek(index_offset)
     index_header = pak.read(5)
     assert index_header == b'INDEX', 'Index offset incorrect!'
-    logging.debug("Index header found at offset ", index_offset)
     # Get metadata information
     meta_count = read_varlen_number(pak)
-    logging.debug("Number of metadata entries: ", meta_count)
     metadata = {}
     for x in range (0, meta_count):
         key_len = read_varlen_number(pak)
-        logging.debug("Key length: ", key_len)
         key = str(struct.unpack(str(key_len) + 's', pak.read(key_len))[0], "utf-8")
-        logging.debug("Key: ", key)
         value_type = struct.unpack('>B', pak.read(1))[0]
-        logging.debug("Value type: ", value_type)
         if value_type != 4:
             value_len = read_varlen_number(pak)
-            logging.debug("Value length: ", value_len)
             value = struct.unpack(str(value_len) + 's', pak.read(value_len))[0]
         else:
             value_len = 1
             value = struct.unpack('>B', pak.read(1))[0]
-        logging.debug("Value: ", value)
         metadata[key] = value
-        logging.debug("Metadata: ", metadata)
         filecount_offset = pak.tell()
     # Locate the beginning of the file index
     file_count = read_varlen_number(pak)
     file_offset = pak.tell()
-    logging.debug("File count: ", file_count)
-    logging.debug("File index begins at: ", file_offset)
-    pak.close()
     return metadata, file_count, file_offset
 
 # Given an index, file path, and pak, returns a file from the pak
-def get_file(pak, file_path, index_file):
-    index = eval(index_file.read())
-    if file_path in index:
-        file_info = index[file_path]
-        logging.debug(file_info)
-        file_offset = file_info[0]
-        file_length = file_info[1]
-        logging.debug(file_offset)
-        logging.debug(file_length)
-        pak.seek(file_offset)
-        file = pak.read(file_length)
-        pak.close()
-        index_contents.close()
-        return file
-    else:
-        logging.warning("File %s not found in index %s!") % file_path, index_file
-        pak.close()
-        index_contents.close()
-        return False
+def get_file(pak, file_offset, file_length):
+    pak.seek(file_offset)
+    file = pak.read(file_length)
+    return file
 
 # Given a pak, the pak's file offset, and the number of files in the pak, creates an index
 def create_file_index(pak, index_offset, file_count):
@@ -73,15 +47,11 @@ def create_file_index(pak, index_offset, file_count):
     index = {}
     for x in range(1, file_count):
         path = str(struct.unpack(str(path_len) + 's', pak.read(path_len))[0], "utf-8")
-        logging.debug("File path: ", path)
         file_offset = struct.unpack('>q', pak.read(8))[0]
         file_length = struct.unpack('>q', pak.read(8))[0]
         file_info = [file_offset, file_length]
-        logging.debug(file_info)
         path_len = struct.unpack('>B', pak.read(1))[0]
         index.update({path:[file_offset, file_length]})
-    logging.debug("Reached end of file.")
-    pak.close()
     return index
     
 # Blatanty stolen from py-starbound, thanks blixt
