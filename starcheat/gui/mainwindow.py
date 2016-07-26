@@ -828,7 +828,7 @@ class MainWindow():
 
     def new_food_bag_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.food_bag, do_import, json_edit)
-        
+
     def new_head_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.head, do_import, json_edit)
 

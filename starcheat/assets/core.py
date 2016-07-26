@@ -217,9 +217,6 @@ class Assets(object):
 
     def read(self, key, path, image=False, offset=None, length=None):
         if self.is_packed_file(path):
-            key = key.lower()
-            # db = starbound.open_file(path)
-
             # try the cache first
             if image and key in self.image_cache:
                 return self.image_cache[key]

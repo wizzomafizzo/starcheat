@@ -540,7 +540,7 @@ class PlayerSave(object):
         contents.append(self.entity["inventory"]["customBar"][1][5])
         logging.info(contents)
         return contents"""
-        
+
     def get_essentials(self):
         beamaxe = self.entity["inventory"]["beamAxe"]
         wiretool = self.entity["inventory"]["wireTool"]
