@@ -333,7 +333,7 @@ class MainWindow():
 
     def update_title(self):
         """Update window title with player name."""
-        self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
+        self.window.setWindowTitle("Starcheat - " + self.player.get_name() + "[*]")
 
     def save(self):
         """Update internal player dict with GUI values and export to file."""
