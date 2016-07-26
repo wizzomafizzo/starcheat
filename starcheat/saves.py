@@ -567,9 +567,6 @@ class PlayerSave(object):
     def get_name(self):
         return self.entity["identity"]["name"]
 
-    def get_description(self):
-        return self.entity["description"]
-
     def get_blueprints(self):
         return self.entity["blueprints"]["knownBlueprints"]
 
@@ -690,9 +687,6 @@ class PlayerSave(object):
 
     def set_pixels(self, pixels):
         self.entity["inventory"]["money"] = int(pixels)
-
-    def set_description(self, description):
-        self.entity["description"] = description
 
     def set_gender(self, gender):
         self.entity["identity"]["gender"] = gender.lower()

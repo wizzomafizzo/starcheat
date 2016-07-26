@@ -2301,30 +2301,7 @@
           </item>
          </layout>
         </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="desc_label">
-          <property name="text">
-           <string>Description</string>
-          </property>
-         </widget>
-        </item>
         <item row="2" column="1">
-         <widget class="QPlainTextEdit" name="description">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>55</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
          <spacer name="verticalSpacer_5">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -2337,7 +2314,7 @@
           </property>
          </spacer>
         </item>
-        <item row="4" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="game_mode_label">
           <property name="text">
            <string>Game Mode</string>
@@ -2347,14 +2324,14 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="3" column="1">
          <widget class="QComboBox" name="game_mode">
           <property name="enabled">
            <bool>true</bool>
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="4" column="1">
          <spacer name="verticalSpacer_6">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -2367,7 +2344,7 @@
           </property>
          </spacer>
         </item>
-        <item row="6" column="0">
+        <item row="5" column="0">
          <widget class="QLabel" name="pixels_label">
           <property name="minimumSize">
            <size>
@@ -2386,7 +2363,7 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="5" column="1">
          <widget class="QSpinBox" name="pixels">
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2405,7 +2382,7 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="1">
+        <item row="6" column="1">
          <spacer name="verticalSpacer_7">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -2418,7 +2395,7 @@
           </property>
          </spacer>
         </item>
-        <item row="8" column="0">
+        <item row="7" column="0">
          <widget class="QLabel" name="race_label">
           <property name="text">
            <string>Species</string>
@@ -2428,10 +2405,10 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="1">
+        <item row="7" column="1">
          <widget class="QComboBox" name="race"/>
         </item>
-        <item row="9" column="0">
+        <item row="8" column="0">
          <widget class="QLabel" name="gender_label">
           <property name="text">
            <string>Gender</string>
@@ -2441,7 +2418,7 @@
           </property>
          </widget>
         </item>
-        <item row="9" column="1">
+        <item row="8" column="1">
          <widget class="QWidget" name="gender_group" native="true">
           <property name="minimumSize">
            <size>
@@ -2506,14 +2483,14 @@
           </layout>
          </widget>
         </item>
-        <item row="10" column="0">
+        <item row="9" column="0">
          <widget class="QLabel" name="health_label">
           <property name="text">
            <string>Health</string>
           </property>
          </widget>
         </item>
-        <item row="10" column="1">
+        <item row="9" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QSlider" name="health">
@@ -2582,14 +2559,14 @@ border-radius: 4px;
           </item>
          </layout>
         </item>
-        <item row="11" column="0">
+        <item row="10" column="0">
          <widget class="QLabel" name="energy_label">
           <property name="text">
            <string>Energy</string>
           </property>
          </widget>
         </item>
-        <item row="11" column="1">
+        <item row="10" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
            <widget class="QSlider" name="energy">
@@ -2661,7 +2638,7 @@ border-radius: 4px;
           </item>
          </layout>
         </item>
-        <item row="12" column="1">
+        <item row="11" column="1">
          <spacer name="verticalSpacer_3">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -3246,7 +3223,6 @@ border-radius: 4px;
  </widget>
  <tabstops>
   <tabstop>name</tabstop>
-  <tabstop>description</tabstop>
   <tabstop>race</tabstop>
   <tabstop>male</tabstop>
   <tabstop>female</tabstop>
