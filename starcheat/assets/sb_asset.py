@@ -19,14 +19,23 @@ def get_pak_info(pak):
     metadata = {}
     for x in range (0, meta_count):
         key_len = read_varlen_number(pak)
-        key = str(struct.unpack(str(key_len) + 's', pak.read(key_len))[0], "utf-8")
+        key = struct.unpack(str(key_len) + 's', pak.read(key_len))[0]
         value_type = struct.unpack('>B', pak.read(1))[0]
         if value_type != 4:
             value_len = read_varlen_number(pak)
             value = struct.unpack(str(value_len) + 's', pak.read(value_len))[0]
+        elif value_type == 6:
+            list_len = read_varlen_number(pak)
+            value = []
+            for x in range (0, list_len):
+                value_type_list = read_varlen_number(pak)
+                if value_type_list != 4:
+                    value_len = read_varlen_number(pak)
+                    value.append(pak.read(value_len))
+                else:
+                    value = read_varlen_number(pak)
         else:
-            value_len = 1
-            value = struct.unpack('>B', pak.read(1))[0]
+            value = read_varlen_number(pak)
         metadata[key] = value
         filecount_offset = pak.tell()
     # Locate the beginning of the file index

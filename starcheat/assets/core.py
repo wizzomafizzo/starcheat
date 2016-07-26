@@ -51,7 +51,7 @@ def load_asset_file(filename):
 class Assets(object):
     def __init__(self, db_file, starbound_folder):
         self.starbound_folder = starbound_folder
-        self.mods_folder = os.path.join(self.starbound_folder, "giraffe_storage", "mods")
+        self.mods_folder = os.path.join(self.starbound_folder, "mods")
         self.db = sqlite3.connect(db_file)
         self.vanilla_assets = os.path.join(self.starbound_folder, "assets", "packed.pak")
         self.image_cache = {}
@@ -128,6 +128,7 @@ class Assets(object):
 
         mods_path = self.mods_folder
         if not os.path.isdir(mods_path):
+            logging.warning("Mods folder not found!")
             return index
 
         for mod in os.listdir(mods_path):
@@ -136,8 +137,8 @@ class Assets(object):
                 logging.info("Scanning mod folder: " + mod)
                 mod_assets = self.scan_asset_folder(mod_folder)
                 index += mod_assets
-            elif mod_folder.endswith(".modpak"):
-                logging.info("Scanning modpak: " + mod)
+            elif mod_folder.endswith(".pak"):
+                logging.info("Scanning mod pak: " + mod)
                 mod_assets = self.scan_modpak(mod_folder)
                 index += mod_assets
         return index
@@ -168,7 +169,7 @@ class Assets(object):
             found_mod_info = False
 
             for f in files:
-                if f.endswith(".modinfo"):
+                if f.endswith((".modinfo", ".metadata", "_metadata")):
                     modinfo = os.path.join(folder, f)
                     try:
                         modinfo_data = load_asset_file(modinfo)
@@ -185,8 +186,8 @@ class Assets(object):
 
             if mod_assets is None:
                 return index
-            elif found_mod_info and self.is_packed_file(mod_assets):
-                # TODO: make a .pak scanner function that works for vanilla and mods
+            elif self.is_packed_file(mod_assets):
+                # TODO: return metadata
                 pak_path = os.path.normpath(mod_assets)
                 pak = open(pak_path, "rb")
                 pak_info = assets.sb_asset.get_pak_info(pak)
@@ -194,7 +195,8 @@ class Assets(object):
                 for x in db:
                     # removes thumbs.db etc from user pak files
                     if re.match(ignore_assets, x) is None:
-                        index.append((x, pak_path))
+                        index.append((path, pak_path, info[0], info[1]) for 
+                                     path, info in db.items())
                 return index
             elif not os.path.isdir(mod_assets):
                 return index
@@ -205,7 +207,7 @@ class Assets(object):
                     if re.match(ignore_assets, f) is None:
                         asset_folder = os.path.normpath(mod_assets)
                         asset_file = os.path.normpath(os.path.join(root.replace(folder, ""), f))
-                        index.append((asset_file, asset_folder))
+                        index.append((asset_file, asset_folder, 0, 0))
             return index
 
     def is_packed_file(self, path):
