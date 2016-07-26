@@ -111,7 +111,8 @@ class MainWindow():
         self.ui.actionImportPlayerJSON.triggered.connect(self.import_json)
 
         # set up bag tables
-        bags = ("head", "chest", "legs", "back", "main_bag", "object_bag", "tile_bag", "reagent_bag", "food_bag", "essentials", "mouse")
+        bags = ("head", "chest", "legs", "back", "main_bag", "object_bag",
+                "tile_bag", "reagent_bag", "food_bag", "essentials", "mouse")
         for bag in bags:
             logging.debug("Setting up %s bag", bag)
             self.bag_setup(getattr(self.ui, bag), bag)
@@ -222,7 +223,7 @@ class MainWindow():
         # can_edit_quests = "quests" in self.player.entity
         can_edit_quests = False
         self.ui.quests_button.setEnabled(can_edit_quests)
-        
+
         # TODO: re-enable when techs work
         self.ui.techs_button.setEnabled(False)
         # ship

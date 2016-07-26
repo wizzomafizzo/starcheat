@@ -195,7 +195,7 @@ class Species(object):
             frame_key = "pants"+gender[0], stance
         elif part == "back":
             frame_key = "/items/armors/back.frames", stance
-        
+
         frame = self.assets.frames().lookup_frame(*frame_key)
         if frame is None:
             frame = [0, 0, 43, 43]

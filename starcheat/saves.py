@@ -512,7 +512,7 @@ class PlayerSave(object):
 
     def get_tile_bag(self):
         return self.entity["inventory"]["materialBag"]
-        
+
     def get_reagent_bag(self):
         return self.entity["inventory"]["reagentBag"]
 

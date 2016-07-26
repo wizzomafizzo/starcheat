@@ -53,7 +53,7 @@ def create_file_index(pak, index_offset, file_count):
         path_len = struct.unpack('>B', pak.read(1))[0]
         index.update({path:[file_offset, file_length]})
     return index
-    
+
 # Blatanty stolen from py-starbound, thanks blixt
 def read_varlen_number(stream):
     """Read while the most significant bit is set, then put the 7 least
