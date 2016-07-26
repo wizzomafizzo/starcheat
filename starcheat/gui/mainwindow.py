@@ -129,7 +129,6 @@ class MainWindow():
         self.ui.name.textChanged.connect(self.set_name)
         self.ui.male.clicked.connect(self.set_gender)
         self.ui.female.clicked.connect(self.set_gender)
-        self.ui.description.textChanged.connect(self.set_description)
         self.ui.pixels.valueChanged.connect(self.set_pixels)
 
         self.ui.health.valueChanged.connect(lambda: self.set_stat_slider("health"))
@@ -203,8 +202,6 @@ class MainWindow():
             self.ui.pixels.setValue(self.player.get_pixels())
         except TypeError:
             logging.exception("Unable to set pixels widget")
-        # description
-        self.ui.description.setPlainText(self.player.get_description())
         # gender
         getattr(self.ui, self.player.get_gender()).toggle()
         # game mode
@@ -760,10 +757,6 @@ class MainWindow():
 
     def set_name(self):
         self.player.set_name(self.ui.name.text())
-        self.set_edited()
-
-    def set_description(self):
-        self.player.set_description(self.ui.description.toPlainText())
         self.set_edited()
 
     def set_gender(self):

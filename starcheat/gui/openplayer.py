@@ -108,6 +108,7 @@ class CharacterSelectDialog():
                     players_found[uuid] = {}
                     players_found[uuid]["player"] = player
                     players_found[uuid]["preview"] = preview
+                    players_found[uuid]["playTime"] = player.get_play_time()
                 except:
                     logging.exception("Save file not compatible: %s", f)
                 total += 1
