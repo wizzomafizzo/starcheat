@@ -147,7 +147,8 @@ class Assets(object):
         # TODO: may need support for reading the mod folder from the pakinfo file
         with open(modpak, "rb") as pak:
             pak_info = assets.sb_asset.get_pak_info(pak)
-            index = assets.sb_asset.create_file_index(pak, pak_info[2], pak_info[1])
+            db = assets.sb_asset.create_file_index(pak, pak_info[2], pak_info[1])
+            index = [(path, modpak, info[0], info[1]) for path, info in db.items()]
             return index
 
     def scan_asset_folder(self, folder):
@@ -192,11 +193,8 @@ class Assets(object):
                 pak = open(pak_path, "rb")
                 pak_info = assets.sb_asset.get_pak_info(pak)
                 db = assets.sb_asset.create_file_index(pak, pak_info[2], pak_info[1])
-                for x in db:
-                    # removes thumbs.db etc from user pak files
-                    if re.match(ignore_assets, x) is None:
-                        index.append((path, pak_path, info[0], info[1]) for 
-                                     path, info in db.items())
+                index.append((path, pak_path, info[0], info[1]) for 
+                             path, info in db.items())
                 return index
             elif not os.path.isdir(mod_assets):
                 return index

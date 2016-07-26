@@ -34,7 +34,7 @@ def make_pak_hash():
 
     for root, dirs, files in os.walk(mods):
         for f in files:
-            if f.endswith(".modpak"):
+            if f.endswith(".pak"):
                 pak_list.append(os.path.join(root, f))
 
     for pak in pak_list:

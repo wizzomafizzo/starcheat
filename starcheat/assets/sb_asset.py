@@ -19,21 +19,28 @@ def get_pak_info(pak):
     metadata = {}
     for x in range (0, meta_count):
         key_len = read_varlen_number(pak)
-        key = struct.unpack(str(key_len) + 's', pak.read(key_len))[0]
+        print(pak.tell())
+        key = str(struct.unpack(str(key_len) + 's', pak.read(key_len))[0], "utf-8")
+        print(key)
         value_type = struct.unpack('>B', pak.read(1))[0]
-        if value_type != 4:
-            value_len = read_varlen_number(pak)
-            value = struct.unpack(str(value_len) + 's', pak.read(value_len))[0]
-        elif value_type == 6:
+        print(value_type)
+        if value_type == 6:
+            print("Reading list")
             list_len = read_varlen_number(pak)
+            print(list_len)
             value = []
             for x in range (0, list_len):
-                value_type_list = read_varlen_number(pak)
+                value_type_list = struct.unpack('>B', pak.read(1))[0]
                 if value_type_list != 4:
                     value_len = read_varlen_number(pak)
+                    print(value_len)
                     value.append(pak.read(value_len))
+                    print(value)
                 else:
                     value = read_varlen_number(pak)
+        elif value_type != 4:
+            value_len = read_varlen_number(pak)
+            value = struct.unpack(str(value_len) + 's', pak.read(value_len))[0]
         else:
             value = read_varlen_number(pak)
         metadata[key] = value
