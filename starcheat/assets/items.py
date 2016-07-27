@@ -138,7 +138,10 @@ class Items(object):
             return
 
         icon_file = item[0]["inventoryIcon"]
-        icon_name = icon_file.split(':')
+        if not isinstance(icon_file, str):
+            icon_name =  [icon_file[0]['image']]
+        else:
+            icon_name = icon_file.split(':')
         if len(icon_name) < 2:
             icon_name = [icon_name[0], 0]
 
