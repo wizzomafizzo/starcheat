@@ -6,7 +6,7 @@ class Player(object):
         # haven't found any definitions for these in the assets
         self.mode_types = {
             "casual": "Casual",
-            "normal": "Survival",
+            "survival": "Survival",
             "hardcore": "Hardcore",
         }
 

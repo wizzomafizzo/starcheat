@@ -193,7 +193,7 @@ class Assets(object):
                 pak = open(pak_path, "rb")
                 pak_info = assets.sb_asset.get_pak_info(pak)
                 db = assets.sb_asset.create_file_index(pak, pak_info[2], pak_info[1])
-                index.append((path, pak_path, info[0], info[1]) for 
+                index.append((path, pak_path, info[0], info[1]) for
                              path, info in db.items())
                 return index
             elif not os.path.isdir(mod_assets):

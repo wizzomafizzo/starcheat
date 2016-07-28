@@ -420,7 +420,7 @@ class PlayerSave(object):
         # TODO: this is a temporary workaround to the save ver not being
         # changed in nightly. it should be removed when nightly goes stable
         # and people stop using those save files
-        if "statusController" not in self.data["save"]["data"]:
+        if "playTime" in self.data["save"]["data"]:
             save_file.close()
             msg = "Wrong save format version"
             logging.exception(msg)
@@ -617,13 +617,13 @@ class PlayerSave(object):
         return self.entity["techController"]["techModules"]
 
     def get_visible_techs(self):
-        return self.entity["techs"]["visibleTechs"]
+        return self.entity["techs"]["availableTechs"]
 
     def get_enabled_techs(self):
         return self.entity["techs"]["enabledTechs"]
 
     def get_equipped_techs(self):
-        return self.entity["inventory"]["equipment"][8:12]
+        return self.entity["techs"]["equippedTechs"]
 
     def get_undy_color(self):
         return self.entity["identity"]["color"]
@@ -710,7 +710,7 @@ class PlayerSave(object):
 
     def set_reagent_bag(self, bag):
         self.entity["inventory"]["reagentBag"] = bag
-        
+
     def set_food_bag(self, bag):
         self.entity["inventory"]["foodBag"] = bag
 
@@ -811,18 +811,11 @@ class PlayerSave(object):
     def set_tech_modules(self, techs, equip):
         # this works similar to the equip items in that it needs to be set
         # in 2 separate places to stick
-
-        # this is where techs start in the equip list
-        equip_index = 8
-        for tech in equip:
-            item = new_item(tech, 1)
-            self.entity["inventory"]["equipment"][equip_index] = item
-            equip_index += 1
-
+        self.entity["techs"]["equippedTechs"] = techs
         self.entity["techController"]["techModules"] = techs
 
     def set_visible_techs(self, techs):
-        self.entity["techs"]["visibleTechs"] = techs
+        self.entity["techs"]["availableTechs"] = techs
 
     def set_enabled_techs(self, techs):
         self.entity["techs"]["enabledTechs"] = techs
