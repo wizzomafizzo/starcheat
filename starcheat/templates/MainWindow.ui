@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>starcheat[*]</string>
+   <string>Starcheat[*]</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resources.qrc">
