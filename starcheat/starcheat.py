@@ -33,7 +33,7 @@ logging.getLogger("PIL.Image").setLevel(logging.ERROR)
 def crash_gui(error):
     dialog = QMessageBox()
     dialog.setIcon(QMessageBox.Critical)
-    dialog.setText("Oops, starcheat has crashed.")
+    dialog.setText("Oops, Starcheat has crashed.")
     detail = """
 <html><head/><body>
 <p>To report this error, click <strong>Show Details...</strong> and post the crash report it displays to the <a href="https://github.com/wizzomafizzo/starcheat">starcheat GitHub</a>.</p>
@@ -74,10 +74,10 @@ sys.excepthook = exception_handler
 # go starcheat!
 def main():
     if ("--version" in sys.argv or "-v" in sys.argv):
-        sys.stdout.write("starcheat %s\n" % config.STARCHEAT_VERSION)
+        sys.stdout.write("Starcheat %s\n" % config.STARCHEAT_VERSION)
         sys.exit(0)
 
-    logging.info("starcheat init")
+    logging.info("Starcheat init")
     logging.info("Version: %s", config.STARCHEAT_VERSION)
     logging.info("Platform: %s", platform.system())
     gui.mainwindow.MainWindow()

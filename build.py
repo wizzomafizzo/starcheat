@@ -29,7 +29,7 @@ def main():
         dist = os.path.expanduser(options.dist)
 
     if options.verbose:
-        print("Starting building starcheat to " + prefix + " ...")
+        print("Starting building Starcheat to " + prefix + " ...")
 
     if os.path.exists(prefix):
         if options.verbose:
@@ -37,7 +37,7 @@ def main():
         shutil.rmtree(prefix)
 
     if options.verbose:
-        print("Copying starcheat python scripts")
+        print("Copying Starcheat python scripts")
     shutil.copytree(os.path.join(src_dir, "starcheat"), prefix,
                     ignore=shutil.ignore_patterns("templates", "starbound", "images", "*.qrc"))
 
@@ -74,7 +74,7 @@ def main():
 
     if platform.system() == "Windows" and options.exe:
         if options.verbose:
-            print("Starting generating starcheat standalone Windows build to " + dist + " ...")
+            print("Starting generating Starcheat standalone Windows build to " + dist + " ...")
 
         if os.path.exists(dist):
             if options.verbose:

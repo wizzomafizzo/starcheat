@@ -160,8 +160,8 @@ class CharacterSelectDialog():
                 Config().remove_config()
                 new_setup_dialog(self.dialog)
                 dialog = QMessageBox(self.dialog)
-                dialog.setWindowTitle("Restart starcheat")
-                dialog.setText("Please restart starcheat to see changes.")
+                dialog.setWindowTitle("Restart Starcheat")
+                dialog.setText("Please restart Starcheat to see changes.")
                 dialog.setIcon(QMessageBox.Information)
                 dialog.exec()
         else:

@@ -1,5 +1,5 @@
 """
-Main application window for starcheat GUI
+Main application window for Starcheat GUI
 """
 
 import sys
@@ -71,12 +71,12 @@ class StarcheatMainWindow(QMainWindow):
 
 class MainWindow():
     def __init__(self):
-        # check for new starcheat version online in seperate thread
+        # check for new Starcheat version online in seperate thread
         update_result = [None]
         update_thread = Thread(target=update_check_worker, args=[update_result], daemon=True)
         update_thread.start()
 
-        """Display the main starcheat window."""
+        """Display the main Starcheat window."""
         self.app = QApplication(sys.argv)
         self.window = StarcheatMainWindow(self)
         self.ui = qt_mainwindow.Ui_MainWindow()
@@ -358,7 +358,7 @@ class MainWindow():
         if do_import:
             imported = import_json(self.window)
             if imported is False:
-                self.ui.statusbar.showMessage("Error importing item, see starcheat log for details", 3000)
+                self.ui.statusbar.showMessage("Error importing item, see Starcheat log for details", 3000)
                 return
             elif imported is None:
                 return
@@ -398,7 +398,7 @@ class MainWindow():
                     self.set_edited()
             except (TypeError, KeyError):
                 logging.exception("Error updating item slot")
-                self.ui.statusbar.showMessage("Error updating item slot, see starcheat log for details", 3000)
+                self.ui.statusbar.showMessage("Error updating item slot, see Starcheat log for details", 3000)
 
         item_edit.dialog.accepted.connect(update_slot)
 
@@ -608,7 +608,7 @@ class MainWindow():
             self.ui.statusbar.showMessage(status + filename[0], 3000)
         except:
             logging.exception("Error reading file: %s", filename[0])
-            self.ui.statusbar.showMessage("Error reading file, see starcheat log for details", 3000)
+            self.ui.statusbar.showMessage("Error reading file, see Starcheat log for details", 3000)
 
     def import_json(self, kind="player"):
         """Import an exported JSON file and merge/update with open player."""
@@ -630,7 +630,7 @@ class MainWindow():
             self.ui.statusbar.showMessage(status + filename[0], 3000)
         except:
             logging.exception("Error reading file: %s", filename[0])
-            self.ui.statusbar.showMessage("Error importing file, see starcheat log for details", 3000)
+            self.ui.statusbar.showMessage("Error importing file, see Starcheat log for details", 3000)
 
     def get_gender(self):
         if self.ui.male.isChecked():

@@ -1,4 +1,4 @@
-print %q(The starcheat formula has been moved to it`s own tap with support for brew
+print %q(The Starcheat formula has been moved to it`s own tap with support for brew
 update and a fixed .app creation. To install type:
   brew remove starcheat
   brew tap chrmoritz/starcheat

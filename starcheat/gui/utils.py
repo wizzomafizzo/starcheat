@@ -1,5 +1,5 @@
 """
-Utility dialogs for starcheat itself
+Utility dialogs for Starcheat itself
 """
 
 import os
@@ -95,7 +95,7 @@ def check_index_valid(parent):
         dialog = QMessageBox(parent)
         dialog.setWindowTitle("Assets Out-of-date")
         dialog.setText("Starbound assets have been changed.")
-        dialog.setInformativeText("Rebuild the starcheat assets index?")
+        dialog.setInformativeText("Rebuild the Starcheat assets index?")
         dialog.setIcon(QMessageBox.Question)
         dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         answer = dialog.exec()
@@ -133,7 +133,7 @@ def select_starbound_folder_dialog(parent):
             dialog = QMessageBox(parent)
             dialog.setWindowTitle("Starbound Not Installed")
             dialog.setIcon(QMessageBox.Critical)
-            dialog.setText("starcheat needs Starbound installed to work.")
+            dialog.setText("Starcheat needs Starbound installed to work.")
             dialog.exec()
             Config().remove_config()
             sys.exit()
@@ -142,7 +142,7 @@ def select_starbound_folder_dialog(parent):
 
 
 def new_setup_dialog(parent):
-    """Run through an initial setup dialog for starcheat if it's required."""
+    """Run through an initial setup dialog for Starcheat if it's required."""
 
     logging.info("First setup dialog")
 
@@ -155,7 +155,7 @@ def new_setup_dialog(parent):
             dialog = QMessageBox(parent)
             dialog.setWindowModality(QtCore.Qt.WindowModal)
             dialog.setWindowTitle("Config Out-of-date")
-            dialog.setText("Your starcheat settings are outdated.")
+            dialog.setText("Your Starcheat settings are outdated.")
             dialog.setInformativeText("A new config file and assets index will be created...")
             dialog.setIcon(QMessageBox.Warning)
             dialog.exec()
@@ -217,7 +217,7 @@ def update_check_worker(result):
         if latest_tag.find("github.com/wizzomafizzo/starcheat/releases") >= 0:
             if not latest_tag.endswith("tag/" + config.STARCHEAT_VERSION_TAG):
                 result[0] = latest_tag
-                logging.info("update check: found new starcheat version")
+                logging.info("update check: found new Starcheat version")
                 return
         else:
             logging.info("update check: skipping update check because of failed redirect")
@@ -229,8 +229,8 @@ def update_check_worker(result):
 def update_check_dialog(parent, latest_tag):
     dialog = QMessageBox(parent)
     dialog.setWindowModality(QtCore.Qt.WindowModal)
-    dialog.setWindowTitle("Outdated starcheat Version")
-    dialog.setText("A new version of starcheat is available! Do you want to update now?")
+    dialog.setWindowTitle("Outdated Starcheat Version")
+    dialog.setText("A new version of Starcheat is available! Do you want to update now?")
     dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
     dialog.setDefaultButton(QMessageBox.Yes)
     dialog.setIcon(QMessageBox.Question)

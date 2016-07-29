@@ -2964,10 +2964,10 @@ border-radius: 4px;
      <normaloff>:/starcheat/images/icons/glyphicons_halflings_085_info-sign.png</normaloff>:/starcheat/images/icons/glyphicons_halflings_085_info-sign.png</iconset>
    </property>
    <property name="text">
-    <string>About starcheat</string>
+    <string>About Starcheat</string>
    </property>
    <property name="statusTip">
-    <string>About starcheat</string>
+    <string>About Starcheat</string>
    </property>
   </action>
   <action name="actionQuit">
@@ -2979,7 +2979,7 @@ border-radius: 4px;
     <string>Quit</string>
    </property>
    <property name="statusTip">
-    <string>Quit starcheat</string>
+    <string>Quit Starcheat</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -3063,7 +3063,7 @@ border-radius: 4px;
     <string>Options</string>
    </property>
    <property name="statusTip">
-    <string>Configure starcheat options</string>
+    <string>Configure Starcheat options</string>
    </property>
   </action>
   <action name="actionTimestamps">
@@ -3105,7 +3105,7 @@ border-radius: 4px;
   </action>
   <action name="actionStarcheat_Help">
    <property name="text">
-    <string>starcheat Help</string>
+    <string>Starcheat Help</string>
    </property>
   </action>
   <action name="actionExportJSON">
@@ -3169,7 +3169,7 @@ border-radius: 4px;
     <string>Player JSON...</string>
    </property>
    <property name="statusTip">
-    <string>Import starcheat JSON file</string>
+    <string>Import Starcheat JSON file</string>
    </property>
   </action>
   <action name="actionExportPlayerBinary">
@@ -3185,7 +3185,7 @@ border-radius: 4px;
     <string>Player JSON...</string>
    </property>
    <property name="statusTip">
-    <string>Export as starcheat JSON file</string>
+    <string>Export as Starcheat JSON file</string>
    </property>
   </action>
   <action name="actionImportMetadataBinary">
@@ -3201,7 +3201,7 @@ border-radius: 4px;
     <string>Metadata JSON...</string>
    </property>
    <property name="statusTip">
-    <string>Import starcheat JSON file</string>
+    <string>Import Starcheat JSON file</string>
    </property>
   </action>
   <action name="actionExportMetadataBinary">
@@ -3217,7 +3217,7 @@ border-radius: 4px;
     <string>Metadata JSON...</string>
    </property>
    <property name="statusTip">
-    <string>Export as starcheat JSON file</string>
+    <string>Export as Starcheat JSON file</string>
    </property>
   </action>
  </widget>

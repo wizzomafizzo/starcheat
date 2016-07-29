@@ -450,7 +450,7 @@ class ItemEdit():
             dialog = QMessageBox(self.dialog)
             dialog.setWindowTitle("Import Error")
             dialog.setText("Could not import requested item file.")
-            dialog.setInformativeText("See starcheat log for more details.")
+            dialog.setInformativeText("See Starcheat log for more details.")
             dialog.setStandardButtons(QMessageBox.Close)
             dialog.setIcon(QMessageBox.Critical)
             dialog.exec()
