@@ -5,6 +5,7 @@ Main application window for Starcheat GUI
 import sys
 import logging
 import json
+import platform
 
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
@@ -75,6 +76,9 @@ class MainWindow():
         update_result = [None]
         update_thread = Thread(target=update_check_worker, args=[update_result], daemon=True)
         update_thread.start()
+
+        if platform.system() == "Darwin":
+            QApplication.setAttribute(QtCore.Qt.AA_DontShowIconsInMenus)
 
         """Display the main Starcheat window."""
         self.app = QApplication(sys.argv)
