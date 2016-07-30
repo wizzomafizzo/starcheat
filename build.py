@@ -42,11 +42,6 @@ def main():
                     ignore=shutil.ignore_patterns("templates", "starbound", "images", "*.qrc"))
 
     if options.verbose:
-        print("Copying py-starbound module")
-    shutil.copytree(os.path.join(src_dir, "starcheat", "starbound", "starbound"),
-                    os.path.join(prefix, "starbound"))
-
-    if options.verbose:
         print("Generating python Qt templates...")
     for t in templates:
         temp = os.path.join(src_dir, "starcheat", "templates", t)

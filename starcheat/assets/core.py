@@ -8,8 +8,6 @@ import re
 import sqlite3
 import logging
 
-import starbound
-import starbound.btreedb4
 import assets.sb_asset
 
 from assets.blueprints import Blueprints
