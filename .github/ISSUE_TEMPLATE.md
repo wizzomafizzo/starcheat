@@ -1,3 +1,5 @@
+## starcheat is currently incompatiable with Starbound 1.0 - We are currently not accepting issues for Starcheat errors with users running starcheat 0.27 with Starbound 1.0. For updates on 1.0 support, follow [issue #282](https://github.com/wizzomafizzo/starcheat/issues/282) (including early nightly builds with 1.0 support).
+
 ## Please follow these steps before opening a new issue:
 
 * [ ] try updating starcheat to the [latest](https://github.com/wizzomafizzo/starcheat/releases/latest) version [compatible](https://github.com/wizzomafizzo/starcheat#downloads) with your Starbound version and retry (maybe your issue is already fixed)
