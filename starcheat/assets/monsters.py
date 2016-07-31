@@ -8,10 +8,7 @@ class Monsters(object):
         self.starbound_folder = assets.starbound_folder
 
     def is_monster(self, key):
-        if key.endswith(".monstertype"):
-            return True
-        else:
-            return False
+        return key.endswith(".monstertype")
 
     def index_data(self, asset):
         key = asset[0]

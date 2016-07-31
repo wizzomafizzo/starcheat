@@ -7,10 +7,7 @@ class Frames(object):
         self.starbound_folder = assets.starbound_folder
 
     def is_frames(self, key):
-        if key.endswith(".frames"):
-            return True
-        else:
-            return False
+        return key.endswith(".frames")
 
     def index_data(self, asset):
         key = asset[0]

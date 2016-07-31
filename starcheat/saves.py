@@ -529,7 +529,7 @@ class PlayerSave(object):
         contents.append(self.entity["inventory"]["customBar"][0][5])
         logging.info(contents)
         return contents
-        
+
     def get_action_bar_2(self):
         contents = []
         contents.append(self.entity["inventory"]["customBar"][1][0])
