@@ -51,16 +51,8 @@ class Items(object):
         self.starbound_folder = assets.starbound_folder
 
     def is_item(self, key):
-        if key.endswith(".object"):
-            return True
-        elif key.endswith(".techitem"):
-            return True
-        elif key.endswith(".codexitem"):
-            return True
-        elif key.startswith("items", 1) and re.match(ignore_items, key) is None:
-            return True
-        else:
-            return False
+        return (key.endswith(".object") or key.endswith(".techitem") or key.endswith(".codexitem") or
+                (key.startswith("items", 1) and re.match(ignore_items, key) is None))
 
     def index_data(self, asset):
         key = asset[0]
@@ -139,7 +131,7 @@ class Items(object):
 
         icon_file = item[0]["inventoryIcon"]
         if not isinstance(icon_file, str):
-            icon_name =  [icon_file[0]['image']]
+            icon_name = [icon_file[0]['image']]
         else:
             icon_name = icon_file.split(':')
         if len(icon_name) < 2:

@@ -11,10 +11,7 @@ class Techs():
         self.starbound_folder = assets.starbound_folder
 
     def is_tech(self, key):
-        if key.endswith(".tech"):
-            return True
-        else:
-            return False
+        return key.endswith(".tech")
 
     def index_data(self, asset):
         key = asset[0]

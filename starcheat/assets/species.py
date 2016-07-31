@@ -25,10 +25,7 @@ class Species(object):
         self.starbound_folder = assets.starbound_folder
 
     def is_species(self, key):
-        if key.endswith(".species"):
-            return True
-        else:
-            return False
+        return key.endswith(".species")
 
     def index_data(self, asset):
         key = asset[0]
@@ -121,9 +118,7 @@ class Species(object):
             return groups
 
     def get_personality(self):
-        config = self.assets.read("/humanoid.config",
-                                  self.assets.vanilla_assets)
-        print(config)
+        config = self.assets.read("/humanoid.config", self.assets.vanilla_assets)
         return config["personalities"]
 
     def get_gender_data(self, species_data, gender):

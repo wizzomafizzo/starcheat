@@ -30,7 +30,7 @@ comment_re = re.compile(
 ignore_assets = re.compile(".*\.(db|ds_store|ini|psd|patch)", re.IGNORECASE)
 
 
-def parse_json(content, key):
+def parse_json(content):
     decoder = json.JSONDecoder(strict=False)
     # Looking for comments
     # Allows for // inside of the " " JSON data
@@ -43,7 +43,7 @@ def parse_json(content, key):
 def load_asset_file(filename):
     with open(filename, encoding="utf-8") as f:
         content = ''.join(f.readlines())
-        return parse_json(content, filename)
+        return parse_json(content)
 
 
 class Assets(object):
@@ -245,8 +245,17 @@ class Assets(object):
                 return img
             else:
                 try:
-                    asset = parse_json(data.decode("utf-8"), key)
-                    return asset
+                    return parse_json(data.decode("utf-8"))
+                except ValueError:
+                    pass
+                try:
+                    # Handle empty JSON and trailing comma
+                    content = data.decode("utf-8")
+                    if content == "":
+                        content = "{}"
+                    content = re.sub(",[ \t\r\n]+}", "}", content)
+                    content = re.sub(",[ \t\r\n]+\]", "]", content)
+                    return parse_json(content)
                 except ValueError:
                     logging.exception("Unable to read db asset '%s' from '%s'" % (key, path))
                     return None
