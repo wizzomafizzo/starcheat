@@ -1,6 +1,8 @@
-# starcheat [![Build Status](https://travis-ci.org/wizzomafizzo/starcheat.svg?branch=master)](https://travis-ci.org/wizzomafizzo/starcheat) [![Build status](https://ci.appveyor.com/api/projects/status/raaumvqaeryq08tf/branch/master?svg=true)](https://ci.appveyor.com/project/wizzomafizzo/starcheat/branch/master)
+# Starcheat [![Build Status](https://travis-ci.org/wizzomafizzo/starcheat.svg?branch=master)](https://travis-ci.org/wizzomafizzo/starcheat) [![Build status](https://ci.appveyor.com/api/projects/status/raaumvqaeryq08tf/branch/master?svg=true)](https://ci.appveyor.com/project/wizzomafizzo/starcheat/branch/master)
 
-starcheat is a [Starbound](http://playstarbound.com/) player save editor, you can get free pixels with this! (omg)
+<h2>Starcheat is currently incompatiable with Starbound 1.0 - We are currently not accepting issues for Starcheat errors with users running Starbound 1.0. For updates on 1.0 support, follow <a href="https://github.com/wizzomafizzo/starcheat/issues/282">#282</a>.</h2>
+
+Starcheat is a [Starbound](http://playstarbound.com/) player save editor, you can get free pixels with this! (omg)
 
 ![woohoo](https://raw.github.com/wizzomafizzo/starcheat/master/starcheat/images/screenshot.png)
 
