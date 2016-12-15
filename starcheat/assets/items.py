@@ -203,7 +203,7 @@ class Items(object):
 
     def missing_icon(self):
         """Return the image data for the default inventory placeholder icon."""
-        return self.assets.read("/interface/inventory/x.png",
+        return self.assets.read("/interface/x.png",
                                 self.assets.vanilla_assets, image=True)
 
     def sword_icon(self):

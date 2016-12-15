@@ -416,7 +416,6 @@ class PlayerSave(object):
 
             self.data[var[0]] = unpacked[0]
             offset += unpacked[1]
-
         # TODO: this is a temporary workaround to the save ver not being
         # changed in nightly. it should be removed when nightly goes stable
         # and people stop using those save files
@@ -505,19 +504,19 @@ class PlayerSave(object):
         return back, back_cosmetic
 
     def get_main_bag(self):
-        return self.entity["inventory"]["mainBag"]
+        return self.entity["inventory"]["itemBags"]["mainBag"]
 
     def get_object_bag(self):
-        return self.entity["inventory"]["objectBag"]
+        return self.entity["inventory"]["itemBags"]["objectBag"]
 
     def get_tile_bag(self):
-        return self.entity["inventory"]["materialBag"]
+        return self.entity["inventory"]["itemBags"]["materialBag"]
 
     def get_reagent_bag(self):
-        return self.entity["inventory"]["reagentBag"]
+        return self.entity["inventory"]["itemBags"]["reagentBag"]
 
     def get_food_bag(self):
-        return self.entity["inventory"]["foodBag"]
+        return self.entity["inventory"]["itemBags"]["foodBag"]
     #action bar doesn't actually hold items any more
     """def get_action_bar_1(self):
         contents = []
@@ -562,7 +561,7 @@ class PlayerSave(object):
         return race
 
     def get_pixels(self):
-        return self.entity["inventory"]["money"]
+        return self.entity["inventory"]["currencies"]["money"]
 
     def get_name(self):
         return self.entity["identity"]["name"]
@@ -686,7 +685,7 @@ class PlayerSave(object):
         self.entity["identity"]["species"] = race.lower()
 
     def set_pixels(self, pixels):
-        self.entity["inventory"]["money"] = int(pixels)
+        self.entity["inventory"]["currencies"]["money"] = int(pixels)
 
     def set_gender(self, gender):
         self.entity["identity"]["gender"] = gender.lower()
@@ -700,19 +699,19 @@ class PlayerSave(object):
         self.entity["statusController"]["resourceValues"]["energy"] = new
 
     def set_main_bag(self, bag):
-        self.entity["inventory"]["mainBag"] = bag
+        self.entity["inventory"]["itemBags"]["mainBag"] = bag
 
     def set_object_bag(self, bag):
-        self.entity["inventory"]["objectBag"] = bag
+        self.entity["inventory"]["itemBags"]["objectBag"] = bag
 
     def set_tile_bag(self, bag):
-        self.entity["inventory"]["materialBag"] = bag
+        self.entity["inventory"]["itemBags"]["materialBag"] = bag
 
     def set_reagent_bag(self, bag):
-        self.entity["inventory"]["reagentBag"] = bag
+        self.entity["inventory"]["itemBags"]["reagentBag"] = bag
 
     def set_food_bag(self, bag):
-        self.entity["inventory"]["foodBag"] = bag
+        self.entity["inventory"]["itemBags"]["foodBag"] = bag
 
     """def set_action_bar_1(self, bag):
         self.entity["inventory"]["customBar"][0][0] = bag[0], bag[1]

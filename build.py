@@ -29,9 +29,9 @@ def main():
     templates = os.listdir(os.path.join(src_dir, "starcheat", "templates"))
     prefix = os.path.expanduser(options.prefix)
     if platform.system() == "Windows":
-        from distutils.sysconfig import get_python_lib
+        from distutils.sysconfig import get_python_lib, PREFIX
         site_packages_dir = get_python_lib()
-        pyqt5_dir = os.path.join(site_packages_dir, "PyQt5")
+        scripts_dir = os.path.join(PREFIX, "Scripts")
         cx_freeze_Path = os.path.join(os.path.dirname(os.path.dirname(site_packages_dir)), "Scripts", "cxfreeze")
         dist = os.path.expanduser(options.dist)
 
@@ -54,7 +54,8 @@ def main():
         temp = os.path.join(src_dir, "starcheat", "templates", t)
         pyname = "qt_"+t.lower().replace(".ui", ".py")
         if platform.system() == "Windows":
-            os.system(os.path.join(pyqt5_dir, "pyuic5.bat") + " \"" + temp + "\" > " + os.path.join(prefix, pyname))
+            os.system(os.path.join(scripts_dir, "pyuic5.exe") + " \"" + temp +
+                      "\" > " + os.path.join(prefix, pyname))
         else:
             os.system("pyuic5 \"" + temp + "\" > " + os.path.join(prefix, pyname))
         if options.verbose:
@@ -65,7 +66,8 @@ def main():
     res_file = os.path.join(src_dir, "starcheat", "resources.qrc")
     pyname = "resources_rc.py"
     if platform.system() == "Windows":
-        os.system(os.path.join(pyqt5_dir, "pyrcc5.exe") + " \"" + res_file + "\" > " + os.path.join(prefix, pyname))
+        os.system(os.path.join(scripts_dir, "pyrcc5.exe") + " \"" + res_file + "\" > "
+                                                                      "" + os.path.join(prefix, pyname))
     else:
         os.system("pyrcc5 \"" + res_file + "\" > " + os.path.join(prefix, pyname))
     if options.verbose:
@@ -86,7 +88,7 @@ def main():
         if options.verbose:
             print("Launching cx_freeze...")
         icon_path = os.path.join(src_dir, "starcheat", "images", "starcheat.ico")
-        os.system("python " + cx_freeze_Path + " \"" + os.path.join(prefix, "starcheat.py") + "\" --target-dir=\"" +
+        os.system("python3 " + cx_freeze_Path + " \"" + os.path.join(prefix, "starcheat.py") + "\" --target-dir=\"" +
                   dist + "\" --base-name=Win32GUI --icon=\"" + icon_path + "\"")
         shutil.copy(os.path.join(pyqt5_dir, "libEGL.dll"), dist)
 
