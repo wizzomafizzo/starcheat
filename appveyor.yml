@@ -24,7 +24,7 @@ install:
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
   - "python -c \"import PyQt5\""
   - "pip --version"
-  - "pip install cx_freeze"
+  - "pip install cx_freeze==4.3.4"
   - "pip install Pillow"
 
 build_script:
