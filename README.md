@@ -1,6 +1,14 @@
 # starcheat [![Build Status](https://travis-ci.org/wizzomafizzo/starcheat.svg?branch=master)](https://travis-ci.org/wizzomafizzo/starcheat) [![Build status](https://ci.appveyor.com/api/projects/status/raaumvqaeryq08tf/branch/master?svg=true)](https://ci.appveyor.com/project/wizzomafizzo/starcheat/branch/master)
 
-## starcheat is currently incompatiable with Starbound 1.0 - We are currently not accepting issues for Starcheat errors with users running starcheat 0.27 with Starbound 1.0. For updates on 1.0 support, follow [issue #282](https://github.com/wizzomafizzo/starcheat/issues/282) ([early nightly builds with 1.0 support are available](#nightlies)).
+## Where to download starcheat
+
+**[DOWNLOAD HERE](https://starcheat.net/)**
+
+This GitHub is no longer maintained. You can download a working version of starcheat from [starcheat.net](https://starcheat.net/) or the [patched GitHub repo](https://github.com/gen3vra/starcheat-patched-bin/releases/latest).
+
+Thanks to [@gen3vra](https://github.com/gen3vra) for creating this new working build.
+
+## What is this
 
 starcheat is a [Starbound](http://playstarbound.com/) player save editor, you can get free pixels with this! (omg)
 
@@ -8,14 +16,7 @@ starcheat is a [Starbound](http://playstarbound.com/) player save editor, you ca
 
 ## Downloads
 
-Starbound            | starcheat
--------------------- | ---------
-**Starbound 1.0**    | TBD - [nightly builds available](#nightlies)
-**Glad Giraffe**     | [0.27.1](https://github.com/wizzomafizzo/starcheat/releases/tag/0.27.1)
-Pleased Giraffe | [0.26](https://github.com/wizzomafizzo/starcheat/releases/tag/0.26)
-Spirited Giraffe | [0.25](https://github.com/wizzomafizzo/starcheat/releases/tag/0.25)
-Upbeat Giraffe       | [0.21](https://github.com/wizzomafizzo/starcheat/releases/tag/0.21)
-Enraged Koala        | [0.17](https://github.com/wizzomafizzo/starcheat/releases/tag/0.17)
+**[Download working starcheat](https://starcheat.net/)**
 
 ### Nightlies
 
