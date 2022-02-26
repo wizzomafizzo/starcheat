@@ -108,8 +108,9 @@ class CharacterSelectDialog():
                     players_found[uuid] = {}
                     players_found[uuid]["player"] = player
                     players_found[uuid]["preview"] = preview
+                    players_found[uuid]["playTime"] = player.get_play_time()
                 except:
-                    logging.exception("Save file %s is not compatible", f)
+                    logging.exception("Save file not compatible: %s", f)
                 total += 1
                 progress.setValue(total)
         except FileNotFoundError:
@@ -159,8 +160,8 @@ class CharacterSelectDialog():
                 Config().remove_config()
                 new_setup_dialog(self.dialog)
                 dialog = QMessageBox(self.dialog)
-                dialog.setWindowTitle("Restart starcheat")
-                dialog.setText("Please restart starcheat to see changes.")
+                dialog.setWindowTitle("Restart Starcheat")
+                dialog.setText("Please restart Starcheat to see changes.")
                 dialog.setIcon(QMessageBox.Information)
                 dialog.exec()
         else:

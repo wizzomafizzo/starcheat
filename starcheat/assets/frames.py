@@ -7,30 +7,25 @@ class Frames(object):
         self.starbound_folder = assets.starbound_folder
 
     def is_frames(self, key):
-        if key.endswith(".frames"):
-            return True
-        else:
-            return False
+        return key.endswith(".frames")
 
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
+        offset = asset[2]
+        length = asset[3]
         name = os.path.basename(key).split(".")[0]
         asset_type = "frames"
-
-        asset_data = self.assets.read(key, path)
-
+        asset_data = self.assets.read(key, path, False, offset, length)
         if asset_data is None:
             return
-
         if "frameList" in asset_data:
             category = "list"
         elif "frameGrid" in asset_data:
             category = "grid"
         else:
             return
-
-        return (key, path, asset_type, category, name, "")
+        return (key, path, offset, length, asset_type, category, name, "")
 
     def get_all_frames(self):
         """Return a list of every indexed blueprints."""

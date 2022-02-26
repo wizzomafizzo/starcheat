@@ -410,17 +410,16 @@ class PlayerSave(object):
             try:
                 unpacked = unpack_var(var, save_data[offset:])
             except:
-                msg = "Save file is corrupt"
+                msg = "Save file is corrupt: {}".format(filename)
                 logging.exception(msg)
                 raise WrongSaveVer(msg)
 
             self.data[var[0]] = unpacked[0]
             offset += unpacked[1]
-
         # TODO: this is a temporary workaround to the save ver not being
         # changed in nightly. it should be removed when nightly goes stable
         # and people stop using those save files
-        if "statusController" not in self.data["save"]["data"]:
+        if "playTime" in self.data["save"]["data"]:
             save_file.close()
             msg = "Wrong save format version"
             logging.exception(msg)
@@ -485,38 +484,68 @@ class PlayerSave(object):
         return self.entity["identity"]["gender"]
 
     def get_head(self):
-        equip = self.entity["inventory"]["equipment"]
-        return equip[0], equip[4]
+        head = self.entity["inventory"]["headSlot"]
+        head_cosmetic = self.entity["inventory"]["headCosmeticSlot"]
+        return head, head_cosmetic
 
     def get_chest(self):
-        equip = self.entity["inventory"]["equipment"]
-        return equip[1], equip[5]
+        chest = self.entity["inventory"]["chestSlot"]
+        chest_cosmetic = self.entity["inventory"]["chestCosmeticSlot"]
+        return chest, chest_cosmetic
 
     def get_legs(self):
-        equip = self.entity["inventory"]["equipment"]
-        return equip[2], equip[6]
+        legs = self.entity["inventory"]["legsSlot"]
+        legs_cosmetic = self.entity["inventory"]["legsCosmeticSlot"]
+        return legs, legs_cosmetic
 
     def get_back(self):
-        equip = self.entity["inventory"]["equipment"]
-        return equip[3], equip[7]
+        back = self.entity["inventory"]["backSlot"]
+        back_cosmetic = self.entity["inventory"]["backCosmeticSlot"]
+        return back, back_cosmetic
 
     def get_main_bag(self):
-        return self.entity["inventory"]["bag"]
+        return self.entity["inventory"]["itemBags"]["mainBag"]
 
     def get_object_bag(self):
-        return self.entity["inventory"]["objectBag"]
+        return self.entity["inventory"]["itemBags"]["objectBag"]
 
     def get_tile_bag(self):
-        return self.entity["inventory"]["tileBag"]
+        return self.entity["inventory"]["itemBags"]["materialBag"]
 
-    def get_action_bar(self):
-        return self.entity["inventory"]["actionBar"]
+    def get_reagent_bag(self):
+        return self.entity["inventory"]["itemBags"]["reagentBag"]
 
-    def get_wieldable(self):
-        return self.entity["inventory"]["wieldable"]
+    def get_food_bag(self):
+        return self.entity["inventory"]["itemBags"]["foodBag"]
+    #action bar doesn't actually hold items any more
+    """def get_action_bar_1(self):
+        contents = []
+        contents.append(self.entity["inventory"]["customBar"][0][0])
+        contents.append(self.entity["inventory"]["customBar"][0][1])
+        contents.append(self.entity["inventory"]["customBar"][0][2])
+        contents.append(self.entity["inventory"]["customBar"][0][3])
+        contents.append(self.entity["inventory"]["customBar"][0][4])
+        contents.append(self.entity["inventory"]["customBar"][0][5])
+        logging.info(contents)
+        return contents
+
+    def get_action_bar_2(self):
+        contents = []
+        contents.append(self.entity["inventory"]["customBar"][1][0])
+        contents.append(self.entity["inventory"]["customBar"][1][1])
+        contents.append(self.entity["inventory"]["customBar"][1][2])
+        contents.append(self.entity["inventory"]["customBar"][1][3])
+        contents.append(self.entity["inventory"]["customBar"][1][4])
+        contents.append(self.entity["inventory"]["customBar"][1][5])
+        logging.info(contents)
+        return contents"""
 
     def get_essentials(self):
-        return self.entity["inventory"]["essentialBar"]
+        beamaxe = self.entity["inventory"]["beamAxe"]
+        wiretool = self.entity["inventory"]["wireTool"]
+        painttool = self.entity["inventory"]["paintTool"]
+        inspectiontool = self.entity["inventory"]["inspectionTool"]
+        return beamaxe, wiretool, painttool, inspectiontool
 
     def get_mouse(self):
         # pretend it's a regular bag
@@ -532,13 +561,10 @@ class PlayerSave(object):
         return race
 
     def get_pixels(self):
-        return self.entity["inventory"]["money"]
+        return self.entity["inventory"]["currencies"]["money"]
 
     def get_name(self):
         return self.entity["identity"]["name"]
-
-    def get_description(self):
-        return self.entity["description"]
 
     def get_blueprints(self):
         return self.entity["blueprints"]["knownBlueprints"]
@@ -584,19 +610,19 @@ class PlayerSave(object):
         return self.entity["modeType"]
 
     def get_play_time(self):
-        return self.entity["playTime"]
+        return self.entity["log"]["playTime"]
 
     def get_tech_modules(self):
         return self.entity["techController"]["techModules"]
 
     def get_visible_techs(self):
-        return self.entity["techs"]["visibleTechs"]
+        return self.entity["techs"]["availableTechs"]
 
     def get_enabled_techs(self):
         return self.entity["techs"]["enabledTechs"]
 
     def get_equipped_techs(self):
-        return self.entity["inventory"]["equipment"][8:12]
+        return self.entity["techs"]["equippedTechs"]
 
     def get_undy_color(self):
         return self.entity["identity"]["color"]
@@ -628,6 +654,7 @@ class PlayerSave(object):
         assert type(upgrades["capabilities"]) is list
         assert type(upgrades["maxFuel"]) is int
         assert type(upgrades["shipLevel"]) is int
+        assert type(upgrades["crewSize"]) is int
         self.entity["shipUpgrades"] = upgrades
 
     def set_quests(self, quests):
@@ -637,9 +664,7 @@ class PlayerSave(object):
     def set_ai(self, ai):
         assert type(ai) is dict
         assert type(ai["availableMissions"]) is list
-        assert type(ai["commandLevel"]) is int
         assert type(ai["completedMissions"]) is list
-        assert type(ai["enabledCommands"]) is list
         self.entity["aiState"] = ai
 
     def set_blueprints(self, blueprints):
@@ -660,10 +685,7 @@ class PlayerSave(object):
         self.entity["identity"]["species"] = race.lower()
 
     def set_pixels(self, pixels):
-        self.entity["inventory"]["money"] = int(pixels)
-
-    def set_description(self, description):
-        self.entity["description"] = description
+        self.entity["inventory"]["currencies"]["money"] = int(pixels)
 
     def set_gender(self, gender):
         self.entity["identity"]["gender"] = gender.lower()
@@ -677,41 +699,60 @@ class PlayerSave(object):
         self.entity["statusController"]["resourceValues"]["energy"] = new
 
     def set_main_bag(self, bag):
-        self.entity["inventory"]["bag"] = bag
+        self.entity["inventory"]["itemBags"]["mainBag"] = bag
 
     def set_object_bag(self, bag):
-        self.entity["inventory"]["objectBag"] = bag
+        self.entity["inventory"]["itemBags"]["objectBag"] = bag
 
     def set_tile_bag(self, bag):
-        self.entity["inventory"]["tileBag"] = bag
+        self.entity["inventory"]["itemBags"]["materialBag"] = bag
 
-    def set_action_bar(self, bag):
-        self.entity["inventory"]["actionBar"] = bag
+    def set_reagent_bag(self, bag):
+        self.entity["inventory"]["itemBags"]["reagentBag"] = bag
 
-    def set_wieldable(self, bag):
-        self.entity["inventory"]["wieldable"] = bag
+    def set_food_bag(self, bag):
+        self.entity["inventory"]["itemBags"]["foodBag"] = bag
+
+    """def set_action_bar_1(self, bag):
+        self.entity["inventory"]["customBar"][0][0] = bag[0], bag[1]
+        self.entity["inventory"]["customBar"][0][1] = bag[2], bag[3]
+        self.entity["inventory"]["customBar"][0][2] = bag[4], bag[5]
+        self.entity["inventory"]["customBar"][0][3] = bag[6], bag[7]
+        self.entity["inventory"]["customBar"][0][4] = bag[8], bag[9]
+        self.entity["inventory"]["customBar"][0][5] = bag[10], bag[11]
+
+    def set_action_bar_2(self, bag):
+        self.entity["inventory"]["customBar"][1][0] = bag[0], bag[1]
+        self.entity["inventory"]["customBar"][1][1] = bag[2], bag[3]
+        self.entity["inventory"]["customBar"][1][2] = bag[4], bag[5]
+        self.entity["inventory"]["customBar"][1][3] = bag[6], bag[7]
+        self.entity["inventory"]["customBar"][1][4] = bag[8], bag[9]
+        self.entity["inventory"]["customBar"][1][5] = bag[10], bag[11]"""
 
     def set_essentials(self, bag):
-        self.entity["inventory"]["essentialBar"] = bag
+        self.entity["inventory"]["beamAxe"] = bag[0]
+        self.entity["inventory"]["wireTool"] = bag[1]
+        self.entity["inventory"]["paintTool"] = bag[2]
+        self.entity["inventory"]["inspectionTool"] = bag[3]
 
     def set_mouse(self, bag):
         self.entity["inventory"]["swapSlot"] = bag[0]
 
     def set_head(self, main, glamor):
-        self.entity["inventory"]["equipment"][0] = main
-        self.entity["inventory"]["equipment"][4] = glamor
+        self.entity["inventory"]["headSlot"] = main
+        self.entity["inventory"]["headCosmeticSlot"] = glamor
 
     def set_chest(self, main, glamor):
-        self.entity["inventory"]["equipment"][1] = main
-        self.entity["inventory"]["equipment"][5] = glamor
+        self.entity["inventory"]["chestSlot"] = main
+        self.entity["inventory"]["chestCosmeticSlot"] = glamor
 
     def set_legs(self, main, glamor):
-        self.entity["inventory"]["equipment"][2] = main
-        self.entity["inventory"]["equipment"][6] = glamor
+        self.entity["inventory"]["legsSlot"] = main
+        self.entity["inventory"]["legsCosmeticSlot"] = glamor
 
     def set_back(self, main, glamor):
-        self.entity["inventory"]["equipment"][3] = main
-        self.entity["inventory"]["equipment"][7] = glamor
+        self.entity["inventory"]["backSlot"] = main
+        self.entity["inventory"]["backCosmeticSlot"] = glamor
 
     def set_personality(self, idle):
         self.entity["identity"]["personalityArmIdle"] = idle
@@ -753,7 +794,7 @@ class PlayerSave(object):
         self.entity["modeType"] = mode
 
     def set_play_time(self, time):
-        self.entity["playTime"] = float(time)
+        self.entity["log"]["playTime"] = float(time)
 
     def clear_held_slots(self):
         empty = {
@@ -769,18 +810,11 @@ class PlayerSave(object):
     def set_tech_modules(self, techs, equip):
         # this works similar to the equip items in that it needs to be set
         # in 2 separate places to stick
-
-        # this is where techs start in the equip list
-        equip_index = 8
-        for tech in equip:
-            item = new_item(tech, 1)
-            self.entity["inventory"]["equipment"][equip_index] = item
-            equip_index += 1
-
+        self.entity["techs"]["equippedTechs"] = techs
         self.entity["techController"]["techModules"] = techs
 
     def set_visible_techs(self, techs):
-        self.entity["techs"]["visibleTechs"] = techs
+        self.entity["techs"]["availableTechs"] = techs
 
     def set_enabled_techs(self, techs):
         self.entity["techs"]["enabledTechs"] = techs

@@ -17,7 +17,6 @@ init:
 
 install:
   - REG ADD HKCU\Software\Python\PythonCore\3.4\InstallPath /f /ve /t REG_SZ /d %PYTHON%
-  - git submodule update --init --recursive
   - ps: Start-FileDownload $env:PyQT -FileName $env:temp/pyqt5_install.exe
   - ps: "& $env:temp/pyqt5_install.exe /S"
   - ps: "Wait-Process -Name pyqt5_install -Timeout 600"
@@ -25,7 +24,7 @@ install:
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
   - "python -c \"import PyQt5\""
   - "pip --version"
-  - "pip install cx_freeze"
+  - "pip install cx_freeze==4.3.4"
   - "pip install Pillow"
 
 build_script:

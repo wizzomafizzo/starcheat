@@ -1,10 +1,11 @@
 """
-Main application window for starcheat GUI
+Main application window for Starcheat GUI
 """
 
 import sys
 import logging
 import json
+import platform
 
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
@@ -71,12 +72,15 @@ class StarcheatMainWindow(QMainWindow):
 
 class MainWindow():
     def __init__(self):
-        # check for new starcheat version online in seperate thread
+        # check for new Starcheat version online in seperate thread
         update_result = [None]
         update_thread = Thread(target=update_check_worker, args=[update_result], daemon=True)
         update_thread.start()
 
-        """Display the main starcheat window."""
+        if platform.system() == "Darwin":
+            QApplication.setAttribute(QtCore.Qt.AA_DontShowIconsInMenus)
+
+        """Display the main Starcheat window."""
         self.app = QApplication(sys.argv)
         self.window = StarcheatMainWindow(self)
         self.ui = qt_mainwindow.Ui_MainWindow()
@@ -111,8 +115,8 @@ class MainWindow():
         self.ui.actionImportPlayerJSON.triggered.connect(self.import_json)
 
         # set up bag tables
-        bags = ("wieldable", "head", "chest", "legs", "back", "main_bag",
-                "action_bar", "object_bag", "tile_bag", "essentials", "mouse")
+        bags = ("head", "chest", "legs", "back", "main_bag", "object_bag",
+                "tile_bag", "reagent_bag", "food_bag", "essentials", "mouse")
         for bag in bags:
             logging.debug("Setting up %s bag", bag)
             self.bag_setup(getattr(self.ui, bag), bag)
@@ -129,7 +133,6 @@ class MainWindow():
         self.ui.name.textChanged.connect(self.set_name)
         self.ui.male.clicked.connect(self.set_gender)
         self.ui.female.clicked.connect(self.set_gender)
-        self.ui.description.textChanged.connect(self.set_description)
         self.ui.pixels.valueChanged.connect(self.set_pixels)
 
         self.ui.health.valueChanged.connect(lambda: self.set_stat_slider("health"))
@@ -203,8 +206,6 @@ class MainWindow():
             self.ui.pixels.setValue(self.player.get_pixels())
         except TypeError:
             logging.exception("Unable to set pixels widget")
-        # description
-        self.ui.description.setPlainText(self.player.get_description())
         # gender
         getattr(self.ui, self.player.get_gender()).toggle()
         # game mode
@@ -224,6 +225,8 @@ class MainWindow():
         can_edit_quests = False
         self.ui.quests_button.setEnabled(can_edit_quests)
 
+        # TODO: re-enable when techs work
+        self.ui.techs_button.setEnabled(False)
         # ship
         can_edit_ship = ("shipUpgrades" in self.player.entity and
                          "aiState" in self.player.entity)
@@ -255,7 +258,7 @@ class MainWindow():
             total += 1
             progress.setValue(total)
 
-        for bag in "wieldable", "main_bag", "tile_bag", "object_bag", "action_bar", "essentials", "mouse":
+        for bag in "main_bag", "tile_bag", "object_bag", "reagent_bag", "food_bag", "essentials", "mouse":
             self.update_bag(bag)
             total += 1
             progress.setValue(total)
@@ -272,8 +275,8 @@ class MainWindow():
 
         widget.cellDoubleClicked.connect(lambda: item_edit(False))
 
-        sortable = ("main_bag", "tile_bag", "object_bag")
-        clearable = ("wieldable", "action_bar", "essentials")
+        sortable = ("main_bag", "tile_bag", "object_bag", "reagent_bag", "food_bag")
+        clearable = ("essentials")
 
         edit_action = QAction("Edit...", widget)
         edit_action.triggered.connect(lambda: item_edit(False))
@@ -331,7 +334,7 @@ class MainWindow():
 
     def update_title(self):
         """Update window title with player name."""
-        self.window.setWindowTitle("starcheat - " + self.player.get_name() + "[*]")
+        self.window.setWindowTitle("Starcheat - " + self.player.get_name() + "[*]")
 
     def save(self):
         """Update internal player dict with GUI values and export to file."""
@@ -359,7 +362,7 @@ class MainWindow():
         if do_import:
             imported = import_json(self.window)
             if imported is False:
-                self.ui.statusbar.showMessage("Error importing item, see starcheat log for details", 3000)
+                self.ui.statusbar.showMessage("Error importing item, see Starcheat log for details", 3000)
                 return
             elif imported is None:
                 return
@@ -399,7 +402,7 @@ class MainWindow():
                     self.set_edited()
             except (TypeError, KeyError):
                 logging.exception("Error updating item slot")
-                self.ui.statusbar.showMessage("Error updating item slot, see starcheat log for details", 3000)
+                self.ui.statusbar.showMessage("Error updating item slot, see Starcheat log for details", 3000)
 
         item_edit.dialog.accepted.connect(update_slot)
 
@@ -609,7 +612,7 @@ class MainWindow():
             self.ui.statusbar.showMessage(status + filename[0], 3000)
         except:
             logging.exception("Error reading file: %s", filename[0])
-            self.ui.statusbar.showMessage("Error reading file, see starcheat log for details", 3000)
+            self.ui.statusbar.showMessage("Error reading file, see Starcheat log for details", 3000)
 
     def import_json(self, kind="player"):
         """Import an exported JSON file and merge/update with open player."""
@@ -631,7 +634,7 @@ class MainWindow():
             self.ui.statusbar.showMessage(status + filename[0], 3000)
         except:
             logging.exception("Error reading file: %s", filename[0])
-            self.ui.statusbar.showMessage("Error importing file, see starcheat log for details", 3000)
+            self.ui.statusbar.showMessage("Error importing file, see Starcheat log for details", 3000)
 
     def get_gender(self):
         if self.ui.male.isChecked():
@@ -657,9 +660,13 @@ class MainWindow():
                 item = saves.new_item(widget["name"],
                                       widget["count"],
                                       widget["parameters"])
-
-            bag[i] = item
-
+            try:
+                bag[i] = item
+            except TypeError:
+                baglist = list(bag)
+                baglist[i] = item
+                del bag
+                bag = baglist
             # so far all non-equip bags are 10 cols long
             column += 1
             if (column % 10) == 0:
@@ -756,10 +763,6 @@ class MainWindow():
         self.player.set_name(self.ui.name.text())
         self.set_edited()
 
-    def set_description(self):
-        self.player.set_description(self.ui.description.toPlainText())
-        self.set_edited()
-
     def set_gender(self):
         self.player.set_gender(self.get_gender())
         self.update_player_preview()
@@ -778,7 +781,7 @@ class MainWindow():
             bag = self.get_equip(b)
             getattr(self.player, "set_" + b)(bag[0], bag[1])
         # bags
-        bags = "wieldable", "main_bag", "tile_bag", "action_bar", "essentials", "mouse", "object_bag"
+        bags = "main_bag", "tile_bag", "essentials", "mouse", "object_bag", "reagent_bag", "food_bag"
         for b in bags:
             getattr(self.player, "set_" + b)(self.get_bag(b))
 
@@ -817,8 +820,11 @@ class MainWindow():
     def new_object_bag_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.object_bag, do_import, json_edit)
 
-    def new_action_bar_item_edit(self, do_import, json_edit=False):
-        self.new_item_edit(self.ui.action_bar, do_import, json_edit)
+    def new_reagent_bag_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.reagent_bag, do_import, json_edit)
+
+    def new_food_bag_item_edit(self, do_import, json_edit=False):
+        self.new_item_edit(self.ui.food_bag, do_import, json_edit)
 
     def new_head_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.head, do_import, json_edit)
@@ -831,9 +837,6 @@ class MainWindow():
 
     def new_back_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.back, do_import, json_edit)
-
-    def new_wieldable_item_edit(self, do_import, json_edit=False):
-        self.new_item_edit(self.ui.wieldable, do_import, json_edit)
 
     def new_essentials_item_edit(self, do_import, json_edit=False):
         self.new_item_edit(self.ui.essentials, do_import, json_edit)

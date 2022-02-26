@@ -8,21 +8,20 @@ class Monsters(object):
         self.starbound_folder = assets.starbound_folder
 
     def is_monster(self, key):
-        if key.endswith(".monstertype"):
-            return True
-        else:
-            return False
+        return key.endswith(".monstertype")
 
     def index_data(self, asset):
         key = asset[0]
         path = asset[1]
-        asset_data = self.assets.read(key, path)
+        offset = asset[2]
+        length = asset[3]
+        asset_data = self.assets.read(key, path, False, offset, length)
 
         if asset_data is None:
             return
 
         if "type" in asset_data:
-            return (key, path, "monster", "", asset_data["type"], "")
+            return (key, path, offset, length, "monster", "", asset_data["type"], "")
         else:
             logging.warning("Invalid monster: %s" % key)
 

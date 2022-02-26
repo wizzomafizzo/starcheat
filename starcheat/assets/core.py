@@ -8,8 +8,7 @@ import re
 import sqlite3
 import logging
 
-import starbound
-import starbound.btreedb4
+import assets.sb_asset
 
 from assets.blueprints import Blueprints
 from assets.items import Items
@@ -31,7 +30,7 @@ comment_re = re.compile(
 ignore_assets = re.compile(".*\.(db|ds_store|ini|psd|patch)", re.IGNORECASE)
 
 
-def parse_json(content, key):
+def parse_json(content):
     decoder = json.JSONDecoder(strict=False)
     # Looking for comments
     # Allows for // inside of the " " JSON data
@@ -42,15 +41,15 @@ def parse_json(content, key):
 
 
 def load_asset_file(filename):
-    with open(filename) as f:
+    with open(filename, encoding="utf-8") as f:
         content = ''.join(f.readlines())
-        return parse_json(content, filename)
+        return parse_json(content)
 
 
 class Assets(object):
     def __init__(self, db_file, starbound_folder):
         self.starbound_folder = starbound_folder
-        self.mods_folder = os.path.join(self.starbound_folder, "giraffe_storage", "mods")
+        self.mods_folder = os.path.join(self.starbound_folder, "mods")
         self.db = sqlite3.connect(db_file)
         self.vanilla_assets = os.path.join(self.starbound_folder, "assets", "packed.pak")
         self.image_cache = {}
@@ -59,7 +58,7 @@ class Assets(object):
         c = self.db.cursor()
         c.execute("drop table if exists assets")
         c.execute("""create table assets
-        (key text, path text, type text, category text, name text, desc text)""")
+        (key text, path text, offset integer, length integer, type text, category text, name text, desc text)""")
         self.db.commit()
 
     def total_indexed(self):
@@ -75,7 +74,6 @@ class Assets(object):
         logging.info("Creating new assets index...")
         if not asset_files:
             asset_files = self.find_assets()
-
         blueprints = Blueprints(self)
         items = Items(self)
         species = Species(self)
@@ -83,17 +81,14 @@ class Assets(object):
         techs = Techs(self)
         frames = Frames(self)
 
-        new_index_query = "insert into assets values (?, ?, ?, ?, ?, ?)"
+        new_index_query = "insert into assets values (?, ?, ?, ?, ?, ?, ?, ?)"
         c = self.db.cursor()
-
         for asset in asset_files:
-            yield (asset[0], asset[1])
-
+            yield (asset[0], asset[1], asset[2], asset[3])
             tmp_data = None
-
             if asset_category(asset[0]) != '':
                 if asset[0].endswith(".png"):
-                    tmp_data = (asset[0], asset[1], "image", "", "", "")
+                    tmp_data = (asset[0], asset[1], asset[2], asset[3], "image", "", "", "")
                 elif blueprints.is_blueprint(asset[0]):
                     tmp_data = blueprints.index_data(asset)
                 elif species.is_species(asset[0]):
@@ -106,6 +101,8 @@ class Assets(object):
                     tmp_data = techs.index_data(asset)
                 elif frames.is_frames(asset[0]):
                     tmp_data = frames.index_data(asset)
+                elif asset[0] == "/humanoid.config":
+                    tmp_data = (asset[0], asset[1], asset[2], asset[3], "other", "", "", "")
             else:
                 logging.warning("Skipping invalid asset (no file extension) %s in %s" % (asset[0], asset[1]))
 
@@ -125,10 +122,11 @@ class Assets(object):
         vanilla_path = os.path.join(self.starbound_folder, "assets")
         logging.info("Scanning vanilla assets")
         vanilla_assets = self.scan_asset_folder(vanilla_path)
-        [index.append(x) for x in vanilla_assets]
+        index += vanilla_assets
 
         mods_path = self.mods_folder
         if not os.path.isdir(mods_path):
+            logging.warning("Mods folder not found!")
             return index
 
         for mod in os.listdir(mods_path):
@@ -136,25 +134,29 @@ class Assets(object):
             if os.path.isdir(mod_folder):
                 logging.info("Scanning mod folder: " + mod)
                 mod_assets = self.scan_asset_folder(mod_folder)
-                [index.append(x) for x in mod_assets]
-            elif mod_folder.endswith(".modpak"):
-                logging.info("Scanning modpak: " + mod)
+                index += mod_assets
+            elif mod_folder.endswith(".pak"):
+                logging.info("Scanning mod pak: " + mod)
                 mod_assets = self.scan_modpak(mod_folder)
-                [index.append(x) for x in mod_assets]
+                index += mod_assets
         return index
 
     def scan_modpak(self, modpak):
         # TODO: may need support for reading the mod folder from the pakinfo file
-        db = starbound.open_file(modpak)
-        index = [(x, modpak) for x in db.get_index()]
-        return index
+        with open(modpak, "rb") as pak:
+            pak_info = assets.sb_asset.get_pak_info(pak)
+            db = assets.sb_asset.create_file_index(pak, pak_info[2], pak_info[1])
+            index = [(path, modpak, info[0], info[1]) for path, info in db.items()]
+            return index
 
     def scan_asset_folder(self, folder):
         pak_path = os.path.join(folder, "packed.pak")
 
         if os.path.isfile(pak_path):
-            db = starbound.open_file(pak_path)
-            index = [(x, pak_path) for x in db.get_index()]
+            pak = open(pak_path, "rb")
+            pak_info = assets.sb_asset.get_pak_info(pak)
+            db = assets.sb_asset.create_file_index(pak, pak_info[2], pak_info[1])
+            index = [(path, pak_path, info[0], info[1]) for path, info in db.items()]
             return index
         else:
             # old style, probably a mod
@@ -166,7 +168,7 @@ class Assets(object):
             found_mod_info = False
 
             for f in files:
-                if f.endswith(".modinfo"):
+                if f.endswith((".modinfo", ".metadata", "_metadata")):
                     modinfo = os.path.join(folder, f)
                     try:
                         modinfo_data = load_asset_file(modinfo)
@@ -183,14 +185,14 @@ class Assets(object):
 
             if mod_assets is None:
                 return index
-            elif found_mod_info and self.is_packed_file(mod_assets):
-                # TODO: make a .pak scanner function that works for vanilla and mods
+            elif self.is_packed_file(mod_assets):
+                # TODO: return metadata
                 pak_path = os.path.normpath(mod_assets)
-                db = starbound.open_file(pak_path)
-                for x in db.get_index():
-                    # removes thumbs.db etc from user pak files
-                    if re.match(ignore_assets, x) is None:
-                        index.append((x, pak_path))
+                pak = open(pak_path, "rb")
+                pak_info = assets.sb_asset.get_pak_info(pak)
+                db = assets.sb_asset.create_file_index(pak, pak_info[2], pak_info[1])
+                index.append((path, pak_path, info[0], info[1]) for
+                             path, info in db.items())
                 return index
             elif not os.path.isdir(mod_assets):
                 return index
@@ -201,7 +203,7 @@ class Assets(object):
                     if re.match(ignore_assets, f) is None:
                         asset_folder = os.path.normpath(mod_assets)
                         asset_file = os.path.normpath(os.path.join(root.replace(folder, ""), f))
-                        index.append((asset_file, asset_folder))
+                        index.append((asset_file, asset_folder, 0, 0))
             return index
 
     def is_packed_file(self, path):
@@ -211,17 +213,24 @@ class Assets(object):
         """
         return os.path.isfile(path)
 
-    def read(self, key, path, image=False):
+    def read(self, key, path, image=False, offset=None, length=None):
         if self.is_packed_file(path):
-            key = key.lower()
-            db = starbound.open_file(path)
-
             # try the cache first
             if image and key in self.image_cache:
                 return self.image_cache[key]
 
             try:
-                data = db.get(key)
+                with open(path, "rb") as pak:
+                    c = self.db.cursor()
+                    if offset is not None:
+                        info = (offset, length)
+                    else:
+                        c.execute("select offset, length from assets where key = ? and path = ?", (key,path,))
+                        info = c.fetchone()
+                    if info is not None:
+                        data = assets.sb_asset.get_file(pak, info[0], info[1])
+                    else:
+                        return None
             except KeyError:
                 if image and path != self.vanilla_assets:
                     img = self.read(key, self.vanilla_assets, image)
@@ -236,8 +245,17 @@ class Assets(object):
                 return img
             else:
                 try:
-                    asset = parse_json(data.decode("utf-8"), key)
-                    return asset
+                    return parse_json(data.decode("utf-8"))
+                except ValueError:
+                    pass
+                try:
+                    # Handle empty JSON and trailing comma
+                    content = data.decode("utf-8")
+                    if content == "":
+                        content = "{}"
+                    content = re.sub(",[ \t\r\n]+}", "}", content)
+                    content = re.sub(",[ \t\r\n]+\]", "]", content)
+                    return parse_json(content)
                 except ValueError:
                     logging.exception("Unable to read db asset '%s' from '%s'" % (key, path))
                     return None

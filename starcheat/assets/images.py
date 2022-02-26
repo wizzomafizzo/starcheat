@@ -29,7 +29,12 @@ class Images(object):
         except IndexError:
             return
         data = self.assets.read(asset[0], asset[1], True)
-        return Image.open(BytesIO(data)).convert("RGBA")
+        try:
+            img = Image.open(BytesIO(data)).convert("RGBA")
+            return img
+        # Temporary workaround for "Could not identify image" error
+        except (IOError, OSError):
+            return
 
     def color_image(self, image, item_data):
         data_keys = item_data.keys()

@@ -5,9 +5,9 @@ class Player(object):
 
         # haven't found any definitions for these in the assets
         self.mode_types = {
-            "hardcore": "Hardcore",
-            "normal": "Normal",
             "casual": "Casual",
+            "survival": "Survival",
+            "hardcore": "Hardcore",
         }
 
     def get_mode_type(self, name):

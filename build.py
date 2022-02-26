@@ -1,24 +1,31 @@
 #!/usr/bin/env python3
 
-import os, platform, shutil
-from optparse import OptionParser
+import os
+import platform
+import shutil
+from argparse import ArgumentParser
+
 
 def main():
     desc = "builds starbound using pyqt5 and python3"
     if platform.system() == "Windows":
         desc += " (with cx_freeze if --with-exe is passed)"
-    parser = OptionParser(description=desc)
-    parser.add_option("-p", "--prefix", "-b", "--build", "--build-dir", dest="prefix", default="build",
-                      help="build and install starboud to this prefix (default to build)")
-    parser.add_option("-v", "--verbose", dest="verbose", action="store_true", help="print status messages to stdout")
-    if platform.system() == "Windows":
-        parser.add_option("-e", "--exe", "--with-exe", "--enable-exe", action="store_true", dest="exe",
-                          help="generates .exe (windows only)")
-        parser.add_option("-d", "--dist", "--dist-dir", dest="dist", default="dist",
-                          help="generates .exe to this dir (default to dist)")
-    (options, args) = parser.parse_args()
+    parser = ArgumentParser(description=desc)
+    parser.add_argument("-p", "--prefix", "-b", "--build", "--build-dir", dest="prefix", default="build",
+                        help="build and install starboud to this prefix (default to build)")
+    parser.add_argument("-v", "--verbose", dest="verbose", action="store_true", default=True,
+                        help="print status messages to stdout")
+    parser.add_argument("-q", "--quiet", dest="verbose", action="store_false", default=True,
+                        help="don't print status messages to stdout")
 
-    src_dir = os.path.dirname(os.path.realpath(__file__));
+    if platform.system() == "Windows":
+        parser.add_argument("-e", "--exe", "--with-exe", "--enable-exe", action="store_true", dest="exe",
+                            help="generates .exe (windows only)")
+        parser.add_argument("-d", "--dist", "--dist-dir", dest="dist", default="dist",
+                            help="generates .exe to this dir (default to dist)")
+    options = parser.parse_args()
+
+    src_dir = os.path.dirname(os.path.realpath(__file__))
     templates = os.listdir(os.path.join(src_dir, "starcheat", "templates"))
     prefix = os.path.expanduser(options.prefix)
     if platform.system() == "Windows":
@@ -29,7 +36,7 @@ def main():
         dist = os.path.expanduser(options.dist)
 
     if options.verbose:
-        print("Starting building starcheat to " + prefix + " ...")
+        print("Starting building Starcheat to " + prefix + " ...")
 
     if os.path.exists(prefix):
         if options.verbose:
@@ -37,14 +44,9 @@ def main():
         shutil.rmtree(prefix)
 
     if options.verbose:
-        print("Copying starcheat python scripts")
+        print("Copying Starcheat python scripts")
     shutil.copytree(os.path.join(src_dir, "starcheat"), prefix,
                     ignore=shutil.ignore_patterns("templates", "starbound", "images", "*.qrc"))
-
-    if options.verbose:
-        print("Copying py-starbound module")
-    shutil.copytree(os.path.join(src_dir, "starcheat", "starbound", "starbound"),
-                    os.path.join(prefix, "starbound"))
 
     if options.verbose:
         print("Generating python Qt templates...")
@@ -74,7 +76,7 @@ def main():
 
     if platform.system() == "Windows" and options.exe:
         if options.verbose:
-            print("Starting generating starcheat standalone Windows build to " + dist + " ...")
+            print("Starting generating Starcheat standalone Windows build to " + dist + " ...")
 
         if os.path.exists(dist):
             if options.verbose:
@@ -85,7 +87,7 @@ def main():
             print("Launching cx_freeze...")
         icon_path = os.path.join(src_dir, "starcheat", "images", "starcheat.ico")
         os.system("python " + cx_freeze_Path + " \"" + os.path.join(prefix, "starcheat.py") + "\" --target-dir=\"" +
-                  dist + "\" --base-name=Win32GUI --icon=\"" + icon_path +"\"")
+                  dist + "\" --base-name=Win32GUI --icon=\"" + icon_path + "\"")
         shutil.copy(os.path.join(pyqt5_dir, "libEGL.dll"), dist)
 
         if options.verbose:
